@@ -16,7 +16,7 @@ public:
     explicit frame_capture_opencv_worker(frame_capture_params params, QObject *parent = nullptr);
     ~frame_capture_opencv_worker();
 
-    virtual void stop() override;
+    void stop() override;
 
 public slots:
     virtual void start() override;    

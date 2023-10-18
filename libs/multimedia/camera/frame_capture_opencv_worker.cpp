@@ -3,8 +3,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-#include <QDebug>
-
 #include <chrono>
 #include <thread>
 
@@ -22,9 +20,9 @@ struct frame_capture_opencv_worker::impl
 
     bool open_cam() noexcept
     {
-        try{
+        try{            
             return cap_.open(std::stoi(params_.url_));
-        }catch(std::exception const &){
+        }catch(std::exception const &){            
             return cap_.open(params_.url_);
         }
     }
@@ -48,12 +46,12 @@ frame_capture_opencv_worker::~frame_capture_opencv_worker()
 
 void frame_capture_opencv_worker::start()
 {
-    if(impl_->open_cam()){
-        impl_->stop_ = true;
+    if(impl_->open_cam()){        
+        impl_->stop_ = false;
         auto const duration = std::chrono::milliseconds(1000/impl_->params_.max_fps_);
         while(!impl_->stop_){
-            cv::Mat frame;
-            if(impl_->cap_>>frame; !frame.empty()){
+            cv::Mat frame;            
+            if(impl_->cap_>>frame; !frame.empty()){                
                 call_listeners(frame);
                 std::this_thread::sleep_for(duration);
             }
