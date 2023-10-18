@@ -16,6 +16,7 @@ set(BUILD_AS_EXE 1)
 add_definitions(-DUSE_OPENCV)
 
 set(PLUGIN_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../libs)
+set(BOOST_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdLibs/boost/boost_1_81_0)
 
 if(WIN32)
     set(3RDLIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdLibs)
@@ -48,6 +49,16 @@ set(PROJECT_SOURCES
         ui/widget_stream_player.hpp
         ui/widget_stream_player.cpp
         ui/widget_stream_player.ui
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_raw_ncnn.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_raw_ncnn.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_utils.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_utils.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp
@@ -86,7 +97,7 @@ endif()
 
 #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH})
 
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
