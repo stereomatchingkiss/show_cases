@@ -3,10 +3,10 @@
 
 #include <opencv2/core.hpp>
 
+namespace ocv::utils{
+
 struct box_info;
 struct object_rect;
-
-namespace ocv::utils{
 
 void adjust_img_orientation(cv::Mat const &input, cv::Mat &output, int rotate_angle, bool horizontal_flip);
 
