@@ -16,6 +16,22 @@ void thread_safe_event::add_listener(listener func, void *key)
     }
 }
 
+void thread_safe_event::call_listener(std::any val, void *key)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if(auto it = map_.find(key); it != std::end(map_)){
+        it->second(val);
+    }
+}
+
+void thread_safe_event::call_listeners(std::any val)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    for(auto &mval : map_){
+        mval.second(val);
+    }
+}
+
 void thread_safe_event::clear()
 {
     std::lock_guard<std::mutex> lock(mutex_);

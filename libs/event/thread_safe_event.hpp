@@ -16,9 +16,11 @@ public:
     thread_safe_event();
 
     void add_listener(listener func, void *key);
+    void call_listener(std::any val, void *key);
+    void call_listeners(std::any val);
     void clear();
     size_t size() const noexcept;
-    void remove_listener(void *key);
+    void remove_listener(void *key);    
 
 private:    
     std::map<void*, listener> map_;
