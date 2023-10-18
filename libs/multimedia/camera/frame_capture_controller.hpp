@@ -1,11 +1,14 @@
 #ifndef FRAME_CAPTURE_CONTROLLER_HPP_50454
 #define FRAME_CAPTURE_CONTROLLER_HPP_50454
 
-#include <any>
-#include <functional>
-
 #include <QObject>
 #include <QString>
+
+#include <any>
+#include <functional>
+#include <memory>
+
+class QThread;
 
 namespace ocv{
 
@@ -16,17 +19,19 @@ class frame_capture_controller : public QObject
     Q_OBJECT
 public:
     explicit frame_capture_controller(frame_capture_base_worker *worker, QObject *parent = nullptr);
+    ~frame_capture_controller();
 
     void add_listener(std::function<void(std::any)> func, void *key);
-    void release();
+    void clear();
     void remove_listener(void *key);
+    void stop();
 
 signals:    
     void message_error(QString);
-    void start();
-    void stop();
+    void start();    
 
 private:
+    std::unique_ptr<QThread> thread_;
     frame_capture_base_worker *worker_;
 };
 
