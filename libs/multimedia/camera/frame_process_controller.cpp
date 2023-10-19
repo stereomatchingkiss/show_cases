@@ -1,0 +1,29 @@
+#include "frame_process_controller.hpp"
+
+#include "frame_process_base_worker.hpp"
+
+#include <QThread>
+
+namespace ocv{
+
+frame_process_controller::frame_process_controller(frame_process_base_worker *worker, QObject *parent)
+    : QObject{parent},
+      thread_{std::make_unique<QThread>()},
+      worker_{worker}
+{
+      worker_->moveToThread(thread_.get());
+
+      connect(thread_.get(), &QThread::finished, worker_, &QObject::deleteLater);
+      connect(this, &frame_process_controller::process_frame, worker_, &frame_process_base_worker::process_frame);
+      connect(worker_, &frame_process_base_worker::send_frame_to_display, this, &frame_process_controller::send_frame_to_display);
+
+      thread_->start();
+}
+
+frame_process_controller::~frame_process_controller()
+{
+    thread_->quit();
+    thread_->wait();
+}
+
+}
