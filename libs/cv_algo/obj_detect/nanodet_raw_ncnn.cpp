@@ -3,6 +3,7 @@
 #include "../utils/common_obj_det_type.hpp"
 
 #include <algorithm>
+#include <concepts>
 #include <iostream>
 #include <vector>
 
@@ -21,11 +22,10 @@ float fast_exp(float x)
     return v.f;
 }
 
-template<typename _Tp>
-int activation_function_softmax(const _Tp* src, _Tp* dst, int length)
+int activation_function_softmax(const std::floating_point auto* src, std::floating_point auto* dst, int length)
 {
-    const _Tp alpha = *std::max_element(src, src + length);
-    _Tp denominator{ 0 };
+    const auto alpha = *std::max_element(src, src + length);
+    std::decay_t<decltype(alpha)> denominator{ 0 };
 
     for (int i = 0; i < length; ++i) {
         dst[i] = fast_exp(src[i] - alpha);
@@ -39,8 +39,8 @@ int activation_function_softmax(const _Tp* src, _Tp* dst, int length)
     return 0;
 }
 
-void generate_grid_center_priors(const int input_height,
-                                 const int input_width,
+void generate_grid_center_priors(int input_height,
+                                 int input_width,
                                  std::vector<int> const &strides,
                                  std::vector<utils::center_prior>& center_priors)
 {
