@@ -16,6 +16,7 @@ frame_process_controller::frame_process_controller(frame_process_base_worker *wo
       connect(thread_.get(), &QThread::finished, worker_, &QObject::deleteLater);
       connect(this, &frame_process_controller::process_frame, worker_, &frame_process_base_worker::process_frame);
       connect(worker_, &frame_process_base_worker::send_frame_to_display, this, &frame_process_controller::send_frame_to_display);
+      connect(worker_, &frame_process_base_worker::message_error, this, &frame_process_controller::message_error);
 
       thread_->start();
 }

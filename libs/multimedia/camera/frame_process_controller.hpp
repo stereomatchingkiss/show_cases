@@ -2,6 +2,7 @@
 #define FRAME_PROCESS_CONTROLLER_HPP
 
 #include <QObject>
+#include <QPixmap>
 
 #include <any>
 
@@ -19,6 +20,7 @@ public:
     ~frame_process_controller();
 
 signals:
+    void message_error(QString);
     void process_frame(std::any frame);
     void send_frame_to_display(QPixmap img);
 

@@ -2,6 +2,7 @@
 #define FRAME_PROCESS_BASE_WORKER_HPP
 
 #include <QObject>
+#include <QPixmap>
 
 #include <any>
 
@@ -18,6 +19,7 @@ public slots:
     virtual void process_frame(std::any frame) = 0;
 
 signals:
+    void message_error(QString);
     void send_frame_to_display(QPixmap img);
 };
 
