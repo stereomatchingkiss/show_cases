@@ -4,6 +4,10 @@
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
+#include "../algo/frame_display_worker.hpp"
+
+#include <multimedia/camera/frame_capture_params.hpp>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -31,7 +35,11 @@ void MainWindow::on_pushButtonNext_clicked()
         ui->stackedWidget->setCurrentWidget(widget_stream_player_);
         ui->pushButtonNext->setEnabled(false);
         ui->pushButtonPrev->setEnabled(true);
-        widget_stream_player_->play("", {});
+        ocv::frame_capture_params params;
+        params.max_fps_ = 30;
+        params.url_ = "D:/programming/videos/mode_0_0.mp4"; //url.toStdString();
+        auto *worker = new frame_display_worker;
+        widget_stream_player_->play(params, worker);
     }
 }
 
