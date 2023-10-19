@@ -1,8 +1,8 @@
 #include "mainwindow.hpp"
 #include "./ui_mainwindow.h"
 
-#include "ui/widget_source_selection.hpp"
-#include "ui/widget_stream_player.hpp"
+#include "widget_source_selection.hpp"
+#include "widget_stream_player.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
