@@ -39,8 +39,7 @@ void widget_stream_player::play(const QString &url, ocv::stream_source_type)
     frame_capture_controller_ = new ocv::frame_capture_controller(frame_capture_opencv_worker_, this);
 
     auto func = [=](std::any val)
-    {
-        qDebug()<<"listener called";
+    {        
         auto mat = std::any_cast<cv::Mat>(val);
         if(mat.channels() == 3){
             cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
