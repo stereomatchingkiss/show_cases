@@ -34,10 +34,8 @@ widget_stream_player::~widget_stream_player()
 
 void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::frame_process_base_worker *process_worker)
 {
-    if(frame_capture_controller_ != nullptr){
-        frame_capture_controller_->deleteLater();
-        frame_process_controller_->deleteLater();
-    }
+    stop();
+
     frame_capture_opencv_worker_ = new ocv::frame_capture_opencv_worker(params);
     frame_capture_controller_ = new ocv::frame_capture_controller(frame_capture_opencv_worker_, this);
     frame_process_controller_ = new ocv::frame_process_controller(process_worker, this);
@@ -52,6 +50,14 @@ void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::fr
     };
     frame_capture_controller_->add_listener(func, this);
     emit frame_capture_controller_->start();
+}
+
+void widget_stream_player::stop()
+{
+    if(frame_capture_controller_ != nullptr){
+        frame_capture_controller_->deleteLater();
+        frame_process_controller_->deleteLater();
+    }
 }
 
 void widget_stream_player::display_frame(QPixmap img)

@@ -28,12 +28,13 @@ class widget_stream_player : public QWidget
 
 public:
     explicit widget_stream_player(QWidget *parent = nullptr);
-    ~widget_stream_player();
+    ~widget_stream_player();    
 
     /**
      * @param process_worker widget_stream_player will take care of the resource of the process worker
      */
     void play(ocv::frame_capture_params const &params, ocv::frame_process_base_worker *process_worker);
+    void stop();
 
 signals:
     void message_error(QString msg);
