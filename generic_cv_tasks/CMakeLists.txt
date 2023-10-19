@@ -40,6 +40,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
+        algo/frame_display_worker.hpp
+        algo/frame_display_worker.cpp
         ui/mainwindow.cpp
         ui/mainwindow.hpp
         ui/mainwindow.ui
@@ -68,6 +70,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
         ${PLUGIN_LIBS_PATH}/utils/source_type.hpp
 )
