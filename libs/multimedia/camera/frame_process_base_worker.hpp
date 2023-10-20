@@ -20,7 +20,7 @@ public slots:
 
 signals:
     void message_error(QString);
-    void send_frame_to_display(QPixmap img);
+    void send_process_results(std::any img);
 };
 
 }

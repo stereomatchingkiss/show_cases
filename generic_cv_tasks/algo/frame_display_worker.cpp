@@ -25,5 +25,5 @@ void frame_display_worker::process_frame(std::any frame)
         cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
     }
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-    emit send_frame_to_display(QPixmap::fromImage(std::move(qimg)));
+    emit send_process_results(QPixmap::fromImage(std::move(qimg)));
 }

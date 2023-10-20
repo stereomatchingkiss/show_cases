@@ -38,10 +38,10 @@ public:
 
 signals:
     void message_error(QString msg);
-    void send_frame_to_display(QPixmap img);
+    void send_frame_to_display(std::any img);
 
 private:
-    void display_frame(QPixmap img);    
+    void display_frame(std::any img);
 
     Ui::widget_stream_player *ui;
 

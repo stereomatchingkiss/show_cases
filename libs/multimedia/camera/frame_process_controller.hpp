@@ -22,7 +22,7 @@ public:
 signals:
     void message_error(QString);
     void process_frame(std::any frame);
-    void send_frame_to_display(QPixmap img);
+    void send_frame_to_display(std::any img);
 
 private:
     std::unique_ptr<QThread> thread_;

@@ -60,7 +60,7 @@ void widget_stream_player::stop()
     }
 }
 
-void widget_stream_player::display_frame(QPixmap img)
+void widget_stream_player::display_frame(std::any img)
 {
-    ui->labelStream->setPixmap(img);
+    ui->labelStream->setPixmap(std::any_cast<QPixmap>(img));
 }
