@@ -46,10 +46,10 @@ public:
      * @todo too many params
      */
     std::vector<utils::box_info> predict_with_resize_image(unsigned char *buffer,
-                                                    int width,
-                                                    int height,
-                                                    float score_threshold,
-                                                    float nms_threshold);
+                                                           int width,
+                                                           int height,
+                                                           float score_threshold,
+                                                           float nms_threshold);
 
     static void scale_bbox(int src_w, int src_h, std::vector<utils::box_info>& bboxes, utils::object_rect const &effect_roi);
 

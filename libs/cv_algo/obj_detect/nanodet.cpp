@@ -45,10 +45,10 @@ int nanodet::get_load_model_state() const noexcept
 }
 
 std::vector<utils::box_info> nanodet::predict_with_resize_image(cv::Mat image,
-                                                        float score_threshold,
-                                                        float nms_threshold,
-                                                        int rotation_angle,
-                                                        bool hflip)
+                                                                float score_threshold,
+                                                                float nms_threshold,
+                                                                int rotation_angle,
+                                                                bool hflip)
 {
     if(swap_rgb_){
         cv::cvtColor(image, input_img_, cv::COLOR_RGB2BGR);
@@ -61,10 +61,10 @@ std::vector<utils::box_info> nanodet::predict_with_resize_image(cv::Mat image,
 }
 
 std::vector<utils::box_info> nanodet::predict(cv::Mat const &image,
-                                      float score_threshold,
-                                      float nms_threshold,
-                                      int rotation_angle,
-                                      bool hflip)
+                                              float score_threshold,
+                                              float nms_threshold,
+                                              int rotation_angle,
+                                              bool hflip)
 {
     utils::object_rect effect_roi;
     utils::resize_uniform(image, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
