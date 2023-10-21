@@ -63,6 +63,7 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_controller.hpp
@@ -75,7 +76,6 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
-        ${PLUGIN_LIBS_PATH}/utils/source_type.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

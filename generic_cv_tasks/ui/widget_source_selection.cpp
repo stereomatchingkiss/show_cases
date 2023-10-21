@@ -1,7 +1,7 @@
 #include "widget_source_selection.hpp"
 #include "ui_widget_source_selection.h"
 
-#include <utils/source_type.hpp>
+#include <multimedia/stream_enum.hpp>
 
 #include <QFile>
 #include <QFileDialog>
