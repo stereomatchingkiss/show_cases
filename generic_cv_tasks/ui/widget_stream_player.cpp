@@ -37,8 +37,8 @@ void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::fr
     stop();
 
     frame_capture_opencv_worker_ = new ocv::frame_capture_opencv_worker(params);
-    frame_capture_controller_ = std::make_unique<ocv::frame_capture_controller>(frame_capture_opencv_worker_, this);
-    frame_process_controller_ = std::make_unique<ocv::frame_process_controller>(process_worker, this);
+    frame_capture_controller_ = std::make_unique<ocv::frame_capture_controller>(frame_capture_opencv_worker_);
+    frame_process_controller_ = std::make_unique<ocv::frame_process_controller>(process_worker);
 
     connect(frame_capture_controller_.get(), &ocv::frame_capture_controller::message_error, this, &widget_stream_player::message_error);
     connect(frame_process_controller_.get(), &ocv::frame_process_controller::send_process_results, this, &widget_stream_player::display_frame);
