@@ -37,12 +37,12 @@ void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::fr
     stop();
 
     frame_capture_opencv_worker_ = new ocv::frame_capture_opencv_worker(params);
-    frame_capture_controller_ = new ocv::frame_capture_controller(frame_capture_opencv_worker_, this);
-    frame_process_controller_ = new ocv::frame_process_controller(process_worker, this);
+    frame_capture_controller_ = std::make_unique<ocv::frame_capture_controller>(frame_capture_opencv_worker_, this);
+    frame_process_controller_ = std::make_unique<ocv::frame_process_controller>(process_worker, this);
 
-    connect(frame_capture_controller_, &ocv::frame_capture_controller::message_error, this, &widget_stream_player::message_error);
-    connect(frame_process_controller_, &ocv::frame_process_controller::send_frame_to_display, this, &widget_stream_player::display_frame);
-    connect(frame_process_controller_, &ocv::frame_process_controller::message_error, this, &widget_stream_player::message_error);
+    connect(frame_capture_controller_.get(), &ocv::frame_capture_controller::message_error, this, &widget_stream_player::message_error);
+    connect(frame_process_controller_.get(), &ocv::frame_process_controller::send_frame_to_display, this, &widget_stream_player::display_frame);
+    connect(frame_process_controller_.get(), &ocv::frame_process_controller::message_error, this, &widget_stream_player::message_error);
 
     auto func = [=](std::any val)
     {        
@@ -55,8 +55,8 @@ void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::fr
 void widget_stream_player::stop()
 {
     if(frame_capture_controller_ != nullptr){
-        frame_capture_controller_->deleteLater();
-        frame_process_controller_->deleteLater();
+        frame_capture_controller_.reset();
+        frame_process_controller_.reset();
     }
 }
 

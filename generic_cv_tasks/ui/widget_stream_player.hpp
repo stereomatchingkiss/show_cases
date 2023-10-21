@@ -45,9 +45,9 @@ private:
 
     Ui::widget_stream_player *ui;
 
-    ocv::frame_capture_controller *frame_capture_controller_;
+    std::unique_ptr<ocv::frame_capture_controller> frame_capture_controller_;
     ocv::frame_capture_opencv_worker *frame_capture_opencv_worker_;
-    ocv::frame_process_controller *frame_process_controller_;
+    std::unique_ptr<ocv::frame_process_controller> frame_process_controller_;
 };
 
 #endif // WIDGET_STREAM_PLAYER_HPP
