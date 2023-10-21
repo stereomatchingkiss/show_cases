@@ -41,7 +41,7 @@ void widget_stream_player::play(ocv::frame_capture_params const &params, ocv::fr
     frame_process_controller_ = std::make_unique<ocv::frame_process_controller>(process_worker, this);
 
     connect(frame_capture_controller_.get(), &ocv::frame_capture_controller::message_error, this, &widget_stream_player::message_error);
-    connect(frame_process_controller_.get(), &ocv::frame_process_controller::send_frame_to_display, this, &widget_stream_player::display_frame);
+    connect(frame_process_controller_.get(), &ocv::frame_process_controller::send_process_results, this, &widget_stream_player::display_frame);
     connect(frame_process_controller_.get(), &ocv::frame_process_controller::message_error, this, &widget_stream_player::message_error);
 
     auto func = [=](std::any val)
