@@ -16,7 +16,7 @@ public:
     ~frame_process_base_worker();
 
 public slots:
-    virtual void process_frame(std::any frame) = 0;
+    virtual void process_results(std::any resutls) = 0;
 
 signals:
     void message_error(QString);

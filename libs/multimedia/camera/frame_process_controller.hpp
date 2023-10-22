@@ -21,8 +21,8 @@ public:
 
 signals:
     void message_error(QString);
-    void process_frame(std::any frame);
-    void send_process_results(std::any img);
+    void process_results(std::any results);
+    void send_process_results(std::any results);
 
 private:
     std::unique_ptr<QThread> thread_;

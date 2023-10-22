@@ -36,7 +36,7 @@ void single_frame_with_multi_worker::add_listener(std::shared_ptr<frame_process_
 {    
     frame_capture_controller_->add_listener([process_controller](std::any input)
     {        
-        process_controller->process_frame(input);
+        process_controller->process_results(input);
     }, key);
     frame_process_vector_.emplace_back(process_controller, key);    
 }

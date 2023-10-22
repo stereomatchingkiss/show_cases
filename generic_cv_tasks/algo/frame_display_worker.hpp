@@ -12,7 +12,7 @@ public:
     explicit frame_display_worker(QObject *parent = nullptr);
     ~frame_display_worker();
 
-    void process_frame(std::any frame) override;
+    void process_results(std::any frame) override;
 };
 
 #endif // FRAME_DISPLAY_WORKER_HPP

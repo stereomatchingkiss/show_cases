@@ -14,7 +14,7 @@ frame_process_controller::frame_process_controller(frame_process_base_worker *wo
       worker_->moveToThread(thread_.get());
 
       connect(thread_.get(), &QThread::finished, worker_, &QObject::deleteLater);
-      connect(this, &frame_process_controller::process_frame, worker_, &frame_process_base_worker::process_frame);
+      connect(this, &frame_process_controller::process_results, worker_, &frame_process_base_worker::process_results);
       connect(worker_, &frame_process_base_worker::send_process_results, this, &frame_process_controller::send_process_results);
       connect(worker_, &frame_process_base_worker::message_error, this, &frame_process_controller::message_error);
 

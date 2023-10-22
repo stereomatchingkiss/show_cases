@@ -16,7 +16,7 @@ frame_display_worker::~frame_display_worker()
 
 }
 
-void frame_display_worker::process_frame(std::any frame)
+void frame_display_worker::process_results(std::any frame)
 {
     auto mat = std::any_cast<cv::Mat>(frame);
     if(mat.channels() == 3){
