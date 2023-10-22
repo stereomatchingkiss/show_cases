@@ -29,7 +29,7 @@ struct frame_capture_opencv_worker::impl
 
     cv::VideoCapture cap_;
     frame_capture_params params_;
-    std::atomic<bool> stop_ = false;
+    std::atomic<bool> stop_ = true;
 };
 
 frame_capture_opencv_worker::frame_capture_opencv_worker(frame_capture_params params, QObject *parent) :
@@ -46,8 +46,11 @@ frame_capture_opencv_worker::~frame_capture_opencv_worker()
 
 void frame_capture_opencv_worker::start()
 {
-    if(impl_->open_cam()){        
-        impl_->stop_ = false;
+    if(!impl_->stop_){
+        return;
+    }
+    impl_->stop_ = false;
+    if(impl_->open_cam()){
         auto const duration = std::chrono::milliseconds(1000/impl_->params_.max_fps_);
         while(!impl_->stop_){
             cv::Mat frame;            
