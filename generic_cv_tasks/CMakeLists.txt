@@ -42,6 +42,8 @@ set(PROJECT_SOURCES
         main.cpp
         algo/frame_display_worker.hpp
         algo/frame_display_worker.cpp
+        algo/obj_detect/nanodet_worker.hpp
+        algo/obj_detect/nanodet_worker.cpp
         ui/mainwindow.cpp
         ui/mainwindow.hpp
         ui/mainwindow.ui
@@ -78,6 +80,7 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
+        ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
