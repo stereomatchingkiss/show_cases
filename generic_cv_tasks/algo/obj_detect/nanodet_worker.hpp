@@ -9,7 +9,10 @@ class nanodet_worker : public ocv::frame_process_base_worker
 {
     Q_OBJECT
 public:
-    explicit nanodet_worker(QObject *parent = nullptr);
+    explicit nanodet_worker(float score_threshold = 0.4f,
+                            float nms_threshold = 0.3f,
+                            int input_size = 416,
+                            QObject *parent = nullptr);
     ~nanodet_worker();
 
     void process_results(std::any frame) override;
