@@ -24,11 +24,11 @@ public:
     ~single_frame_with_multi_worker();
 
     void add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key);
-    void remove_listener(void *key);    
+    void remove_listener(void *key);
+    void start();
 
 signals:
-    void message_error(QString msg);
-    void send_process_results(std::any results);
+    void message_error(QString msg);    
 
 private:
     void stop();

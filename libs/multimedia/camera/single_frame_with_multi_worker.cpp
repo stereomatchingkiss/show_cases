@@ -7,6 +7,8 @@
 
 #include "frame_process_controller.hpp"
 
+#include <multimedia/camera/single_frame_with_multi_worker.hpp>
+
 namespace ocv{
 
 
@@ -27,27 +29,16 @@ single_frame_with_multi_worker::single_frame_with_multi_worker(frame_capture_par
 
 single_frame_with_multi_worker::~single_frame_with_multi_worker()
 {    
-    if(frame_capture_controller_){
-        //warning : must reset the frame_capture_controller first, because this will make sure
-        //every frame process do not need to be called in another thread
-        frame_capture_controller_.reset();
-        //Now it is safe to release the memory, because all of the frame process are released from another threads
-        frame_process_vector_.clear();
-    }
+    stop();
 }
 
 void single_frame_with_multi_worker::add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key)
-{
-    bool const is_empty = frame_process_vector_.empty();
+{    
     frame_capture_controller_->add_listener([process_controller](std::any input)
-    {
+    {        
         process_controller->process_frame(input);
     }, key);
-    frame_process_vector_.emplace_back(process_controller, key);
-
-    if(is_empty){
-        emit frame_capture_controller_->start();
-    }
+    frame_process_vector_.emplace_back(process_controller, key);    
 }
 
 void single_frame_with_multi_worker::remove_listener(void *key)
@@ -61,9 +52,20 @@ void single_frame_with_multi_worker::remove_listener(void *key)
     }
 }
 
+void single_frame_with_multi_worker::start()
+{
+    emit frame_capture_controller_->start();
+}
+
 void single_frame_with_multi_worker::stop()
 {
-    frame_capture_controller_.reset();
+    if(frame_capture_controller_){
+        //warning : must reset the frame_capture_controller first, because this will make sure
+        //every frame process do not need to be called in another thread
+        frame_capture_controller_.reset();
+        //Now it is safe to release the memory, because all of the frame process are released from another threads
+        frame_process_vector_.clear();
+    }
 }
 
 }
