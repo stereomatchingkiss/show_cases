@@ -1,6 +1,6 @@
 #include "nanodet_raw_ncnn.hpp"
 
-#include "../utils/common_obj_det_type.hpp"
+#include "../../utils/common_obj_det_type.hpp"
 
 #include <algorithm>
 #include <concepts>

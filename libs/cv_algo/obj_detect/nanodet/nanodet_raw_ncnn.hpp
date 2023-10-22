@@ -1,7 +1,7 @@
 #ifndef NANODET_RAW_NCNN_HPP
 #define NANODET_RAW_NCNN_HPP
 
-#include "../utils/common_obj_det_type.hpp"
+#include "../../utils/common_obj_det_type.hpp"
 
 #ifdef THIS_IS_IOS
 #include <ncnn/ncnn/net.h>

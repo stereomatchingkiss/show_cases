@@ -1,7 +1,7 @@
 #ifndef NANODET_UTILS_HPP
 #define NANODET_UTILS_HPP
 
-#include "../utils/image_process.hpp"
+#include "../../utils/image_process.hpp"
 
 namespace ocv{
 

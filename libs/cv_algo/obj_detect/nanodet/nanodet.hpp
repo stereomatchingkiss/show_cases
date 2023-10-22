@@ -6,7 +6,7 @@
 #ifndef NANODET_HPP_HWEO43534
 #define NANODET_HPP_HWEO43534
 
-#include "../utils/common_obj_det_type.hpp"
+#include "../../utils/common_obj_det_type.hpp"
 
 #include <opencv2/core.hpp>
 

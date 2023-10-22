@@ -7,8 +7,8 @@
 
 #include "nanodet_raw_ncnn.hpp"
 
-#include "../utils/common_obj_det_type.hpp"
-#include "../utils/image_process.hpp"
+#include "../../utils/common_obj_det_type.hpp"
+#include "../../utils/image_process.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>

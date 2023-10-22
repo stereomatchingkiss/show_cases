@@ -2,7 +2,7 @@
 
 #include "nanodet.hpp"
 
-#include "../utils/common_obj_det_type.hpp"
+#include "../../utils/common_obj_det_type.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>

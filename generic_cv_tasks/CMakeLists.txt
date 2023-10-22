@@ -51,12 +51,12 @@ set(PROJECT_SOURCES
         ui/widget_stream_player.hpp
         ui/widget_stream_player.cpp
         ui/widget_stream_player.ui
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_raw_ncnn.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_raw_ncnn.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_utils.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet_utils.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
