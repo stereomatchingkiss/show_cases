@@ -19,5 +19,7 @@ widget_stream_player::~widget_stream_player()
 
 void widget_stream_player::display_frame(std::any img)
 {
-    ui->labelStream->setPixmap(std::any_cast<QPixmap>(img));
+    int const w = ui->labelStream->width();
+    int const h = ui->labelStream->height();
+    ui->labelStream->setPixmap(std::any_cast<QPixmap>(img).scaled(w,h,Qt::KeepAspectRatio));
 }
