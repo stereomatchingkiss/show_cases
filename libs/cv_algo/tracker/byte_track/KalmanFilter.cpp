@@ -43,11 +43,11 @@ void byte_track::KalmanFilter::predict(StateMean &mean, StateCov &covariance)
     StateMean std;
     std(0) = std_weight_position_ * mean(3);
     std(1) = std_weight_position_ * mean(3);
-    std(2) = 1e-2;
+    std(2) = 1e-2f;
     std(3) = std_weight_position_ * mean(3);
     std(4) = std_weight_velocity_ * mean(3);
     std(5) = std_weight_velocity_ * mean(3);
-    std(6) = 1e-5;
+    std(6) = 1e-5f;
     std(7) = std_weight_velocity_ * mean(3);
 
     StateMean tmp = std.array().square();
@@ -78,7 +78,7 @@ void byte_track::KalmanFilter::project(StateHMean &projected_mean, StateHCov &pr
     DetectBox std;
     std << std_weight_position_ * mean(3),
            std_weight_position_ * mean(3),
-           1e-1,
+           1e-1f,
            std_weight_position_ * mean(3);
 
     projected_mean = update_mat_ * mean.transpose();

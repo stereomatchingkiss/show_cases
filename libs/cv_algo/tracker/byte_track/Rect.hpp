@@ -10,20 +10,16 @@ namespace byte_track
 template <typename T>
 concept Number = std::integral<T> || std::floating_point<T>;
 
-template<typename T>
-requires Number<T>
+template<Number T>
 using Tlwh = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<typename T>
-requires Number<T>
+template<Number T>
 using Tlbr = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<typename T>
-requires Number<T>
+template<Number T>
 using Xyah = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<typename T>
-requires Number<T>
+template<Number T>
 class Rect
 {
 public:
@@ -135,16 +131,14 @@ public:
 
 };
 
-template<typename T>
-requires Number<T>
-Rect<T> generate_rect_by_tlbr(byte_track::Tlbr<T> const &tlbr)
+template<Number T>
+auto generate_rect_by_tlbr(byte_track::Tlbr<T> const &tlbr)
 {
     return byte_track::Rect<T>(tlbr[0], tlbr[1], tlbr[2] - tlbr[0], tlbr[3] - tlbr[1]);
 }
 
-template<typename T>
-requires Number<T>
-Rect<T> generate_rect_by_xyah(byte_track::Xyah<T> const &xyah)
+template<Number T>
+auto generate_rect_by_xyah(byte_track::Xyah<T> const &xyah)
 {
     const auto width = xyah[2] * xyah[3];
     return byte_track::Rect<T>(xyah[0] - width / 2, xyah[1] - xyah[3] / 2, width, xyah[3]);
