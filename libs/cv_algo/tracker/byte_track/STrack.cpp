@@ -4,7 +4,7 @@
 
 namespace ocv::byte_track{
 
-STrack::STrack(const Rect<float>& rect, const float& score) :
+STrack::STrack(const Rect<float>& rect, float score) :
     kalman_filter_(),
     mean_(),
     covariance_(),
@@ -23,46 +23,47 @@ STrack::~STrack()
 {
 }
 
-const Rect<float>& byte_track::STrack::getRect() const
+Rect<float> const& byte_track::STrack::getRect() const
 {
     return rect_;
 }
 
-const STrackState& byte_track::STrack::getSTrackState() const
+STrackState byte_track::STrack::getSTrackState() const
 {
     return state_;
 }
 
-const bool& STrack::isActivated() const
+bool STrack::isActivated() const
 {
     return is_activated_;
 }
-const float& STrack::getScore() const
+
+float STrack::getScore() const
 {
     return score_;
 }
 
-const size_t& STrack::getTrackId() const
+size_t STrack::getTrackId() const
 {
     return track_id_;
 }
 
-const size_t& STrack::getFrameId() const
+size_t STrack::getFrameId() const
 {
     return frame_id_;
 }
 
-const size_t& STrack::getStartFrameId() const
+size_t STrack::getStartFrameId() const
 {
     return start_frame_id_;
 }
 
-const size_t& STrack::getTrackletLength() const
+size_t STrack::getTrackletLength() const
 {
     return tracklet_len_;
 }
 
-void STrack::activate(const size_t& frame_id, const size_t& track_id)
+void STrack::activate(size_t frame_id, size_t track_id)
 {
     kalman_filter_.initiate(mean_, covariance_, rect_.getXyah());
 
@@ -79,7 +80,7 @@ void STrack::activate(const size_t& frame_id, const size_t& track_id)
     tracklet_len_ = 0;
 }
 
-void STrack::reActivate(const STrack &new_track, const size_t &frame_id, const int &new_track_id)
+void STrack::reActivate(STrack const &new_track, size_t frame_id, int new_track_id)
 {
     kalman_filter_.update(mean_, covariance_, new_track.getRect().getXyah());
 
@@ -105,7 +106,7 @@ void STrack::predict()
     kalman_filter_.predict(mean_, covariance_);
 }
 
-void STrack::update(const STrack &new_track, const size_t &frame_id)
+void STrack::update(STrack const &new_track, size_t frame_id)
 {
     kalman_filter_.update(mean_, covariance_, new_track.getRect().getXyah());
 

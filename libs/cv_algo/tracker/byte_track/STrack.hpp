@@ -18,24 +18,24 @@ enum class STrackState {
 class STrack
 {
 public:
-    STrack(const Rect<float>& rect, const float& score);
+    STrack(Rect<float> const &rect, float score);
     ~STrack();
 
-    const Rect<float>& getRect() const;
-    const STrackState& getSTrackState() const;
+    Rect<float> const &getRect() const;
+    STrackState getSTrackState() const;
 
-    const bool& isActivated() const;
-    const float& getScore() const;
-    const size_t& getTrackId() const;
-    const size_t& getFrameId() const;
-    const size_t& getStartFrameId() const;
-    const size_t& getTrackletLength() const;
+    bool isActivated() const;
+    float getScore() const;
+    size_t getTrackId() const;
+    size_t getFrameId() const;
+    size_t getStartFrameId() const;
+    size_t getTrackletLength() const;
 
-    void activate(const size_t& frame_id, const size_t& track_id);
-    void reActivate(const STrack &new_track, const size_t &frame_id, const int &new_track_id = -1);
+    void activate(size_t frame_id, size_t track_id);
+    void reActivate(STrack const &new_track, size_t frame_id, int new_track_id = -1);
 
     void predict();
-    void update(const STrack &new_track, const size_t &frame_id);
+    void update(STrack const &new_track, size_t frame_id);
 
     void markAsLost();
     void markAsRemoved();
