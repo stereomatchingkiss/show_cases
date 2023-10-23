@@ -1,25 +1,22 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include "../../../concepts_tools/numerical_concepts.hpp"
 
-#include <concepts>
+#include <Eigen/Dense>
 
 namespace ocv::byte_track
 {
 
-template <typename T>
-concept Number = std::integral<T> || std::floating_point<T>;
-
-template<Number T>
+template<concepts::Number T>
 using Tlwh = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<Number T>
+template<concepts::Number T>
 using Tlbr = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<Number T>
+template<concepts::Number T>
 using Xyah = Eigen::Matrix<T, 1, 4, Eigen::RowMajor>;
 
-template<Number T>
+template<concepts::Number T>
 class Rect
 {
 public:
@@ -131,13 +128,13 @@ public:
 
 };
 
-template<Number T>
+template<concepts::Number T>
 auto generate_rect_by_tlbr(byte_track::Tlbr<T> const &tlbr)
 {
     return byte_track::Rect<T>(tlbr[0], tlbr[1], tlbr[2] - tlbr[0], tlbr[3] - tlbr[1]);
 }
 
-template<Number T>
+template<concepts::Number T>
 auto generate_rect_by_xyah(byte_track::Xyah<T> const &xyah)
 {
     const auto width = xyah[2] * xyah[3];
