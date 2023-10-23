@@ -439,18 +439,10 @@ double BYTETracker::execLapjv(const std::vector<std::vector<float>> &cost,
                               float cost_limit,
                               bool return_cost) const
 {
-    std::vector<std::vector<float> > cost_c;
-    cost_c.assign(cost.begin(), cost.end());
-
-    std::vector<std::vector<float> > cost_c_extended;
-
-    int n_rows = static_cast<int>(cost.size());
-    int n_cols = static_cast<int>(cost[0].size());
-    rowsol.resize(n_rows);
-    colsol.resize(n_cols);
-
+    int const n_rows = static_cast<int>(cost.size());
+    int const n_cols = static_cast<int>(cost[0].size());
     int n = 0;
-    if (n_rows == n_cols)
+    if(n_rows == n_cols)
     {
         n = n_rows;
     }
@@ -462,66 +454,59 @@ double BYTETracker::execLapjv(const std::vector<std::vector<float>> &cost,
         }
     }
 
+    std::vector<std::vector<float>> cost_c = cost;
+    std::vector<std::vector<float>> cost_c_extended;
     if (extend_cost || cost_limit < std::numeric_limits<float>::max())
     {
         n = n_rows + n_cols;
         cost_c_extended.resize(n);
-        for (size_t i = 0; i < cost_c_extended.size(); i++)
-            cost_c_extended[i].resize(n);
+        for(auto &val : cost_c_extended)
+            val.resize(n);
 
-        if (cost_limit < std::numeric_limits<float>::max())
+        if(cost_limit < std::numeric_limits<float>::max())
         {
-            for (size_t i = 0; i < cost_c_extended.size(); i++)
+            for(auto &val : cost_c_extended)
             {
-                for (size_t j = 0; j < cost_c_extended[i].size(); j++)
-                {
-                    cost_c_extended[i][j] = cost_limit / 2.0f;
-                }
+                std::ranges::fill(val, cost_limit / 2.0f);
             }
         }
         else
         {
             float cost_max = -1;
-            for (size_t i = 0; i < cost_c.size(); i++)
-            {
-                for (size_t j = 0; j < cost_c[i].size(); j++)
-                {
-                    if (cost_c[i][j] > cost_max)
-                        cost_max = cost_c[i][j];
-                }
+            for(auto const &val : cost_c)
+            {                
+                cost_max = std::max(*std::ranges::max_element(val), cost_max);
             }
-            for (size_t i = 0; i < cost_c_extended.size(); i++)
+            for(auto &val : cost_c_extended)
             {
-                for (size_t j = 0; j < cost_c_extended[i].size(); j++)
-                {
-                    cost_c_extended[i][j] = cost_max + 1;
-                }
+                std::ranges::fill(val, cost_max + 1);
             }
         }
 
-        for (size_t i = n_rows; i < cost_c_extended.size(); i++)
+        for(size_t i = n_rows; i < cost_c_extended.size(); ++i)
         {
-            for (size_t j = n_cols; j < cost_c_extended[i].size(); j++)
+            for(size_t j = n_cols; j < cost_c_extended[i].size(); ++j)
             {
-                cost_c_extended[i][j] = 0;
+                cost_c_extended[i][j] = 0;                
             }
         }
-        for (int i = 0; i < n_rows; i++)
+        for(int i = 0; i < n_rows; ++i)
         {
-            for (int j = 0; j < n_cols; j++)
+            for (int j = 0; j < n_cols; ++j)
             {
                 cost_c_extended[i][j] = cost_c[i][j];
             }
         }
 
-        cost_c.clear();
-        cost_c.assign(cost_c_extended.begin(), cost_c_extended.end());
+        //cost_c.clear();
+        //cost_c = cost_c_extended;
+        std::swap(cost_c, cost_c_extended);
     }
 
     double **cost_ptr;
-    cost_ptr = new double *[sizeof(double *) * n];
-    for (int i = 0; i < n; i++)
-        cost_ptr[i] = new double[sizeof(double) * n];
+    cost_ptr = new double *[n];
+    for(int i = 0; i < n; i++)
+        cost_ptr[i] = new double[n];
 
     for (int i = 0; i < n; i++)
     {
@@ -531,10 +516,9 @@ double BYTETracker::execLapjv(const std::vector<std::vector<float>> &cost,
         }
     }
 
-    int* x_c = new int[sizeof(int) * n];
-    int *y_c = new int[sizeof(int) * n];
-
-    int ret = lapjv_internal(n, cost_ptr, x_c, y_c);
+    std::unique_ptr<int[]> x_c(new int[n]);
+    std::unique_ptr<int[]> y_c(new int[n]);
+    int ret = lapjv_internal(n, cost_ptr, x_c.get(), y_c.get());
     if (ret != 0)
     {
         throw std::runtime_error("The result of lapjv_internal() is invalid.");
@@ -542,6 +526,8 @@ double BYTETracker::execLapjv(const std::vector<std::vector<float>> &cost,
 
     double opt = 0.0;
 
+    rowsol.resize(n_rows);
+    colsol.resize(n_cols);
     if (n != n_rows)
     {
         for (int i = 0; i < n; i++)
@@ -583,9 +569,7 @@ double BYTETracker::execLapjv(const std::vector<std::vector<float>> &cost,
     {
         delete[]cost_ptr[i];
     }
-    delete[]cost_ptr;
-    delete[]x_c;
-    delete[]y_c;
+    delete[]cost_ptr;    
 
     return opt;
 }
