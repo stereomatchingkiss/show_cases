@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-namespace byte_track
+namespace ocv::byte_track
 {
 
 enum class STrackState {

@@ -4,7 +4,7 @@
 
 #include <concepts>
 
-namespace byte_track
+namespace ocv::byte_track
 {
 
 template <typename T>

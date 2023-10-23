@@ -289,8 +289,10 @@ int _ca_dense(size_t n, double *cost[], size_t n_free_rows, int *free_rows, int 
 
 }
 
+namespace ocv::byte_track{
+
 /** Solve dense sparse LAP. */
-int byte_track::lapjv_internal(size_t n, double *cost[], int *x, int *y)
+int lapjv_internal(size_t n, double *cost[], int *x, int *y)
 {    
     std::unique_ptr<int[]> free_rows(new int[n]);
     std::unique_ptr<double[]> v(new double[n]);
@@ -305,4 +307,6 @@ int byte_track::lapjv_internal(size_t n, double *cost[], int *x, int *y)
     }
 
     return ret;
+}
+
 }
