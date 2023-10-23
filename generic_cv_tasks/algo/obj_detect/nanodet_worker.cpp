@@ -16,7 +16,7 @@ struct nanodet_worker::impl
          float nms_threshold,
          int input_size)
         : net_("assets/obj_detect/nanodet-plus-m_416.param",
-               "assets/obj_detect/nanodet-plus-m_416.bin", 80, false, false, input_size),
+               "assets/obj_detect/nanodet-plus-m_416.bin", 80, true, false, input_size),
           input_size_{input_size},
           nms_threshold_{nms_threshold},
           score_threshold_{score_threshold}

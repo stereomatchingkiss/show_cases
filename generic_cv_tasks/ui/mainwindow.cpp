@@ -4,7 +4,8 @@
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
-#include "../algo/frame_display_worker.hpp"
+//#include "../algo/frame_display_worker.hpp"
+#include "../algo/obj_detect/nanodet_worker.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/camera/frame_capture_params.hpp>
@@ -42,7 +43,7 @@ void MainWindow::on_pushButtonNext_clicked()
         params.max_fps_ = 30;
         params.url_ = "D:/programming/videos/mode_0_1.mp4"; //url.toStdString();
         sfwmw_ = std::make_unique<single_frame_with_multi_worker>(params);
-        auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
+        auto process_controller = std::make_shared<frame_process_controller>(new nanodet_worker);
         connect(process_controller.get(), &frame_process_controller::send_process_results,
                 widget_stream_player_, &widget_stream_player::display_frame);
         sfwmw_->add_listener(process_controller, this);

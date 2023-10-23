@@ -27,11 +27,11 @@ void byte_track::KalmanFilter::initiate(StateMean &mean, StateCov &covariance, c
     StateMean std;
     std(0) = 2 * std_weight_position_ * measurement[3];
     std(1) = 2 * std_weight_position_ * measurement[3];
-    std(2) = 1e-2;
+    std(2) = 1e-2f;
     std(3) = 2 * std_weight_position_ * measurement[3];
     std(4) = 10 * std_weight_velocity_ * measurement[3];
     std(5) = 10 * std_weight_velocity_ * measurement[3];
-    std(6) = 1e-5;
+    std(6) = 1e-5f;
     std(7) = 10 * std_weight_velocity_ * measurement[3];
 
     StateMean tmp = std.array().square();

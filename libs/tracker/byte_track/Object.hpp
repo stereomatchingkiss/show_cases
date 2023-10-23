@@ -11,9 +11,7 @@ struct Object
     int label;
     float prob;
 
-    Object(Rect<float> const &_rect,
-           int const &_label,
-           float const &_prob);
+    Object(Rect<float> const &_rect, int _label, float _prob);
 };
 
 }
