@@ -8,6 +8,7 @@
 
 #include <QPixmap>
 
+#include <format>
 #include <fstream>
 
 struct nanodet_worker::impl
@@ -15,8 +16,8 @@ struct nanodet_worker::impl
     impl(float score_threshold,
          float nms_threshold,
          int input_size)
-        : net_("assets/obj_detect/nanodet-plus-m_416.param",
-               "assets/obj_detect/nanodet-plus-m_416.bin", 80, true, false, input_size),
+        : net_(std::format("assets/obj_detect/nanodet-plus-m_{}.param", input_size).c_str(),
+               std::format("assets/obj_detect/nanodet-plus-m_{}.bin", input_size).c_str(), 80, false, false, input_size),
           input_size_{input_size},
           nms_threshold_{nms_threshold},
           score_threshold_{score_threshold}
