@@ -7,7 +7,9 @@ namespace ocv{
 
 class nanodet;
 
-void draw_bboxes(cv::Mat& image, const std::vector<utils::box_info>& bboxes, std::vector<std::string> const &class_names);
+void draw_bboxes(cv::Mat& image,
+                 const std::vector<utils::box_info>& bboxes,
+                 std::vector<std::string> const &class_names);
 
 void draw_output_strings_results(cv::Mat &image, std::vector<std::string> const &outputs, std::vector<std::string> const &class_names);
 

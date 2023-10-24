@@ -20,6 +20,7 @@ struct box_info
     float y2_;
     float score_;
     int label_;
+    int track_id_ = -1;
 
     box_info();
     box_info(float x1, float y1, float x2, float y2, float score, int label);

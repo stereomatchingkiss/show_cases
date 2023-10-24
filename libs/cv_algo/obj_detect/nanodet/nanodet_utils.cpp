@@ -7,6 +7,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <format>
 #include <iostream>
 
 namespace ocv{
@@ -100,21 +101,31 @@ const int color_list[80][3] =
 
 }
 
-void draw_bboxes(cv::Mat &image, const std::vector<utils::box_info> &bboxes, const std::vector<std::string> &class_names)
+void draw_bboxes(cv::Mat &image,
+                 const std::vector<utils::box_info> &bboxes,
+                 const std::vector<std::string> &class_names)
 {
     for (size_t i = 0; i < bboxes.size(); i++){
         const utils::box_info& bbox = bboxes[i];
         cv::Scalar const color = cv::Scalar(color_list[bbox.label_][0], color_list[bbox.label_][1], color_list[bbox.label_][2]);
-        cv::rectangle(image, cv::Point(bbox.x1_, bbox.y1_),cv::Point(bbox.x2_, bbox.y2_), color, 8);
+        cv::rectangle(image,
+                      cv::Point(static_cast<int>(bbox.x1_), static_cast<int>(bbox.y1_)),
+                      cv::Point(static_cast<int>(bbox.x2_), static_cast<int>(bbox.y2_)),
+                      color, 8);
 
-        char text[256];
-        sprintf(text, "%s %.1f%%", class_names[bbox.label_].c_str(), bbox.score_ * 100);
+        //sprintf(text, "%s %.1f%%", class_names[bbox.label_].c_str(), bbox.score_ * 100);
+        std::string text;
+        if(bbox.track_id_ == -1){
+            text = std::format("{} {:.1f}", class_names[bbox.label_].c_str(), bbox.score_ * 100);
+        }else{
+            text = std::format("{} {:.1f}, {}", class_names[bbox.label_].c_str(), bbox.score_ * 100, bbox.track_id_);
+        }
 
         int baseLine = 0;
         cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseLine);
 
-        int x = (bbox.x1_);
-        int y = bbox.y1_ - label_size.height - baseLine;
+        int x = static_cast<int>(bbox.x1_);
+        int y = static_cast<int>(bbox.y1_ - label_size.height - baseLine);
         if (y < 0)
             y = 0;
         if (x + label_size.width > image.cols)
@@ -134,10 +145,10 @@ void draw_output_strings_results(cv::Mat &image, const std::vector<std::string> 
         std::vector<utils::box_info> results;
         for(size_t i = 0; i < outputs.size(); i += 6){
             utils::box_info info;
-            info.x1_ = std::stoi(outputs[i]);
-            info.y1_ = std::stoi(outputs[i + 1]);
-            info.x2_ = std::stoi(outputs[i + 2]);
-            info.y2_ = std::stoi(outputs[i + 3]);
+            info.x1_ = static_cast<float>(std::stoi(outputs[i]));
+            info.y1_ = static_cast<float>(std::stoi(outputs[i + 1]));
+            info.x2_ = static_cast<float>(std::stoi(outputs[i + 2]));
+            info.y2_ = static_cast<float>(std::stoi(outputs[i + 3]));
             info.score_ = std::stof(outputs[i + 4]);
             info.label_ = std::stoi(outputs[i + 5]);
             results.emplace_back(info);
