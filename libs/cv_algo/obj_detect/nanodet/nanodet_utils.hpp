@@ -11,6 +11,14 @@ void draw_bboxes(cv::Mat& image,
                  const std::vector<utils::box_info>& bboxes,
                  std::vector<std::string> const &class_names);
 
+void draw_bboxes_custom(cv::Mat& image,
+                        utils::box_info const &bboxes,
+                        std::string const &message);
+
+void draw_bboxes_custom(cv::Mat& image,
+                        std::vector<utils::box_info> const &bboxes,
+                        std::vector<std::string> const &message);
+
 void draw_output_strings_results(cv::Mat &image, std::vector<std::string> const &outputs, std::vector<std::string> const &class_names);
 
 std::tuple<int, cv::Mat> predict_image(nanodet &net, std::string const &img_path,

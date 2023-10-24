@@ -105,37 +105,48 @@ void draw_bboxes(cv::Mat &image,
                  const std::vector<utils::box_info> &bboxes,
                  const std::vector<std::string> &class_names)
 {
-    for (size_t i = 0; i < bboxes.size(); i++){
+    for(size_t i = 0; i < bboxes.size(); i++){
         const utils::box_info& bbox = bboxes[i];
-        cv::Scalar const color = cv::Scalar(color_list[bbox.label_][0], color_list[bbox.label_][1], color_list[bbox.label_][2]);
-        cv::rectangle(image,
-                      cv::Point(static_cast<int>(bbox.x1_), static_cast<int>(bbox.y1_)),
-                      cv::Point(static_cast<int>(bbox.x2_), static_cast<int>(bbox.y2_)),
-                      color, 8);
-
-        //sprintf(text, "%s %.1f%%", class_names[bbox.label_].c_str(), bbox.score_ * 100);
         std::string text;
         if(bbox.track_id_ == -1){
-            text = std::format("{} {:.1f}", class_names[bbox.label_].c_str(), bbox.score_ * 100);
+            text = std::format("{} {:.1f}", class_names[bbox.label_], bbox.score_ * 100);
         }else{
-            text = std::format("{} {:.1f}, {}", class_names[bbox.label_].c_str(), bbox.score_ * 100, bbox.track_id_);
+            text = std::format("{} {:.1f}, {}", class_names[bbox.label_], bbox.score_ * 100, bbox.track_id_);
         }
+        draw_bboxes_custom(image, bboxes[i], text);
+    }
+}
 
-        int baseLine = 0;
-        cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseLine);
+void draw_bboxes_custom(cv::Mat &image, const utils::box_info &bboxes, const std::string &message)
+{
+    const utils::box_info& bbox = bboxes;
+    cv::Scalar const color = cv::Scalar(color_list[bbox.label_][0], color_list[bbox.label_][1], color_list[bbox.label_][2]);
+    cv::rectangle(image,
+                  cv::Point(static_cast<int>(bbox.x1_), static_cast<int>(bbox.y1_)),
+                  cv::Point(static_cast<int>(bbox.x2_), static_cast<int>(bbox.y2_)),
+                  color, 8);
 
-        int x = static_cast<int>(bbox.x1_);
-        int y = static_cast<int>(bbox.y1_ - label_size.height - baseLine);
-        if (y < 0)
-            y = 0;
-        if (x + label_size.width > image.cols)
-            x = image.cols - label_size.width;
+    int baseLine = 0;
+    cv::Size label_size = cv::getTextSize(message, cv::FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseLine);
 
-        cv::rectangle(image, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)),
-                      color, -1);
+    int x = static_cast<int>(bbox.x1_);
+    int y = static_cast<int>(bbox.y1_ - label_size.height - baseLine);
+    if (y < 0)
+        y = 0;
+    if (x + label_size.width > image.cols)
+        x = image.cols - label_size.width;
 
-        cv::putText(image, text, cv::Point(x, y + label_size.height),
-                    cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 4);//*/
+    cv::rectangle(image, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)),
+                  color, -1);
+
+    cv::putText(image, message, cv::Point(x, y + label_size.height),
+                cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 4);
+}
+
+void draw_bboxes_custom(cv::Mat &image, const std::vector<utils::box_info> &bboxes, const std::vector<std::string> &message)
+{
+    for (size_t i = 0; i < bboxes.size(); i++){
+        draw_bboxes_custom(image, bboxes[i], message[i]);
     }
 }
 
