@@ -5,16 +5,36 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QSettings>
+
+namespace{
+
+char const *rtsp_url("rtsp_url");
+char const *video_url("video_url");
+
+}
 
 widget_source_selection::widget_source_selection(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_source_selection)
 {
     ui->setupUi(this);
+
+    QSettings setting;
+    if(setting.contains(rtsp_url)){
+        ui->lineEditRTSP->setText(setting.value(rtsp_url).toString());
+    }
+    if(setting.contains(video_url)){
+        ui->lineEditVideo->setText(setting.value(video_url).toString());
+    }
 }
 
 widget_source_selection::~widget_source_selection()
 {
+    QSettings setting;
+    setting.setValue(rtsp_url, ui->lineEditRTSP->text());
+    setting.setValue(video_url, ui->lineEditVideo->text());
+
     delete ui;
 }
 
@@ -43,6 +63,19 @@ QString widget_source_selection::get_video_source() const
 QString widget_source_selection::get_webcam() const
 {
     return ui->comboBoxWebCam->currentText();
+}
+
+QString widget_source_selection::get_url() const
+{
+    if(ui->radioButtonRTSP->isChecked()){
+        return ui->lineEditRTSP->text();
+    }
+
+    if(ui->radioButtonVideo->isChecked()){
+        return ui->lineEditVideo->text();
+    }
+
+    return "0";
 }
 
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()

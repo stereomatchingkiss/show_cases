@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="labelTitle">
       <property name="font">
        <font>
         <pointsize>20</pointsize>
@@ -28,7 +28,7 @@
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Select Stream</string>
+       <string>Select stream</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>

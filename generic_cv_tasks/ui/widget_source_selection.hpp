@@ -26,6 +26,7 @@ public:
     QString get_rtsp_source() const;
     QString get_video_source() const;
     QString get_webcam() const;
+    QString get_url() const;
 
 private slots:
     void on_pushButtonOpenVideoFolder_clicked();
