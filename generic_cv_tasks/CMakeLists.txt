@@ -53,12 +53,26 @@ set(PROJECT_SOURCES
         ui/widget_stream_player.hpp
         ui/widget_stream_player.cpp
         ui/widget_stream_player.ui
+        ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Rect.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
@@ -80,13 +94,15 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
+        ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
+        ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
         ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES}        
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET pose_estimation_expert APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -108,7 +124,7 @@ endif()
 
 #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH} ${3RDLIBS_PATH}/eigen)
 
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
@@ -117,7 +133,7 @@ if(ANDROID OR WIN32)
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
                           PRIVATE ncnn
-                          PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                          PRIVATE Qt${QT_VERSION_MAJOR}::Widgets                          
                           )
     #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 endif()
