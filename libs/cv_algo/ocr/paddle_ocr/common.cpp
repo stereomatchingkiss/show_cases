@@ -6,13 +6,11 @@ namespace ocv::ocr{
 
 namespace {
 
-inline
-    bool cvPointCompare(const cv::Point& a, const cv::Point& b) {
+inline bool cvPointCompare(const cv::Point& a, const cv::Point& b) {
     return a.x < b.x;
 }
 
-inline
-    bool compareBoxWidth(const TextBox &a, const TextBox& b)
+inline bool compareBoxWidth(const TextBox &a, const TextBox& b)
 {
     return abs(a.boxPoint[0].x-a.boxPoint[1].x)>abs(b.boxPoint[0].x-b.boxPoint[1].x);
 }
@@ -100,26 +98,25 @@ float boxScoreFast(const cv::Mat & inMat, const std::vector<cv::Point> & inBox) 
         maskMat).val[0];
 }
 
-std::vector<cv::Point> unClip(const std::vector<cv::Point> & inBox, float perimeter, float unClipRatio) {
-    std::vector<cv::Point> outBox;
-    ocv::ocr::Path poly;
-
+std::vector<cv::Point> unClip(const std::vector<cv::Point> & inBox, float perimeter, float unClipRatio) {    
+    Path poly;
     for (int i = 0; i < inBox.size(); ++i) {
         poly.push_back(ocv::ocr::IntPoint(inBox[i].x, inBox[i].y));
     }
 
     double distance = unClipRatio * ocv::ocr::Area(poly) / (double)perimeter;
 
-    ocv::ocr::ClipperOffset clipperOffset;
+    ClipperOffset clipperOffset;
     clipperOffset.AddPath(poly, ocv::ocr::JoinType::jtRound, ocv::ocr::EndType::etClosedPolygon);
-    ocv::ocr::Paths polys;
+    Paths polys;
     polys.push_back(poly);
     clipperOffset.Execute(polys, distance);
 
+    std::vector<cv::Point> outBox;
     outBox.clear();
     std::vector<cv::Point> rsVec;
     for (int i = 0; i < polys.size(); ++i) {
-        ocv::ocr::Path tmpPoly = polys[i];
+        Path tmpPoly = polys[i];
         for (int j = 0; j < tmpPoly.size(); ++j) {
             outBox.emplace_back(tmpPoly[j].X, tmpPoly[j].Y);
         }
@@ -129,8 +126,7 @@ std::vector<cv::Point> unClip(const std::vector<cv::Point> & inBox, float perime
 
 cv::Mat getRotateCropImage(const cv::Mat& src, std::vector<cv::Point> box) {
     cv::Mat image;
-    src.copyTo(image);
-    std::vector<cv::Point> points = box;
+    src.copyTo(image);    
 
     int collectX[4] = { box[0].x, box[1].x, box[2].x, box[3].x };
     int collectY[4] = { box[0].y, box[1].y, box[2].y, box[3].y };
@@ -142,11 +138,11 @@ cv::Mat getRotateCropImage(const cv::Mat& src, std::vector<cv::Point> box) {
     cv::Mat imgCrop;
     image(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
 
+    std::vector<cv::Point> points = std::move(box);
     for (int i = 0; i < points.size(); i++) {
         points[i].x -= left;
         points[i].y -= top;
     }
-
 
     int imgCropWidth = int(sqrt(pow(points[0].x - points[1].x, 2) +
         pow(points[0].y - points[1].y, 2)));
@@ -186,13 +182,9 @@ std::vector<cv::Mat> getPartImages(const cv::Mat& src, std::vector<TextBox>& tex
 {
     std::sort(textBoxes.begin(),textBoxes.end(),compareBoxWidth);
     std::vector<cv::Mat> partImages;
-    if(textBoxes.size() > 0)
-    {
-        for (int i = 0; i < textBoxes.size(); ++i)
-        {
-            cv::Mat partImg = getRotateCropImage(src, textBoxes[i].boxPoint);
-            partImages.emplace_back(partImg);
-        }
+    for(size_t i = 0; i < textBoxes.size(); ++i){
+        cv::Mat partImg = getRotateCropImage(src, textBoxes[i].boxPoint);
+        partImages.emplace_back(partImg);
     }
 
     return partImages;
