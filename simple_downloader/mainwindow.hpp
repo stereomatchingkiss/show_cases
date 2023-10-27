@@ -25,6 +25,7 @@ private slots:
     void on_pushButtonDownload_clicked();
 
 private:
+    void check_image_existence(QString const &url);
     void download(QString const &url);
     void download_finished(std::shared_ptr<ocv::net::download_supervisor::download_task> task);
     void download_progress(std::shared_ptr<ocv::net::download_supervisor::download_task> task, qint64 bytesReceived, qint64 bytesTotal);

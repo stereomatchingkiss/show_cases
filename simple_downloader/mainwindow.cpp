@@ -4,8 +4,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QImageReader>
 #include <QNetworkRequest>
 #include <QRandomGenerator>
+#include <QSettings>
 #include <QTextStream>
 
 #include <set>
@@ -13,6 +15,10 @@
 using namespace ocv::net;
 
 namespace{
+
+QString const key_save_at("key_save_at");
+QString const key_save_error_log_at("key_save_error_log_at");
+QString const key_url_list("key_url_list");
 
 QNetworkRequest create_img_download_request(const QString &url)
 {
@@ -42,10 +48,26 @@ MainWindow::MainWindow(QWidget *parent)
     connect(manager_, &download_supervisor::download_progress, this, &MainWindow::download_progress);
 
     ui->progressBar->setRange(0, 0);
+
+    QSettings settings;
+    if(settings.contains(key_save_at)){
+        ui->lineEditSaveAt->setText(settings.value(key_save_at).toString());
+    }
+    if(settings.contains(key_save_error_log_at)){
+        ui->lineEditSaveErroLogAt->setText(settings.value(key_save_error_log_at).toString());
+    }
+    if(settings.contains(key_url_list)){
+        ui->lineEditUrlList->setText(settings.value(key_url_list).toString());
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    QSettings settings;
+    settings.setValue(key_save_at, ui->lineEditSaveAt->text());
+    settings.setValue(key_save_error_log_at, ui->lineEditSaveErroLogAt->text());
+    settings.setValue(key_url_list, ui->lineEditUrlList->text());
+
     delete ui;
 }
 
@@ -60,12 +82,12 @@ void MainWindow::download(const QString &url)
 }
 
 void MainWindow::download_finished(std::shared_ptr<ocv::net::download_supervisor::download_task> task)
-{
-    //qDebug()<<task->get_url()<<" download done, error = "<<task->get_error_string();
+{    
     if(task->get_network_error_code() != QNetworkReply::NoError){
-        QTextStream stream(file_);
+        QTextStream stream(file_);        
         stream<<task->get_url().toString()<<","<<task->get_error_string()<<"\n";
-        qDebug()<<task->get_url()<<" download done, error = "<<task->get_error_string();
+        qDebug()<<task->get_url()<<" download done, error = "<<task->get_error_string();        
+        QFile::remove(task->get_save_as());
     }
     ui->progressBar->setValue(ui->progressBar->value() + 1);
     next_download();
@@ -83,7 +105,9 @@ void MainWindow::next_download()
     if(!urls_.empty()){
         auto const url = *urls_.begin();
         urls_.erase(url);
+        ui->labelProgress->setText(QString("Progress left : %1").arg(urls_.size()));
         download(url);
+        //check_image_existence(url);
     }
 }
 
@@ -100,7 +124,7 @@ void MainWindow::on_pushButtonDownload_clicked()
 
     urls_ = std::set<QString>();
     if(QFile file(ui->lineEditUrlList->text()); file.open(QIODevice::ReadOnly)){
-        for(QTextStream in(&file); !in.atEnd();){
+        for(QTextStream in(&file); !in.atEnd();){            
             urls_.insert(in.readLine());
         }
         qDebug()<<urls_.size();
@@ -109,5 +133,21 @@ void MainWindow::on_pushButtonDownload_clicked()
 
     ui->progressBar->setRange(0, static_cast<int>(urls_.size()));
     next_download();
+}
+
+void MainWindow::check_image_existence(const QString &url)
+{
+    auto const split_url = url.split("/");
+    auto const fname = "test_data/" + split_url[split_url.size() - 1];
+    if(QFile::exists(fname)){
+        if(QImageReader(fname).canRead()){
+            next_download();
+        }else{
+            QFile::remove(fname);
+            download(url);
+        }
+    }else{
+        download(url);
+    }
 }
 
