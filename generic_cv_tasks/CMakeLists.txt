@@ -62,6 +62,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_utils.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp
