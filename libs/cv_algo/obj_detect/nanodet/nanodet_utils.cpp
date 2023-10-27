@@ -3,7 +3,7 @@
 #include "nanodet.hpp"
 
 #include "../common_obj_det_type.hpp"
-#include "../../utils/image_process.hpp"
+#include "../obj_det_utils.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -201,7 +201,7 @@ std::pair<int, std::string> predict_bboxes(cv::Mat const &input,
     auto constexpr input_size = 320;
     cv::Mat resize_img;
     object_rect effect_roi;
-    ocv::utils::resize_uniform(input, resize_img, effect_roi, input_size, input_size);
+    resize_uniform(input, resize_img, effect_roi, input_size, input_size);
 
     if(resize_img.channels() == 4){
         cv::cvtColor(resize_img, resize_img, cv::COLOR_RGBA2RGB);

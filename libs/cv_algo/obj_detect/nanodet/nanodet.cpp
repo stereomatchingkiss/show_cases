@@ -8,6 +8,7 @@
 #include "nanodet_raw_ncnn.hpp"
 
 #include "../common_obj_det_type.hpp"
+#include "../obj_det_utils.hpp"
 #include "../../utils/image_process.hpp"
 
 #include <opencv2/highgui.hpp>
@@ -67,7 +68,7 @@ std::vector<box_info> nanodet::predict(cv::Mat const &image,
                                        bool hflip)
 {
     object_rect effect_roi;
-    utils::resize_uniform(image, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
+    resize_uniform(image, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
 
     auto boxes_info = predict_with_resize_image(resized_img_, score_threshold, nms_threshold, rotation_angle, hflip);
 

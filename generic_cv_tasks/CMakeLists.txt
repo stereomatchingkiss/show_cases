@@ -58,6 +58,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
