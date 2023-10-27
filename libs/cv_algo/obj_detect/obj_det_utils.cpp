@@ -4,7 +4,7 @@
 
 #include <opencv2/imgproc.hpp>
 
-namespace ocv{
+namespace ocv::det{
 
 int resize_uniform(const cv::Mat &src, cv::Mat &dst, object_rect &effect_area, int dst_w, int dst_h)
 {

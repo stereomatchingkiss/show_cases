@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace ocv{
+namespace ocv::det{
 
 struct object_rect;
 

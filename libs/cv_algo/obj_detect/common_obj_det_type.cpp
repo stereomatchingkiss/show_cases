@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <format>
 
-namespace ocv{
+namespace ocv::det{
 
 box_info::box_info()
 {

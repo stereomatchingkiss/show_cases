@@ -13,12 +13,12 @@ struct Object;
 
 }
 
-byte_track::Object box_info_to_byte_track_obj(box_info const &info);
+byte_track::Object box_info_to_byte_track_obj(det::box_info const &info);
 
-std::vector<byte_track::Object> box_info_to_byte_track_obj(std::vector<box_info> const &inputs);
+std::vector<byte_track::Object> box_info_to_byte_track_obj(std::vector<det::box_info> const &inputs);
 
-box_info byte_track_obj_to_box_info(std::shared_ptr<byte_track::STrack> const &ptr, int label);
+det::box_info byte_track_obj_to_box_info(std::shared_ptr<byte_track::STrack> const &ptr, int label);
 
-std::vector<box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<byte_track::STrack>> const &obj, int label);
+std::vector<det::box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<byte_track::STrack>> const &obj, int label);
 
 }

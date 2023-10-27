@@ -30,7 +30,7 @@ struct nanodet_worker::impl
     }
 
     std::vector<std::string> names_;
-    ocv::nanodet net_;
+    ocv::det::nanodet net_;
     ocv::byte_track::BYTETracker tracker_;
 
     int input_size_;
@@ -73,7 +73,7 @@ void nanodet_worker::process_results(std::any frame)
 
     det_results = ocv::byte_track_obj_to_box_info(track_ptr_vec, 2);
     for(auto const &val : det_results){
-        ocv::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
+        ocv::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
     }
 
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);

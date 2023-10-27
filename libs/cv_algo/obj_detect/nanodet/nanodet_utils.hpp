@@ -3,7 +3,7 @@
 
 #include "../common_obj_det_type.hpp"
 
-namespace ocv{
+namespace ocv::det{
 
 class nanodet;
 

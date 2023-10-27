@@ -11,7 +11,7 @@
 #include <format>
 #include <iostream>
 
-namespace ocv{
+namespace ocv::det{
 
 namespace{
 

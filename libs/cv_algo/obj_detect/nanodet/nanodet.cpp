@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace ocv{
+namespace ocv::det{
 
 nanodet::nanodet(const char* param, const char* bin, int num_class, bool use_gpu, bool swap_rgb, int input_size, int max_thread) :
     net_(std::make_unique<nanodet_raw_ncnn>(param, bin, num_class, use_gpu, input_size, max_thread)),

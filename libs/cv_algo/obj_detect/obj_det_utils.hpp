@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace ocv{
+namespace ocv::det{
 
 struct box_info;
 struct object_rect;

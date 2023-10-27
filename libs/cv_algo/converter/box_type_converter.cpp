@@ -5,6 +5,8 @@
 
 namespace ocv{
 
+using namespace det;
+
 byte_track::Object box_info_to_byte_track_obj(const box_info &info)
 {
     byte_track::Rect<float> rect(info.x1_, info.y1_, info.x2_ - info.x1_, info.y2_ - info.y1_);
