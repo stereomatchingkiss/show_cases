@@ -6,7 +6,7 @@
 #ifndef NANODET_HPP_HWEO43534
 #define NANODET_HPP_HWEO43534
 
-#include "../../utils/common_obj_det_type.hpp"
+#include "../common_obj_det_type.hpp"
 
 #include <opencv2/core.hpp>
 
@@ -43,21 +43,21 @@ public:
     bool get_load_param_success() const noexcept;
     int get_load_model_state() const noexcept;
     //To fix : too many params
-    std::vector<utils::box_info> predict_with_resize_image(cv::Mat image,
-                                                           float score_threshold,
-                                                           float nms_threshold,
-                                                           int rotation_angle = 0,
-                                                           bool hflip = false);
-    std::vector<utils::box_info> predict(cv::Mat const &image,
-                                         float score_threshold,
-                                         float nms_threshold,
-                                         int rotation_angle = 0,
-                                         bool hflip = false);
+    std::vector<box_info> predict_with_resize_image(cv::Mat image,
+                                                    float score_threshold,
+                                                    float nms_threshold,
+                                                    int rotation_angle = 0,
+                                                    bool hflip = false);
+    std::vector<box_info> predict(cv::Mat const &image,
+                                  float score_threshold,
+                                  float nms_threshold,
+                                  int rotation_angle = 0,
+                                  bool hflip = false);
 
 
     void set_swap_rgb(bool val);
 
-    static void scale_bbox(int src_w, int src_h, std::vector<utils::box_info>& bboxes, utils::object_rect const &effect_roi);
+    static void scale_bbox(int src_w, int src_h, std::vector<box_info>& bboxes, object_rect const &effect_roi);
 
 private:
     std::unique_ptr<nanodet_raw_ncnn> net_;
@@ -70,20 +70,20 @@ private:
     };
 
     std::vector<HeadInfo> const heads_info{
-        // cls_pred|dis_pred|stride
-        {"cls_pred_stride_8", "dis_pred_stride_8", 8},
-        {"cls_pred_stride_16", "dis_pred_stride_16", 16},
-        {"cls_pred_stride_32", "dis_pred_stride_32", 32},
-    };
+                                           // cls_pred|dis_pred|stride
+                                           {"cls_pred_stride_8", "dis_pred_stride_8", 8},
+                                           {"cls_pred_stride_16", "dis_pred_stride_16", 16},
+                                           {"cls_pred_stride_32", "dis_pred_stride_32", 32},
+                                           };
 
     void adjust_img_orientation(cv::Mat const &input, int rotate_angle, bool horizontal_flip);
     ncnn::Extractor create_extractor() const;
     void decode_infer(ncnn::Mat& feats,
-                      std::vector<utils::center_prior>& center_priors,
+                      std::vector<center_prior>& center_priors,
                       float threshold,
-                      std::vector<std::vector<utils::box_info>>& results);
-    utils::box_info dis_pred_to_box(const float*& dfl_det, int label, float score, int x, int y, int stride) const;
-    static void nms(std::vector<utils::box_info>& input_boxes, float nms_threshold);
+                      std::vector<std::vector<box_info>>& results);
+    box_info dis_pred_to_box(const float*& dfl_det, int label, float score, int x, int y, int stride) const;
+    static void nms(std::vector<box_info>& input_boxes, float nms_threshold);
     void preprocess(cv::Mat const &image, ncnn::Mat& in) const;
 
     cv::Mat img_rotate_;

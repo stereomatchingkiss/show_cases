@@ -56,6 +56,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
@@ -77,8 +79,6 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Rect.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/utils/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp

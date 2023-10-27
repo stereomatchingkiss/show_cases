@@ -1,6 +1,6 @@
 #include "nanodet_raw_ncnn.hpp"
 
-#include "../../utils/common_obj_det_type.hpp"
+#include "../common_obj_det_type.hpp"
 
 #include <algorithm>
 #include <concepts>
@@ -12,7 +12,7 @@ namespace ocv{
 namespace{
 
 inline
-float fast_exp(float x)
+    float fast_exp(float x)
 {
     union {
         uint32_t i;
@@ -42,7 +42,7 @@ int activation_function_softmax(const std::floating_point auto* src, std::floati
 void generate_grid_center_priors(int input_height,
                                  int input_width,
                                  std::vector<int> const &strides,
-                                 std::vector<utils::center_prior>& center_priors)
+                                 std::vector<center_prior>& center_priors)
 {
     for(int i = 0; i < static_cast<int>(strides.size()); i++){
         int const stride = strides[i];
@@ -50,7 +50,7 @@ void generate_grid_center_priors(int input_height,
         int const feat_h = static_cast<int>(std::ceil(static_cast<float>(input_height) / stride));
         for(int y = 0; y < feat_h; ++y){
             for(int x = 0; x < feat_w; ++x){
-                utils::center_prior ct;
+                center_prior ct;
                 ct.x = x;
                 ct.y = y;
                 ct.stride = stride;
@@ -112,11 +112,11 @@ int nanodet_raw_ncnn::get_load_model_state() const noexcept
     return -1;
 }
 
-std::vector<utils::box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char *buffer,
-                                                                         int width,
-                                                                         int height,
-                                                                         float score_threshold,
-                                                                         float nms_threshold)
+std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char *buffer,
+                                                                  int width,
+                                                                  int height,
+                                                                  float score_threshold,
+                                                                  float nms_threshold)
 {
     ncnn::Mat input;
     preprocess(buffer, width, height, input);
@@ -124,19 +124,19 @@ std::vector<utils::box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigne
     auto ex = net_->create_extractor();
     ex.input("data", input);
 
-    std::vector<std::vector<utils::box_info>> results;
+    std::vector<std::vector<box_info>> results;
     results.resize(this->num_class_);
 
     ncnn::Mat out;
     ex.extract("output", out);
 
     // generate center priors in format of (x, y, stride)
-    std::vector<utils::center_prior> center_priors;
+    std::vector<center_prior> center_priors;
     generate_grid_center_priors(input_size_[0], input_size_[1], strides_, center_priors);
 
     decode_infer(out, center_priors, score_threshold, results);
 
-    std::vector<utils::box_info> dets;
+    std::vector<box_info> dets;
     for(size_t i = 0; i < results.size(); i++){
         nms(results[i], nms_threshold);
         for(auto box : results[i]){
@@ -147,12 +147,12 @@ std::vector<utils::box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigne
     return dets;
 }
 
-void nanodet_raw_ncnn::scale_bbox(int src_w, int src_h, std::vector<utils::box_info> &bboxes, const utils::object_rect &effect_roi)
+void nanodet_raw_ncnn::scale_bbox(int src_w, int src_h, std::vector<box_info> &bboxes, const object_rect &effect_roi)
 {
     float const width_ratio = static_cast<float>(src_w) / static_cast<float>(effect_roi.width_);
     float const height_ratio = static_cast<float>(src_h) / static_cast<float>(effect_roi.height_);
     for(size_t i = 0; i < bboxes.size(); ++i){
-        utils::box_info &bbox = bboxes[i];
+        box_info &bbox = bboxes[i];
         bbox.x1_ = (bbox.x1_ - effect_roi.x_) * width_ratio;
         bbox.y1_ = (bbox.y1_ - effect_roi.y_) * height_ratio;
         bbox.x2_ = (bbox.x2_ - effect_roi.x_) * width_ratio;
@@ -166,9 +166,9 @@ ncnn::Extractor nanodet_raw_ncnn::create_extractor() const
 }
 
 void nanodet_raw_ncnn::decode_infer(ncnn::Mat &feats,
-                                    std::vector<utils::center_prior> &center_priors,
+                                    std::vector<center_prior> &center_priors,
                                     float threshold,
-                                    std::vector<std::vector<utils::box_info>> &results)
+                                    std::vector<std::vector<box_info>> &results)
 {
     size_t const num_points = center_priors.size();
     for(int idx = 0; idx < num_points; idx++){
@@ -192,7 +192,7 @@ void nanodet_raw_ncnn::decode_infer(ncnn::Mat &feats,
     }
 }
 
-utils::box_info nanodet_raw_ncnn::dis_pred_to_box(const float *&dfl_det, int label, float score, int x, int y, int stride) const
+box_info nanodet_raw_ncnn::dis_pred_to_box(const float *&dfl_det, int label, float score, int x, int y, int stride) const
 {
     float const ct_x = static_cast<float>(x * stride);
     float const ct_y = static_cast<float>(y * stride);
@@ -213,16 +213,16 @@ utils::box_info nanodet_raw_ncnn::dis_pred_to_box(const float *&dfl_det, int lab
     float const xmax = std::min(ct_x + dis_pred[2], static_cast<float>(input_size_[0]));
     float const ymax = std::min(ct_y + dis_pred[3], static_cast<float>(input_size_[1]));
 
-    return utils::box_info {xmin, ymin, xmax, ymax, score, label};
+    return box_info {xmin, ymin, xmax, ymax, score, label};
 }
 
-void nanodet_raw_ncnn::nms(std::vector<utils::box_info> &input_boxes, float nms_threshold)
+void nanodet_raw_ncnn::nms(std::vector<box_info> &input_boxes, float nms_threshold)
 {
-    std::sort(input_boxes.begin(), input_boxes.end(), [](utils::box_info a, utils::box_info b) { return a.score_ > b.score_; });
+    std::sort(input_boxes.begin(), input_boxes.end(), [](box_info a, box_info b) { return a.score_ > b.score_; });
     std::vector<float> vArea(input_boxes.size());
     for(int i = 0; i < int(input_boxes.size()); ++i){
         vArea[i] = (input_boxes.at(i).x2_ - input_boxes.at(i).x1_ + 1)
-                * (input_boxes.at(i).y2_ - input_boxes.at(i).y1_ + 1);
+                   * (input_boxes.at(i).y2_ - input_boxes.at(i).y1_ + 1);
     }
     for(int i = 0; i < int(input_boxes.size()); ++i){
         for(int j = i + 1; j < int(input_boxes.size());){

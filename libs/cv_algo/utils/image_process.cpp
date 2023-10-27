@@ -1,6 +1,6 @@
 #include "image_process.hpp"
 
-#include "common_obj_det_type.hpp"
+#include "../obj_detect/common_obj_det_type.hpp"
 
 #include <opencv2/imgproc.hpp>
 

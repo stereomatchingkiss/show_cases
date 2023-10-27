@@ -7,7 +7,7 @@
 
 #include "nanodet_raw_ncnn.hpp"
 
-#include "../../utils/common_obj_det_type.hpp"
+#include "../common_obj_det_type.hpp"
 #include "../../utils/image_process.hpp"
 
 #include <opencv2/highgui.hpp>
@@ -44,11 +44,11 @@ int nanodet::get_load_model_state() const noexcept
     return net_->get_load_model_state();
 }
 
-std::vector<utils::box_info> nanodet::predict_with_resize_image(cv::Mat image,
-                                                                float score_threshold,
-                                                                float nms_threshold,
-                                                                int rotation_angle,
-                                                                bool hflip)
+std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat image,
+                                                         float score_threshold,
+                                                         float nms_threshold,
+                                                         int rotation_angle,
+                                                         bool hflip)
 {
     if(swap_rgb_){
         cv::cvtColor(image, input_img_, cv::COLOR_RGB2BGR);
@@ -60,13 +60,13 @@ std::vector<utils::box_info> nanodet::predict_with_resize_image(cv::Mat image,
     return net_->predict_with_resize_image(input_img_.data, input_img_.cols, input_img_.rows, score_threshold, nms_threshold);
 }
 
-std::vector<utils::box_info> nanodet::predict(cv::Mat const &image,
-                                              float score_threshold,
-                                              float nms_threshold,
-                                              int rotation_angle,
-                                              bool hflip)
+std::vector<box_info> nanodet::predict(cv::Mat const &image,
+                                       float score_threshold,
+                                       float nms_threshold,
+                                       int rotation_angle,
+                                       bool hflip)
 {
-    utils::object_rect effect_roi;
+    object_rect effect_roi;
     utils::resize_uniform(image, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
 
     auto boxes_info = predict_with_resize_image(resized_img_, score_threshold, nms_threshold, rotation_angle, hflip);
@@ -94,7 +94,7 @@ void nanodet::set_swap_rgb(bool val)
     swap_rgb_ = val;
 }
 
-void nanodet::scale_bbox(int src_w, int src_h, std::vector<utils::box_info> &bboxes, const utils::object_rect &effect_roi)
+void nanodet::scale_bbox(int src_w, int src_h, std::vector<box_info> &bboxes, object_rect const &effect_roi)
 {
     nanodet_raw_ncnn::scale_bbox(src_w, src_h, bboxes, effect_roi);
 }

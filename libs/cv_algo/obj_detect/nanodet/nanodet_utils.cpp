@@ -2,7 +2,8 @@
 
 #include "nanodet.hpp"
 
-#include "../../utils/common_obj_det_type.hpp"
+#include "../common_obj_det_type.hpp"
+#include "../../utils/image_process.hpp"
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -102,11 +103,11 @@ const int color_list[80][3] =
 }
 
 void draw_bboxes(cv::Mat &image,
-                 const std::vector<utils::box_info> &bboxes,
+                 const std::vector<box_info> &bboxes,
                  const std::vector<std::string> &class_names)
 {
     for(size_t i = 0; i < bboxes.size(); i++){
-        const utils::box_info& bbox = bboxes[i];
+        const box_info& bbox = bboxes[i];
         std::string text;
         if(bbox.track_id_ == -1){
             text = std::format("{} {:.1f}", class_names[bbox.label_], bbox.score_ * 100);
@@ -117,9 +118,9 @@ void draw_bboxes(cv::Mat &image,
     }
 }
 
-void draw_bboxes_custom(cv::Mat &image, const utils::box_info &bboxes, const std::string &message)
+void draw_bboxes_custom(cv::Mat &image, const box_info &bboxes, const std::string &message)
 {
-    const utils::box_info& bbox = bboxes;
+    const box_info& bbox = bboxes;
     cv::Scalar const color = cv::Scalar(color_list[bbox.label_][0], color_list[bbox.label_][1], color_list[bbox.label_][2]);
     cv::rectangle(image,
                   cv::Point(static_cast<int>(bbox.x1_), static_cast<int>(bbox.y1_)),
@@ -143,7 +144,7 @@ void draw_bboxes_custom(cv::Mat &image, const utils::box_info &bboxes, const std
                 cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 4);
 }
 
-void draw_bboxes_custom(cv::Mat &image, const std::vector<utils::box_info> &bboxes, const std::vector<std::string> &message)
+void draw_bboxes_custom(cv::Mat &image, const std::vector<box_info> &bboxes, const std::vector<std::string> &message)
 {
     for (size_t i = 0; i < bboxes.size(); i++){
         draw_bboxes_custom(image, bboxes[i], message[i]);
@@ -153,9 +154,9 @@ void draw_bboxes_custom(cv::Mat &image, const std::vector<utils::box_info> &bbox
 void draw_output_strings_results(cv::Mat &image, const std::vector<std::string> &outputs, const std::vector<std::string> &class_names)
 {
     if(outputs.size() >= 6){
-        std::vector<utils::box_info> results;
+        std::vector<box_info> results;
         for(size_t i = 0; i < outputs.size(); i += 6){
-            utils::box_info info;
+            box_info info;
             info.x1_ = static_cast<float>(std::stoi(outputs[i]));
             info.y1_ = static_cast<float>(std::stoi(outputs[i + 1]));
             info.x2_ = static_cast<float>(std::stoi(outputs[i + 2]));
@@ -199,7 +200,7 @@ std::pair<int, std::string> predict_bboxes(cv::Mat const &input,
 {
     auto constexpr input_size = 320;
     cv::Mat resize_img;
-    utils::object_rect effect_roi;
+    object_rect effect_roi;
     ocv::utils::resize_uniform(input, resize_img, effect_roi, input_size, input_size);
 
     if(resize_img.channels() == 4){
