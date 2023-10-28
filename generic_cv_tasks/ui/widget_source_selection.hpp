@@ -11,6 +11,8 @@ namespace ocv{
 
 enum class stream_source_type;
 
+struct frame_capture_params;
+
 }
 
 class widget_source_selection : public QWidget
@@ -21,12 +23,14 @@ public:
     explicit widget_source_selection(QWidget *parent = nullptr);
     ~widget_source_selection();
 
+    ocv::frame_capture_params get_frame_capture_params() const;
     ocv::stream_source_type get_source_type() const noexcept;
 
-    QString get_rtsp_source() const;
-    QString get_video_source() const;
-    QString get_webcam() const;
-    QString get_url() const;
+    int get_max_fps() const noexcept;
+    QString get_rtsp_source() const noexcept;
+    QString get_video_source() const noexcept;
+    QString get_webcam() const noexcept;
+    QString get_url() const noexcept;
 
 private slots:
     void on_pushButtonOpenVideoFolder_clicked();
