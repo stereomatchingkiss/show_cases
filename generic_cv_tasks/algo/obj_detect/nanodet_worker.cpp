@@ -4,6 +4,7 @@
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet_utils.hpp>
 #include <cv_algo/tracker/byte_track/BYTETracker.hpp>
+#include <cv_algo/utils/draw_rect.hpp>
 #include <utils/file_reader.hpp>
 
 #include <opencv2/core.hpp>
@@ -17,15 +18,17 @@
 
 struct nanodet_worker::impl
 {
-    impl(float score_threshold,
+    impl(QRectF const &rband,
+         float score_threshold,
          float nms_threshold,
          int input_size)
         : names_{ocv::read_file_per_lines("assets/obj_detect/coco.names")},
-          net_(std::format("assets/obj_detect/nanodet-plus-m_{}.param", input_size).c_str(),
-               std::format("assets/obj_detect/nanodet-plus-m_{}.bin", input_size).c_str(), 80, false, false, input_size),
-          input_size_{input_size},
-          nms_threshold_{nms_threshold},
-          score_threshold_{score_threshold}
+        net_(std::format("assets/obj_detect/nanodet-plus-m_{}.param", input_size).c_str(),
+             std::format("assets/obj_detect/nanodet-plus-m_{}.bin", input_size).c_str(), 80, false, false, input_size),
+        input_size_{input_size},
+        nms_threshold_{nms_threshold},
+        rband_{rband},
+        score_threshold_{score_threshold}
     {
     }
 
@@ -35,15 +38,17 @@ struct nanodet_worker::impl
 
     int input_size_;
     float nms_threshold_;
+    QRectF rband_;
     float score_threshold_;
 };
 
-nanodet_worker::nanodet_worker(float score_threshold,
+nanodet_worker::nanodet_worker(QRectF const &rband,
+                               float score_threshold,
                                float nms_threshold,
                                int input_size,
                                QObject *parent) :
     ocv::frame_process_base_worker(parent),
-    impl_{std::make_unique<impl>(score_threshold, nms_threshold, input_size)}
+    impl_{std::make_unique<impl>(rband, score_threshold, nms_threshold, input_size)}
 {
 
 }
@@ -64,9 +69,9 @@ void nanodet_worker::process_results(std::any frame)
 
     auto det_results = impl_->net_.predict(mat, impl_->score_threshold_, impl_->nms_threshold_);
     const auto [first, last] = std::ranges::remove_if(det_results, [](auto const &val)
-    {
-        return val.label_ != 2;
-    });
+                                                      {
+                                                          return val.label_ != 2;
+                                                      });
     det_results.erase(first, last);
     auto track_obj = ocv::box_info_to_byte_track_obj(det_results);
     auto const track_ptr_vec = impl_->tracker_.update(track_obj);
@@ -74,6 +79,10 @@ void nanodet_worker::process_results(std::any frame)
     det_results = ocv::byte_track_obj_to_box_info(track_ptr_vec, 2);
     for(auto const &val : det_results){
         ocv::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
+    }
+
+    if(!impl_->rband_.isEmpty()){
+        ocv::utils::draw_empty_rect(mat, impl_->rband_);
     }
 
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);

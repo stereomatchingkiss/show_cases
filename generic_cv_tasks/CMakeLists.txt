@@ -57,6 +57,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp
@@ -82,10 +84,14 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Rect.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp
         ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
+        ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
+        ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.cpp
@@ -100,6 +106,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
+        ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
+        ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp

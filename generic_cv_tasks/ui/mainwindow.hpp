@@ -18,6 +18,12 @@ class single_frame_with_multi_worker;
 
 }
 
+namespace ocv::ui{
+
+class label_select_roi;
+
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -34,6 +40,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    ocv::ui::label_select_roi *label_select_roi_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
