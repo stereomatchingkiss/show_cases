@@ -44,9 +44,10 @@ set(PROJECT_SOURCES
         algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_worker.hpp
         algo/obj_detect/nanodet_worker.cpp
+        global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp
         ui/mainwindow.hpp
-        ui/mainwindow.ui
+        ui/mainwindow.ui        
         ui/widget_source_selection.hpp
         ui/widget_source_selection.cpp
         ui/widget_source_selection.ui

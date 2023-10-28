@@ -1,10 +1,15 @@
 #include "ui/mainwindow.hpp"
 
+#include "global/global_keywords.hpp"
+
 #include <QApplication>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QDir().mkdir(global_keywords().generic_cv_tasks_assets());
 
     QCoreApplication::setOrganizationName("ThamSoft");
     QCoreApplication::setApplicationName("GenericCVTasks");
