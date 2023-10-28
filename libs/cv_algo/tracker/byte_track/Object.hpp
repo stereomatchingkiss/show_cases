@@ -2,7 +2,7 @@
 
 #include "Rect.hpp"
 
-namespace ocv::byte_track
+namespace ocv::tracker
 {
 
 struct Object

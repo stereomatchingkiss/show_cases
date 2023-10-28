@@ -4,7 +4,7 @@
 
 #include "Rect.hpp"
 
-namespace ocv::byte_track
+namespace ocv::tracker
 {
 class KalmanFilter
 {

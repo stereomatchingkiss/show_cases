@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ocv::byte_track{
+namespace ocv::tracker{
 
 STrack::STrack(const Rect<float>& rect, float score) :
     kalman_filter_(),
@@ -23,12 +23,12 @@ STrack::~STrack()
 {
 }
 
-Rect<float> const& byte_track::STrack::getRect() const
+Rect<float> const& tracker::STrack::getRect() const
 {
     return rect_;
 }
 
-STrackState byte_track::STrack::getSTrackState() const
+STrackState tracker::STrack::getSTrackState() const
 {
     return state_;
 }

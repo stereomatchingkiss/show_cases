@@ -7,17 +7,17 @@ namespace ocv{
 
 using namespace det;
 
-byte_track::Object box_info_to_byte_track_obj(const box_info &info)
+tracker::Object box_info_to_byte_track_obj(const box_info &info)
 {
-    byte_track::Rect<float> rect(info.x1_, info.y1_, info.x2_ - info.x1_, info.y2_ - info.y1_);
-    byte_track::Object obj(rect, info.label_, info.score_);
+    tracker::Rect<float> rect(info.x1_, info.y1_, info.x2_ - info.x1_, info.y2_ - info.y1_);
+    tracker::Object obj(rect, info.label_, info.score_);
 
     return obj;
 }
 
-std::vector<byte_track::Object> box_info_to_byte_track_obj(const std::vector<box_info> &inputs)
+std::vector<tracker::Object> box_info_to_byte_track_obj(const std::vector<box_info> &inputs)
 {
-    std::vector<byte_track::Object> objs;
+    std::vector<tracker::Object> objs;
     for(auto const &val : inputs){
         objs.emplace_back(box_info_to_byte_track_obj(val));
     }
@@ -25,7 +25,7 @@ std::vector<byte_track::Object> box_info_to_byte_track_obj(const std::vector<box
     return objs;
 }
 
-box_info byte_track_obj_to_box_info(std::shared_ptr<byte_track::STrack> const &ptr, int label)
+box_info byte_track_obj_to_box_info(std::shared_ptr<tracker::STrack> const &ptr, int label)
 {
     auto const &rect = ptr->getRect();
     box_info binfo(rect.x(), rect.y(), rect.br_x(), rect.br_y(), ptr->getScore(), label);
@@ -34,7 +34,7 @@ box_info byte_track_obj_to_box_info(std::shared_ptr<byte_track::STrack> const &p
     return binfo;
 }
 
-std::vector<box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<byte_track::STrack>> const &obj, int label)
+std::vector<box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<tracker::STrack>> const &obj, int label)
 {
     std::vector<box_info> binfo;
     for(auto const &val : obj){

@@ -289,7 +289,7 @@ int _ca_dense(size_t n, double *cost[], size_t n_free_rows, int *free_rows, int 
 
 }
 
-namespace ocv::byte_track{
+namespace ocv::tracker{
 
 /** Solve dense sparse LAP. */
 int lapjv_internal(size_t n, double *cost[], int *x, int *y)

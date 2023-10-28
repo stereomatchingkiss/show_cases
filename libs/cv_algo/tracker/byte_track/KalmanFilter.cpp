@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ocv::byte_track{
+namespace ocv::tracker{
 
 KalmanFilter::KalmanFilter(float std_weight_position, float std_weight_velocity) :
     std_weight_position_(std_weight_position),

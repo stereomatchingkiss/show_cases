@@ -34,7 +34,7 @@ struct nanodet_worker::impl
 
     std::vector<std::string> names_;
     ocv::det::nanodet net_;
-    ocv::byte_track::BYTETracker tracker_;
+    ocv::tracker::BYTETracker tracker_;
 
     int input_size_;
     float nms_threshold_;

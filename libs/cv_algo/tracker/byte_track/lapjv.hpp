@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ocv::byte_track
+namespace ocv::tracker
 {
 
 int lapjv_internal(size_t n, double *cost[], int *x, int *y);

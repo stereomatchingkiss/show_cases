@@ -1,6 +1,6 @@
 #include "Object.hpp"
 
-namespace ocv::byte_track{
+namespace ocv::tracker{
 
 Object::Object(Rect<float> const& _rect,
                int _label,
