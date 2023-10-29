@@ -25,6 +25,10 @@ struct box_info
     box_info();
     box_info(float x1, float y1, float x2, float y2, float score, int label);
 
+    cv::Point2f center() const noexcept;
+    cv::Point2f tl() const noexcept;
+    cv::Point2f br() const noexcept;
+
     std::string to_string(int src_width, int src_height) const;
 #ifdef USE_OPENCV
     cv::Rect to_cv_rect() const noexcept;

@@ -17,9 +17,24 @@ box_info::box_info()
 }
 
 box_info::box_info(float x1, float y1, float x2, float y2, float score, int label) :
-    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, score_{score}, label_{label}
+    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, score_{score}, label_{label}, track_id_{-1}
 {
 
+}
+
+cv::Point2f box_info::center() const noexcept
+{
+    return {(x2_ - x1_) / 2 + x1_, (y2_ - y1_) / 2 + y1_};
+}
+
+cv::Point2f box_info::tl() const noexcept
+{
+    return {x1_, y1_};
+}
+
+cv::Point2f box_info::br() const noexcept
+{
+    return {x2_, y2_};
 }
 
 std::string box_info::to_string(int src_width, int src_height) const
