@@ -153,8 +153,8 @@ void nanodet_raw_ncnn::scale_bbox(int src_w, int src_h, std::vector<box_info> &b
     float const height_ratio = static_cast<float>(src_h) / static_cast<float>(effect_roi.height_);
     for(size_t i = 0; i < bboxes.size(); ++i){
         box_info &bbox = bboxes[i];
-        bbox.x1_ = (bbox.x1_ - effect_roi.x_) * width_ratio;
-        bbox.y1_ = (bbox.y1_ - effect_roi.y_) * height_ratio;
+        bbox.rect_.x = (bbox.rect_.x - effect_roi.x_) * width_ratio;
+        bbox.rect_.y = (bbox.rect_.y - effect_roi.y_) * height_ratio;
         bbox.x2_ = (bbox.x2_ - effect_roi.x_) * width_ratio;
         bbox.y2_ = (bbox.y2_ - effect_roi.y_) * height_ratio;
     }
@@ -221,13 +221,13 @@ void nanodet_raw_ncnn::nms(std::vector<box_info> &input_boxes, float nms_thresho
     std::sort(input_boxes.begin(), input_boxes.end(), [](box_info a, box_info b) { return a.score_ > b.score_; });
     std::vector<float> vArea(input_boxes.size());
     for(int i = 0; i < int(input_boxes.size()); ++i){
-        vArea[i] = (input_boxes.at(i).x2_ - input_boxes.at(i).x1_ + 1)
-                   * (input_boxes.at(i).y2_ - input_boxes.at(i).y1_ + 1);
+        vArea[i] = (input_boxes.at(i).x2_ - input_boxes.at(i).rect_.x + 1)
+                   * (input_boxes.at(i).y2_ - input_boxes.at(i).rect_.y + 1);
     }
     for(int i = 0; i < int(input_boxes.size()); ++i){
         for(int j = i + 1; j < int(input_boxes.size());){
-            float const xx1 = (std::max)(input_boxes[i].x1_, input_boxes[j].x1_);
-            float const yy1 = (std::max)(input_boxes[i].y1_, input_boxes[j].y1_);
+            float const xx1 = (std::max)(input_boxes[i].rect_.x, input_boxes[j].rect_.x);
+            float const yy1 = (std::max)(input_boxes[i].rect_.y, input_boxes[j].rect_.y);
             float const xx2 = (std::min)(input_boxes[i].x2_, input_boxes[j].x2_);
             float const yy2 = (std::min)(input_boxes[i].y2_, input_boxes[j].y2_);
             float const w = (std::max)(float(0), xx2 - xx1 + 1);

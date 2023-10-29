@@ -15,7 +15,8 @@ box_info::box_info()
 }
 
 box_info::box_info(float x1, float y1, float x2, float y2, float score, int label) :
-    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, rect_{x1, y1, x2 - x1, y2 - y1},
+    //x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, rect_{x1, y1, x2 - x1, y2 - y1},
+    x2_{x2}, y2_{y2}, rect_{x1, y1, x2 - x1, y2 - y1},
     label_{label}, score_{score}, track_id_{-1}
 {
 
@@ -23,12 +24,12 @@ box_info::box_info(float x1, float y1, float x2, float y2, float score, int labe
 
 cv::Point2f box_info::center() const noexcept
 {
-    return {(x2_ - x1_) / 2 + x1_, (y2_ - y1_) / 2 + y1_};
+    return {(x2_ - rect_.x) / 2 + rect_.x, (y2_ - rect_.y) / 2 + rect_.y};
 }
 
 cv::Point2f box_info::tl() const noexcept
 {
-    return {x1_, y1_};
+    return {rect_.x, rect_.y};
 }
 
 cv::Point2f box_info::br() const noexcept
@@ -39,8 +40,8 @@ cv::Point2f box_info::br() const noexcept
 std::string box_info::to_string(int src_width, int src_height) const
 {
     return std::format("{},{},{},{},{:.3f},{},",
-                       std::clamp(static_cast<int>(x1_), 0, src_width - 1),
-                       std::clamp(static_cast<int>(y1_), 0, src_height - 1),
+                       std::clamp(static_cast<int>(rect_.x), 0, src_width - 1),
+                       std::clamp(static_cast<int>(rect_.y), 0, src_height - 1),
                        std::clamp(static_cast<int>(x2_), 0, src_width - 1),
                        std::clamp(static_cast<int>(y2_), 0, src_height - 1),
                        score_,
@@ -49,13 +50,13 @@ std::string box_info::to_string(int src_width, int src_height) const
 
 cv::Rect box_info::to_cv_rect() const noexcept
 {
-    return cv::Rect(static_cast<int>(x1_), static_cast<int>(y1_), static_cast<int>(x2_ - x1_), static_cast<int>(y2_ - y1_));
+    return cv::Rect(static_cast<int>(rect_.x), static_cast<int>(rect_.y), static_cast<int>(x2_ - rect_.x), static_cast<int>(y2_ - rect_.y));
 }
 
 cv::Rect box_info::to_cv_rect(int src_width, int src_height) const noexcept
 {
-    auto const x1 = std::clamp(static_cast<int>(x1_), 0, src_width - 1);
-    auto const y1 = std::clamp(static_cast<int>(y1_), 0, src_height - 1);
+    auto const x1 = std::clamp(static_cast<int>(rect_.x), 0, src_width - 1);
+    auto const y1 = std::clamp(static_cast<int>(rect_.y), 0, src_height - 1);
     auto const x2 = std::clamp(static_cast<int>(x2_), 0, src_width - 1);
     auto const y2 = std::clamp(static_cast<int>(y2_), 0, src_height - 1);
     return cv::Rect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2 - x1), static_cast<int>(y2 - y1));
@@ -63,13 +64,16 @@ cv::Rect box_info::to_cv_rect(int src_width, int src_height) const noexcept
 
 object_rect box_info::to_obj_rect() const noexcept
 {
-    return object_rect(static_cast<int>(x1_), static_cast<int>(y1_), static_cast<int>(x2_ - x1_), static_cast<int>(y2_ - y1_));
+    return object_rect(static_cast<int>(rect_.x),
+                       static_cast<int>(rect_.y),
+                       static_cast<int>(x2_ - rect_.x),
+                       static_cast<int>(y2_ - rect_.y));
 }
 
 object_rect box_info::to_obj_rect(int src_width, int src_height) const noexcept
 {
-    auto const x1 = std::clamp(static_cast<int>(x1_), 0, src_width - 1);
-    auto const y1 = std::clamp(static_cast<int>(y1_), 0, src_height - 1);
+    auto const x1 = std::clamp(static_cast<int>(rect_.x), 0, src_width - 1);
+    auto const y1 = std::clamp(static_cast<int>(rect_.y), 0, src_height - 1);
     auto const x2 = std::clamp(static_cast<int>(x2_), 0, src_width - 1);
     auto const y2 = std::clamp(static_cast<int>(y2_), 0, src_height - 1);
     return object_rect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2 - x1), static_cast<int>(y2 - y1));
@@ -87,8 +91,8 @@ std::vector<box_info> box_info::string_to_boxes(const std::string &input)
     if(!outputs.empty() && (outputs.size() % 6) == 0){
         for(size_t i = 0; i < outputs.size(); i += 6){
             box_info info;
-            info.x1_ = static_cast<float>(std::stoi(outputs[i]));
-            info.y1_ = static_cast<float>(std::stoi(outputs[i + 1]));
+            info.rect_.x = static_cast<float>(std::stoi(outputs[i]));
+            info.rect_.y = static_cast<float>(std::stoi(outputs[i + 1]));
             info.x2_ = static_cast<float>(std::stoi(outputs[i + 2]));
             info.y2_ = static_cast<float>(std::stoi(outputs[i + 3]));
             info.score_ = std::stof(outputs[i + 4]);

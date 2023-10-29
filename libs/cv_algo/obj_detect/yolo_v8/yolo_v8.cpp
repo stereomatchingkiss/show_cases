@@ -318,8 +318,6 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
         objects[i].rect_.y = y0;
         objects[i].rect_.width = x1 - x0;
         objects[i].rect_.height = y1 - y0;
-        objects[i].x1_ = x0;
-        objects[i].y1_ = y0;
         objects[i].x2_ = x1;
         objects[i].y2_ = y1;
     }

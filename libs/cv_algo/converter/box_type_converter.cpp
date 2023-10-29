@@ -9,7 +9,7 @@ using namespace det;
 
 tracker::Object box_info_to_byte_track_obj(const box_info &info)
 {
-    tracker::Rect<float> rect(info.x1_, info.y1_, info.x2_ - info.x1_, info.y2_ - info.y1_);
+    tracker::Rect<float> rect(info.rect_.x, info.rect_.y, info.x2_ - info.rect_.x, info.y2_ - info.rect_.y);
     tracker::Object obj(rect, info.label_, info.score_);
 
     return obj;

@@ -12,8 +12,8 @@ struct object_rect;
 
 struct box_info
 {
-    float x1_;
-    float y1_;
+    //float x1_;
+    //float y1_;
     float x2_;
     float y2_;
 

@@ -118,15 +118,15 @@ void draw_bboxes_custom(cv::Mat &image, const box_info &bboxes, const std::strin
     const box_info& bbox = bboxes;
     cv::Scalar const color = cv::Scalar(color_list[bbox.label_][0], color_list[bbox.label_][1], color_list[bbox.label_][2]);
     cv::rectangle(image,
-                  cv::Point(static_cast<int>(bbox.x1_), static_cast<int>(bbox.y1_)),
+                  cv::Point(static_cast<int>(bbox.rect_.x), static_cast<int>(bbox.rect_.y)),
                   cv::Point(static_cast<int>(bbox.x2_), static_cast<int>(bbox.y2_)),
                   color, 8);
 
     int baseLine = 0;
     cv::Size label_size = cv::getTextSize(message, cv::FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseLine);
 
-    int x = static_cast<int>(bbox.x1_);
-    int y = static_cast<int>(bbox.y1_ - label_size.height - baseLine);
+    int x = static_cast<int>(bbox.rect_.x);
+    int y = static_cast<int>(bbox.rect_.y - label_size.height - baseLine);
     if (y < 0)
         y = 0;
     if (x + label_size.width > image.cols)
@@ -152,8 +152,8 @@ void draw_output_strings_results(cv::Mat &image, const std::vector<std::string> 
         std::vector<box_info> results;
         for(size_t i = 0; i < outputs.size(); i += 6){
             box_info info;
-            info.x1_ = static_cast<float>(std::stoi(outputs[i]));
-            info.y1_ = static_cast<float>(std::stoi(outputs[i + 1]));
+            info.rect_.x = static_cast<float>(std::stoi(outputs[i]));
+            info.rect_.y = static_cast<float>(std::stoi(outputs[i + 1]));
             info.x2_ = static_cast<float>(std::stoi(outputs[i + 2]));
             info.y2_ = static_cast<float>(std::stoi(outputs[i + 3]));
             info.score_ = std::stof(outputs[i + 4]);
@@ -229,8 +229,8 @@ void scale_bbox(int src_w, int src_h, std::vector<box_info> &bboxes, const objec
     float const height_ratio = static_cast<float>(src_h) / static_cast<float>(effect_roi.height_);
     for(size_t i = 0; i < bboxes.size(); ++i){
         box_info &bbox = bboxes[i];
-        bbox.x1_ = (bbox.x1_ - effect_roi.x_) * width_ratio;
-        bbox.y1_ = (bbox.y1_ - effect_roi.y_) * height_ratio;
+        bbox.rect_.x = (bbox.rect_.x - effect_roi.x_) * width_ratio;
+        bbox.rect_.y = (bbox.rect_.y - effect_roi.y_) * height_ratio;
         bbox.x2_ = (bbox.x2_ - effect_roi.x_) * width_ratio;
         bbox.y2_ = (bbox.y2_ - effect_roi.y_) * height_ratio;
     }
