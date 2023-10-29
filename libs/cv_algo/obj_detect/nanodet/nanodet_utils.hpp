@@ -1,25 +1,11 @@
 #ifndef NANODET_UTILS_HPP
 #define NANODET_UTILS_HPP
 
-#include "../common_obj_det_type.hpp"
+#include <opencv2/core.hpp>
 
 namespace ocv::det{
 
 class nanodet;
-
-void draw_bboxes(cv::Mat& image,
-                 const std::vector<box_info>& bboxes,
-                 std::vector<std::string> const &class_names);
-
-void draw_bboxes_custom(cv::Mat& image,
-                        box_info const &bboxes,
-                        std::string const &message);
-
-void draw_bboxes_custom(cv::Mat& image,
-                        std::vector<box_info> const &bboxes,
-                        std::vector<std::string> const &message);
-
-void draw_output_strings_results(cv::Mat &image, std::vector<std::string> const &outputs, std::vector<std::string> const &class_names);
 
 std::tuple<int, cv::Mat> predict_image(nanodet &net, std::string const &img_path,
                                        std::vector<std::string> const &names,

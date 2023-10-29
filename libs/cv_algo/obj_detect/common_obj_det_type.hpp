@@ -1,9 +1,7 @@
 #ifndef COMMON_OBJ_DET_TYPE_HPP
 #define COMMON_OBJ_DET_TYPE_HPP
 
-#ifdef USE_OPENCV
 #include <opencv2/core.hpp>
-#endif
 
 #include <string>
 #include <vector>
@@ -18,9 +16,10 @@ struct box_info
     float y1_;
     float x2_;
     float y2_;
+    cv::Rect2f rect_;
     float score_;
     int label_;
-    int track_id_ = -1;
+    int track_id_ = -1;    
 
     box_info();
     box_info(float x1, float y1, float x2, float y2, float score, int label);
@@ -30,10 +29,8 @@ struct box_info
     cv::Point2f br() const noexcept;
 
     std::string to_string(int src_width, int src_height) const;
-#ifdef USE_OPENCV
     cv::Rect to_cv_rect() const noexcept;
     cv::Rect to_cv_rect(int src_width, int src_height) const noexcept;
-#endif
 
     object_rect to_obj_rect() const noexcept;
     object_rect to_obj_rect(int src_width, int src_height) const noexcept;

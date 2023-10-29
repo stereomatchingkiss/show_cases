@@ -2,9 +2,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-#ifdef USE_OPENCV
 #include <opencv2/imgproc.hpp>
-#endif
 
 #include <algorithm>
 #include <format>
@@ -17,7 +15,8 @@ box_info::box_info()
 }
 
 box_info::box_info(float x1, float y1, float x2, float y2, float score, int label) :
-    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, score_{score}, label_{label}, track_id_{-1}
+    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, score_{score}, label_{label}, track_id_{-1},
+    rect_{x1, y1, x2 - x1, y2 - y1}
 {
 
 }
@@ -48,8 +47,6 @@ std::string box_info::to_string(int src_width, int src_height) const
                        label_);
 }
 
-#ifdef USE_OPENCV
-
 cv::Rect box_info::to_cv_rect() const noexcept
 {
     return cv::Rect(static_cast<int>(x1_), static_cast<int>(y1_), static_cast<int>(x2_ - x1_), static_cast<int>(y2_ - y1_));
@@ -63,8 +60,6 @@ cv::Rect box_info::to_cv_rect(int src_width, int src_height) const noexcept
     auto const y2 = std::clamp(static_cast<int>(y2_), 0, src_height - 1);
     return cv::Rect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2 - x1), static_cast<int>(y2 - y1));
 }
-
-#endif
 
 object_rect box_info::to_obj_rect() const noexcept
 {

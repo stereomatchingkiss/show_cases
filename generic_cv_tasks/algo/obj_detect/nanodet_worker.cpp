@@ -2,12 +2,16 @@
 
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
+
+#include <cv_algo/obj_detect/obj_det_utils.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
-#include <cv_algo/obj_detect/nanodet/nanodet_utils.hpp>
+
 #include <cv_algo/tracker/track_object_pass.hpp>
 #include <cv_algo/tracker/track_results.hpp>
 #include <cv_algo/tracker/byte_track/BYTETracker.hpp>
+
 #include <cv_algo/utils/draw_rect.hpp>
+
 #include <utils/file_reader.hpp>
 
 #include <opencv2/core.hpp>
