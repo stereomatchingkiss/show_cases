@@ -16,9 +16,11 @@ struct box_info
     float y1_;
     float x2_;
     float y2_;
+
     cv::Rect2f rect_;
-    float score_;
+
     int label_;
+    float score_;    
     int track_id_ = -1;    
 
     box_info();

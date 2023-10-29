@@ -15,8 +15,8 @@ box_info::box_info()
 }
 
 box_info::box_info(float x1, float y1, float x2, float y2, float score, int label) :
-    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, score_{score}, label_{label}, track_id_{-1},
-    rect_{x1, y1, x2 - x1, y2 - y1}
+    x1_{x1}, y1_{y1}, x2_{x2}, y2_{y2}, rect_{x1, y1, x2 - x1, y2 - y1},
+    label_{label}, score_{score}, track_id_{-1}
 {
 
 }
