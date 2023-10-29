@@ -73,6 +73,9 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_results.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp
