@@ -97,7 +97,8 @@ QString widget_source_selection::get_url() const noexcept
 
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 {
-    if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select Video"));
+    auto const abs_path = QFileInfo(ui->lineEditVideo->text()).absolutePath();
+    if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select Video"), abs_path);
             !fname.isEmpty() && QFile(fname).exists())
     {
         ui->lineEditVideo->setText(fname);
