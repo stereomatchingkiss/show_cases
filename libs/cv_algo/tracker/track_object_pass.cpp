@@ -125,7 +125,7 @@ struct track_object_pass::impl
         }
         erase_lost_track();
 
-        return {};
+        return track_res_;
     }
 
     bool leave_from_bottom(segment const &input) const noexcept
