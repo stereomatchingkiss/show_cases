@@ -1,8 +1,11 @@
 #include "nanodet_worker.hpp"
 
 #include <cv_algo/converter/box_type_converter.hpp>
+#include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet_utils.hpp>
+#include <cv_algo/tracker/track_object_pass.hpp>
+#include <cv_algo/tracker/track_results.hpp>
 #include <cv_algo/tracker/byte_track/BYTETracker.hpp>
 #include <cv_algo/utils/draw_rect.hpp>
 #include <utils/file_reader.hpp>
@@ -15,6 +18,8 @@
 
 #include <format>
 #include <fstream>
+
+using namespace ocv;
 
 struct nanodet_worker::impl
 {
@@ -33,12 +38,14 @@ struct nanodet_worker::impl
     }
 
     std::vector<std::string> names_;
-    ocv::det::nanodet net_;
-    ocv::tracker::BYTETracker tracker_;
+    det::nanodet net_;
+    tracker::BYTETracker tracker_;
+    std::unique_ptr<tracker::track_object_pass> track_obj_pass_;
 
     int input_size_;
     float nms_threshold_;
     QRectF rband_;
+    cv::Rect scaled_roi_;
     float score_threshold_;
 };
 
@@ -67,6 +74,12 @@ void nanodet_worker::process_results(std::any frame)
         cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
     }
 
+    if(!impl_->track_obj_pass_){
+        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->rband_, mat.cols, mat.rows);
+        impl_->track_obj_pass_ =
+            std::make_unique<tracker::track_object_pass>(impl_->scaled_roi_, 30);
+    }
+
     auto det_results = impl_->net_.predict(mat, impl_->score_threshold_, impl_->nms_threshold_);
     const auto [first, last] = std::ranges::remove_if(det_results, [](auto const &val)
                                                       {
@@ -77,10 +90,16 @@ void nanodet_worker::process_results(std::any frame)
     auto const track_ptr_vec = impl_->tracker_.update(track_obj);
 
     det_results = ocv::byte_track_obj_to_box_info(track_ptr_vec, 2);
-    for(auto const &val : det_results){
+    for(auto const &val : det_results){        
         ocv::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
     }
-
+    auto const pass_results = impl_->track_obj_pass_->track(det_results);
+    cv::putText(mat, std::format("up:{}, down:{}", pass_results.count_top_pass_, pass_results.count_bottom_pass_),
+                cv::Point(0, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
+    cv::putText(mat, std::format("left:{}, right:{}", pass_results.count_left_pass_, pass_results.count_right_pass_),
+                cv::Point(0, 100), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
+    cv::putText(mat, std::format("in the rect:{}", pass_results.count_in_center_),
+                cv::Point(0, 150), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
     if(!impl_->rband_.isEmpty()){
         ocv::utils::draw_empty_rect(mat, impl_->rband_);
     }
