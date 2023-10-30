@@ -59,18 +59,18 @@ void qsort_descent_inplace(std::vector<box_info>& faceobjects, int left, int rig
     while (i <= j)
     {
         while (faceobjects[i].score_ > p)
-            i++;
+            ++i;
 
         while (faceobjects[j].score_ < p)
-            j--;
+            --j;
 
         if (i <= j)
         {
             // swap
             std::swap(faceobjects[i], faceobjects[j]);
 
-            i++;
-            j--;
+            ++i;
+            --j;
         }
     }
 
@@ -101,20 +101,17 @@ void nms_sorted_bboxes(const std::vector<box_info>& faceobjects,
 {
     picked.clear();
 
-    const int n = faceobjects.size();
-
-    std::vector<float> areas(n);
-    for(int i = 0; i < n; i++)
+    std::vector<float> areas(faceobjects.size());
+    for(size_t i = 0; i < faceobjects.size(); ++i)
     {
         areas[i] = faceobjects[i].rect_.width * faceobjects[i].rect_.height;
     }
 
-    for (int i = 0; i < n; i++)
+    for(size_t i = 0; i < faceobjects.size(); ++i)
     {
         auto const &a = faceobjects[i];
-
-        int keep = 1;
-        for (int j = 0; j < (int)picked.size(); j++)
+        bool keep = true;
+        for(size_t j = 0; j < picked.size(); ++j)
         {
             auto const &b = faceobjects[picked[j]];
 
@@ -123,10 +120,10 @@ void nms_sorted_bboxes(const std::vector<box_info>& faceobjects,
             float const union_area = areas[i] + areas[picked[j]] - inter_area;
             // float IoU = inter_area / union_area
             if (inter_area / union_area > nms_threshold)
-                keep = 0;
+                keep = false;
         }
 
-        if (keep)
+        if(keep)
             picked.push_back(i);
     }
 }
@@ -136,15 +133,12 @@ void generate_grids_and_stride(int target_w,
                                std::vector<int>& strides,
                                std::vector<GridAndStride>& grid_strides)
 {
-    for(size_t i = 0; i < strides.size(); ++i)
-    {
-        int stride = strides[i];
-        int num_grid_w = target_w / stride;
-        int num_grid_h = target_h / stride;
-        for (int g1 = 0; g1 < num_grid_h; g1++)
-        {
-            for (int g0 = 0; g0 < num_grid_w; g0++)
-            {
+    for(size_t i = 0; i < strides.size(); ++i){
+        int const stride = strides[i];
+        int const num_grid_w = target_w / stride;
+        int const num_grid_h = target_h / stride;
+        for(int g1 = 0; g1 < num_grid_h; ++g1){
+            for(int g0 = 0; g0 < num_grid_w; ++g0){
                 GridAndStride gs;
                 gs.grid0 = g0;
                 gs.grid1 = g1;
@@ -271,7 +265,7 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
         w = static_cast<int>(w * scale);
     }
 
-    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB2BGR, width, height, w, h);
+    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, width, height, w, h);
 
     // pad to target_size rectangle
     int const wpad = (w + 31) / 32 * 32 - w;

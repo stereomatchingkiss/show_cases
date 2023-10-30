@@ -19,9 +19,8 @@
 
 namespace ocv::det{
 
-nanodet::nanodet(const char* param, const char* bin, int num_class, bool use_gpu, bool swap_rgb, int input_size, int max_thread) :
-    net_(std::make_unique<nanodet_raw_ncnn>(param, bin, num_class, use_gpu, input_size, max_thread)),
-    swap_rgb_(swap_rgb)
+nanodet::nanodet(const char* param, const char* bin, int num_class, bool use_gpu, int input_size, int max_thread) :
+    net_(std::make_unique<nanodet_raw_ncnn>(param, bin, num_class, use_gpu, input_size, max_thread))
 {        
 }
 
@@ -45,20 +44,14 @@ int nanodet::get_load_model_state() const noexcept
     return net_->get_load_model_state();
 }
 
-std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat image,
+std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat const &image,
                                                          float score_threshold,
                                                          float nms_threshold,
                                                          int rotation_angle,
                                                          bool hflip)
 {
-    if(swap_rgb_){
-        cv::cvtColor(image, input_img_, cv::COLOR_RGB2BGR);
-    }else{
-        input_img_ = image;
-    }
-
-    adjust_img_orientation(input_img_, rotation_angle, hflip);
-    return net_->predict_with_resize_image(input_img_.data, input_img_.cols, input_img_.rows, score_threshold, nms_threshold);
+    adjust_img_orientation(image, rotation_angle, hflip);
+    return net_->predict_with_resize_image(image.data, image.cols, image.rows, score_threshold, nms_threshold);
 }
 
 std::vector<box_info> nanodet::predict(cv::Mat const &image,
@@ -88,11 +81,6 @@ std::vector<box_info> nanodet::predict(cv::Mat const &image,
 void nanodet::adjust_img_orientation(cv::Mat const &input, int rotate_angle, bool horizontal_flip)
 {
     utils::adjust_img_orientation(input, img_rotate_, rotate_angle, horizontal_flip);
-}
-
-void nanodet::set_swap_rgb(bool val)
-{
-    swap_rgb_ = val;
 }
 
 }

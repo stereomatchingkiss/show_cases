@@ -5,6 +5,7 @@
 
 #include <cv_algo/obj_detect/obj_det_utils.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
+#include <cv_algo/obj_detect/yolo_v8/yolo_v8.hpp>
 
 #include <cv_algo/tracker/track_object_pass.hpp>
 #include <cv_algo/tracker/track_results.hpp>
@@ -32,17 +33,31 @@ struct nanodet_worker::impl
          float nms_threshold,
          int input_size)
         : names_{ocv::read_file_per_lines("assets/obj_detect/coco.names")},
-        net_(std::format("assets/obj_detect/nanodet-plus-m_{}.param", input_size).c_str(),
-             std::format("assets/obj_detect/nanodet-plus-m_{}.bin", input_size).c_str(), 80, false, false, input_size),
         input_size_{input_size},
         nms_threshold_{nms_threshold},
         rband_{rband},
         score_threshold_{score_threshold}
     {
+        enum class model_type
+        {
+            nanodet,
+            yolo_v8
+        };
+
+        std::string const model_root("assets/obj_detect/");
+        std::vector<std::string> params;
+        params.emplace_back(std::format("{}/nanodet-plus-m_{}.param", model_root, input_size));
+        params.emplace_back(std::format("{}/yolov8n.param", model_root));
+        std::vector<std::string> bins;
+        bins.emplace_back(std::format("{}/nanodet-plus-m_{}.bin", model_root, input_size));
+        bins.emplace_back(std::format("{}/yolov8n.bin", model_root));
+
+        size_t const idx = static_cast<size_t>(model_type::yolo_v8);
+        net_ = std::make_unique<det::yolo_v8>(params[idx].c_str(), bins[idx].c_str(), 80, false, input_size);
     }
 
     std::vector<std::string> names_;
-    det::nanodet net_;
+    std::unique_ptr<det::obj_det_base> net_;
     tracker::BYTETracker tracker_;
     std::unique_ptr<tracker::track_object_pass> track_obj_pass_;
 
@@ -84,12 +99,12 @@ void nanodet_worker::process_results(std::any frame)
             std::make_unique<tracker::track_object_pass>(impl_->scaled_roi_, 30);
     }
 
-    auto det_results = impl_->net_.predict(mat, impl_->score_threshold_, impl_->nms_threshold_);
+    auto det_results = impl_->net_->predict(mat, impl_->score_threshold_, impl_->nms_threshold_);
     const auto [first, last] = std::ranges::remove_if(det_results, [](auto const &val)
                                                       {
                                                           return val.label_ != 2;
                                                       });
-    det_results.erase(first, last);
+    det_results.erase(first, last);    
     auto track_obj = ocv::box_info_to_byte_track_obj(det_results);
     auto const track_ptr_vec = impl_->tracker_.update(track_obj);
 
