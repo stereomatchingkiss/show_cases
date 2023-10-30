@@ -1,12 +1,11 @@
-#ifndef OCV_SINGLE_FRAME_WITH_MULTI_WORKER_HPP_3094580394827
-#define OCV_SINGLE_FRAME_WITH_MULTI_WORKER_HPP_3094580394827
+#pragma once
 
 #include <QObject>
 
 #include <any>
 #include <memory>
 
-namespace ocv{
+namespace ocv::mm{
 
 class frame_capture_controller;
 class frame_capture_opencv_worker;
@@ -38,5 +37,3 @@ private:
 };
 
 }
-
-#endif // SINGLE_FRAME_WITH_MULTI_WORKER_HPP

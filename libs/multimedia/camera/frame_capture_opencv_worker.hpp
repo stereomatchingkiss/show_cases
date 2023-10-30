@@ -1,11 +1,10 @@
-#ifndef FRAME_CAPTURE_OPENCV_HPP
-#define FRAME_CAPTURE_OPENCV_HPP
+#pragma once
 
 #include "frame_capture_base_worker.hpp"
 
 #include <memory>
 
-namespace ocv{
+namespace ocv::mm{
 
 struct frame_capture_params;
 
@@ -27,5 +26,3 @@ private:
 };
 
 }
-
-#endif // FRAME_CAPTURE_OPENCV_HPP

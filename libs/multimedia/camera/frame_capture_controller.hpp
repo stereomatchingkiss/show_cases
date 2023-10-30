@@ -1,5 +1,4 @@
-#ifndef FRAME_CAPTURE_CONTROLLER_HPP_50454
-#define FRAME_CAPTURE_CONTROLLER_HPP_50454
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -10,7 +9,7 @@
 
 class QThread;
 
-namespace ocv{
+namespace ocv::mm{
 
 class frame_capture_base_worker;
 
@@ -38,5 +37,3 @@ private:
 }
 
 Q_DECLARE_METATYPE(std::function<void(std::any)>)
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef FRAME_CAPTURE_BASE_WORKER_HPP
-#define FRAME_CAPTURE_BASE_WORKER_HPP
+#pragma once
 
 #include <any>
 #include <functional>
@@ -8,7 +7,7 @@
 #include <QObject>
 #include <QString>
 
-namespace ocv{
+namespace ocv::mm{
 
 struct frame_capture_params;
 
@@ -38,5 +37,3 @@ private:
 };
 
 }
-
-#endif // FRAME_CAPTURE_BASE_WORKER_HPP

@@ -4,7 +4,7 @@
 
 #include "frame_capture_params.hpp"
 
-namespace ocv{
+namespace ocv::mm{
 
 struct frame_capture_base_worker::impl
 {

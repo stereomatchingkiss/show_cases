@@ -12,7 +12,7 @@ QT_END_NAMESPACE
 class widget_source_selection;
 class widget_stream_player;
 
-namespace ocv{
+namespace ocv::mm{
 
 class single_frame_with_multi_worker;
 
@@ -44,6 +44,6 @@ private:
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
-    std::unique_ptr<ocv::single_frame_with_multi_worker> sfwmw_;
+    std::unique_ptr<ocv::mm::single_frame_with_multi_worker> sfwmw_;
 };
 #endif // MAINWINDOW_HPP

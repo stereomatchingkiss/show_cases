@@ -1,5 +1,4 @@
-#ifndef FRAME_PROCESS_CONTROLLER_HPP
-#define FRAME_PROCESS_CONTROLLER_HPP
+#pragma once
 
 #include <QObject>
 #include <QPixmap>
@@ -8,7 +7,7 @@
 
 class QThread;
 
-namespace ocv{
+namespace ocv::mm{
 
 class frame_process_base_worker;
 
@@ -30,5 +29,3 @@ private:
 };
 
 }
-
-#endif // FRAME_PROCESS_CONTROLLER_HPP

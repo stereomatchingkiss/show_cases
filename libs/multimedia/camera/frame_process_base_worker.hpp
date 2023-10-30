@@ -1,12 +1,11 @@
-#ifndef FRAME_PROCESS_BASE_WORKER_HPP
-#define FRAME_PROCESS_BASE_WORKER_HPP
+#pragma once
 
 #include <QObject>
 #include <QPixmap>
 
 #include <any>
 
-namespace ocv{
+namespace ocv::mm{
 
 class frame_process_base_worker : public QObject
 {
@@ -24,5 +23,3 @@ signals:
 };
 
 }
-
-#endif // FRAME_PROCESS_BASE_WORKER_HPP

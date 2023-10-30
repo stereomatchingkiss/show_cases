@@ -4,7 +4,7 @@
 
 #include <QThread>
 
-namespace ocv{
+namespace ocv::mm{
 
 frame_process_controller::frame_process_controller(frame_process_base_worker *worker, QObject *parent)
     : QObject{parent},

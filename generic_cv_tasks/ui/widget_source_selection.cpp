@@ -39,20 +39,20 @@ widget_source_selection::~widget_source_selection()
     delete ui;
 }
 
-ocv::frame_capture_params widget_source_selection::get_frame_capture_params() const
+ocv::mm::frame_capture_params widget_source_selection::get_frame_capture_params() const
 {
-    ocv::frame_capture_params params;
+    ocv::mm::frame_capture_params params;
     params.max_fps_ = get_max_fps();
-    params.receiver_type_ = ocv::stream_receiver_type::opencv;
+    params.receiver_type_ = ocv::mm::stream_receiver_type::opencv;
     params.src_type_ = get_source_type();
     params.url_ = get_url().toStdString();
 
     return params;
 }
 
-ocv::stream_source_type widget_source_selection::get_source_type() const noexcept
+ocv::mm::stream_source_type widget_source_selection::get_source_type() const noexcept
 {
-    using stype = ocv::stream_source_type;
+    using stype = ocv::mm::stream_source_type;
     if(ui->radioButtonRTSP->isChecked()){
         return stype::rtsp;
     }else if(ui->radioButtonVideo->isChecked()){

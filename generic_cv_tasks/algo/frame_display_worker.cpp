@@ -6,7 +6,7 @@
 #include <QPixmap>
 
 frame_display_worker::frame_display_worker(QObject *parent)
-    : ocv::frame_process_base_worker{parent}
+    : ocv::mm::frame_process_base_worker{parent}
 {
 
 }

@@ -1,7 +1,6 @@
-#ifndef OCV_STREAM_RECEIVER_TYPE_HPP_2342343206767890
-#define OCV_STREAM_RECEIVER_TYPE_HPP_2342343206767890
+#pragma once
 
-namespace ocv{
+namespace ocv::mm{
 
 enum class stream_receiver_type : int
 {
@@ -16,5 +15,3 @@ enum class stream_source_type : int
 };
 
 }
-
-#endif // STREAM_RECEIVER_TYPE_HPP

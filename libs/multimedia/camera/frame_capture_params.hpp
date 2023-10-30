@@ -1,11 +1,10 @@
-#ifndef FRAME_CAPTURE_PARAMS_HPP
-#define FRAME_CAPTURE_PARAMS_HPP
+#pragma once
 
 #include "../stream_enum.hpp"
 
 #include <string>
 
-namespace ocv{
+namespace ocv::mm{
 
 struct frame_capture_params
 {
@@ -16,5 +15,3 @@ struct frame_capture_params
 };
 
 }
-
-#endif // FRAME_CAPTURE_PARAMS_HPP

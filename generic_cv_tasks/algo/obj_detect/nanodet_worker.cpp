@@ -73,7 +73,7 @@ nanodet_worker::nanodet_worker(QRectF const &rband,
                                float nms_threshold,
                                int input_size,
                                QObject *parent) :
-    ocv::frame_process_base_worker(parent),
+    ocv::mm::frame_process_base_worker(parent),
     impl_{std::make_unique<impl>(rband, score_threshold, nms_threshold, input_size)}
 {
 
