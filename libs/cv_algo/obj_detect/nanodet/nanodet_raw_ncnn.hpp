@@ -49,9 +49,7 @@ public:
                                                     int width,
                                                     int height,
                                                     float score_threshold,
-                                                    float nms_threshold);
-
-    static void scale_bbox(int src_w, int src_h, std::vector<box_info>& bboxes, object_rect const &effect_roi);
+                                                    float nms_threshold);    
 
 private:
     struct HeadInfo

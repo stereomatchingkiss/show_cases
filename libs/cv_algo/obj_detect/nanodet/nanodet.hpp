@@ -55,9 +55,7 @@ public:
                                   bool hflip = false) override;
 
 
-    void set_swap_rgb(bool val);
-
-    static void scale_bbox(int src_w, int src_h, std::vector<box_info>& bboxes, object_rect const &effect_roi);
+    void set_swap_rgb(bool val);    
 
 private:
     std::unique_ptr<nanodet_raw_ncnn> net_;

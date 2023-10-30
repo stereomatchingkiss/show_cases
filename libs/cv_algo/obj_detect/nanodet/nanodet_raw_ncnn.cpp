@@ -147,19 +147,6 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
     return dets;
 }
 
-void nanodet_raw_ncnn::scale_bbox(int src_w, int src_h, std::vector<box_info> &bboxes, const object_rect &effect_roi)
-{
-    float const width_ratio = static_cast<float>(src_w) / static_cast<float>(effect_roi.width_);
-    float const height_ratio = static_cast<float>(src_h) / static_cast<float>(effect_roi.height_);
-    for(size_t i = 0; i < bboxes.size(); ++i){
-        box_info &bbox = bboxes[i];
-        bbox.rect_.x = (bbox.rect_.x - effect_roi.x_) * width_ratio;
-        bbox.rect_.y = (bbox.rect_.y - effect_roi.y_) * height_ratio;
-        bbox.x2_ = (bbox.x2_ - effect_roi.x_) * width_ratio;
-        bbox.y2_ = (bbox.y2_ - effect_roi.y_) * height_ratio;
-    }
-}
-
 ncnn::Extractor nanodet_raw_ncnn::create_extractor() const
 {
     return net_->create_extractor();

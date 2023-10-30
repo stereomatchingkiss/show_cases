@@ -77,9 +77,9 @@ std::vector<box_info> nanodet::predict(cv::Mat const &image,
     if(should_swap){
         std::swap(effect_roi.height_, effect_roi.width_);
         std::swap(effect_roi.y_, effect_roi.x_);
-        nanodet_raw_ncnn::scale_bbox(image.rows, image.cols, boxes_info, effect_roi);
+        scale_bbox(image.rows, image.cols, boxes_info, effect_roi);
     }else{
-        nanodet_raw_ncnn::scale_bbox(image.cols, image.rows, boxes_info, effect_roi);
+        scale_bbox(image.cols, image.rows, boxes_info, effect_roi);
     }
 
     return boxes_info;
@@ -93,11 +93,6 @@ void nanodet::adjust_img_orientation(cv::Mat const &input, int rotate_angle, boo
 void nanodet::set_swap_rgb(bool val)
 {
     swap_rgb_ = val;
-}
-
-void nanodet::scale_bbox(int src_w, int src_h, std::vector<box_info> &bboxes, object_rect const &effect_roi)
-{
-    nanodet_raw_ncnn::scale_bbox(src_w, src_h, bboxes, effect_roi);
 }
 
 }
