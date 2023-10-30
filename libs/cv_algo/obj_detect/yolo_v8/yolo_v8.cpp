@@ -244,6 +244,11 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
     target_size_ = input_size;
 }
 
+yolo_v8::~yolo_v8()
+{
+
+}
+
 std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold, float nms_threshold, int, bool)
 {
     int width = rgb.cols;

@@ -16,28 +16,30 @@
 
 #pragma once
 
-#include <cv_algo/obj_detect/common_obj_det_type.hpp>
+#include "../common_obj_det_type.hpp"
+#include "../obj_det_base.hpp"
 
 #include <opencv2/core/core.hpp>
 #include <net.h>
 
 namespace ocv::det{
 
-class yolo_v8
+class yolo_v8 : public obj_det_base
 {
 public:
     explicit yolo_v8(const char* param,
-                    const char* bin,
-                    int num_class,
-                    bool use_gpu = false,
-                    int input_size = 320,
-                    int max_thread = 4);
+                     const char* bin,
+                     int num_class,
+                     bool use_gpu = false,
+                     int input_size = 320,
+                     int max_thread = 4);
+    ~yolo_v8();
 
     std::vector<box_info> predict(cv::Mat const &rgb,
                                   float score_threshold = 0.4f,
                                   float nms_threshold = 0.5f,
                                   int rotation_angle = 0,
-                                  bool hflip = false);
+                                  bool hflip = false) override;
 private:
 
     ncnn::Net net_;

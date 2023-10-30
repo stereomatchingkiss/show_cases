@@ -3,10 +3,10 @@
 // 2020 / 10 / 2
 //
 
-#ifndef NANODET_HPP_HWEO43534
-#define NANODET_HPP_HWEO43534
+#pragma once
 
 #include "../common_obj_det_type.hpp"
+#include "../obj_det_base.hpp"
 
 #include <opencv2/core.hpp>
 
@@ -26,7 +26,7 @@ class nanodet_raw_ncnn;
 /**
  * @brief nanodet class designed for unity
  */
-class nanodet
+class nanodet : public obj_det_base
 {
 public:    
     nanodet(const char* param,
@@ -52,7 +52,7 @@ public:
                                   float score_threshold,
                                   float nms_threshold,
                                   int rotation_angle = 0,
-                                  bool hflip = false);
+                                  bool hflip = false) override;
 
 
     void set_swap_rgb(bool val);
@@ -96,5 +96,3 @@ private:
 };
 
 }
-
-#endif //NANODET_H
