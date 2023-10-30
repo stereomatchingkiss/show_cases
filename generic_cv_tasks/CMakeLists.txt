@@ -35,8 +35,8 @@ if(WIN32)
     set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${NCNN_PATH};${CMAKE_PREFIX_PATH};")
 endif()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -111,6 +111,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
@@ -153,7 +155,8 @@ if(ANDROID OR WIN32)
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
                           PRIVATE ncnn
-                          PRIVATE Qt${QT_VERSION_MAJOR}::Widgets                          
+                          PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                          PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
                           )
     #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 endif()
