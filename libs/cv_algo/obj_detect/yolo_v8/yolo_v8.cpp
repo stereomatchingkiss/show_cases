@@ -92,27 +92,25 @@ void qsort_descent_inplace(std::vector<box_info>& faceobjects)
     if (faceobjects.empty())
         return;
 
-    qsort_descent_inplace(faceobjects, 0, faceobjects.size() - 1);
+    qsort_descent_inplace(faceobjects, 0, static_cast<int>(faceobjects.size() - 1));
 }
 
 void nms_sorted_bboxes(const std::vector<box_info>& faceobjects,
                        std::vector<int>& picked,
                        float nms_threshold)
-{
-    picked.clear();
-
+{    
     std::vector<float> areas(faceobjects.size());
     for(size_t i = 0; i < faceobjects.size(); ++i)
     {
         areas[i] = faceobjects[i].rect_.width * faceobjects[i].rect_.height;
     }
 
-    for(size_t i = 0; i < faceobjects.size(); ++i)
+    picked.clear();
+    for(int i = 0; i < faceobjects.size(); ++i)
     {
         auto const &a = faceobjects[i];
         bool keep = true;
-        for(size_t j = 0; j < picked.size(); ++j)
-        {
+        for(size_t j = 0; j < picked.size(); ++j){
             auto const &b = faceobjects[picked[j]];
 
             // intersection over union
@@ -155,20 +153,20 @@ void generate_proposals(std::vector<GridAndStride> grid_strides,
                         int num_class,
                         std::vector<box_info>& objects)
 {
-    const size_t num_points = grid_strides.size();    
-    const int reg_max_1 = 16;
+    const int num_points = static_cast<int>(grid_strides.size());
+    constexpr int reg_max_1 = 16;
 
-    for(size_t i = 0; i < num_points; i++)
+    for(int i = 0; i < num_points; ++i)
     {
         const float* scores = pred.row(i) + 4 * reg_max_1;
 
         // find label with max score
         int label = -1;
         float score = -FLT_MAX;
-        for (int k = 0; k < num_class; k++)
+        for(int k = 0; k < num_class; ++k)
         {
-            float confidence = scores[k];
-            if (confidence > score)
+            float const confidence = scores[k];
+            if(confidence > score)
             {
                 label = k;
                 score = confidence;
@@ -227,7 +225,7 @@ void generate_proposals(std::vector<GridAndStride> grid_strides,
 
 yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread) :
     mean_vals_{103.53f, 116.28f, 123.675f},
-    norm_vals_{1.0f / 255.0f, 1.0f / 255.0f, 1.0 / 255.0f},
+    norm_vals_{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f},
     num_class_{num_class}
 {
     net_.opt = ncnn::Option();
@@ -308,10 +306,10 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
         float y1 = (objects[i].rect_.y + objects[i].rect_.height - (hpad / 2)) / scale;
 
         // clip
-        x0 = std::max(std::min(x0, (float)(width - 1)), 0.f);
-        y0 = std::max(std::min(y0, (float)(height - 1)), 0.f);
-        x1 = std::max(std::min(x1, (float)(width - 1)), 0.f);
-        y1 = std::max(std::min(y1, (float)(height - 1)), 0.f);
+        x0 = std::max(std::min(x0, (width - 1.0f)), 0.f);
+        y0 = std::max(std::min(y0, (height - 1.0f)), 0.f);
+        x1 = std::max(std::min(x1, (width - 1.0f)), 0.f);
+        y1 = std::max(std::min(y1, (height - 1.0f)), 0.f);
 
         objects[i].rect_.x = x0;
         objects[i].rect_.y = y0;
