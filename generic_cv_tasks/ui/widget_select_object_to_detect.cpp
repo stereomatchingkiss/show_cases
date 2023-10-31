@@ -38,6 +38,7 @@ widget_select_object_to_detect::widget_select_object_to_detect(std::vector<std::
         ui->tableWidget->setCellWidget(i, 1, create_checkbox());
     }
 
+    //todo : make category selection easier to reuse
     ui->comboBoxSelectCategory->addItem(tr("Accessory"));
     ui->comboBoxSelectCategory->addItem(tr("Animal"));
     ui->comboBoxSelectCategory->addItem(tr("Appliance"));
