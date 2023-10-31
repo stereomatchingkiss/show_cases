@@ -16,8 +16,7 @@ namespace ocv::ui{
 class label_select_roi : public QLabel
 {
 public:
-    explicit label_select_roi(QString const &text,
-                              QString const &config_location,
+    explicit label_select_roi(QString const &text,                              
                               QWidget *parent = nullptr);
     ~label_select_roi();
 
@@ -36,7 +35,6 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-    QString config_location_;
     QPointF mouse_press_point_;
     QRectF norm_roi_;
     QRubberBand *rband_;

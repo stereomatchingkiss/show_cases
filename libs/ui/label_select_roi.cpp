@@ -1,7 +1,5 @@
 #include "label_select_roi.hpp"
 
-#include "../json/json_utils.hpp"
-
 #include <QDebug>
 
 #include <QJsonArray>
@@ -16,22 +14,14 @@ namespace ocv::ui{
 
 QString const state_norm_roi("state_label_select_roi_norm_roi");
 
-label_select_roi::label_select_roi(QString const &text,
-                                   QString const &config_location,
-                                   QWidget *parent) :
-    QLabel(text, parent),
-    config_location_{config_location}
+label_select_roi::label_select_roi(QString const &text, QWidget *parent) :
+    QLabel(text, parent)
 {
-    rband_ = new QRubberBand(QRubberBand::Rectangle, this);
-
-    if(auto const jobj = json::parse_file_to_jobj(config_location); !jobj.empty()){
-        set_states(jobj);
-    }
+    rband_ = new QRubberBand(QRubberBand::Rectangle, this);    
 }
 
 label_select_roi::~label_select_roi()
-{
-    json::write_file_to_json(get_states(), config_location_);
+{    
 }
 
 void label_select_roi::display_frame(std::any img)
