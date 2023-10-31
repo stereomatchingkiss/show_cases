@@ -14,7 +14,7 @@
 
 namespace ocv::ui{
 
-QString const key_norm_roi("key_label_select_roi_norm_roi");
+QString const state_norm_roi("state_label_select_roi_norm_roi");
 
 label_select_roi::label_select_roi(QString const &text,
                                    QString const &config_location,
@@ -65,15 +65,15 @@ QJsonObject label_select_roi::get_states() const
     norm_vals.push_back(norm_roi.height());
 
     QJsonObject obj;
-    obj[key_norm_roi] = norm_vals;
+    obj[state_norm_roi] = norm_vals;
 
     return obj;
 }
 
 void label_select_roi::set_states(const QJsonObject &val)
 {
-    if(val.contains(key_norm_roi)){
-        auto const norm_vals = val[key_norm_roi].toArray();        
+    if(val.contains(state_norm_roi)){
+        auto const norm_vals = val[state_norm_roi].toArray();
         norm_roi_.setX(norm_vals[0].toDouble());
         norm_roi_.setY(norm_vals[1].toDouble());
         norm_roi_.setWidth(norm_vals[2].toDouble());
