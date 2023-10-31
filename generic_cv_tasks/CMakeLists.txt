@@ -40,25 +40,23 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
 
 set(PROJECT_SOURCES
         main.cpp
-        algo/frame_display_worker.hpp
-        algo/frame_display_worker.cpp
-        algo/obj_detect/nanodet_worker.hpp
-        algo/obj_detect/nanodet_worker.cpp
+        algo/frame_display_worker.hpp algo/frame_display_worker.cpp
+        algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp                
+        config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
+        config/object_detect_model_enum.hpp
+        config/object_detect_model_select_config.hpp
         global/global_keywords.hpp global/global_keywords.cpp
-        ui/mainwindow.cpp
-        ui/mainwindow.hpp
-        ui/mainwindow.ui        
-        ui/widget_source_selection.hpp
-        ui/widget_source_selection.cpp
-        ui/widget_source_selection.ui
-        ui/widget_stream_player.hpp
-        ui/widget_stream_player.cpp
-        ui/widget_stream_player.ui
+        ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+        ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
+        ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
+        ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/coco_object_index.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.hpp
@@ -115,6 +113,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
+        ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
+        ${PLUGIN_LIBS_PATH}/ui/utils/utility.hpp ${PLUGIN_LIBS_PATH}/ui/utils/utility.cpp
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
@@ -146,7 +146,7 @@ endif()
 
 #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH} ${3RDLIBS_PATH}/eigen)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH} ${3RDLIBS_PATH}/eigen ui)
 
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)

@@ -9,6 +9,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class widget_object_detect_model_select;
+class widget_select_object_to_detect;
 class widget_source_selection;
 class widget_stream_player;
 
@@ -38,9 +40,18 @@ private slots:
     void on_pushButtonPrev_clicked();
 
 private:
+    void create_roi_select_stream();
+
+    void next_page_is_label_select_roi();
+    void next_page_is_widget_stream_player();
+    void next_page_is_widget_select_object_to_detect();
+    void next_page_is_widget_source_selection();
+
     Ui::MainWindow *ui;
 
     ocv::ui::label_select_roi *label_select_roi_;
+    widget_object_detect_model_select *widget_object_detect_model_select_;
+    widget_select_object_to_detect *widget_select_object_to_detect_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
