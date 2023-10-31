@@ -38,8 +38,6 @@ private:
     QVector<int> create_indexes(int begin, int end) const;
     QVector<int> create_person_index() const;
 
-    QStringList create_coco_names() const;
-    QStringList create_raw_coco_names() const;
     void show_category(int index);
 
     Ui_widget_select_object_to_detect *ui;
