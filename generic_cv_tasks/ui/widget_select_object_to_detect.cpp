@@ -1,5 +1,5 @@
-#include "object_detect_algo_widget.hpp"
-#include "ui_object_detect_algo_widget.h"
+#include "widget_select_object_to_detect.hpp"
+#include "ui_widget_select_object_to_detect.h"
 
 #include "../config/object_detect_config.hpp"
 
@@ -24,9 +24,9 @@ QString const state_obj_det_selected_items("state_obj_det_selected_items");
 
 }
 
-object_detect_algo_widget::object_detect_algo_widget(std::vector<std::string> names, QWidget *parent) :
+widget_select_object_to_detect::widget_select_object_to_detect(std::vector<std::string> names, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::object_detect_algo_widget),
+    ui(new Ui_widget_select_object_to_detect),
     names_(std::move(names))
 {
     ui->setupUi(this);
@@ -56,12 +56,12 @@ object_detect_algo_widget::object_detect_algo_widget(std::vector<std::string> na
     show_category(static_cast<int>(coco_object_category::Person));
 }
 
-object_detect_algo_widget::~object_detect_algo_widget()
+widget_select_object_to_detect::~widget_select_object_to_detect()
 {        
     delete ui;
 }
 
-object_detect_config object_detect_algo_widget::get_config() const
+object_detect_config widget_select_object_to_detect::get_config() const
 {
     object_detect_config config;
     for(int i = 0; i != names_.size(); ++i){
@@ -73,7 +73,7 @@ object_detect_config object_detect_algo_widget::get_config() const
     return config;
 }
 
-QJsonObject object_detect_algo_widget::get_states() const
+QJsonObject widget_select_object_to_detect::get_states() const
 {
     QJsonObject obj;    
     QJsonArray selected_items;
@@ -85,7 +85,7 @@ QJsonObject object_detect_algo_widget::get_states() const
     return obj;
 }
 
-void object_detect_algo_widget::set_states(const QJsonObject &val)
+void widget_select_object_to_detect::set_states(const QJsonObject &val)
 {    
     if(val.contains(state_obj_det_selected_items)){
         auto const arr = val[state_obj_det_selected_items].toArray();
@@ -95,12 +95,12 @@ void object_detect_algo_widget::set_states(const QJsonObject &val)
     }
 }
 
-void object_detect_algo_widget::on_comboBoxSelectCategory_currentIndexChanged(int index)
+void widget_select_object_to_detect::on_comboBoxSelectCategory_currentIndexChanged(int index)
 {
     show_category(index);
 }
 
-QVector<int> object_detect_algo_widget::create_category_indexes(int category) const
+QVector<int> widget_select_object_to_detect::create_category_indexes(int category) const
 {
     switch(static_cast<coco_object_category>(category)){
     case coco_object_category::Accessory:
@@ -132,7 +132,7 @@ QVector<int> object_detect_algo_widget::create_category_indexes(int category) co
     return create_person_index();
 }
 
-QVector<int> object_detect_algo_widget::create_indexes(int begin, int end) const
+QVector<int> widget_select_object_to_detect::create_indexes(int begin, int end) const
 {
     QVector<int> result;
     for(int i = begin; i <= end; ++i){
@@ -142,7 +142,7 @@ QVector<int> object_detect_algo_widget::create_indexes(int begin, int end) const
     return result;
 }
 
-QVector<int> object_detect_algo_widget::create_person_index() const
+QVector<int> widget_select_object_to_detect::create_person_index() const
 {
     QVector<int> result;
     result.push_back(0);
@@ -150,7 +150,7 @@ QVector<int> object_detect_algo_widget::create_person_index() const
     return result;
 }
 
-void object_detect_algo_widget::show_category(int index)
+void widget_select_object_to_detect::show_category(int index)
 {    
     for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
         ui->tableWidget->hideRow(i);
@@ -161,21 +161,21 @@ void object_detect_algo_widget::show_category(int index)
     }
 }
 
-void object_detect_algo_widget::on_pushButtonSelectAllCategories_clicked()
+void widget_select_object_to_detect::on_pushButtonSelectAllCategories_clicked()
 {
     for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
         access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(true);
     }
 }
 
-void object_detect_algo_widget::on_pushButtonUnSelectAllCategories_clicked()
+void widget_select_object_to_detect::on_pushButtonUnSelectAllCategories_clicked()
 {
     for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
         access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(false);
     }
 }
 
-void object_detect_algo_widget::on_pushButtonSelectAllItemsOfTheCategory_clicked()
+void widget_select_object_to_detect::on_pushButtonSelectAllItemsOfTheCategory_clicked()
 {
     auto const index_to_show = create_category_indexes(ui->comboBoxSelectCategory->currentIndex());
     for(int i = 0; i != index_to_show.size(); ++i){
@@ -183,7 +183,7 @@ void object_detect_algo_widget::on_pushButtonSelectAllItemsOfTheCategory_clicked
     }
 }
 
-void object_detect_algo_widget::on_pushButtonUnSelectAllItemsOfTheCategory_clicked()
+void widget_select_object_to_detect::on_pushButtonUnSelectAllItemsOfTheCategory_clicked()
 {
     auto const index_to_show = create_category_indexes(ui->comboBoxSelectCategory->currentIndex());
     for(int i = 0; i != index_to_show.size(); ++i){

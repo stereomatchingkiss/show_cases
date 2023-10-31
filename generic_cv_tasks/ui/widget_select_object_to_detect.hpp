@@ -1,24 +1,21 @@
-#ifndef OBJECT_DETECT_ALGO_WIDGET_HPP
-#define OBJECT_DETECT_ALGO_WIDGET_HPP
+#pragma once
 
 #include <QVector>
 #include <QWidget>
 
 #include <map>
 
-namespace Ui {
-class object_detect_algo_widget;
-}
+class Ui_widget_select_object_to_detect;
 
 struct object_detect_config;
 
-class object_detect_algo_widget : public QWidget
+class widget_select_object_to_detect : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit object_detect_algo_widget(std::vector<std::string> names, QWidget *parent = nullptr);
-    ~object_detect_algo_widget();
+    explicit widget_select_object_to_detect(std::vector<std::string> names, QWidget *parent = nullptr);
+    ~widget_select_object_to_detect();
 
     object_detect_config get_config() const;
     QJsonObject get_states() const;
@@ -45,10 +42,8 @@ private:
     QStringList create_raw_coco_names() const;
     void show_category(int index);
 
-    Ui::object_detect_algo_widget *ui;
+    Ui_widget_select_object_to_detect *ui;
 
     QVector<QVector<int>> category_indexes_;
     std::vector<std::string> names_;
 };
-
-#endif // OBJECT_DETECT_ALGO_WIDGET_HPP

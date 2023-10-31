@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>object_detect_algo_widget</class>
- <widget class="QWidget" name="object_detect_algo_widget">
+ <class>widget_select_object_to_detect</class>
+ <widget class="QWidget" name="widget_select_object_to_detect">
   <property name="geometry">
    <rect>
     <x>0</x>
