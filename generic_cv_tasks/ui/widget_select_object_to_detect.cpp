@@ -1,7 +1,7 @@
 #include "widget_select_object_to_detect.hpp"
 #include "ui_widget_select_object_to_detect.h"
 
-#include "../config/object_detect_config.hpp"
+#include "../config/select_object_to_detect_config.hpp"
 
 #include <cv_algo/obj_detect/coco_object_index.hpp>
 
@@ -61,12 +61,12 @@ widget_select_object_to_detect::~widget_select_object_to_detect()
     delete ui;
 }
 
-object_detect_config widget_select_object_to_detect::get_config() const
+select_object_to_detect_config widget_select_object_to_detect::get_config() const
 {
-    object_detect_config config;
+    select_object_to_detect_config config;
     for(int i = 0; i != names_.size(); ++i){
-        if(access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->isChecked()){            
-            config.labels_to_show_.insert(names_[i]);
+        if(access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->isChecked()){
+            config.selected_object_.insert(names_[i]);
         }
     }
 
