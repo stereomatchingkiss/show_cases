@@ -1,5 +1,7 @@
 #include "nanodet_worker.hpp"
 
+#include "../global/global_keywords.hpp"
+
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
 
@@ -32,7 +34,7 @@ struct nanodet_worker::impl
          float score_threshold,
          float nms_threshold,
          int input_size)
-        : names_{ocv::read_file_per_lines("assets/obj_detect/coco.names")},
+        : names_{global_keywords().coco_names()},
         input_size_{input_size},
         nms_threshold_{nms_threshold},
         rband_{rband},
