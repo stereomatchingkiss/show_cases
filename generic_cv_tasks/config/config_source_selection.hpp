@@ -16,7 +16,8 @@ struct config_source_selection
     QString rtsp_url_;
     QString video_url_;
     flt::mm::stream_source_type source_type_;
-    QString webcam_;
+    QString url_;
+    QString webcam_url_;
 };
 
 #endif // CONFIG_SOURCE_SELECTION_HPP

@@ -8,18 +8,36 @@ QString const state_max_fps("state_max_fps");
 QString const state_rtsp_url("state_rtsp_url");
 QString const state_source_type("state_source_type");
 QString const state_video_url("state_video_url");
-QString const state_webcam_index("state_webcam_index");
+QString const state_url("state_url");
+QString const state_webcam_url("state_webcam_url");
 
 }
 
 QJsonObject config_source_selection::get_states() const
 {
+    using st = flt::mm::stream_source_type;
+
     QJsonObject obj;
     obj[state_max_fps] = max_fps_;
     obj[state_rtsp_url] = rtsp_url_;
     obj[state_source_type] = static_cast<int>(source_type_);
     obj[state_video_url] = video_url_;
-    obj[state_webcam_index] = webcam_;
+    switch(source_type_){
+    case st::rtsp:{
+        obj[state_rtsp_url] = rtsp_url_;
+        break;
+    }
+    case st::video:{
+        obj[state_url] = video_url_;
+        break;
+    }
+    case st::webcam:{
+        obj[state_webcam_url] = webcam_url_;
+        break;
+    }
+    }
+
+    obj[state_webcam_url] = webcam_url_;
 
     return obj;
 }
@@ -38,7 +56,7 @@ void config_source_selection::set_states(const QJsonObject &val)
     if(val.contains(state_video_url)){
         video_url_ = val[state_video_url].toString();
     }
-    if(val.contains(state_webcam_index)){
-        webcam_ = val[state_webcam_index].toString();
+    if(val.contains(state_webcam_url)){
+        webcam_url_ = val[state_webcam_url].toString();
     }
 }
