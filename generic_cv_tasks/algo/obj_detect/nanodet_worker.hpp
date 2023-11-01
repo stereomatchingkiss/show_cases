@@ -1,5 +1,6 @@
-#ifndef NANODET_WORKER_HPP
-#define NANODET_WORKER_HPP
+#pragma once
+
+#include "../../config/config_nanodet_worker.hpp"
 
 #include <multimedia/camera/frame_process_base_worker.hpp>
 
@@ -7,15 +8,13 @@
 
 #include <memory>
 
+struct config_nanodet_worker;
+
 class nanodet_worker : public flt::mm::frame_process_base_worker
 {
     Q_OBJECT
 public:
-    explicit nanodet_worker(QRectF const &rband,
-                            float score_threshold = 0.4f,
-                            float nms_threshold = 0.3f,
-                            int input_size = 416,
-                            QObject *parent = nullptr);
+    explicit nanodet_worker(config_nanodet_worker config, QObject *parent = nullptr);
     ~nanodet_worker();
 
     void process_results(std::any frame) override;
@@ -24,5 +23,3 @@ private:
     struct impl;
     std::unique_ptr<impl> impl_;
 };
-
-#endif // NANODET_WORKER_HPP

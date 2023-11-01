@@ -1,6 +1,8 @@
 #include "nanodet_worker.hpp"
 
-#include "../global/global_keywords.hpp"
+#include "../../config/config_nanodet_worker.hpp"
+
+#include "../../global/global_keywords.hpp"
 
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
@@ -31,53 +33,46 @@ using namespace flt::cvt;
 
 struct nanodet_worker::impl
 {
-    impl(QRectF const &rband,
-         float score_threshold,
-         float nms_threshold,
-         int input_size)
-        : names_{global_keywords().coco_names()},
-        input_size_{input_size},
-        nms_threshold_{nms_threshold},
-        rband_{rband},
-        score_threshold_{score_threshold}
+    impl(config_nanodet_worker config) :
+        config_{std::move(config)},
+        names_{global_keywords().coco_names()}
     {
-        enum class model_type
-        {
-            nanodet,
-            yolo_v8
-        };
+        using dme = object_detect_model_enum;
 
         std::string const model_root("assets/obj_detect/");
-        std::vector<std::string> params;
-        params.emplace_back(std::format("{}/nanodet-plus-m_{}.param", model_root, input_size));
-        params.emplace_back(std::format("{}/yolov8n.param", model_root));
-        std::vector<std::string> bins;
-        bins.emplace_back(std::format("{}/nanodet-plus-m_{}.bin", model_root, input_size));
-        bins.emplace_back(std::format("{}/yolov8n.bin", model_root));
-
-        size_t const idx = static_cast<size_t>(model_type::yolo_v8);
-        net_ = std::make_unique<cvt::det::yolo_v8>(params[idx].c_str(), bins[idx].c_str(), 80, false, input_size);
+        switch(config.config_object_detect_model_select_.model_){
+        case dme::nanodet_plus_m_320:{
+            auto const param = std::format("{}/nanodet-plus-m_{}.param", model_root, 320);
+            auto const bin = std::format("{}/nanodet-plus-m_{}.bin", model_root, 320);
+            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
+            break;
+        }
+        case dme::nanodet_plus_m_416:{
+            auto const param = std::format("{}/nanodet-plus-m_{}.param", model_root, 416);
+            auto const bin = std::format("{}/nanodet-plus-m_{}.bin", model_root, 416);
+            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
+            break;
+        }
+        case dme::yolo_v8_n:{
+            auto const param = std::format("{}/yolov8n.param", model_root);
+            auto const bin = std::format("{}/yolov8n.bin", model_root);
+            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
+            break;
+        }
+        }
     }
 
+    config_nanodet_worker config_;
     std::vector<std::string> names_;
     std::unique_ptr<cvt::det::obj_det_base> net_;
+    cv::Rect scaled_roi_;
     cvt::tracker::BYTETracker tracker_;
     std::unique_ptr<cvt::tracker::track_object_pass> track_obj_pass_;
-
-    int input_size_;
-    float nms_threshold_;
-    QRectF rband_;
-    cv::Rect scaled_roi_;
-    float score_threshold_;
 };
 
-nanodet_worker::nanodet_worker(QRectF const &rband,
-                               float score_threshold,
-                               float nms_threshold,
-                               int input_size,
-                               QObject *parent) :
+nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
     flt::mm::frame_process_base_worker(parent),
-    impl_{std::make_unique<impl>(rband, score_threshold, nms_threshold, input_size)}
+    impl_{std::make_unique<impl>(std::move(config))}
 {
 
 }
@@ -97,12 +92,13 @@ void nanodet_worker::process_results(std::any frame)
     }
 
     if(!impl_->track_obj_pass_){
-        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->rband_, mat.cols, mat.rows);
+        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
         impl_->track_obj_pass_ =
             std::make_unique<cvt::tracker::track_object_pass>(impl_->scaled_roi_, 30);
     }
 
-    auto det_results = impl_->net_->predict(mat, impl_->score_threshold_, impl_->nms_threshold_);
+    auto det_results = impl_->net_->predict(mat, impl_->config_.config_object_detect_model_select_.confidence_,
+                                            impl_->config_.config_object_detect_model_select_.nms_);
     const auto [first, last] = std::ranges::remove_if(det_results, [](auto const &val)
                                                       {
                                                           return val.label_ != 2;
@@ -122,10 +118,10 @@ void nanodet_worker::process_results(std::any frame)
                 cv::Point(0, 100), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
     cv::putText(mat, std::format("in the rect:{}", pass_results.count_in_center_),
                 cv::Point(0, 150), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
-    if(!impl_->rband_.isEmpty()){
-        flt::cvt::utils::draw_empty_rect(mat, impl_->rband_);
+    if(!impl_->scaled_roi_.empty()){
+        flt::cvt::utils::draw_empty_rect(mat, impl_->scaled_roi_);
     }
 
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-    emit send_process_results(QPixmap::fromImage(std::move(qimg)));
+    emit send_process_results(QPixmap::fromImage(std::move(qimg)));//*/
 }

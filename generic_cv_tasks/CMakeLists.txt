@@ -47,6 +47,7 @@ set(PROJECT_SOURCES
         config/config_object_detect_model_select.hpp
         config/config_select_object_to_detect.hpp config/config_select_object_to_detect.cpp
         config/config_source_selection.hpp
+        config/config_nanodet_worker.hpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui

@@ -9,6 +9,7 @@
 #include "../algo/frame_display_worker.hpp"
 #include "../algo/obj_detect/nanodet_worker.hpp"
 
+#include "../config/config_nanodet_worker.hpp"
 #include "../config/config_read_write.hpp"
 
 #include "../global/global_keywords.hpp"
@@ -102,7 +103,7 @@ void MainWindow::on_pushButtonPrev_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
         ui->labelTitle->setText(tr("Select roi"));
         ui->stackedWidget->setCurrentWidget(label_select_roi_);
-        ui->pushButtonNext->setEnabled(false);
+        ui->pushButtonNext->setEnabled(true);
         ui->pushButtonPrev->setEnabled(true);
 
         create_roi_select_stream();
@@ -127,8 +128,13 @@ void MainWindow::next_page_is_widget_stream_player()
     ui->pushButtonPrev->setEnabled(true);
 
     sfwmw_ = std::make_unique<single_frame_with_multi_worker>(widget_source_selection_->get_frame_capture_params());
+
+    config_nanodet_worker config;
+    config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
+    config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
+    config.roi_ = label_select_roi_->get_rubber_band_rect();
     auto process_controller =
-        std::make_shared<frame_process_controller>(new nanodet_worker(label_select_roi_->get_rubber_band_rect(), 0.25));
+        std::make_shared<frame_process_controller>(new nanodet_worker(std::move(config)));
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
     sfwmw_->add_listener(process_controller, this);
