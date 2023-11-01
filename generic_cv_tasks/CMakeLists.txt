@@ -44,8 +44,8 @@ set(PROJECT_SOURCES
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
         config/config_read_write.hpp config/config_read_write.cpp        
         config/object_detect_model_enum.hpp
-        config/object_detect_model_select_config.hpp
-        config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
+        config/config_object_detect_model_select.hpp
+        config/config_select_object_to_detect.hpp config/config_select_object_to_detect.cpp
         config/config_source_selection.hpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui

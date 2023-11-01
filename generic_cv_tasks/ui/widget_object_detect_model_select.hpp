@@ -4,7 +4,7 @@
 
 class Ui_widget_object_detect_model_select;
 
-struct object_detect_model_select_config;
+struct config_object_detect_model_select;
 
 class widget_object_detect_model_select : public QWidget
 {
@@ -14,7 +14,7 @@ public:
     explicit widget_object_detect_model_select(QWidget *parent = nullptr);
     ~widget_object_detect_model_select();
 
-    object_detect_model_select_config get_config() const;
+    config_object_detect_model_select get_config() const;
     QJsonObject get_states() const;
 
     void set_states(QJsonObject const &val);

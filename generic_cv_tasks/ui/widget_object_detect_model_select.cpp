@@ -1,7 +1,7 @@
 #include "widget_object_detect_model_select.hpp"
 #include "ui_widget_object_detect_model_select.h"
 
-#include "../config/object_detect_model_select_config.hpp"
+#include "../config/config_object_detect_model_select.hpp"
 
 #include <QJsonObject>
 #include <QLineEdit>
@@ -80,9 +80,9 @@ widget_object_detect_model_select::~widget_object_detect_model_select()
     delete ui;
 }
 
-object_detect_model_select_config widget_object_detect_model_select::get_config() const
+config_object_detect_model_select widget_object_detect_model_select::get_config() const
 {
-    object_detect_model_select_config results;
+    config_object_detect_model_select results;
     results.confidence_ = static_cast<float>(ui->spinBoxConfidence->value()) / 100.0f;
     results.model_ = static_cast<object_detect_model_enum>(ui->comboBoxSelectModel->currentIndex());
     results.nms_ = static_cast<float>(ui->spinBoxNMS->value()) / 100.0f;

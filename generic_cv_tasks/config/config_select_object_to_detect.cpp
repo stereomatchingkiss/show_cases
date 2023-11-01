@@ -1,4 +1,4 @@
-#include "select_object_to_detect_config.hpp"
+#include "config_select_object_to_detect.hpp"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -9,7 +9,7 @@ QString const state_selected_object_("state_selected_object");
 
 }
 
-QJsonObject select_object_to_detect_config::get_states() const
+QJsonObject config_select_object_to_detect::get_states() const
 {    
     QJsonArray labels;
     for(auto const &val : selected_object_){
@@ -22,7 +22,7 @@ QJsonObject select_object_to_detect_config::get_states() const
     return obj;
 }
 
-void select_object_to_detect_config::set_states(const QJsonObject &val)
+void config_select_object_to_detect::set_states(const QJsonObject &val)
 {
     if(val.contains(state_selected_object_)){
         auto const labels = val[state_selected_object_].toArray();

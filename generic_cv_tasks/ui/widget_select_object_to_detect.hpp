@@ -7,7 +7,7 @@
 
 class Ui_widget_select_object_to_detect;
 
-struct select_object_to_detect_config;
+struct config_select_object_to_detect;
 
 class widget_select_object_to_detect : public QWidget
 {
@@ -17,7 +17,7 @@ public:
     explicit widget_select_object_to_detect(std::vector<std::string> names, QWidget *parent = nullptr);
     ~widget_select_object_to_detect();
 
-    select_object_to_detect_config get_config() const;
+    config_select_object_to_detect get_config() const;
     QJsonObject get_states() const;
 
     void set_states(QJsonObject const &val);

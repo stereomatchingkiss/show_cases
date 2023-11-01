@@ -2,7 +2,7 @@
 
 #include "object_detect_model_enum.hpp"
 
-struct object_detect_model_select_config
+struct config_object_detect_model_select
 {
     float confidence_ = 0.25f;
     int process_size_ = 416;

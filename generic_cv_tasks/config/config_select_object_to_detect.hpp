@@ -6,7 +6,7 @@
 
 #include <set>
 
-struct select_object_to_detect_config
+struct config_select_object_to_detect
 {
     QJsonObject get_states() const;
 
