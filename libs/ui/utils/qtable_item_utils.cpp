@@ -8,7 +8,7 @@
 #include <QTableWidgetItem>
 #include <QWidget>
 
-namespace ocv::ui
+namespace flt::ui
 {
 
 namespace{

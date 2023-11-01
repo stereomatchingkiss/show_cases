@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace ocv::tracker
+namespace flt::tracker
 {
 
 struct track_results;

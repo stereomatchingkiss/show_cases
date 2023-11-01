@@ -8,7 +8,7 @@ class QImage;
 class QSpinBox;
 class QTableWidgetItem;
 
-namespace ocv::ui
+namespace flt::ui
 {
 
  QWidget* create_alarm_group(int group);

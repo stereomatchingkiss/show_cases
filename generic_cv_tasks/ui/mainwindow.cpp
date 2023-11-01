@@ -17,8 +17,8 @@
 
 #include <ui/label_select_roi.hpp>
 
-using namespace ocv;
-using namespace ocv::mm;
+using namespace flt;
+using namespace flt::mm;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace ocv::det{
+namespace flt::det{
 
 struct object_rect;
 

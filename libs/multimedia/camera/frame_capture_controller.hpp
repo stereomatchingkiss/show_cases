@@ -9,7 +9,7 @@
 
 class QThread;
 
-namespace ocv::mm{
+namespace flt::mm{
 
 class frame_capture_base_worker;
 

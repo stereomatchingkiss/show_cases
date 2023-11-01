@@ -4,7 +4,7 @@
 
 #include <QThread>
 
-namespace ocv::mm{
+namespace flt::mm{
 
 frame_capture_controller::frame_capture_controller(frame_capture_base_worker *worker, QObject *parent) :
     QObject(parent),

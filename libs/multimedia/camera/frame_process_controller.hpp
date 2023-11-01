@@ -7,7 +7,7 @@
 
 class QThread;
 
-namespace ocv::mm{
+namespace flt::mm{
 
 class frame_process_base_worker;
 

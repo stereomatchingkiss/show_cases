@@ -7,7 +7,7 @@ namespace Ui {
 class widget_source_selection;
 }
 
-namespace ocv::mm{
+namespace flt::mm{
 
 enum class stream_source_type;
 
@@ -23,8 +23,8 @@ public:
     explicit widget_source_selection(QWidget *parent = nullptr);
     ~widget_source_selection();
 
-    ocv::mm::frame_capture_params get_frame_capture_params() const;
-    ocv::mm::stream_source_type get_source_type() const noexcept;
+    flt::mm::frame_capture_params get_frame_capture_params() const;
+    flt::mm::stream_source_type get_source_type() const noexcept;
 
     int get_max_fps() const noexcept;
     QString get_rtsp_source() const noexcept;

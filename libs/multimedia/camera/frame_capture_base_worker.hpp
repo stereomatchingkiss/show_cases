@@ -7,7 +7,7 @@
 #include <QObject>
 #include <QString>
 
-namespace ocv::mm{
+namespace flt::mm{
 
 struct frame_capture_params;
 

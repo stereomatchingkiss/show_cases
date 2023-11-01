@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace ocv{
+namespace flt{
 
 namespace tracker{
 

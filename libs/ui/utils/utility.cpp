@@ -7,7 +7,7 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
-namespace ocv::ui{
+namespace flt::ui{
 
 namespace{
 

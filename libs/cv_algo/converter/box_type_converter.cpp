@@ -3,7 +3,7 @@
 #include "../tracker/byte_track/Object.hpp"
 #include "../tracker/byte_track/STrack.hpp"
 
-namespace ocv{
+namespace flt{
 
 using namespace det;
 

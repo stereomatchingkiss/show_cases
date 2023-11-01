@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace ocv::tracker{
+namespace flt::tracker{
 
 BYTETracker::BYTETracker(int frame_rate,
                          int track_buffer,

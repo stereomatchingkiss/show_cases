@@ -3,7 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-namespace ocv::ocr {
+namespace flt::ocr {
 
 struct TextBox {
     std::vector<cv::Point> boxPoint;

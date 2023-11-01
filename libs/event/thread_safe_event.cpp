@@ -1,6 +1,6 @@
 #include "thread_safe_event.hpp"
 
-namespace ocv{
+namespace flt{
 
 thread_safe_event::thread_safe_event()
 {

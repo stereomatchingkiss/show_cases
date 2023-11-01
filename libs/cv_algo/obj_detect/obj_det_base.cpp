@@ -1,6 +1,6 @@
 #include "obj_det_base.hpp"
 
-namespace ocv::det{
+namespace flt::det{
 
 obj_det_base::obj_det_base()
 {

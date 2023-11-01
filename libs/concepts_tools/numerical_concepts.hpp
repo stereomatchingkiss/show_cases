@@ -3,7 +3,7 @@
 
 #include <concepts>
 
-namespace ocv::concepts{
+namespace flt::concepts{
 
 template <typename T>
 concept Number = std::integral<T> || std::floating_point<T>;

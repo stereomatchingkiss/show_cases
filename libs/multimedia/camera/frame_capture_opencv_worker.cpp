@@ -8,7 +8,7 @@
 
 #include "frame_capture_params.hpp"
 
-namespace ocv::mm{
+namespace flt::mm{
 
 struct frame_capture_opencv_worker::impl
 {

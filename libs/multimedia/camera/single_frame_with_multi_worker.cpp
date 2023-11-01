@@ -9,7 +9,7 @@
 
 #include <multimedia/camera/single_frame_with_multi_worker.hpp>
 
-namespace ocv::mm{
+namespace flt::mm{
 
 
 single_frame_with_multi_worker::single_frame_with_multi_worker(frame_capture_params const &params,

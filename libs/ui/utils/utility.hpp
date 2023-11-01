@@ -9,7 +9,7 @@
 class QDateTime;
 class QWidget;
 
-namespace ocv::ui{
+namespace flt::ui{
 
 int calculate_maximum_page(int data_size, int max_data_per_page) noexcept;
 QString create_current_date_time_string();

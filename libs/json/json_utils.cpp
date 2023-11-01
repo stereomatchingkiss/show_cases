@@ -6,7 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-namespace ocv::json{
+namespace flt::json{
 
 QJsonObject parse_file_to_jobj(const QString &fname)
 {

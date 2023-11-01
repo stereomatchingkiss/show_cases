@@ -50,20 +50,20 @@ widget_source_selection::~widget_source_selection()
     delete ui;
 }
 
-ocv::mm::frame_capture_params widget_source_selection::get_frame_capture_params() const
+flt::mm::frame_capture_params widget_source_selection::get_frame_capture_params() const
 {
-    ocv::mm::frame_capture_params params;
+    flt::mm::frame_capture_params params;
     params.max_fps_ = get_max_fps();
-    params.receiver_type_ = ocv::mm::stream_receiver_type::opencv;
+    params.receiver_type_ = flt::mm::stream_receiver_type::opencv;
     params.src_type_ = get_source_type();
     params.url_ = get_url().toStdString();
 
     return params;
 }
 
-ocv::mm::stream_source_type widget_source_selection::get_source_type() const noexcept
+flt::mm::stream_source_type widget_source_selection::get_source_type() const noexcept
 {
-    using stype = ocv::mm::stream_source_type;
+    using stype = flt::mm::stream_source_type;
     if(ui->radioButtonRTSP->isChecked()){
         return stype::rtsp;
     }else if(ui->radioButtonVideo->isChecked()){
@@ -127,7 +127,7 @@ void widget_source_selection::set_states(const QJsonObject &val)
         ui->lineEditRTSP->setText(val[state_rtsp_url].toString());
     }
     if(val.contains(state_source_type)){
-        using stype = ocv::mm::stream_source_type;
+        using stype = flt::mm::stream_source_type;
         switch(static_cast<stype>(val[state_source_type].toInt())){
         case stype::rtsp:{
             ui->radioButtonRTSP->setChecked(true);

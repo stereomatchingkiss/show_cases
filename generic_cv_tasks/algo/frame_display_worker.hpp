@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-class frame_display_worker : public ocv::mm::frame_process_base_worker
+class frame_display_worker : public flt::mm::frame_process_base_worker
 {
     Q_OBJECT
 public:

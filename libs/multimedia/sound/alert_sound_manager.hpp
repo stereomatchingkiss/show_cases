@@ -12,7 +12,7 @@ class QMediaPlaylist;
 class QString;
 class QTimer;
 
-namespace ocv::mm{
+namespace flt::mm{
 
 /**
  * Start, stop or mute alarm temporary

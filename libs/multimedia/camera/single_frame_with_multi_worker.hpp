@@ -5,7 +5,7 @@
 #include <any>
 #include <memory>
 
-namespace ocv::mm{
+namespace flt::mm{
 
 class frame_capture_controller;
 class frame_capture_opencv_worker;

@@ -7,7 +7,7 @@
 
 #include <map>
 
-namespace ocv::tracker
+namespace flt::tracker
 {
 
 namespace{

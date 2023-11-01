@@ -26,7 +26,7 @@
 #include <format>
 #include <fstream>
 
-using namespace ocv;
+using namespace flt;
 
 struct nanodet_worker::impl
 {
@@ -75,7 +75,7 @@ nanodet_worker::nanodet_worker(QRectF const &rband,
                                float nms_threshold,
                                int input_size,
                                QObject *parent) :
-    ocv::mm::frame_process_base_worker(parent),
+    flt::mm::frame_process_base_worker(parent),
     impl_{std::make_unique<impl>(rband, score_threshold, nms_threshold, input_size)}
 {
 
@@ -107,12 +107,12 @@ void nanodet_worker::process_results(std::any frame)
                                                           return val.label_ != 2;
                                                       });
     det_results.erase(first, last);    
-    auto track_obj = ocv::box_info_to_byte_track_obj(det_results);
+    auto track_obj = flt::box_info_to_byte_track_obj(det_results);
     auto const track_ptr_vec = impl_->tracker_.update(track_obj);
 
-    det_results = ocv::byte_track_obj_to_box_info(track_ptr_vec, 2);
+    det_results = flt::byte_track_obj_to_box_info(track_ptr_vec, 2);
     for(auto const &val : det_results){        
-        ocv::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
+        flt::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[2], val.track_id_));
     }
     auto const pass_results = impl_->track_obj_pass_->track(det_results);
     cv::putText(mat, std::format("up:{}, down:{}", pass_results.count_top_pass_, pass_results.count_bottom_pass_),
@@ -122,7 +122,7 @@ void nanodet_worker::process_results(std::any frame)
     cv::putText(mat, std::format("in the rect:{}", pass_results.count_in_center_),
                 cv::Point(0, 150), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 4);
     if(!impl_->rband_.isEmpty()){
-        ocv::utils::draw_empty_rect(mat, impl_->rband_);
+        flt::utils::draw_empty_rect(mat, impl_->rband_);
     }
 
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);

@@ -22,7 +22,7 @@
 #include <opencv2/core/core.hpp>
 #include <net.h>
 
-namespace ocv::det{
+namespace flt::det{
 
 class yolo_v8 : public obj_det_base
 {

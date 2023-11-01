@@ -6,7 +6,7 @@
 
 #include <opencv2/imgproc.hpp>
 
-namespace ocv::det{
+namespace flt::det{
 
 namespace{
 

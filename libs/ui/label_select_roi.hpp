@@ -11,7 +11,7 @@
 class QJsonObject;
 class QRubberBand;
 
-namespace ocv::ui{
+namespace flt::ui{
 
 class label_select_roi : public QLabel
 {

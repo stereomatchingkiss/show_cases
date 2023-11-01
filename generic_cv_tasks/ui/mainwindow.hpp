@@ -14,13 +14,13 @@ class widget_select_object_to_detect;
 class widget_source_selection;
 class widget_stream_player;
 
-namespace ocv::mm{
+namespace flt::mm{
 
 class single_frame_with_multi_worker;
 
 }
 
-namespace ocv::ui{
+namespace flt::ui{
 
 class label_select_roi;
 
@@ -49,12 +49,12 @@ private:
 
     Ui::MainWindow *ui;
 
-    ocv::ui::label_select_roi *label_select_roi_;
+    flt::ui::label_select_roi *label_select_roi_;
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_select_object_to_detect *widget_select_object_to_detect_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
-    std::unique_ptr<ocv::mm::single_frame_with_multi_worker> sfwmw_;
+    std::unique_ptr<flt::mm::single_frame_with_multi_worker> sfwmw_;
 };
 #endif // MAINWINDOW_HPP

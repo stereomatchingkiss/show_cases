@@ -19,5 +19,5 @@ const QString global_keywords::coco_names_path() const
 
 std::vector<std::string> global_keywords::coco_names() const
 {
-    return ocv::read_file_per_lines("assets/obj_detect/coco.names");
+    return flt::read_file_per_lines("assets/obj_detect/coco.names");
 }

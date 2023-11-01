@@ -7,7 +7,7 @@
 #include <QMediaPlayer>
 #include <QTimer>
 
-namespace ocv::mm{
+namespace flt::mm{
 
 alert_sound_manager::alert_sound_manager(QObject *parent) :
     QObject(parent),

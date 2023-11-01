@@ -19,7 +19,7 @@
 #include <memory>
 #include <vector>
 
-namespace ocv::det{
+namespace flt::det{
 
 class nanodet_raw_ncnn;
 

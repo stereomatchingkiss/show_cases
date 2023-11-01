@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-namespace ocv{
+namespace flt{
 
 std::vector<std::string> read_file_per_lines(const std::string &fname)
 {

@@ -10,7 +10,7 @@
 #include <QResizeEvent>
 #include <QRubberBand>
 
-namespace ocv::ui{
+namespace flt::ui{
 
 QString const state_norm_roi("state_label_select_roi_norm_roi");
 

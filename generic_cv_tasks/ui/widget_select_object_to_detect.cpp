@@ -14,8 +14,8 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-using namespace ocv::det;
-using namespace ocv::ui;
+using namespace flt::det;
+using namespace flt::ui;
 
 namespace{
 

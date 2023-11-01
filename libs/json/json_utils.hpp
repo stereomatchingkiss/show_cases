@@ -4,7 +4,7 @@
 
 class QJsonObject;
 
-namespace ocv::json{
+namespace flt::json{
 
 QJsonObject parse_file_to_jobj(QString const &fname);
 

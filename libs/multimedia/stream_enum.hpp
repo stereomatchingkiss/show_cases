@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ocv::mm{
+namespace flt::mm{
 
 enum class stream_receiver_type : int
 {

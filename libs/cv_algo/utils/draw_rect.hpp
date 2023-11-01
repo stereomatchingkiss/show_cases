@@ -4,7 +4,7 @@
 
 #include <QRectF>
 
-namespace ocv::utils{
+namespace flt::utils{
 
 void draw_empty_rect(cv::Mat &inout, QRectF const &rect, int thickness = 4);
 void draw_empty_rect(cv::Mat &inout, cv::Rect const &rect, int thickness = 4);

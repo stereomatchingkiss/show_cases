@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-namespace ocv::tracker
+namespace flt::tracker
 {
 
 class BYTETracker

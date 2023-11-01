@@ -4,7 +4,7 @@
 
 #include <Eigen/Dense>
 
-namespace ocv::tracker
+namespace flt::tracker
 {
 
 template<concepts::Number T>

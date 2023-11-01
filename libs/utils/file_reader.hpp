@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace ocv{
+namespace flt{
 
 std::vector<std::string> read_file_per_lines(std::string const &fname);
 

@@ -7,7 +7,7 @@
 
 #include <memory>
 
-class nanodet_worker : public ocv::mm::frame_process_base_worker
+class nanodet_worker : public flt::mm::frame_process_base_worker
 {
     Q_OBJECT
 public:

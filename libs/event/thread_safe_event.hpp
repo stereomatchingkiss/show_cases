@@ -6,7 +6,7 @@
 #include <map>
 #include <mutex>
 
-namespace ocv{
+namespace flt{
 
 class thread_safe_event
 {

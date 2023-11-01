@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ocv::tracker{
+namespace flt::tracker{
 
 STrack::STrack(const Rect<float>& rect, float score) :
     kalman_filter_(),
