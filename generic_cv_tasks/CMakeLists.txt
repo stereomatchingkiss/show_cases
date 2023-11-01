@@ -42,10 +42,11 @@ set(PROJECT_SOURCES
         main.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
-        config/config_read_write.hpp config/config_read_write.cpp
+        config/config_read_write.hpp config/config_read_write.cpp        
         config/object_detect_model_enum.hpp
         config/object_detect_model_select_config.hpp
         config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
+        config/config_source_selection.hpp config/config_source_selection.cpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
