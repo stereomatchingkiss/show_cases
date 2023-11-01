@@ -15,6 +15,8 @@ struct frame_capture_params;
 
 }
 
+struct config_source_selection;
+
 class widget_source_selection : public QWidget
 {
     Q_OBJECT
@@ -32,8 +34,8 @@ public:
     QString get_webcam() const noexcept;
     QString get_url() const noexcept;
 
+    config_source_selection get_config() const;
     QJsonObject get_states() const;
-
     void set_states(QJsonObject const &val);
 
 private slots:

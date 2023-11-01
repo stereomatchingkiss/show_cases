@@ -1,6 +1,8 @@
 #include "widget_source_selection.hpp"
 #include "ui_widget_source_selection.h"
 
+#include "../config/config_source_selection.hpp"
+
 #include <multimedia/camera/frame_capture_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
@@ -104,6 +106,19 @@ QString widget_source_selection::get_url() const noexcept
     }
 
     return "0";
+}
+
+config_source_selection widget_source_selection::get_config() const
+{
+    config_source_selection config;
+    config.source_type_ = get_source_type();
+    config.max_fps_ = ui->spinBoxMaxFPS->value();
+    config.rtsp_url_ = ui->lineEditRTSP->text();
+    config.url_ = get_url();
+    config.video_url_ = ui->lineEditVideo->text();
+    config.webcam_url_ = QString::number(ui->comboBoxWebCam->currentIndex());
+
+    return config;
 }
 
 QJsonObject widget_source_selection::get_states() const
