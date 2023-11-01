@@ -59,7 +59,7 @@ struct nanodet_worker::impl
             net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
-        }
+        }        
 
         create_obj_to_detect();
     }
@@ -78,7 +78,7 @@ struct nanodet_worker::impl
     void remove_invalid_target(std::vector<det::box_info> &det_results)
     {
         auto func = [this](det::box_info const &val){
-            return obj_to_detect_[val.label_];
+            return !obj_to_detect_[val.label_];
         };
         const auto [first, last] = std::ranges::remove_if(det_results, func);
         det_results.erase(first, last);
