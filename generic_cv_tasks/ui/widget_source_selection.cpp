@@ -4,14 +4,35 @@
 #include <multimedia/camera/frame_capture_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
+#include <opencv2/videoio.hpp>
+
 #include <QFile>
 #include <QFileDialog>
-#include <QSettings>
+#include <QJsonObject>
 
 namespace{
 
-char const *rtsp_url("rtsp_url");
-char const *video_url("video_url");
+QString const state_max_fps("state_max_fps");
+QString const state_rtsp_url("state_rtsp_url");
+QString const state_source_type("state_source_type");
+QString const state_video_url("state_video_url");
+QString const state_webcam_index("state_webcam_index");
+
+int count_cameras()
+{
+    cv::VideoCapture temp_camera;
+    int maxTested = 10;
+    for (int i = 0; i < maxTested; i++){
+        cv::VideoCapture temp_camera(i);
+        bool res = (!temp_camera.isOpened());
+        temp_camera.release();
+        if (res)
+        {
+            return i;
+        }
+    }
+    return maxTested;
+}
 
 }
 
@@ -21,21 +42,11 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSettings setting;
-    if(setting.contains(rtsp_url)){
-        ui->lineEditRTSP->setText(setting.value(rtsp_url).toString());
-    }
-    if(setting.contains(video_url)){
-        ui->lineEditVideo->setText(setting.value(video_url).toString());
-    }
+    update_webcam_index();
 }
 
 widget_source_selection::~widget_source_selection()
-{
-    QSettings setting;
-    setting.setValue(rtsp_url, ui->lineEditRTSP->text());
-    setting.setValue(video_url, ui->lineEditVideo->text());
-
+{    
     delete ui;
 }
 
@@ -95,14 +106,71 @@ QString widget_source_selection::get_url() const noexcept
     return "0";
 }
 
+QJsonObject widget_source_selection::get_states() const
+{
+    QJsonObject obj;
+    obj[state_max_fps] = ui->spinBoxMaxFPS->value();
+    obj[state_rtsp_url] = ui->lineEditRTSP->text();
+    obj[state_source_type] = static_cast<int>(get_source_type());
+    obj[state_video_url] = ui->lineEditVideo->text();
+    obj[state_webcam_index] = ui->comboBoxWebCam->currentIndex();
+
+    return obj;
+}
+
+void widget_source_selection::set_states(const QJsonObject &val)
+{
+    if(val.contains(state_max_fps)){
+        ui->spinBoxMaxFPS->setValue(val[state_max_fps].toInt());
+    }
+    if(val.contains(state_rtsp_url)){
+        ui->lineEditRTSP->setText(val[state_rtsp_url].toString());
+    }
+    if(val.contains(state_source_type)){
+        using stype = ocv::mm::stream_source_type;
+        switch(static_cast<stype>(val[state_source_type].toInt())){
+        case stype::rtsp:{
+            ui->radioButtonRTSP->setChecked(true);
+            break;
+        }
+        case stype::video:{
+            ui->radioButtonVideo->setChecked(true);
+            break;
+        }
+        case stype::webcam:{
+            ui->radioButtonWebcam->setChecked(true);
+            break;
+        }
+        }
+    }
+    if(val.contains(state_video_url)){
+        ui->lineEditVideo->setText(val[state_video_url].toString());
+    }
+    if(val.contains(state_webcam_index)){
+        if(auto const idx = val[state_webcam_index].toInt(); idx > 0 && idx < ui->comboBoxWebCam->maxCount()){
+            ui->comboBoxWebCam->setCurrentIndex(idx);
+        }
+    }
+}
+
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 {
     auto const abs_path = QFileInfo(ui->lineEditVideo->text()).absolutePath();
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select Video"), abs_path);
-            !fname.isEmpty() && QFile(fname).exists())
+        !fname.isEmpty() && QFile(fname).exists())
     {
         ui->lineEditVideo->setText(fname);
         ui->radioButtonVideo->setChecked(true);
+    }
+}
+
+void widget_source_selection::update_webcam_index()
+{
+    ui->comboBoxWebCam->clear();
+    if(auto const web_cam_size = count_cameras(); web_cam_size != 0){
+        for(int i = 0; i != web_cam_size; ++i){
+            ui->comboBoxWebCam->addItem(QString::number(i));
+        }
     }
 }
 

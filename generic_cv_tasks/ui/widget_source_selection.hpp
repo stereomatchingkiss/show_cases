@@ -32,10 +32,16 @@ public:
     QString get_webcam() const noexcept;
     QString get_url() const noexcept;
 
+    QJsonObject get_states() const;
+
+    void set_states(QJsonObject const &val);
+
 private slots:
     void on_pushButtonOpenVideoFolder_clicked();
 
 private:
+    void update_webcam_index();
+
     Ui::widget_source_selection *ui;    
 };
 
