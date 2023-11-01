@@ -41,10 +41,11 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
 set(PROJECT_SOURCES
         main.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
-        algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp                
-        config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
+        algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
+        config/config_read_write.hpp config/config_read_write.cpp
         config/object_detect_model_enum.hpp
         config/object_detect_model_select_config.hpp
+        config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
@@ -124,7 +125,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET pose_estimation_expert APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
