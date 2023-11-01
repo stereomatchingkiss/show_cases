@@ -126,7 +126,7 @@ void widget_object_detect_model_select::set_states(const QJsonObject &val)
         ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_obj_det_model_type].toString()));
     }
     if(val.contains(state_obj_det_nms)){
-        ui->spinBoxConfidence->setValue(val[state_obj_det_nms].toInt());
+        ui->spinBoxNMS->setValue(val[state_obj_det_nms].toInt());
     }
     if(val.contains(state_obj_det_yolov8_process_size)){
         ui->comboBoxProcessSizeYoloV8->setCurrentIndex(val[state_obj_det_yolov8_process_size].toInt());
