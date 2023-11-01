@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace flt::tracker{
+namespace flt::cvt::tracker{
 
 BYTETracker::BYTETracker(int frame_rate,
                          int track_buffer,
@@ -405,7 +405,7 @@ std::vector<std::vector<float>> BYTETracker::calcIous(const std::vector<Rect<flo
 std::vector<std::vector<float> > BYTETracker::calcIouDistance(const std::vector<STrackPtr> &a_tracks,
                                                               const std::vector<STrackPtr> &b_tracks) const
 {
-    std::vector<tracker::Rect<float>> a_rects, b_rects;
+    std::vector<cvt::tracker::Rect<float>> a_rects, b_rects;
     for (size_t i = 0; i < a_tracks.size(); i++)
     {
         a_rects.push_back(a_tracks[i]->getRect());

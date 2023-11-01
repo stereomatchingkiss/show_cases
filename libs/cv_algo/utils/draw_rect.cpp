@@ -4,7 +4,7 @@
 
 #include <opencv2/imgproc.hpp>
 
-namespace flt::utils{
+namespace flt::cvt::utils{
 
 void draw_empty_rect(cv::Mat &inout, cv::Rect const &rect, int thickness)
 {

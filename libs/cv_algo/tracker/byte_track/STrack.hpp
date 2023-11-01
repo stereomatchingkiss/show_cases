@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-namespace flt::tracker
+namespace flt::cvt::tracker
 {
 
 enum class STrackState {

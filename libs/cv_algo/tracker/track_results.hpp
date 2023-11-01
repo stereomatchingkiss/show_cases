@@ -1,6 +1,6 @@
 #pragma once
 
-namespace flt::tracker{
+namespace flt::cvt::tracker{
 
 struct track_results
 {

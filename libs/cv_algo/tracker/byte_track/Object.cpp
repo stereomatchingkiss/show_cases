@@ -1,6 +1,6 @@
 #include "Object.hpp"
 
-namespace flt::tracker{
+namespace flt::cvt::tracker{
 
 Object::Object(Rect<float> const& _rect,
                int _label,

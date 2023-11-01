@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <net.h>
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 class obj_det_base
 {

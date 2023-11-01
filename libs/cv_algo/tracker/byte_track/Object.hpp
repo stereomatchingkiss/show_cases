@@ -2,7 +2,7 @@
 
 #include "Rect.hpp"
 
-namespace flt::tracker
+namespace flt::cvt::tracker
 {
 
 struct Object

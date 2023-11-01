@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 nanodet::nanodet(const char* param, const char* bin, int num_class, bool use_gpu, int input_size, int max_thread) :
     net_(std::make_unique<nanodet_raw_ncnn>(param, bin, num_class, use_gpu, input_size, max_thread))
@@ -80,7 +80,7 @@ std::vector<box_info> nanodet::predict(cv::Mat const &image,
 
 void nanodet::adjust_img_orientation(cv::Mat const &input, int rotate_angle, bool horizontal_flip)
 {
-    utils::adjust_img_orientation(input, img_rotate_, rotate_angle, horizontal_flip);
+    cvt::utils::adjust_img_orientation(input, img_rotate_, rotate_angle, horizontal_flip);
 }
 
 }

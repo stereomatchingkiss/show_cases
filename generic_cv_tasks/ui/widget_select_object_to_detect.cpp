@@ -14,7 +14,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-using namespace flt::det;
+using namespace flt::cvt::det;
 using namespace flt::ui;
 
 namespace{

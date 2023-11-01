@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <format>
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 box_info::box_info()
 {

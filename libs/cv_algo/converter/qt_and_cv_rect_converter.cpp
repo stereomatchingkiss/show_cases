@@ -1,6 +1,6 @@
 #include "qt_and_cv_rect_converter.hpp"
 
-namespace flt{
+namespace flt::cvt{
 
 cv::Rect convert_qrectf_to_cv_rect(const QRectF &qrect, int scale_x, int scale_y)
 {

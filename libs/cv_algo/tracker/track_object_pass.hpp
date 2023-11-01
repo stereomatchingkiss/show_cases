@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace flt::tracker
+namespace flt::cvt::tracker
 {
 
 struct track_results;
@@ -15,7 +15,7 @@ public:
     explicit track_object_pass(cv::Rect const &scaled_roi, size_t lost_threshold);
     ~track_object_pass();
 
-    track_results track(std::vector<det::box_info> const &input);
+    track_results track(std::vector<cvt::det::box_info> const &input);
 
 private:
     struct impl;

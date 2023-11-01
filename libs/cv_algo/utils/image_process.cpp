@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace flt::utils{
+namespace flt::cvt::utils{
 
 void adjust_img_orientation(const cv::Mat &input, cv::Mat &output, int rotate_angle, bool horizontal_flip)
 {

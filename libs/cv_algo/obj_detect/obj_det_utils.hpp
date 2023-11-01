@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 struct box_info;
 struct object_rect;

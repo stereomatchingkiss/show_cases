@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace flt::tracker{
+namespace flt::cvt::tracker{
 
 KalmanFilter::KalmanFilter(float std_weight_position, float std_weight_velocity) :
     std_weight_position_(std_weight_position),

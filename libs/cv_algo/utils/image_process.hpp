@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace flt::utils{
+namespace flt::cvt::utils{
 
 void adjust_img_orientation(cv::Mat const &input, cv::Mat &output, int rotate_angle, bool horizontal_flip);
 

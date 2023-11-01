@@ -52,7 +52,7 @@
 //use_lines: Enables line clipping. Adds a very minor cost to performance.
 #define use_lines
 
-namespace flt::ocr{
+namespace flt::cvt::ocr{
 
 
 namespace{

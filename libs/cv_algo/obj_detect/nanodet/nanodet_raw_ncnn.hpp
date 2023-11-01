@@ -15,7 +15,7 @@
  * This class do not depends on opencv, easier to create plugin for python
  */
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 class nanodet_raw_ncnn
 {

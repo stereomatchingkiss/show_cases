@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace flt::tracker{
+namespace flt::cvt::tracker{
 
 STrack::STrack(const Rect<float>& rect, float score) :
     kalman_filter_(),
@@ -23,12 +23,12 @@ STrack::~STrack()
 {
 }
 
-Rect<float> const& tracker::STrack::getRect() const
+Rect<float> const& cvt::tracker::STrack::getRect() const
 {
     return rect_;
 }
 
-STrackState tracker::STrack::getSTrackState() const
+STrackState cvt::tracker::STrack::getSTrackState() const
 {
     return state_;
 }

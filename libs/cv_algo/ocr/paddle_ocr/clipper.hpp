@@ -56,7 +56,7 @@
 #include <functional>
 #include <queue>
 
-namespace flt::ocr {
+namespace flt::cvt::ocr {
 
     enum ClipType { ctIntersection, ctUnion, ctDifference, ctXor };
     enum PolyType { ptSubject, ptClip };

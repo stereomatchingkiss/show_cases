@@ -1,6 +1,6 @@
 #pragma once
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 enum class coco_object_index{
     person,

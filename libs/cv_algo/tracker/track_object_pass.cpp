@@ -7,7 +7,7 @@
 
 #include <map>
 
-namespace flt::tracker
+namespace flt::cvt::tracker
 {
 
 namespace{
@@ -91,7 +91,7 @@ struct track_object_pass::impl
         }
     }
 
-    void add_new_track(det::box_info const &cur_track)
+    void add_new_track(cvt::det::box_info const &cur_track)
     {
         track_info ti;
         if(scaled_roi_.contains(cur_track.center())){
@@ -102,7 +102,7 @@ struct track_object_pass::impl
         track_map_.insert({cur_track.track_id_, ti});
     }
 
-    track_results track(std::vector<det::box_info> const &input)
+    track_results track(std::vector<cvt::det::box_info> const &input)
     {
         init_lost_track();
         for(auto const &cur_track : input){
@@ -173,7 +173,7 @@ track_object_pass::~track_object_pass()
 
 }
 
-track_results track_object_pass::track(std::vector<det::box_info> const &input)
+track_results track_object_pass::track(std::vector<cvt::det::box_info> const &input)
 {
     return impl_->track(input);
 }

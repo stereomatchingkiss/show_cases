@@ -2,7 +2,7 @@
 
 #include "clipper.hpp"
 
-namespace flt::ocr{
+namespace flt::cvt::ocr{
 
 namespace {
 
@@ -101,13 +101,13 @@ float boxScoreFast(const cv::Mat & inMat, const std::vector<cv::Point> & inBox) 
 std::vector<cv::Point> unClip(const std::vector<cv::Point> & inBox, float perimeter, float unClipRatio) {    
     Path poly;
     for (int i = 0; i < inBox.size(); ++i) {
-        poly.push_back(flt::ocr::IntPoint(inBox[i].x, inBox[i].y));
+        poly.push_back(flt::cvt::ocr::IntPoint(inBox[i].x, inBox[i].y));
     }
 
-    double distance = unClipRatio * flt::ocr::Area(poly) / (double)perimeter;
+    double distance = unClipRatio * flt::cvt::ocr::Area(poly) / (double)perimeter;
 
     ClipperOffset clipperOffset;
-    clipperOffset.AddPath(poly, flt::ocr::JoinType::jtRound, flt::ocr::EndType::etClosedPolygon);
+    clipperOffset.AddPath(poly, flt::cvt::ocr::JoinType::jtRound, flt::cvt::ocr::EndType::etClosedPolygon);
     Paths polys;
     polys.push_back(poly);
     clipperOffset.Execute(polys, distance);

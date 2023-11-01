@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace flt{
+namespace flt::cvt{
 
 namespace tracker{
 
@@ -13,12 +13,12 @@ struct Object;
 
 }
 
-tracker::Object box_info_to_byte_track_obj(det::box_info const &info);
+cvt::tracker::Object box_info_to_byte_track_obj(cvt::det::box_info const &info);
 
-std::vector<tracker::Object> box_info_to_byte_track_obj(std::vector<det::box_info> const &inputs);
+std::vector<cvt::tracker::Object> box_info_to_byte_track_obj(std::vector<cvt::det::box_info> const &inputs);
 
-det::box_info byte_track_obj_to_box_info(std::shared_ptr<tracker::STrack> const &ptr, int label);
+cvt::det::box_info byte_track_obj_to_box_info(std::shared_ptr<cvt::tracker::STrack> const &ptr, int label);
 
-std::vector<det::box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<tracker::STrack>> const &obj, int label);
+std::vector<cvt::det::box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<cvt::tracker::STrack>> const &obj, int label);
 
 }

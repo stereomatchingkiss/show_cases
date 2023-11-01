@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 
-namespace flt::det{
+namespace flt::cvt::det{
 
 namespace{
 

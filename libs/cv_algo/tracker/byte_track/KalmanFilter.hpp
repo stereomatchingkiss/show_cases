@@ -4,7 +4,7 @@
 
 #include "Rect.hpp"
 
-namespace flt::tracker
+namespace flt::cvt::tracker
 {
 class KalmanFilter
 {
