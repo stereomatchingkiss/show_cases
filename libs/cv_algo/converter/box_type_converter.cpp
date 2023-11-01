@@ -25,20 +25,20 @@ std::vector<cvt::tracker::Object> box_info_to_byte_track_obj(const std::vector<b
     return objs;
 }
 
-box_info byte_track_obj_to_box_info(std::shared_ptr<cvt::tracker::STrack> const &ptr, int label)
+box_info byte_track_obj_to_box_info(std::shared_ptr<cvt::tracker::STrack> const &ptr)
 {
     auto const &rect = ptr->getRect();
-    box_info binfo(rect.x(), rect.y(), rect.br_x(), rect.br_y(), ptr->getScore(), label);
+    box_info binfo(rect.x(), rect.y(), rect.br_x(), rect.br_y(), ptr->getScore(), ptr->getLabel());
     binfo.track_id_ = static_cast<int>(ptr->getTrackId());
 
     return binfo;
 }
 
-std::vector<box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<cvt::tracker::STrack>> const &obj, int label)
+std::vector<box_info> byte_track_obj_to_box_info(std::vector<std::shared_ptr<cvt::tracker::STrack>> const &obj)
 {
     std::vector<box_info> binfo;
     for(auto const &val : obj){
-        binfo.emplace_back(byte_track_obj_to_box_info(val, label));
+        binfo.emplace_back(byte_track_obj_to_box_info(val));
     }
 
     return binfo;

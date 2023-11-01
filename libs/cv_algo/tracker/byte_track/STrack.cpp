@@ -4,13 +4,14 @@
 
 namespace flt::cvt::tracker{
 
-STrack::STrack(const Rect<float>& rect, float score) :
+STrack::STrack(const Rect<float>& rect, float score, int label) :
     kalman_filter_(),
     mean_(),
     covariance_(),
     rect_(rect),
     state_(STrackState::New),
     is_activated_(false),
+    label_(label),
     score_(score),
     track_id_(0),
     frame_id_(0),
@@ -23,42 +24,47 @@ STrack::~STrack()
 {
 }
 
-Rect<float> const& cvt::tracker::STrack::getRect() const
+Rect<float> const& cvt::tracker::STrack::getRect() const noexcept
 {
     return rect_;
 }
 
-STrackState cvt::tracker::STrack::getSTrackState() const
+STrackState cvt::tracker::STrack::getSTrackState() const noexcept
 {
     return state_;
 }
 
-bool STrack::isActivated() const
+bool STrack::isActivated() const noexcept
 {
     return is_activated_;
 }
 
-float STrack::getScore() const
+int STrack::getLabel() const noexcept
+{
+    return label_;
+}
+
+float STrack::getScore() const noexcept
 {
     return score_;
 }
 
-size_t STrack::getTrackId() const
+size_t STrack::getTrackId() const noexcept
 {
     return track_id_;
 }
 
-size_t STrack::getFrameId() const
+size_t STrack::getFrameId() const noexcept
 {
     return frame_id_;
 }
 
-size_t STrack::getStartFrameId() const
+size_t STrack::getStartFrameId() const noexcept
 {
     return start_frame_id_;
 }
 
-size_t STrack::getTrackletLength() const
+size_t STrack::getTrackletLength() const noexcept
 {
     return tracklet_len_;
 }
