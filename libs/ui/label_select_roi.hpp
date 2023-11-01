@@ -36,8 +36,8 @@ private:
     void resizeEvent(QResizeEvent *event) override;
 
     QPointF mouse_press_point_;
-    QRectF norm_roi_;
-    QRubberBand *rband_;
+    QRectF norm_roi_;    
+    QRubberBand *rband_;    
 };
 
 }

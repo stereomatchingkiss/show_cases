@@ -26,12 +26,14 @@ label_select_roi::~label_select_roi()
 
 void label_select_roi::display_frame(std::any img)
 {
-    setPixmap(std::any_cast<QPixmap>(img).scaled(width(), height(), Qt::KeepAspectRatio));
+    //setPixmap(std::any_cast<QPixmap>(img).scaled(width(), height(), Qt::KeepAspectRatio));
+    //a quick, dirty fix to deal with inconsistent coordinates between QLabel and QPixmap
+    setPixmap(std::any_cast<QPixmap>(img).scaled(width(), height()));
 }
 
 QRectF label_select_roi::get_norm_rubber_band_rect() const
 {
-    if(auto const rrect = rband_->rect(); rrect.width() > 0 && !mouse_press_point_.isNull()){
+    if(auto const rrect = rband_->rect(); rrect.width() > 0 && !mouse_press_point_.isNull() && !pixmap().isNull()){
         auto const widget_size = size();
         QRectF norm_rect;
         norm_rect.setX(mouse_press_point_.x() / widget_size.width());
