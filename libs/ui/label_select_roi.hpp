@@ -22,7 +22,7 @@ public:
 
     void display_frame(std::any img);
 
-    QRectF get_rubber_band_rect() const;
+    QRectF get_norm_rubber_band_rect() const;
 
     QJsonObject get_states() const;
     void set_states(QJsonObject const &val);

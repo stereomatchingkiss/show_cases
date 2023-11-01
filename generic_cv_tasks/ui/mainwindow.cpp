@@ -132,7 +132,7 @@ void MainWindow::next_page_is_widget_stream_player()
     config_nanodet_worker config;
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
-    config.roi_ = label_select_roi_->get_rubber_band_rect();
+    config.roi_ = label_select_roi_->get_norm_rubber_band_rect();
     auto process_controller =
         std::make_shared<frame_process_controller>(new nanodet_worker(std::move(config)));
     connect(process_controller.get(), &frame_process_controller::send_process_results,

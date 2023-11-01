@@ -29,7 +29,7 @@ void label_select_roi::display_frame(std::any img)
     setPixmap(std::any_cast<QPixmap>(img).scaled(width(), height(), Qt::KeepAspectRatio));
 }
 
-QRectF label_select_roi::get_rubber_band_rect() const
+QRectF label_select_roi::get_norm_rubber_band_rect() const
 {
     if(auto const rrect = rband_->rect(); rrect.width() > 0 && !mouse_press_point_.isNull()){
         auto const widget_size = size();
@@ -48,7 +48,7 @@ QRectF label_select_roi::get_rubber_band_rect() const
 QJsonObject label_select_roi::get_states() const
 {
     QJsonArray norm_vals;
-    auto const norm_roi = get_rubber_band_rect();
+    auto const norm_roi = get_norm_rubber_band_rect();
     norm_vals.push_back(norm_roi.x());
     norm_vals.push_back(norm_roi.y());
     norm_vals.push_back(norm_roi.width());
@@ -84,7 +84,7 @@ void label_select_roi::show_rubber_band()
 {
     if(!rband_->rect().isEmpty()){
         if(norm_roi_.isEmpty()){
-            auto const norm_roi = get_rubber_band_rect();
+            auto const norm_roi = get_norm_rubber_band_rect();
             show_rubber_band(norm_roi);
         }else{
             show_rubber_band(norm_roi_);
