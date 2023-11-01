@@ -9,9 +9,6 @@ class QJsonObject;
 
 struct config_source_selection
 {
-    QJsonObject get_states() const;
-    void set_states(QJsonObject const &val);
-
     int max_fps_;
     QString rtsp_url_;
     QString video_url_;

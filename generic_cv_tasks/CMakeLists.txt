@@ -46,7 +46,7 @@ set(PROJECT_SOURCES
         config/object_detect_model_enum.hpp
         config/object_detect_model_select_config.hpp
         config/select_object_to_detect_config.hpp config/select_object_to_detect_config.cpp
-        config/config_source_selection.hpp config/config_source_selection.cpp
+        config/config_source_selection.hpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
