@@ -97,6 +97,7 @@ struct track_object_pass::impl
         if(scaled_roi_.contains(cur_track.center())){
             ti.first_point_in_rect_ = cur_track.center();
             ti.entered_roi_ = true;
+            ++track_res_.count_in_center_;
         }
 
         track_map_.insert({cur_track.track_id_, ti});
@@ -113,8 +114,7 @@ struct track_object_pass::impl
                 if(scaled_roi_.contains(cur_track.center())){
                     if(!last_track.entered_roi_){
                         last_track.first_point_in_rect_ = cur_track.center();
-                        last_track.entered_roi_ = true;
-                        ++track_res_.count_in_center_;
+                        last_track.entered_roi_ = true;                        
                     }
                 }else{
                     count_pass_directions(last_track, cur_track.center(), it);
