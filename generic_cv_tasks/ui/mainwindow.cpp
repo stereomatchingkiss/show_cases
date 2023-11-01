@@ -9,6 +9,8 @@
 #include "../algo/frame_display_worker.hpp"
 #include "../algo/obj_detect/nanodet_worker.hpp"
 
+#include "../config/config_read_write.hpp"
+
 #include "../global/global_keywords.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
@@ -30,7 +32,17 @@ MainWindow::MainWindow(QWidget *parent)
     widget_object_detect_model_select_ = new widget_object_detect_model_select;
     widget_source_selection_ = new widget_source_selection;
     widget_stream_player_    = new widget_stream_player;
-    widget_select_object_to_detect_ = new widget_select_object_to_detect(global_keywords().coco_names());
+
+    global_keywords gk;
+    widget_select_object_to_detect_ = new widget_select_object_to_detect(gk.coco_names());
+
+    config_read_write crw;
+    auto const jobj = crw.read(global_keywords().generic_cv_tasks_assets() + "/cam_info.json");
+
+    label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
+    widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
+    widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
+    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
 
     ui->stackedWidget->addWidget(widget_object_detect_model_select_);
     ui->stackedWidget->addWidget(widget_select_object_to_detect_);
@@ -44,7 +56,14 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow()
-{
+{    
+    config_read_write crw;
+    crw.set_roi(label_select_roi_->get_states());
+    crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
+    crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
+    crw.set_widget_source_selection(widget_source_selection_->get_states());
+    crw.write(global_keywords().generic_cv_tasks_assets() + "/cam_info.json");
+
     delete ui;
 }
 
