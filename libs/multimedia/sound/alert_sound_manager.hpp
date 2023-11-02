@@ -21,7 +21,7 @@ class alert_sound_manager : public QObject
 {
     Q_OBJECT
 public:
-    explicit alert_sound_manager(QObject *parent = nullptr);
+    explicit alert_sound_manager(QUrl const &filename = {}, QObject *parent = nullptr);
     ~alert_sound_manager();
 
     /**

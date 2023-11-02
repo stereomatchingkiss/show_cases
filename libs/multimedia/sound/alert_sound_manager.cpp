@@ -9,10 +9,10 @@
 
 namespace flt::mm{
 
-alert_sound_manager::alert_sound_manager(QObject *parent) :
+alert_sound_manager::alert_sound_manager(QUrl const &filename, QObject *parent) :
     QObject(parent),
     audio_(std::make_unique<QAudioOutput>()),
-    file_name_("assets/sounds/Fire_pager-jason-1283464858.mp3"),
+    file_name_(filename),
     sound_(std::make_unique<QMediaPlayer>()),
     timer_(new QTimer(this))
 {
