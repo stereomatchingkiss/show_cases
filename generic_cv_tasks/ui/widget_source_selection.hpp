@@ -28,6 +28,7 @@ public:
     flt::mm::frame_capture_params get_frame_capture_params() const;
     flt::mm::stream_source_type get_source_type() const noexcept;
 
+    bool get_is_valid_source() const noexcept;
     int get_max_fps() const noexcept;
     QString get_rtsp_source() const noexcept;
     QString get_video_source() const noexcept;

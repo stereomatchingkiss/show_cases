@@ -75,6 +75,21 @@ flt::mm::stream_source_type widget_source_selection::get_source_type() const noe
     return stype::webcam;
 }
 
+bool widget_source_selection::get_is_valid_source() const noexcept
+{
+    if(ui->radioButtonRTSP->isChecked() && !ui->lineEditRTSP->text().isEmpty() && ui->lineEditRTSP->text().startsWith("rtsp")){
+        return true;
+    }
+    if(ui->radioButtonVideo->isChecked() && QFile::exists(ui->radioButtonVideo->text())){
+        return true;
+    }
+    if(ui->radioButtonWebcam->isChecked() && ui->comboBoxWebCam->count() > 0){
+        return true;
+    }
+
+    return false;
+}
+
 int widget_source_selection::get_max_fps() const noexcept
 {
     return ui->spinBoxMaxFPS->value();

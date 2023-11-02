@@ -54,7 +54,11 @@
       </widget>
      </item>
      <item row="2" column="1" colspan="2">
-      <widget class="QLineEdit" name="lineEditRTSP"/>
+      <widget class="QLineEdit" name="lineEditRTSP">
+       <property name="placeholderText">
+        <string>example : rtsp://192.168.1.2:8080/out.h264</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
