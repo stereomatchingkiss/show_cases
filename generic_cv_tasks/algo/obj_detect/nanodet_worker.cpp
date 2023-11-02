@@ -23,12 +23,18 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
+
+#include <QJsonObject>
+#include <QJsonDocument>
+
 #include <QPixmap>
 
 #include <format>
-#include <fstream>
 
 using namespace flt;
 using namespace flt::cvt;
@@ -38,12 +44,67 @@ struct nanodet_worker::impl
 {
     impl(config_nanodet_worker config) :
         config_{std::move(config)},
-        names_{global_keywords().coco_names()}
+        names_{global_keywords().coco_names()},
+        file_{global_keywords().tracker_alert_path() + "/cam0/info.txt"}
+    {
+        create_model();
+        create_obj_to_detect();
+
+        if(file_.open(QIODevice::WriteOnly)){
+            stream_.setDevice(&file_);
+        }
+    }
+
+    bool check_alarm_condition(track_results const &pass_results)
+    {
+        bool alarm_on = false;
+        if(config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
+            im_name_.clear();
+            for(auto const &val : pass_results.track_durations_){
+                if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
+                    !written_id_.contains(val.id_)){
+                    if(im_name_.isEmpty()){
+                        im_name_ = create_fname();
+                    }
+                    alarm_on = true;
+                    QJsonObject jobj;
+                    jobj["image_name"] = im_name_;
+                    jobj["track_id"] = val.id_;
+                    jobj["duration"] = val.duration_sec_;
+                    stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";
+
+                    written_id_.insert(val.id_);
+                }
+            }
+        }
+
+        return alarm_on;
+    }
+
+    void clear_written_id()
+    {
+        if(im_ids_ % 500 == 0){
+            for(auto it = std::begin(written_id_); it != std::end(written_id_);){
+                if(track_obj_pass_->id_is_under_track(*it)){
+                    written_id_.erase(it++);
+                }else{
+                    ++it;
+                }
+            }
+        }
+    }
+
+    QString create_fname() const
+    {
+        return  global_keywords().tracker_alert_path() + "/cam0/" + QString("%1").arg(im_ids_, 6, 10, QChar('0')) + ".jpg";
+    }
+
+    void create_model()
     {
         using dme = object_detect_model_enum;
 
         std::string const model_root("assets/obj_detect/");
-        switch(config.config_object_detect_model_select_.model_){
+        switch(config_.config_object_detect_model_select_.model_){
         case dme::nanodet_plus_m_320:{
             auto const param = std::format("{}/nanodet-plus-m_{}.param", model_root, 320);
             auto const bin = std::format("{}/nanodet-plus-m_{}.bin", model_root, 320);
@@ -63,8 +124,6 @@ struct nanodet_worker::impl
             break;
         }
         }
-
-        create_obj_to_detect();        
     }
 
     void create_obj_to_detect()
@@ -117,12 +176,19 @@ struct nanodet_worker::impl
     }
 
     config_nanodet_worker config_;
-    std::vector<std::string> names_;    
+    QString im_name_;
+    size_t im_ids_ = 0;
+    global_keywords keywords_;
+    std::vector<std::string> names_;
     std::unique_ptr<det::obj_det_base> net_;
     std::vector<bool> obj_to_detect_;
-    cv::Rect scaled_roi_;
+    cv::Rect scaled_roi_;    
     BYTETracker tracker_;
     std::unique_ptr<track_object_pass> track_obj_pass_;
+    std::set<int> written_id_;
+
+    QFile file_;
+    QTextStream stream_;
 };
 
 nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
@@ -157,12 +223,10 @@ void nanodet_worker::process_results(std::any frame)
     impl_->draw_pass_results(mat, pass_results);
 
     obj_det_worker_results results;
-    if(impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
-        for(auto const &val : pass_results.track_durations_){
-            if(val.duration_sec_ >= impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_){
-                results.alarm_on_ = true;
-            }
-        }
+    if(impl_->check_alarm_condition(pass_results)){
+        results.alarm_on_ = true;
+        cv::imwrite(impl_->im_name_.toStdString(), mat);
+        ++impl_->im_ids_;
     }
 
     results.mat_ = std::move(mat);
