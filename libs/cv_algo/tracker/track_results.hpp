@@ -1,6 +1,14 @@
 #pragma once
 
+#include <vector>
+
 namespace flt::cvt::tracker{
+
+struct track_duration
+{
+    int id_;
+    int duration_sec_;
+};
 
 struct track_results
 {
@@ -9,6 +17,8 @@ struct track_results
     size_t count_left_pass_ = 0;
     size_t count_right_pass_ = 0;
     size_t count_in_center_ = 0;
+
+    std::vector<track_duration> track_durations_;
 };
 
 }

@@ -5,6 +5,7 @@
 #include <boost/geometry/geometries/segment.hpp>
 #include <boost/geometry/algorithms/intersection.hpp>
 
+#include <chrono>
 #include <map>
 
 namespace flt::cvt::tracker
@@ -18,16 +19,20 @@ using point_t = bg::model::point<int, 2, bg::cs::cartesian>;
 
 using segment = boost::geometry::model::segment<point_t>;
 
+using namespace std::chrono;
+
 struct track_info
 {
     cv::Point first_point_in_rect_;
     bool entered_roi_ = false;
     bool lost_track_ = true;
     int lost_count_ = 0;
+
+    time_point<std::chrono::high_resolution_clock> time_ = high_resolution_clock::now();
 };
 
 inline point_t pt_convert(cv::Point const &pt)
-{
+{    
     return point_t(pt.x, pt.y);
 }
 
@@ -106,9 +111,10 @@ struct track_object_pass::impl
     track_results track(std::vector<cvt::det::box_info> const &input)
     {
         init_lost_track();
+        track_res_.track_durations_.clear();
         for(auto const &cur_track : input){
             if(auto it = track_map_.find(cur_track.track_id_); it != std::end(track_map_)){
-                auto &last_track = it->second;
+                auto &last_track = it->second;                
                 last_track.lost_count_ = 0;
                 last_track.lost_track_ = false;
                 if(scaled_roi_.contains(cur_track.center())){
@@ -125,6 +131,10 @@ struct track_object_pass::impl
             }
         }
         erase_lost_track();
+        for(auto const &val : track_map_){
+            auto const duration = duration_cast<seconds>(high_resolution_clock::now() - val.second.time_).count();
+            track_res_.track_durations_.emplace_back(val.first, duration);
+        }
 
         return track_res_;
     }
