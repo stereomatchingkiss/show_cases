@@ -157,9 +157,11 @@ void nanodet_worker::process_results(std::any frame)
     impl_->draw_pass_results(mat, pass_results);
 
     obj_det_worker_results results;
-    for(auto const &val : pass_results.track_durations_){
-        if(val.duration_sec_ >= impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_){
-            results.alarm_on_ = true;
+    if(impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
+        for(auto const &val : pass_results.track_durations_){
+            if(val.duration_sec_ >= impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_){
+                results.alarm_on_ = true;
+            }
         }
     }
 

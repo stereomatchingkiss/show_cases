@@ -52,6 +52,7 @@ MainWindow::~MainWindow()
     crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
     crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
     crw.set_widget_source_selection(widget_source_selection_->get_states());
+    crw.set_widget_tracker_alert(widget_tracker_alert_->get_states());
     crw.write(global_keywords().cam_config_path() + "/cam0.json");
 
     delete ui;
@@ -158,6 +159,7 @@ void MainWindow::next_page_is_widget_stream_player()
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
     config.roi_ = label_select_roi_->get_norm_rubber_band_rect();
+    config.config_tracker_alert_ = widget_tracker_alert_->get_config();
     auto process_controller =
         std::make_shared<frame_process_controller>(new nanodet_worker(std::move(config)));
     connect(process_controller.get(), &frame_process_controller::send_process_results,
