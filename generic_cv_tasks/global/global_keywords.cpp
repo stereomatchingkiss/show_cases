@@ -7,6 +7,11 @@ const QString global_keywords::generic_cv_tasks_assets() const
     return "GenericCVTasksAssets";
 }
 
+const QString global_keywords::tracker_alert_path() const
+{
+    return generic_cv_tasks_assets() + "/alert/";
+}
+
 const QString global_keywords::coco_names_path() const
 {
     return "assets/obj_detect/coco.names";
@@ -35,4 +40,9 @@ QString global_keywords::state_widget_select_object_to_detect() const
 QString global_keywords::state_widget_source_selection() const
 {
     return "state_widget_source_selection";
+}
+
+QString global_keywords::state_tracker_alert() const
+{
+    return "state_tracker_alert";
 }
