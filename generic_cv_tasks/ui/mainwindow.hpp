@@ -13,6 +13,7 @@ class widget_object_detect_model_select;
 class widget_select_object_to_detect;
 class widget_source_selection;
 class widget_stream_player;
+class widget_tracker_alert;
 
 namespace flt::mm{
 
@@ -46,6 +47,7 @@ private:
     void next_page_is_widget_stream_player();
     void next_page_is_widget_select_object_to_detect();
     void next_page_is_widget_source_selection();
+    void next_page_is_widget_tracker_alert();
 
     Ui::MainWindow *ui;
 
@@ -54,6 +56,7 @@ private:
     widget_select_object_to_detect *widget_select_object_to_detect_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
+    widget_tracker_alert *widget_tracker_alert_;
 
     std::unique_ptr<flt::mm::single_frame_with_multi_worker> sfwmw_;
 };
