@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Object detection and alarm system</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -70,8 +70,20 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuQt">
+    <property name="title">
+     <string>License</string>
+    </property>
+    <addaction name="actionQt"/>
+   </widget>
+   <addaction name="menuQt"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQt">
+   <property name="text">
+    <string>Qt</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

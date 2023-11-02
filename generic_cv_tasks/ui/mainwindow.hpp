@@ -43,6 +43,8 @@ private slots:
 private:
     void create_roi_select_stream();
 
+    void init_stacked_widget();
+
     void next_page_is_label_select_roi();
     void next_page_is_widget_stream_player();
     void next_page_is_widget_select_object_to_detect();

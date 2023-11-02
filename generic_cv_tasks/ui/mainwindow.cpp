@@ -21,6 +21,8 @@
 
 #include <ui/label_select_roi.hpp>
 
+#include <QMessageBox>
+
 using namespace flt;
 using namespace flt::mm;
 
@@ -30,36 +32,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    label_select_roi_ = new ui::label_select_roi(tr("Select roi"));
-    widget_object_detect_model_select_ = new widget_object_detect_model_select;
-    widget_source_selection_ = new widget_source_selection;
-    widget_stream_player_    = new widget_stream_player;
-    widget_tracker_alert_    = new widget_tracker_alert;
-
-    global_keywords gk;
-    widget_select_object_to_detect_ = new widget_select_object_to_detect(gk.coco_names());
-
-    config_read_write crw;
-    auto const jobj = crw.read(global_keywords().cam_config_path() + "/cam0.json");
-
-    label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
-    widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
-    widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
-    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
-    widget_tracker_alert_->set_states(jobj[gk.state_tracker_alert()].toObject());
-
-    ui->stackedWidget->addWidget(label_select_roi_);
-    ui->stackedWidget->addWidget(widget_object_detect_model_select_);
-    ui->stackedWidget->addWidget(widget_select_object_to_detect_);
-    ui->stackedWidget->addWidget(widget_source_selection_);    
-    ui->stackedWidget->addWidget(widget_stream_player_);
-    ui->stackedWidget->addWidget(widget_tracker_alert_);
-
-    ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
+    init_stacked_widget();
 
     ui->pushButtonPrev->setEnabled(false);
-
     ui->labelTitle->setText(tr("Select model"));
+
+    connect(ui->actionQt, &QAction::triggered, [](bool)
+            {
+        QMessageBox::aboutQt(nullptr, tr("About Qt"));
+    });
 }
 
 MainWindow::~MainWindow()
@@ -134,6 +115,36 @@ void MainWindow::create_roi_select_stream()
     sfwmw_->start();
 }
 
+void MainWindow::init_stacked_widget()
+{
+    label_select_roi_ = new ui::label_select_roi(tr("Select roi"));
+    widget_object_detect_model_select_ = new widget_object_detect_model_select;
+    widget_source_selection_ = new widget_source_selection;
+    widget_stream_player_    = new widget_stream_player;
+    widget_tracker_alert_    = new widget_tracker_alert;
+
+    global_keywords gk;
+    widget_select_object_to_detect_ = new widget_select_object_to_detect(gk.coco_names());
+
+    config_read_write crw;
+    auto const jobj = crw.read(global_keywords().cam_config_path() + "/cam0.json");
+
+    label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
+    widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
+    widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
+    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
+    widget_tracker_alert_->set_states(jobj[gk.state_tracker_alert()].toObject());
+
+    ui->stackedWidget->addWidget(label_select_roi_);
+    ui->stackedWidget->addWidget(widget_object_detect_model_select_);
+    ui->stackedWidget->addWidget(widget_select_object_to_detect_);
+    ui->stackedWidget->addWidget(widget_source_selection_);
+    ui->stackedWidget->addWidget(widget_stream_player_);
+    ui->stackedWidget->addWidget(widget_tracker_alert_);
+
+    ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
+}
+
 void MainWindow::next_page_is_widget_stream_player()
 {
     ui->labelTitle->setVisible(false);
@@ -181,6 +192,9 @@ void MainWindow::next_page_is_widget_tracker_alert()
 
 void MainWindow::next_page_is_label_select_roi()
 {
+    if(!widget_source_selection_->get_is_valid_source()){
+
+    }
     ui->labelTitle->setText(tr("Select roi"));
     ui->stackedWidget->setCurrentWidget(label_select_roi_);
     ui->pushButtonNext->setEnabled(true);
