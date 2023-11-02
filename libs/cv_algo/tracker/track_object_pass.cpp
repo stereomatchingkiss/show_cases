@@ -108,6 +108,11 @@ struct track_object_pass::impl
         track_map_.insert({cur_track.track_id_, ti});
     }
 
+    bool id_is_under_track(int val) const noexcept
+    {
+        return track_map_.contains(val);
+    }
+
     track_results track(std::vector<cvt::det::box_info> const &input)
     {
         init_lost_track();
@@ -182,6 +187,11 @@ track_object_pass::track_object_pass(cv::Rect const &scaled_roi, size_t lost_thr
 track_object_pass::~track_object_pass()
 {
 
+}
+
+bool track_object_pass::id_is_under_track(int val) const noexcept
+{
+    return impl_->id_is_under_track(val);
 }
 
 track_results track_object_pass::track(std::vector<cvt::det::box_info> const &input)

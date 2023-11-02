@@ -15,6 +15,7 @@ public:
     explicit track_object_pass(cv::Rect const &scaled_roi, size_t lost_threshold);
     ~track_object_pass();
 
+    bool id_is_under_track(int val) const noexcept;
     track_results track(std::vector<cvt::det::box_info> const &input);
 
 private:
