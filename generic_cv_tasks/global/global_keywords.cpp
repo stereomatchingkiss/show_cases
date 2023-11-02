@@ -12,6 +12,11 @@ const QString global_keywords::tracker_alert_path() const
     return generic_cv_tasks_assets() + "/alert/";
 }
 
+QString global_keywords::cam_config_path() const
+{
+    return generic_cv_tasks_assets() + "/cam_config/";
+}
+
 const QString global_keywords::coco_names_path() const
 {
     return "assets/obj_detect/coco.names";

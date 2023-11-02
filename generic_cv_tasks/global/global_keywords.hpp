@@ -9,6 +9,7 @@
 class global_keywords
 {
 public:
+    QString cam_config_path() const;
     QString const coco_names_path() const;
     std::vector<std::string> coco_names() const;    
     QString const generic_cv_tasks_assets() const;
