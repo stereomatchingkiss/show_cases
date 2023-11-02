@@ -12,7 +12,9 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stream_player)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
+
+    get_alert_sound_manager();
 }
 
 widget_stream_player::~widget_stream_player()
@@ -25,7 +27,9 @@ void widget_stream_player::display_frame(std::any results)
     auto val = std::any_cast<obj_det_worker_results>(results);
     int const w = ui->labelStream->width();
     int const h = ui->labelStream->height();
-    ui->labelStream->setPixmap(val.pixmap_.scaled(w,h,Qt::KeepAspectRatio));
+
+    auto qimg = QImage(val.mat_.data, val.mat_.cols, val.mat_.rows, val.mat_.step, QImage::Format_RGB888);
+    ui->labelStream->setPixmap(QPixmap::fromImage(qimg).scaled(w,h,Qt::KeepAspectRatio));
 
     if(val.alarm_on_){
         get_alert_sound_manager().play();

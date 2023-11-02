@@ -32,6 +32,7 @@
 
 using namespace flt;
 using namespace flt::cvt;
+using namespace flt::cvt::tracker;
 
 struct nanodet_worker::impl
 {
@@ -77,6 +78,19 @@ struct nanodet_worker::impl
         }
     }
 
+    void draw_pass_results(cv::Mat &mat, track_results const &pass_results) const
+    {
+        cv::putText(mat, std::format("up:{}, down:{}", pass_results.count_top_pass_, pass_results.count_bottom_pass_),
+                    cv::Point(0, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
+        cv::putText(mat, std::format("left:{}, right:{}", pass_results.count_left_pass_, pass_results.count_right_pass_),
+                    cv::Point(0, 100), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
+        cv::putText(mat, std::format("in the rect:{}", pass_results.count_in_center_),
+                    cv::Point(0, 150), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
+        if(!scaled_roi_.empty()){
+            flt::cvt::utils::draw_empty_rect(mat, scaled_roi_);
+        }
+    }
+
     void remove_invalid_target(std::vector<det::box_info> &det_results)
     {
         auto func = [this](det::box_info const &val){
@@ -86,13 +100,29 @@ struct nanodet_worker::impl
         det_results.erase(first, last);
     }
 
+    auto track_obj(cv::Mat &mat)
+    {
+        auto det_results = net_->predict(mat, config_.config_object_detect_model_select_.confidence_,
+                                         config_.config_object_detect_model_select_.nms_);
+        remove_invalid_target(det_results);
+        auto track_obj = box_info_to_byte_track_obj(det_results);
+        auto const track_ptr_vec = tracker_.update(track_obj);
+
+        det_results = byte_track_obj_to_box_info(track_ptr_vec);
+        for(auto const &val : det_results){
+            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
+        }
+
+        return det_results;
+    }
+
     config_nanodet_worker config_;
     std::vector<std::string> names_;    
-    std::unique_ptr<cvt::det::obj_det_base> net_;
+    std::unique_ptr<det::obj_det_base> net_;
     std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
-    cvt::tracker::BYTETracker tracker_;
-    std::unique_ptr<cvt::tracker::track_object_pass> track_obj_pass_;
+    BYTETracker tracker_;
+    std::unique_ptr<track_object_pass> track_obj_pass_;
 };
 
 nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
@@ -122,32 +152,18 @@ void nanodet_worker::process_results(std::any frame)
             std::make_unique<cvt::tracker::track_object_pass>(impl_->scaled_roi_, 30);
     }
 
-    auto det_results = impl_->net_->predict(mat, impl_->config_.config_object_detect_model_select_.confidence_,
-                                            impl_->config_.config_object_detect_model_select_.nms_);
-    impl_->remove_invalid_target(det_results);
-    auto track_obj = box_info_to_byte_track_obj(det_results);
-    auto const track_ptr_vec = impl_->tracker_.update(track_obj);
+    auto const det_results = impl_->track_obj(mat);
+    auto const pass_results = impl_->track_obj_pass_->track(det_results);    
+    impl_->draw_pass_results(mat, pass_results);
 
-    det_results = byte_track_obj_to_box_info(track_ptr_vec);
-    for(auto const &val : det_results){
-        flt::cvt::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[val.label_], val.track_id_));        
-    }
-
-    auto const pass_results = impl_->track_obj_pass_->track(det_results);
-    cv::putText(mat, std::format("up:{}, down:{}", pass_results.count_top_pass_, pass_results.count_bottom_pass_),
-                cv::Point(0, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
-    cv::putText(mat, std::format("left:{}, right:{}", pass_results.count_left_pass_, pass_results.count_right_pass_),
-                cv::Point(0, 100), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
-    cv::putText(mat, std::format("in the rect:{}", pass_results.count_in_center_),
-                cv::Point(0, 150), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
-    if(!impl_->scaled_roi_.empty()){
-        flt::cvt::utils::draw_empty_rect(mat, impl_->scaled_roi_);
-    }
-
-    auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
     obj_det_worker_results results;
-    results.alarm_on_ = !det_results.empty();
-    results.pixmap_ = QPixmap::fromImage(std::move(qimg));
+    for(auto const &val : pass_results.track_durations_){
+        if(val.duration_sec_ >= impl_->config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_){
+            results.alarm_on_ = true;
+        }
+    }
+
+    results.mat_ = std::move(mat);
 
     emit send_process_results(results);
 }
