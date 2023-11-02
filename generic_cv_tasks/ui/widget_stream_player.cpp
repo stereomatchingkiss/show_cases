@@ -12,9 +12,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stream_player)
 {
-    ui->setupUi(this);
-
-    ui->labelStream->setScaledContents(true);    
+    ui->setupUi(this);    
 }
 
 widget_stream_player::~widget_stream_player()

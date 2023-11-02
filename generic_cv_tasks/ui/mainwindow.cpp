@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
             {
         QMessageBox::aboutQt(nullptr, tr("About Qt"));
     });
+
+    setMinimumSize(QSize(600, 400));
 }
 
 MainWindow::~MainWindow()
