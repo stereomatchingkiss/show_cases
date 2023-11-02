@@ -15,9 +15,9 @@ class widget_stream_player : public QWidget
 
 public:
     explicit widget_stream_player(QWidget *parent = nullptr);
-    ~widget_stream_player();    
+    ~widget_stream_player();
 
-    void display_frame(std::any img);
+    void display_frame(std::any results);
 
 private:    
 

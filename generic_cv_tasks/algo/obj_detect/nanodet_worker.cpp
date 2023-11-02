@@ -1,5 +1,7 @@
 #include "nanodet_worker.hpp"
 
+#include "obj_det_worker_results.hpp"
+
 #include "../../config/config_nanodet_worker.hpp"
 
 #include "../../global/global_keywords.hpp"
@@ -59,9 +61,9 @@ struct nanodet_worker::impl
             net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
-        }        
+        }
 
-        create_obj_to_detect();
+        create_obj_to_detect();        
     }
 
     void create_obj_to_detect()
@@ -128,8 +130,9 @@ void nanodet_worker::process_results(std::any frame)
 
     det_results = byte_track_obj_to_box_info(track_ptr_vec);
     for(auto const &val : det_results){
-        flt::cvt::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[val.label_], val.track_id_));
+        flt::cvt::det::draw_bboxes_custom(mat, val, std::format("{}:{}", impl_->names_[val.label_], val.track_id_));        
     }
+
     auto const pass_results = impl_->track_obj_pass_->track(det_results);
     cv::putText(mat, std::format("up:{}, down:{}", pass_results.count_top_pass_, pass_results.count_bottom_pass_),
                 cv::Point(0, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
@@ -142,5 +145,9 @@ void nanodet_worker::process_results(std::any frame)
     }
 
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-    emit send_process_results(QPixmap::fromImage(std::move(qimg)));//*/
+    obj_det_worker_results results;
+    results.alarm_on_ = !det_results.empty();
+    results.pixmap_ = QPixmap::fromImage(std::move(qimg));
+
+    emit send_process_results(results);
 }
