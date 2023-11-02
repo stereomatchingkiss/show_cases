@@ -47,8 +47,7 @@ void alert_sound_manager::play(QUrl const &file_name)
         sound_->play();
         timer_->start();
     }else{
-        if(sound_->playbackState() == QMediaPlayer::StoppedState){
-            qInfo()<<__func__<<": state == stoppedState";
+        if(sound_->playbackState() == QMediaPlayer::StoppedState){            
             sound_->play();
             timer_->start();
         }
