@@ -41,15 +41,17 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
 set(PROJECT_SOURCES
         main.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
-        algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
-        config/config_read_write.hpp config/config_read_write.cpp        
-        config/object_detect_model_enum.hpp
+        algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp        
+        config/config_nanodet_worker.hpp
         config/config_object_detect_model_select.hpp
+        config/object_detect_model_enum.hpp
+        config/config_read_write.hpp config/config_read_write.cpp
         config/config_select_object_to_detect.hpp config/config_select_object_to_detect.cpp
         config/config_source_selection.hpp
-        config/config_nanodet_worker.hpp
+        config/config_tracker_alert.hpp
         global/global_keywords.hpp global/global_keywords.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+        ui/widget_tracker_alert.hpp ui/widget_tracker_alert.cpp ui/widget_tracker_alert.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
         ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
