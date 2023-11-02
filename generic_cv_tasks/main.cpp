@@ -9,7 +9,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QDir().mkdir(global_keywords().cam_config_path());
+    QDir().mkpath(global_keywords().cam_config_path());
+    QDir().mkpath(global_keywords().tracker_alert_path() + "/cam0/");
 
     QCoreApplication::setOrganizationName("ThamSoft");
     QCoreApplication::setApplicationName("GenericCVTasks");
