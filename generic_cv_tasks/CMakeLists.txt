@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(generic_cv_tasks VERSION 0.1 LANGUAGES CXX)
+project(simple_qt_pro VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,37 +9,52 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(BUILD_AS_EXE 1)
-
-#add_definitions(-DANNOYLIB_MULTITHREADED_BUILD)
-#add_definitions(-DFMT_HEADER_ONLY)
-add_definitions(-DUSE_OPENCV)
-
+set(3RDLIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdLibs)
 set(PLUGIN_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../libs)
-set(BOOST_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdLibs/boost/boost_1_81_0)
+set(BOOST_LIBS_PATH ${3RDLIBS_PATH}/boost/boost_1_81_0)
 
-if(WIN32)
-    set(3RDLIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdLibs)
-    message("building windows platform")
-    #set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_5_4/opencv/build)
-    set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
-    #set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build-vs2022/install/lib/cmake)
-    set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
-    #set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20221128-windows-vs2022-shared/x64/lib/cmake)
-
-    #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
-    #find_package(Vulkan REQUIRED)
-    #target_link_libraries(target ${Vulkan_LIBRARIES})
-
-    #set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${NCNN_PATH};${VULKAN_PATH};${CMAKE_PREFIX_PATH};")
-    set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${NCNN_PATH};${CMAKE_PREFIX_PATH};")
-endif()
+#add_definitions(-DUSE_OPENCV)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
 
+if(WIN32)
+    message("building windows platform")
+    set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
+    set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
+
+    #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
+    #find_package(Vulkan REQUIRED)
+    #target_link_libraries(target ${Vulkan_LIBRARIES})
+    set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${NCNN_PATH};${CMAKE_PREFIX_PATH};")
+endif()
+
+if(EMSCRIPTEN)
+
+    message("build for wasm")
+    set(NCNN_PATH       ${3RDLIBS_PATH}/ncnn/ncnn-20231027/build/wasm/simd_threads/install/)
+    set(OPENCV_CV_PATH  ${3RDLIBS_PATH}/opencv/build/4.8.0/simd_threads/install)
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s NO_EXIT_RUNTIME=1 -s FORCE_FILESYSTEM=1 -s INITIAL_MEMORY=256MB -s ALLOW_MEMORY_GROWTH -s MAXIMUM_MEMORY=4GB -s EXIT_RUNTIME=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1 -s FORCE_FILESYSTEM=1 -s INITIAL_MEMORY=256MB -s ALLOW_MEMORY_GROWTH -s MAXIMUM_MEMORY=4GB -s EXIT_RUNTIME=1")
+    set(CMAKE_EXECUTBLE_LINKER_FLAGS "${CMAKE_EXECUTBLE_LINKER_FLAGS} -s FORCE_FILESYSTEM=1 -s INITIAL_MEMORY=256MB -s ALLOW_MEMORY_GROWTH -s MAXIMUM_MEMORY=4GB -s EXIT_RUNTIME=1")
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -g --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets@.")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets@.")
+    set(CMAKE_EXECUTBLE_LINKER_FLAGS "${CMAKE_EXECUTBLE_LINKER_FLAGS} -g --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets@.")
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fopenmp -pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4")
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexperimental-library")
+endif()
+
 set(PROJECT_SOURCES
         main.cpp
+        #mainwindow.cpp
+        #mainwindow.h
+        #mainwindow.ui
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
         algo/obj_detect/obj_det_worker_results.hpp
@@ -129,35 +144,44 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(${PROJECT_NAME}
+    qt_add_executable(simple_qt_pro
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET pose_estimation_expert APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(${PROJECT_NAME} SHARED
+        add_library(simple_qt_pro SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(${PROJECT_NAME}
+        add_executable(simple_qt_pro
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH} ${BOOST_LIBS_PATH} ${3RDLIBS_PATH}/eigen ui)
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.simple_qt_pro)
+endif()
 
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
     find_package(ncnn REQUIRED)
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
@@ -165,21 +189,44 @@ if(ANDROID OR WIN32)
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
                           )
-    #target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+if(EMSCRIPTEN)
+    add_compile_definitions(EIGEN_DONT_PARALLELIZE)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
+
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+                          Qt${QT_VERSION_MAJOR}::Widgets
+                          #${OPENCV_CV_PATH}/3rdparty/lib/libzlib.a
+                          ${OPENCV_CV_PATH}/3rdparty/lib/liblibopenjp2.a
+                          ${OPENCV_CV_PATH}/3rdparty/lib/liblibprotobuf.a
+                          #${OPENCV_CV_PATH}/3rdparty/libquirc.a
+                          ${OPENCV_CV_PATH}/lib/libopencv_world.a
+                          ${NCNN_PATH}/lib/libncnn.a
+                          )
+endif()
+
+
+set_target_properties(simple_qt_pro PROPERTIES
+    ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
 
-install(TARGETS ${PROJECT_NAME}
+include(GNUInstallDirs)
+install(TARGETS simple_qt_pro
     BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(${PROJECT_NAME})
+    qt_finalize_executable(simple_qt_pro)
 endif()
