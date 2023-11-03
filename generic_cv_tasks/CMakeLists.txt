@@ -15,8 +15,8 @@ set(BOOST_LIBS_PATH ${3RDLIBS_PATH}/boost/boost_1_81_0)
 
 #add_definitions(-DUSE_OPENCV)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia WebSockets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia WebSockets)
 
 if(WIN32)
     message("building windows platform")
@@ -133,6 +133,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_server_base.hpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_server_base.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
         ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
@@ -140,6 +142,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
+        ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp
+        ${PLUGIN_LIBS_PATH}/utils/image_utils.cpp
         ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
 )
 
@@ -166,8 +170,6 @@ else()
     endif()
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia)
-
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -188,6 +190,7 @@ if(ANDROID OR WIN32)
                           PRIVATE ncnn
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
+                          PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
                           )
 endif()
 
@@ -201,14 +204,16 @@ if(EMSCRIPTEN)
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-                          Qt${QT_VERSION_MAJOR}::Widgets
+    target_link_libraries(${PROJECT_NAME}
+                          PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                          PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
+                          PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
                           #${OPENCV_CV_PATH}/3rdparty/lib/libzlib.a
-                          ${OPENCV_CV_PATH}/3rdparty/lib/liblibopenjp2.a
-                          ${OPENCV_CV_PATH}/3rdparty/lib/liblibprotobuf.a
+                          PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibopenjp2.a
+                          PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibprotobuf.a
                           #${OPENCV_CV_PATH}/3rdparty/libquirc.a
-                          ${OPENCV_CV_PATH}/lib/libopencv_world.a
-                          ${NCNN_PATH}/lib/libncnn.a
+                          PRIVATE ${OPENCV_CV_PATH}/lib/libopencv_world.a
+                          PRIVATE ${NCNN_PATH}/lib/libncnn.a
                           )
 endif()
 
