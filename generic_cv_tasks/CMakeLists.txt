@@ -192,6 +192,7 @@ if(ANDROID OR WIN32)
 endif()
 
 if(EMSCRIPTEN)
+    add_definitions(WASM_BUILD)
     add_compile_definitions(EIGEN_DONT_PARALLELIZE)
     target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
     target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)

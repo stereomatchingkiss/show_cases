@@ -37,10 +37,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonPrev->setEnabled(false);
     ui->labelTitle->setText(tr("Select model"));
 
+#ifndef WASM_BUILD
     connect(ui->actionQt, &QAction::triggered, [](bool)
             {
-        QMessageBox::aboutQt(nullptr, tr("About Qt"));
+        QMessageBox::aboutQt(nullptr, tr("About Qt"));        
     });
+#else
+    connect(ui->actionQt, &QAction::triggered, [this](bool)
+            {
+
+        auto *msg_box = new QMessageBox;
+        msg_box->aboutQt(this, tr("About Qt"));
+        msg_box->deleteLater();
+
+    });
+#endif
 
     setMinimumSize(QSize(600, 400));
 }

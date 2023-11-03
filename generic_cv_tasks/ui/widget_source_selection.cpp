@@ -186,12 +186,19 @@ void widget_source_selection::set_states(const QJsonObject &val)
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 {
     auto const abs_path = QFileInfo(ui->lineEditVideo->text()).absolutePath();
+#ifndef WASM_BUILD
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select Video"), abs_path);
         !fname.isEmpty() && QFile(fname).exists())
     {
         ui->lineEditVideo->setText(fname);
         ui->radioButtonVideo->setChecked(true);
     }
+#else
+    auto fcontent_ready = [this](const QString &fname, const QByteArray &fcontent) {
+        ui->lineEditVideo->setText(fname);
+    };
+    QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",  fcontent_ready);
+#endif
 }
 
 void widget_source_selection::update_webcam_index()
