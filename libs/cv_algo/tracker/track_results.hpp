@@ -6,6 +6,13 @@ namespace flt::cvt::tracker{
 
 struct track_duration
 {
+    track_duration(int id, int duration_sec) :
+        id_(id),
+        duration_sec_(duration_sec)
+    {}
+
+    track_duration() = default;
+
     int id_;
     int duration_sec_;
 };
