@@ -195,9 +195,16 @@ void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
     }
 #else
     auto fcontent_ready = [this](const QString &fname, const QByteArray &fcontent) {
-        ui->lineEditVideo->setText(fname);
+        ui->lineEditVideo->setText(QFileInfo(fname).fileName());
+        if(!fcontent.isEmpty()){
+            if(QFile file(fname); file.open(QIODevice::WriteOnly)){
+                file.write(fcontent);
+            }else{
+                qDebug()<<"cannot save file";
+            }
+        }
     };
-    QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",  fcontent_ready);
+    QFileDialog::getOpenFileContent("Videos (*.mp4 *.avi *.wav)",  fcontent_ready);
 #endif
 }
 
