@@ -44,6 +44,11 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
 {
     ui->setupUi(this);
 
+#ifdef WASM_BUILD
+    ui->radioButtonRTSP->setVisible(false);
+    ui->lineEditRTSP->setVisible(false);
+#endif
+
     update_webcam_index();
 }
 
