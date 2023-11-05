@@ -214,8 +214,7 @@ void websocket_server_base::process_text_message_received_from_the_client(const 
 void websocket_server_base::socket_error(QAbstractSocket::SocketError error)
 {
     qDebug()<<__func__<<error;
-    auto socket = qobject_cast<socket_type*>(sender());
-    if(socket){
+    if(auto socket = qobject_cast<socket_type*>(sender()); socket){
         qDebug()<<__func__<<"socket ip, port = "
                    <<socket->peerAddress().toString()
                   <<socket->peerPort()<<","<<error;
