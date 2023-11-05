@@ -33,7 +33,7 @@ QString create_unique_image_name(QStringView target_folder,
 
 }
 
-QImage decode_qbyte_array_to(const QByteArray &input, const char *image_type)
+QImage decode_qbyte_array_to_qimg(const QByteArray &input, const char *image_type)
 {
     QImage result;
     result.loadFromData(input, image_type);

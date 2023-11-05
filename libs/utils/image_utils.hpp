@@ -9,7 +9,7 @@ class QDate;
 
 namespace flt{
 
-QImage decode_qbyte_array_to(QByteArray const &input, char const *image_type = nullptr);
+QImage decode_qbyte_array_to_qimg(QByteArray const &input, char const *image_type = nullptr);
 QByteArray encode_qimage_to(QImage const &input, char const *image_type = "JPG");
 
 /**
