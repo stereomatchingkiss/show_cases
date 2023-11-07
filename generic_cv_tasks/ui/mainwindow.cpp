@@ -18,6 +18,8 @@
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/camera/frame_capture_params.hpp>
 #include <multimedia/camera/single_frame_with_multi_worker.hpp>
+#include <multimedia/network/frame_capture_websocket.hpp>
+#include <multimedia/network/frame_capture_websocket_params.hpp>
 
 #include <ui/label_select_roi.hpp>
 
@@ -40,17 +42,17 @@ MainWindow::MainWindow(QWidget *parent)
 #ifndef WASM_BUILD
     connect(ui->actionQt, &QAction::triggered, [](bool)
             {
-        QMessageBox::aboutQt(nullptr, tr("About Qt"));        
-    });
+                QMessageBox::aboutQt(nullptr, tr("About Qt"));
+            });
 #else
     connect(ui->actionQt, &QAction::triggered, [this](bool)
             {
 
-        auto *msg_box = new QMessageBox;
-        msg_box->aboutQt(this, tr("About Qt"));
-        msg_box->deleteLater();
+                auto *msg_box = new QMessageBox;
+                msg_box->aboutQt(this, tr("About Qt"));
+                msg_box->deleteLater();
 
-    });
+            });
 #endif
 
     setMinimumSize(QSize(600, 400));
@@ -119,9 +121,18 @@ void MainWindow::on_pushButtonPrev_clicked()
     }
 }
 
+void MainWindow::create_frame_capture()
+{
+    if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
+        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
+    }else{
+        sfwmw_ = std::make_unique<single_frame_with_multi_worker>(widget_source_selection_->get_frame_capture_params());
+    }
+}
+
 void MainWindow::create_roi_select_stream()
 {
-    sfwmw_ = std::make_unique<single_frame_with_multi_worker>(widget_source_selection_->get_frame_capture_params());
+    create_frame_capture();
     auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             label_select_roi_, &ui::label_select_roi::display_frame);
@@ -164,7 +175,7 @@ void MainWindow::next_page_is_widget_stream_player()
     ui->labelTitle->setVisible(false);
     ui->stackedWidget->setCurrentWidget(widget_stream_player_);
     ui->pushButtonNext->setEnabled(false);
-    ui->pushButtonPrev->setEnabled(true);    
+    ui->pushButtonPrev->setEnabled(true);
 
     config_nanodet_worker config;
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
@@ -176,7 +187,7 @@ void MainWindow::next_page_is_widget_stream_player()
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    sfwmw_ = std::make_unique<single_frame_with_multi_worker>(widget_source_selection_->get_frame_capture_params());
+    create_frame_capture();
     sfwmw_->add_listener(process_controller, this);
     sfwmw_->start();
 }

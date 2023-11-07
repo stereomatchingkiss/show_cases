@@ -17,7 +17,8 @@ class widget_tracker_alert;
 
 namespace flt::mm{
 
-class single_frame_with_multi_worker;
+class frame_capture_websocket;
+class single_frame_with_multi_worker_base;
 
 }
 
@@ -41,6 +42,7 @@ private slots:
     void on_pushButtonPrev_clicked();
 
 private:
+    void create_frame_capture();
     void create_roi_select_stream();
 
     void init_stacked_widget();
@@ -60,6 +62,7 @@ private:
     widget_stream_player *widget_stream_player_;
     widget_tracker_alert *widget_tracker_alert_;
 
-    std::unique_ptr<flt::mm::single_frame_with_multi_worker> sfwmw_;
+    std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
+    std::unique_ptr<flt::mm::frame_capture_websocket> web_frame_;
 };
 #endif // MAINWINDOW_HPP

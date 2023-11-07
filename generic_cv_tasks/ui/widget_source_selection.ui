@@ -60,12 +60,32 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="0">
+      <widget class="QRadioButton" name="radioButtonWebsockets">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>websockets</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QLineEdit" name="lineEditWebsockets">
+       <property name="placeholderText">
+        <string>ws://127.0.0.1:8000</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="labelMaxFps">
        <property name="text">
         <string>Max fps</string>
        </property>

@@ -12,6 +12,7 @@ namespace flt::mm{
 enum class stream_source_type;
 
 struct frame_capture_params;
+struct frame_capture_websocket_params;
 
 }
 
@@ -26,7 +27,8 @@ public:
     ~widget_source_selection();
 
     flt::mm::frame_capture_params get_frame_capture_params() const;
-    flt::mm::stream_source_type get_source_type() const noexcept;
+    flt::mm::frame_capture_websocket_params get_frame_capture_websocket_params() const noexcept;
+    flt::mm::stream_source_type get_source_type() const noexcept;    
 
     bool get_is_valid_source() const noexcept;
     int get_max_fps() const noexcept;
@@ -43,6 +45,7 @@ private slots:
     void on_pushButtonOpenVideoFolder_clicked();
 
 private:
+    void set_max_fps_visible();
     void update_webcam_index();
 
     Ui::widget_source_selection *ui;    

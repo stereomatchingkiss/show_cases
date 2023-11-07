@@ -4,6 +4,7 @@
 #include "../config/config_source_selection.hpp"
 
 #include <multimedia/camera/frame_capture_params.hpp>
+#include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
 #include <opencv2/videoio.hpp>
@@ -19,6 +20,7 @@ QString const state_rtsp_url("state_rtsp_url");
 QString const state_source_type("state_source_type");
 QString const state_video_url("state_video_url");
 QString const state_webcam_index("state_webcam_index");
+QString const state_websocket_url("state_websocket_url");
 
 int count_cameras()
 {
@@ -38,6 +40,8 @@ int count_cameras()
 
 }
 
+using namespace flt::mm;
+
 widget_source_selection::widget_source_selection(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_source_selection)
@@ -50,6 +54,19 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
 #endif
 
     update_webcam_index();
+
+    connect(ui->radioButtonRTSP, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
+    connect(ui->radioButtonVideo, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
+    connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked)
+            {
+                if(checked){
+                    update_webcam_index();
+                }
+                set_max_fps_visible();
+            });
+    connect(ui->radioButtonWebsockets, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
+
+    set_max_fps_visible();
 }
 
 widget_source_selection::~widget_source_selection()
@@ -57,7 +74,7 @@ widget_source_selection::~widget_source_selection()
     delete ui;
 }
 
-flt::mm::frame_capture_params widget_source_selection::get_frame_capture_params() const
+frame_capture_params widget_source_selection::get_frame_capture_params() const
 {
     flt::mm::frame_capture_params params;
     params.max_fps_ = get_max_fps();
@@ -68,13 +85,24 @@ flt::mm::frame_capture_params widget_source_selection::get_frame_capture_params(
     return params;
 }
 
-flt::mm::stream_source_type widget_source_selection::get_source_type() const noexcept
+frame_capture_websocket_params widget_source_selection::get_frame_capture_websocket_params() const noexcept
 {
-    using stype = flt::mm::stream_source_type;
+    frame_capture_websocket_params params;
+    params.max_fps_ = ui->spinBoxMaxFPS->value();
+    params.url_ = get_url();
+
+    return params;
+}
+
+stream_source_type widget_source_selection::get_source_type() const noexcept
+{
+    using stype = stream_source_type;
     if(ui->radioButtonRTSP->isChecked()){
         return stype::rtsp;
     }else if(ui->radioButtonVideo->isChecked()){
         return stype::video;
+    }else if(ui->radioButtonWebsockets->isChecked()){
+        return stype::websocket;
     }
 
     return stype::webcam;
@@ -82,13 +110,17 @@ flt::mm::stream_source_type widget_source_selection::get_source_type() const noe
 
 bool widget_source_selection::get_is_valid_source() const noexcept
 {
-    if(ui->radioButtonRTSP->isChecked() && !ui->lineEditRTSP->text().isEmpty() && ui->lineEditRTSP->text().startsWith("rtsp")){
+    if(ui->radioButtonRTSP->isChecked() && ui->lineEditRTSP->text().startsWith("rtsp")){
         return true;
     }
     if(ui->radioButtonVideo->isChecked() && QFile::exists(ui->radioButtonVideo->text())){
         return true;
     }
     if(ui->radioButtonWebcam->isChecked() && ui->comboBoxWebCam->count() > 0){
+        return true;
+    }
+    if(ui->radioButtonWebsockets->isChecked() &&
+        (ui->lineEditWebsockets->text().startsWith("ws") || ui->lineEditWebsockets->text().startsWith("wss"))){
         return true;
     }
 
@@ -125,7 +157,15 @@ QString widget_source_selection::get_url() const noexcept
         return ui->lineEditVideo->text();
     }
 
-    return "0";
+    if(ui->radioButtonWebsockets->isChecked()){
+        return ui->lineEditWebsockets->text();
+    }
+
+    if(ui->comboBoxWebCam->currentIndex() != -1){
+        return QString::number(ui->comboBoxWebCam->currentIndex());
+    }
+
+    return "";
 }
 
 config_source_selection widget_source_selection::get_config() const
@@ -149,6 +189,7 @@ QJsonObject widget_source_selection::get_states() const
     obj[state_source_type] = static_cast<int>(get_source_type());
     obj[state_video_url] = ui->lineEditVideo->text();
     obj[state_webcam_index] = ui->comboBoxWebCam->currentIndex();
+    obj[state_websocket_url] = ui->lineEditWebsockets->text();
 
     return obj;
 }
@@ -176,6 +217,10 @@ void widget_source_selection::set_states(const QJsonObject &val)
             ui->radioButtonWebcam->setChecked(true);
             break;
         }
+        case stype::websocket:{
+            ui->radioButtonWebsockets->setChecked(true);
+            break;
+        }
         }
     }
     if(val.contains(state_video_url)){
@@ -185,7 +230,11 @@ void widget_source_selection::set_states(const QJsonObject &val)
         if(auto const idx = val[state_webcam_index].toInt(); idx > 0 && idx < ui->comboBoxWebCam->maxCount()){
             ui->comboBoxWebCam->setCurrentIndex(idx);
         }
+    }if(val.contains(state_websocket_url)){
+        ui->lineEditWebsockets->setText(val[state_websocket_url].toString());
     }
+
+    set_max_fps_visible();
 }
 
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
@@ -211,6 +260,13 @@ void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
     };
     QFileDialog::getOpenFileContent("Videos (*.mp4 *.avi *.wav)",  fcontent_ready);
 #endif
+}
+
+void widget_source_selection::set_max_fps_visible()
+{
+    ui->labelMaxFps->setVisible(!ui->radioButtonWebsockets->isChecked());
+    ui->spinBoxMaxFPS->setVisible(!ui->radioButtonWebsockets->isChecked());
+    ui->horizontalSliderMaxFPS->setVisible(!ui->radioButtonWebsockets->isChecked());
 }
 
 void widget_source_selection::update_webcam_index()
