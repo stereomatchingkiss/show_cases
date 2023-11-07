@@ -14,7 +14,7 @@ namespace flt::mm{
 
 single_frame_with_multi_worker::single_frame_with_multi_worker(frame_capture_params const &params,
                                                                QObject *parent) :
-    QObject{parent}
+    single_frame_with_multi_worker_base{parent}
 {
     if(params.receiver_type_ == stream_receiver_type::opencv){
         frame_capture_base_worker *worker = new frame_capture_opencv_worker(params);

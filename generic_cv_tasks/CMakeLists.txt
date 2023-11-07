@@ -129,6 +129,11 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
         ${PLUGIN_LIBS_PATH}/network/websocket_server_base.hpp
