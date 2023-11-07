@@ -55,12 +55,12 @@ frame_capture_websocket::~frame_capture_websocket()
 
 }
 
-void frame_capture_websocket::add(std::shared_ptr<frame_process_controller> process_controller, void *key)
+void frame_capture_websocket::add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key)
 {    
     impl_->controllers_.emplace_back(process_controller, key);
 }
 
-void frame_capture_websocket::remove(void *key)
+void frame_capture_websocket::remove_listener(void *key)
 {
     impl_->remove(key);
 }

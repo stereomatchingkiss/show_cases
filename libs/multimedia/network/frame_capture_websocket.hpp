@@ -25,11 +25,9 @@ public:
     explicit frame_capture_websocket(frame_capture_websocket_params const &params);
     ~frame_capture_websocket();
 
-    void add(std::shared_ptr<frame_process_controller> process_controller, void *key);
-    void remove(void *key);
-
-    void start();
-    void stop();
+    void add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key);
+    void remove_listener(void *key);
+    void start();    
 
 signals:    
     void error_message(QString const &message);
@@ -43,6 +41,7 @@ private:
     void closed();
     void connected();
     void socket_error(QAbstractSocket::SocketError error);
+    void stop();
 
     struct impl;
     std::unique_ptr<impl> impl_;
