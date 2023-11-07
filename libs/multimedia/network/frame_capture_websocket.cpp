@@ -5,11 +5,13 @@
 #include "../camera/frame_process_controller.hpp"
 
 #include "../../utils/error_log.hpp"
-#include "../../utils/image_utils.hpp"
 
 #include <QDebug>
 #include <QWebSocket>
 
+#include <opencv2/imgcodecs.hpp>
+
+#include <chrono>
 #include <mutex>
 
 namespace flt::mm{
@@ -17,6 +19,7 @@ namespace flt::mm{
 struct frame_capture_websocket::impl
 {
     impl(frame_capture_websocket_params const &params) :
+        duration_{std::chrono::milliseconds(1000/params.max_fps_)},
         params_{params}
     {
         socket_.open(params.url_);
@@ -34,6 +37,7 @@ struct frame_capture_websocket::impl
     }
 
     std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;
+    std::chrono::duration<size_t, std::milli>  const duration_;
     frame_capture_websocket_params params_;
     QWebSocket socket_;
 };
@@ -43,6 +47,7 @@ flt::mm::frame_capture_websocket::frame_capture_websocket(frame_capture_websocke
     impl_{std::make_unique<impl>(params)}
 {
     connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::binary_message_received);
+    connect(&impl_->socket_, &QWebSocket::textMessageReceived, this, &frame_capture_websocket::text_message_received);
     connect(&impl_->socket_, &QWebSocket::connected, this, &frame_capture_websocket::connected);
     connect(&impl_->socket_, &QWebSocket::disconnected, this, &frame_capture_websocket::closed);
     connect(&impl_->socket_, &QWebSocket::errorOccurred, this, &frame_capture_websocket::socket_error);
@@ -95,20 +100,35 @@ void frame_capture_websocket::ssl_errors(const QList<QSslError> &errors)
 
 void frame_capture_websocket::binary_message_received(QByteArray message)
 {
-    auto img = decode_qbyte_array_to_qimg(message, "JPG");
-    for(auto &val : impl_->controllers_){
-        emit val.first->process_results(img);
-    }
+    auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.data()), cv::ImreadModes::IMREAD_COLOR);
+    process_image(img);
+}
+
+void frame_capture_websocket::text_message_received(QString message)
+{
+    auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.toLatin1().data()), cv::ImreadModes::IMREAD_COLOR);
+    process_image(img);
 }
 
 void frame_capture_websocket::closed()
-{    
+{
     qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<"closed";
 }
 
 void frame_capture_websocket::connected()
 {
     qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<"connected";
+}
+
+void frame_capture_websocket::process_image(cv::Mat mat)
+{
+    if(!mat.empty()){
+        for(auto &val : impl_->controllers_){
+            emit val.first->process_results(mat);
+        }
+    }else{
+        qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<":cannot decode message";
+    }
 }
 
 void frame_capture_websocket::socket_error(QAbstractSocket::SocketError error)

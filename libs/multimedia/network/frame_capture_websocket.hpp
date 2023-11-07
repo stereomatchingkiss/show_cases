@@ -8,6 +8,8 @@
 #include <QSslSocket>
 #endif
 
+#include <opencv2/core.hpp>
+
 #include <any>
 #include <memory>
 
@@ -42,8 +44,10 @@ private:
     void binary_message_received(QByteArray message);
     void closed();
     void connected();
+    void process_image(cv::Mat mat);
     void socket_error(QAbstractSocket::SocketError error);
     void stop();
+    void text_message_received(QString message);
 
     struct impl;
     std::unique_ptr<impl> impl_;
