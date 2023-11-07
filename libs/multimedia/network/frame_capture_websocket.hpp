@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../camera/single_frame_with_multi_worker_base.hpp"
+
 #include <QObject>
 
 #ifndef WASM_BUILD
@@ -18,16 +20,16 @@ class frame_process_controller;
 
 struct frame_capture_websocket_params;
 
-class frame_capture_websocket : public QObject
+class frame_capture_websocket : public single_frame_with_multi_worker_base
 {
     Q_OBJECT
 public:
-    explicit frame_capture_websocket(frame_capture_websocket_params const &params);
+    explicit frame_capture_websocket(frame_capture_websocket_params const &params, QObject *parent = nullptr);
     ~frame_capture_websocket();
 
-    void add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key);
-    void remove_listener(void *key);
-    void start();    
+    void add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key) override;
+    void remove_listener(void *key) override;
+    void start() override;
 
 signals:    
     void error_message(QString const &message);

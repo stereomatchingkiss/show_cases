@@ -38,7 +38,8 @@ struct frame_capture_websocket::impl
     QWebSocket socket_;
 };
 
-flt::mm::frame_capture_websocket::frame_capture_websocket(frame_capture_websocket_params const &params) :
+flt::mm::frame_capture_websocket::frame_capture_websocket(frame_capture_websocket_params const &params, QObject *parent) :
+    single_frame_with_multi_worker_base{parent},
     impl_{std::make_unique<impl>(params)}
 {
     connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::binary_message_received);
