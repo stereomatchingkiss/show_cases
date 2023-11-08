@@ -136,13 +136,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
-        ${PLUGIN_LIBS_PATH}/network/websocket_server_base.hpp
-        ${PLUGIN_LIBS_PATH}/network/websocket_server_base.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
         ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
-        ${PLUGIN_LIBS_PATH}/ui/utils/utility.hpp ${PLUGIN_LIBS_PATH}/ui/utils/utility.cpp
-        ${PLUGIN_LIBS_PATH}/utils/error_log.hpp
+        ${PLUGIN_LIBS_PATH}/ui/utils/utility.hpp ${PLUGIN_LIBS_PATH}/ui/utils/utility.cpp        
         ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
         ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
         ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp
@@ -198,7 +195,7 @@ if(ANDROID OR WIN32)
 endif()
 
 if(EMSCRIPTEN)
-    add_definitions(WASM_BUILD)
+    add_definitions(-DWASM_BUILD)
     add_compile_definitions(EIGEN_DONT_PARALLELIZE)
     target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
     target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)

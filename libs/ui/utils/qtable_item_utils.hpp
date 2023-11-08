@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QLayout>
 #include <QString>
 #include <QWidget>
 

@@ -2,6 +2,7 @@
 
 #include "../camera/single_frame_with_multi_worker_base.hpp"
 
+#include <QAbstractSocket>
 #include <QObject>
 
 #ifndef WASM_BUILD

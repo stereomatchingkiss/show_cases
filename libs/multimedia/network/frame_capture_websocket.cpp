@@ -4,8 +4,6 @@
 
 #include "../camera/frame_process_controller.hpp"
 
-#include "../../utils/error_log.hpp"
-
 #include <QDebug>
 #include <QWebSocket>
 
@@ -84,13 +82,13 @@ void frame_capture_websocket::stop()
 #ifndef WASM_BUILD
 void frame_capture_websocket::alert_received(QSsl::AlertLevel level, QSsl::AlertType type, const QString &description)
 {
-    qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<"alert received. level = "
+    qDebug()<<__func__<<"alert received. level = "
              <<static_cast<int>(level)<<", type = "<<static_cast<int>(type)<<", desc = "<<description;
 }
 
 void frame_capture_websocket::ssl_errors(const QList<QSslError> &errors)
 {
-    qDebug()<<flt::create_error_msg(std::source_location()).c_str();
+    qDebug()<<__func__;
     for(auto const &val : errors){
         qDebug()<<"ssl errors : "<<val.errorString();
     }
@@ -112,12 +110,12 @@ void frame_capture_websocket::text_message_received(QString message)
 
 void frame_capture_websocket::closed()
 {
-    qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<"closed";
+    qDebug()<<__func__<<":closed";
 }
 
 void frame_capture_websocket::connected()
 {
-    qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<"connected";
+    qDebug()<<__func__<<":connected";
 }
 
 void frame_capture_websocket::process_image(cv::Mat mat)
@@ -127,13 +125,13 @@ void frame_capture_websocket::process_image(cv::Mat mat)
             emit val.first->process_results(mat);
         }
     }else{
-        qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<":cannot decode message";
+        qDebug()<<__func__<<":cannot decode message";
     }
 }
 
 void frame_capture_websocket::socket_error(QAbstractSocket::SocketError error)
 {
-    qDebug()<<flt::create_error_msg(std::source_location()).c_str()<<error;
+    qDebug()<<__func__<<":"<<error;
 }
 
 }
