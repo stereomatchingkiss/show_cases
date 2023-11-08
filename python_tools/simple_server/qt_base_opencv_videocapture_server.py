@@ -74,7 +74,7 @@ class simple_websocket_server(QWidget):
 
     def socket_disconnected(self):
         print("socket disconnected")
-
+        self.timer.stop()
         if self.socket:
             self.socket.deleteLater()
             self.socket = None
