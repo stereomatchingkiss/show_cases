@@ -103,23 +103,27 @@ struct nanodet_worker::impl
     {
         using dme = object_detect_model_enum;
 
+#ifndef WASM_BUILD
         std::string const model_root("assets/obj_detect/");
+#else
+        std::string const model_root("");
+#endif
         switch(config_.config_object_detect_model_select_.model_){
         case dme::nanodet_plus_m_320:{
-            auto const param = std::format("{}/nanodet-plus-m_{}.param", model_root, 320);
-            auto const bin = std::format("{}/nanodet-plus-m_{}.bin", model_root, 320);
+            auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 320);
+            auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 320);
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
             break;
         }
         case dme::nanodet_plus_m_416:{
-            auto const param = std::format("{}/nanodet-plus-m_{}.param", model_root, 416);
-            auto const bin = std::format("{}/nanodet-plus-m_{}.bin", model_root, 416);
+            auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 416);
+            auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 416);
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         case dme::yolo_v8_n:{
-            auto const param = std::format("{}/yolov8n.param", model_root);
-            auto const bin = std::format("{}/yolov8n.bin", model_root);
+            auto const param = std::format("{}yolov8n.param", model_root);
+            auto const bin = std::format("{}yolov8n.bin", model_root);
             net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
@@ -213,7 +217,7 @@ void nanodet_worker::process_results(std::any frame)
         cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
     }
 #else
-    auto qimg = std::any_cast<QImage>(frame);
+    auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
     auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
 #endif
 
@@ -230,7 +234,9 @@ void nanodet_worker::process_results(std::any frame)
     obj_det_worker_results results;
     if(impl_->check_alarm_condition(pass_results)){
         results.alarm_on_ = true;
-        cv::imwrite(impl_->im_name_.toStdString(), mat);
+#ifndef WASM_BUILD        
+        cv::imwrite(impl_->im_name_.toStdString(), mat);        
+#endif
         ++impl_->im_ids_;
     }
 
