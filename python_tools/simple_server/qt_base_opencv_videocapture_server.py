@@ -79,8 +79,7 @@ class simple_websocket_server(QWidget):
             self.socket.deleteLater()
             self.socket = None
         if self.camera:
-            self.camera.release()
-            cv2.destroyAllWindows()
+            self.camera.release()            
             self.camera = None
 
 def main():
