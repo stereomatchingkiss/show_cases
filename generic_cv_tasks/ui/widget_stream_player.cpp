@@ -14,9 +14,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->labelStream->setAlignment(Qt::AlignCenter);
-
-    get_alert_sound_manager();
+    ui->labelStream->setAlignment(Qt::AlignCenter);    
 }
 
 widget_stream_player::~widget_stream_player()

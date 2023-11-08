@@ -14,12 +14,14 @@
 #include "../config/config_read_write.hpp"
 
 #include "../global/global_keywords.hpp"
+#include "../global/global_object.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/camera/frame_capture_params.hpp>
 #include <multimedia/camera/single_frame_with_multi_worker.hpp>
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
+#include <multimedia/sound/alert_sound_manager.hpp>
 
 #include <ui/label_select_roi.hpp>
 
@@ -74,6 +76,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButtonNext_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
+        get_alert_sound_manager();
         next_page_is_widget_select_object_to_detect();
     }else if(ui->stackedWidget->currentWidget() == widget_select_object_to_detect_){
         next_page_is_widget_tracker_alert();
