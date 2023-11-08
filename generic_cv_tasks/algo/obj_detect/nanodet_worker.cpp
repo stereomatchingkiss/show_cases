@@ -63,17 +63,21 @@ struct nanodet_worker::impl
             for(auto const &val : pass_results.track_durations_){
                 if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
                     !written_id_.contains(val.id_)){
+                    alarm_on = true;
+
+#ifndef WASM_BUILD
                     if(im_name_.isEmpty()){
                         im_name_ = create_fname();
-                    }
-                    alarm_on = true;
+                    }                    
                     QJsonObject jobj;
                     jobj["image_name"] = im_name_;
                     jobj["track_id"] = val.id_;
                     jobj["duration"] = val.duration_sec_;
-                    stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";
+                    stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";                    
 
                     written_id_.insert(val.id_);
+#endif
+                    return alarm_on;
                 }
             }
         }
