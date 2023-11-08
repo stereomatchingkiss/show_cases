@@ -9,18 +9,15 @@
 
 #include <opencv2/imgcodecs.hpp>
 
-#include <chrono>
 #include <mutex>
 
 namespace flt::mm{
 
 struct frame_capture_websocket::impl
 {
-    impl(frame_capture_websocket_params const &params) :
-        duration_{std::chrono::milliseconds(1000/params.max_fps_)},
+    impl(frame_capture_websocket_params const &params) :        
         params_{params}
-    {
-        socket_.open(params.url_);
+    {        
     }
 
     void remove(void *key)
@@ -34,8 +31,7 @@ struct frame_capture_websocket::impl
         }
     }
 
-    std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;
-    std::chrono::duration<size_t, std::milli>  const duration_;
+    std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;    
     frame_capture_websocket_params params_;
     QWebSocket socket_;
 };
