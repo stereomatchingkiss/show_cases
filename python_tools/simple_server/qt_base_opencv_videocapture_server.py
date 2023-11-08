@@ -10,7 +10,7 @@ import sys
 ap = argparse.ArgumentParser()
 ap.add_argument("--downsample", required=False, type=int, default=1)
 ap.add_argument("--max_fps", required=False, type=int, default=30, help="Increase the number if you want the server process the frame faster, maximum value is 1000")
-ap.add_argument("--port", required=False, type=int, default=8000)
+ap.add_argument("--port", required=False, type=int, default=1234)
 ap.add_argument("--opencv_url", type=str, required=True,
                 help="Url of the video, could be local location of video, rtsp address, or enter number(ex : 0) to open webcam")
 
@@ -28,7 +28,7 @@ class simple_websocket_server(QWidget):
         self.server = QWebSocketServer("Simple websocket server", QWebSocketServer.NonSecureMode, self)
         self.socket = None
         self.timer = QTimer()
-        self.timer.setInterval(1000.0/self.max_fps)
+        self.timer.setInterval(int(1000.0/self.max_fps))
 
         if(self.server.listen(QHostAddress.Any, port)):
             print("SSL Echo Server listening on port: ", port)
@@ -42,7 +42,7 @@ class simple_websocket_server(QWidget):
             print("This simple app only allowed one socket connection")
             return
 
-        self.socket = self.server.nextPendingConnection()
+        self.socket = self.server.nextPendingConnection()        
         self.socket.disconnected.connect(self.socket_disconnected)
 
         self.send_frame()
@@ -71,7 +71,7 @@ class simple_websocket_server(QWidget):
 
         except:
             self.camera.release()
-            cv2.destroyAllWindows()
+            cv2.destroyAllWindows()                
 
     def socket_disconnected(self):
         print("socket disconnected")
