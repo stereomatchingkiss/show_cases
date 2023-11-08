@@ -70,8 +70,7 @@ class simple_websocket_server(QWidget):
                 self.socket.sendBinaryMessage(buffer.tobytes())
 
         except:
-            self.camera.release()
-            cv2.destroyAllWindows()                
+            self.camera.release()            
 
     def socket_disconnected(self):
         print("socket disconnected")
