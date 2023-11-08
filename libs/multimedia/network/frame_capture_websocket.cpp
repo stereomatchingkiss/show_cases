@@ -98,14 +98,22 @@ void frame_capture_websocket::ssl_errors(const QList<QSslError> &errors)
 
 void frame_capture_websocket::binary_message_received(QByteArray message)
 {
+#ifndef WASM_BUILD
     auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.data()), cv::ImreadModes::IMREAD_COLOR);
     process_image(img);
+#else
+    process_image(QImage::fromData(message));
+#endif
 }
 
 void frame_capture_websocket::text_message_received(QString message)
 {
+#ifndef WASM_BUILD
     auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.toLatin1().data()), cv::ImreadModes::IMREAD_COLOR);
     process_image(img);
+#else
+    process_image(QImage::fromData(message.toLatin1()));
+#endif
 }
 
 void frame_capture_websocket::closed()
@@ -128,6 +136,19 @@ void frame_capture_websocket::process_image(cv::Mat mat)
         qDebug()<<__func__<<":cannot decode message";
     }
 }
+
+#ifdef WASM_BUILD
+void frame_capture_websocket::process_image(QImage mat)
+{
+    if(!mat.isNull()){
+        for(auto &val : impl_->controllers_){
+            emit val.first->process_results(mat);
+        }
+    }else{
+        qDebug()<<__func__<<":cannot decode message";
+    }
+}
+#endif
 
 void frame_capture_websocket::socket_error(QAbstractSocket::SocketError error)
 {

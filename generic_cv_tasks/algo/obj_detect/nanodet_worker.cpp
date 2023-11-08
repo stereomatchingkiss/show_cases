@@ -205,12 +205,17 @@ nanodet_worker::~nanodet_worker()
 
 void nanodet_worker::process_results(std::any frame)
 {
+#ifndef WASM_BUILD
     auto mat = std::any_cast<cv::Mat>(frame);
     if(mat.channels() == 3){
         cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     }else{
         cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
     }
+#else
+    auto qimg = std::any_cast<QImage>(frame);
+    auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+#endif
 
     if(!impl_->track_obj_pass_){
         impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
@@ -229,7 +234,11 @@ void nanodet_worker::process_results(std::any frame)
         ++impl_->im_ids_;
     }
 
+#ifndef WASM_BUILD
     results.mat_ = std::move(mat);
+#else
+    results.mat_ = std::move(qimg);
+#endif
 
     emit send_process_results(results);
 }

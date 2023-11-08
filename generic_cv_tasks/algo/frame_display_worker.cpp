@@ -18,6 +18,7 @@ frame_display_worker::~frame_display_worker()
 
 void frame_display_worker::process_results(std::any frame)
 {
+#ifndef WASM_BUILD
     auto mat = std::any_cast<cv::Mat>(frame);
     if(mat.channels() == 3){
         cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
@@ -26,4 +27,8 @@ void frame_display_worker::process_results(std::any frame)
     }
     auto qimg = QImage(mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
     emit send_process_results(QPixmap::fromImage(std::move(qimg)));
+#else
+    auto qimg = std::any_cast<QImage>(frame);
+    emit send_process_results(QPixmap::fromImage(std::move(qimg)));
+#endif
 }
