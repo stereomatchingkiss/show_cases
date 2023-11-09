@@ -86,7 +86,7 @@
      <item row="4" column="0">
       <widget class="QRadioButton" name="radioButtonHLS">
        <property name="text">
-        <string>HLS</string>
+        <string>HLS/DASH</string>
        </property>
       </widget>
      </item>
