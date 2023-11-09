@@ -28,11 +28,7 @@ void widget_stream_player::display_frame(std::any results)
     int const w = ui->labelStream->width();
     int const h = ui->labelStream->height();
 
-#ifndef WASM_BUILD
-    auto qimg = QImage(val.mat_.data, val.mat_.cols, val.mat_.rows, val.mat_.step, QImage::Format_RGB888);
-#else
     auto qimg = val.mat_;
-#endif
     ui->labelStream->setPixmap(QPixmap::fromImage(qimg).scaled(w,h,Qt::KeepAspectRatio));
 
     if(val.alarm_on_){

@@ -16,12 +16,13 @@
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"
 
+#include <multimedia/camera/frame_capture_qmediaplayer.hpp>
+#include <multimedia/camera/frame_capture_qt_params.hpp>
 #include <multimedia/camera/frame_process_controller.hpp>
-#include <multimedia/camera/frame_capture_params.hpp>
-#include <multimedia/camera/single_frame_with_multi_worker.hpp>
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/sound/alert_sound_manager.hpp>
+#include <multimedia/stream_enum.hpp>
 
 #include <ui/label_select_roi.hpp>
 
@@ -129,7 +130,7 @@ void MainWindow::create_frame_capture()
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
     }else{
-        sfwmw_ = std::make_unique<single_frame_with_multi_worker>(widget_source_selection_->get_frame_capture_params());
+        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qt_params());
     }
 }
 

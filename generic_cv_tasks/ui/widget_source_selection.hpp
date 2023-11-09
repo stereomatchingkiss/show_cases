@@ -13,6 +13,7 @@ enum class stream_source_type;
 
 struct frame_capture_params;
 struct frame_capture_websocket_params;
+struct frame_capture_qt_params;
 
 }
 
@@ -26,7 +27,7 @@ public:
     explicit widget_source_selection(QWidget *parent = nullptr);
     ~widget_source_selection();
 
-    flt::mm::frame_capture_params get_frame_capture_params() const;
+    flt::mm::frame_capture_qt_params get_frame_capture_qt_params() const;
     flt::mm::frame_capture_websocket_params get_frame_capture_websocket_params() const noexcept;
     flt::mm::stream_source_type get_source_type() const noexcept;    
 
