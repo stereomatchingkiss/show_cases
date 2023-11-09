@@ -83,6 +83,20 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QRadioButton" name="radioButtonHLS">
+       <property name="text">
+        <string>HLS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QLineEdit" name="lineEditHLS">
+       <property name="placeholderText">
+        <string>http://techslides.com/demos/sample-videos/small.mp4</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

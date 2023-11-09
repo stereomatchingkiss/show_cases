@@ -17,6 +17,7 @@
 namespace{
 
 QString const state_max_fps("state_max_fps");
+QString const state_hls_url("state_hls_url");
 QString const state_rtsp_url("state_rtsp_url");
 QString const state_source_type("state_source_type");
 QString const state_video_url("state_video_url");
@@ -40,6 +41,7 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     update_webcam_box();
 
     connect(&devices_, &QMediaDevices::videoInputsChanged, this, &widget_source_selection::update_webcam_box);
+    connect(ui->radioButtonHLS, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonRTSP, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonVideo, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
@@ -91,6 +93,8 @@ stream_source_type widget_source_selection::get_source_type() const noexcept
         return stype::video;
     }else if(ui->radioButtonWebsockets->isChecked()){
         return stype::websocket;
+    }else if(ui->radioButtonHLS->isChecked()){
+        return stype::hls;
     }
 
     return stype::webcam;
@@ -137,6 +141,9 @@ QString widget_source_selection::get_webcam() const noexcept
 
 QString widget_source_selection::get_url() const noexcept
 {
+    if(ui->radioButtonHLS->isChecked()){
+        return ui->lineEditHLS->text();
+    }
     if(ui->radioButtonRTSP->isChecked()){
         return ui->lineEditRTSP->text();
     }
@@ -148,7 +155,6 @@ QString widget_source_selection::get_url() const noexcept
     if(ui->radioButtonWebsockets->isChecked()){
         return ui->lineEditWebsockets->text();
     }
-
     if(ui->comboBoxWebCam->currentIndex() != -1){
         return QString::number(ui->comboBoxWebCam->currentIndex());
     }
@@ -172,6 +178,7 @@ config_source_selection widget_source_selection::get_config() const
 QJsonObject widget_source_selection::get_states() const
 {
     QJsonObject obj;
+    obj[state_hls_url] = ui->lineEditHLS->text();
     obj[state_max_fps] = ui->spinBoxMaxFPS->value();
     obj[state_rtsp_url] = ui->lineEditRTSP->text();
     obj[state_source_type] = static_cast<int>(get_source_type());
@@ -184,6 +191,9 @@ QJsonObject widget_source_selection::get_states() const
 
 void widget_source_selection::set_states(const QJsonObject &val)
 {
+    if(val.contains(state_hls_url)){
+        ui->lineEditHLS->setText(val[state_hls_url].toString());
+    }
     if(val.contains(state_max_fps)){
         ui->spinBoxMaxFPS->setValue(val[state_max_fps].toInt());
     }
@@ -193,6 +203,10 @@ void widget_source_selection::set_states(const QJsonObject &val)
     if(val.contains(state_source_type)){
         using stype = flt::mm::stream_source_type;
         switch(static_cast<stype>(val[state_source_type].toInt())){
+        case stype::hls:{
+            ui->radioButtonHLS->setChecked(true);
+            break;
+        }
         case stype::rtsp:{
             ui->radioButtonRTSP->setChecked(true);
             break;

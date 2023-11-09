@@ -13,7 +13,8 @@ enum class stream_source_type : int
     webcam,
     video,
     rtsp,
-    websocket
+    websocket,
+    hls
 };
 
 }
