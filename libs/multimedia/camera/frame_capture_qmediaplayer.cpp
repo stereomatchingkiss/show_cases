@@ -117,7 +117,7 @@ void frame_capture_qmediaplayer::video_frame_changed(QVideoFrame const &frame)
             emit val.first->process_results(mat);
         }
     }else{
-        qDebug()<<__func__<<":cannot decode message";
+        qDebug()<<__func__<<":cannot decode video frame of mediaplayer";
     }
 }
 
