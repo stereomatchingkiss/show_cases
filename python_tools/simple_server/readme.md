@@ -1,10 +1,19 @@
 # Install dependencies
 
+## On windows
 . Install anaconda
 . conda create --name your_name
 . conda install pip
-. pip install opencv-python
 . pip install pyqt5
+. pip install opencv-python-headless
+
+## On ubuntu 20.04
+
+. virtualenv qt_env
+. source qt_env/bin/activate
+. pip install --upgrade pip
+. pip install pyqt5
+. pip install opencv-python-headless
 
 # Execute
 
