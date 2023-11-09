@@ -75,6 +75,7 @@
      <string>License</string>
     </property>
     <addaction name="actionQt"/>
+    <addaction name="actionReadMe"/>
    </widget>
    <addaction name="menuQt"/>
   </widget>
@@ -82,6 +83,11 @@
   <action name="actionQt">
    <property name="text">
     <string>Qt</string>
+   </property>
+  </action>
+  <action name="actionReadMe">
+   <property name="text">
+    <string>Read me</string>
    </property>
   </action>
  </widget>

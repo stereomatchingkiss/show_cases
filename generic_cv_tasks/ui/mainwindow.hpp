@@ -15,6 +15,7 @@ class widget_source_selection;
 class widget_stream_player;
 class widget_tracker_alert;
 
+class QMessageBox;
 class QTimer;
 
 namespace flt::mm{
@@ -60,6 +61,7 @@ private:
     Ui::MainWindow *ui;
 
     flt::ui::label_select_roi *label_select_roi_;
+    QMessageBox *msg_box_;
     QTimer *timer_;
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_select_object_to_detect *widget_select_object_to_detect_;

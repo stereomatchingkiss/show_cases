@@ -37,6 +37,7 @@ using namespace flt::mm;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , msg_box_(new QMessageBox(this))
     , timer_(new QTimer(this))
 {
     ui->setupUi(this);
@@ -46,21 +47,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonPrev->setEnabled(false);
     ui->labelTitle->setText(tr("Select model"));
 
-#ifndef WASM_BUILD
-    connect(ui->actionQt, &QAction::triggered, [](bool)
-            {
-                QMessageBox::aboutQt(nullptr, tr("About Qt"));
-            });
-#else
     connect(ui->actionQt, &QAction::triggered, [this](bool)
             {
-
-                auto *msg_box = new QMessageBox;
-                msg_box->aboutQt(this, tr("About Qt"));
-                msg_box->deleteLater();
-
+                msg_box_->aboutQt(this, tr("About Qt"));
             });
-#endif
+    connect(ui->actionReadMe, &QAction::triggered, [this](bool)
+            {
+                msg_box_->warning(this, tr("Before you use"),
+                                  tr("1. Use this software at your own risk.\n"
+                                     "2. Do not sell or use it for commercial purpose"));
+            });
 
     setMinimumSize(QSize(600, 400));
 
