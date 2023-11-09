@@ -235,6 +235,7 @@ void nanodet_worker::process_results(std::any frame)
         cv::imwrite(impl_->im_name_.toStdString(), mat);        
 #endif
         ++impl_->im_ids_;
+        impl_->clear_written_id();
     }
 
     results.mat_ = std::move(qimg);
