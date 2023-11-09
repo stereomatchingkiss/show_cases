@@ -3,7 +3,7 @@
 
 #include "../config/config_source_selection.hpp"
 
-#include <multimedia/camera/frame_capture_qt_params.hpp>
+#include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
@@ -55,9 +55,9 @@ widget_source_selection::~widget_source_selection()
     delete ui;
 }
 
-frame_capture_qt_params widget_source_selection::get_frame_capture_qt_params() const
+frame_capture_qmediaplayer_params widget_source_selection::get_frame_capture_qt_params() const
 {
-    frame_capture_qt_params params;
+    frame_capture_qmediaplayer_params params;
     params.max_fps_ = get_max_fps();
     params.url_ = get_url();
 

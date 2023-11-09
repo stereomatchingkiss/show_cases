@@ -1,7 +1,7 @@
 #include "frame_capture_qmediaplayer.hpp"
 
 #include "frame_process_controller.hpp"
-#include "frame_capture_qt_params.hpp"
+#include "frame_capture_qmediaplayer_params.hpp"
 
 #include <QAudioOutput>
 #include <QMediaMetaData>
@@ -16,7 +16,7 @@ struct frame_capture_qmediaplayer::impl : public QObject
 
 
 public:
-    impl(frame_capture_qt_params const &params) :
+    impl(frame_capture_qmediaplayer_params const &params) :
         params_{params}
     {
         if(params.audio_on_){
@@ -56,12 +56,12 @@ public:
 
     std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;
     QAudioOutput output_;
-    frame_capture_qt_params params_;
+    frame_capture_qmediaplayer_params params_;
     QMediaPlayer player_;
     QVideoSink sink_;
 };
 
-frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qt_params const &params, QObject *parent) :
+frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qmediaplayer_params const &params, QObject *parent) :
     impl_{std::make_unique<impl>(params)}
 {
     connect(&impl_->player_, &QMediaPlayer::durationChanged, this, &frame_capture_qmediaplayer::duration_changed);

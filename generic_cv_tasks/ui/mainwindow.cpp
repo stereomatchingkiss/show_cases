@@ -17,7 +17,7 @@
 #include "../global/global_object.hpp"
 
 #include <multimedia/camera/frame_capture_qmediaplayer.hpp>
-#include <multimedia/camera/frame_capture_qt_params.hpp>
+#include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>

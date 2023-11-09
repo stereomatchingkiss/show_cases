@@ -8,13 +8,13 @@ class QVideoFrame;
 
 namespace flt::mm{
 
-struct frame_capture_qt_params;
+struct frame_capture_qmediaplayer_params;
 
 class frame_capture_qmediaplayer : public single_frame_with_multi_worker_base
 {
     Q_OBJECT
 public:
-    explicit frame_capture_qmediaplayer(frame_capture_qt_params const &params, QObject *parent = nullptr);
+    explicit frame_capture_qmediaplayer(frame_capture_qmediaplayer_params const &params, QObject *parent = nullptr);
     ~frame_capture_qmediaplayer();
 
     void add_listener(std::shared_ptr<frame_process_controller> process_controller, void *key) override;

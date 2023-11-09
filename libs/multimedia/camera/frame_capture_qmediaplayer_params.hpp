@@ -4,7 +4,7 @@
 
 namespace flt::mm{
 
-struct frame_capture_qt_params
+struct frame_capture_qmediaplayer_params
 {
     bool audio_on_ = false;
     bool loop_infinite_ = false;
