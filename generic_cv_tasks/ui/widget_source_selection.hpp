@@ -1,6 +1,7 @@
 #ifndef WIDGET_SOURCE_SELECTION_HPP
 #define WIDGET_SOURCE_SELECTION_HPP
 
+#include <QMediaDevices>
 #include <QWidget>
 
 namespace Ui {
@@ -47,9 +48,11 @@ private slots:
 
 private:
     void set_max_fps_visible();
-    void update_webcam_index();
+    void update_webcam_box();
 
-    Ui::widget_source_selection *ui;    
+    Ui::widget_source_selection *ui;
+
+    QMediaDevices devices_;
 };
 
 #endif // WIDGET_SOURCE_SELECTION_HPP

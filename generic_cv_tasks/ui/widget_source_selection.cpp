@@ -13,6 +13,9 @@
 #include <QFileDialog>
 #include <QJsonObject>
 
+#include <QCameraDevice>
+#include <QMediaDevices>
+
 namespace{
 
 QString const state_max_fps("state_max_fps");
@@ -21,22 +24,6 @@ QString const state_source_type("state_source_type");
 QString const state_video_url("state_video_url");
 QString const state_webcam_index("state_webcam_index");
 QString const state_websocket_url("state_websocket_url");
-
-int count_cameras()
-{
-    cv::VideoCapture temp_camera;
-    int maxTested = 10;
-    for (int i = 0; i < maxTested; i++){
-        cv::VideoCapture temp_camera(i);
-        bool res = (!temp_camera.isOpened());
-        temp_camera.release();
-        if (res)
-        {
-            return i;
-        }
-    }
-    return maxTested;
-}
 
 }
 
@@ -48,22 +35,16 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
 {
     ui->setupUi(this);
 
-#ifdef WASM_BUILD
+    //Todo, use videoCapture to support rtsp, on desktop
     ui->radioButtonRTSP->setVisible(false);
     ui->lineEditRTSP->setVisible(false);
-#endif
 
-    update_webcam_index();
+    update_webcam_box();
 
+    connect(&devices_, &QMediaDevices::videoInputsChanged, this, &widget_source_selection::update_webcam_box);
     connect(ui->radioButtonRTSP, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonVideo, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
-    connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked)
-            {
-                if(checked){
-                    update_webcam_index();
-                }
-                set_max_fps_visible();
-            });
+    connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonWebsockets, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
 
     set_max_fps_visible();
@@ -267,13 +248,11 @@ void widget_source_selection::set_max_fps_visible()
     ui->horizontalSliderMaxFPS->setVisible(!ui->radioButtonWebsockets->isChecked());
 }
 
-void widget_source_selection::update_webcam_index()
+void widget_source_selection::update_webcam_box()
 {
-    ui->comboBoxWebCam->clear();
-    if(auto const web_cam_size = count_cameras(); web_cam_size != 0){
-        for(int i = 0; i != web_cam_size; ++i){
-            ui->comboBoxWebCam->addItem(QString::number(i));
-        }
+    ui->comboBoxWebCam->clear();        
+    for(auto const &val :QMediaDevices::videoInputs()){
+        ui->comboBoxWebCam->addItem(val.description());
     }
 }
 
