@@ -105,10 +105,13 @@ bool widget_source_selection::get_is_valid_source() const noexcept
     if(ui->radioButtonRTSP->isChecked() && ui->lineEditRTSP->text().startsWith("rtsp")){
         return true;
     }
-    if(ui->radioButtonVideo->isChecked() && QFile::exists(ui->radioButtonVideo->text())){
+    if(ui->radioButtonVideo->isChecked() && QFile::exists(ui->lineEditVideo->text())){
         return true;
     }
     if(ui->radioButtonWebcam->isChecked() && ui->comboBoxWebCam->count() > 0){
+        return true;
+    }
+    if(ui->radioButtonHLS->isChecked() && ui->lineEditHLS->text().startsWith("http")){
         return true;
     }
     if(ui->radioButtonWebsockets->isChecked() &&
