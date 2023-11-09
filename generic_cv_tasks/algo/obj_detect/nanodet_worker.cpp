@@ -55,6 +55,20 @@ struct nanodet_worker::impl
         }
     }
 
+    void save_to_json(auto const &val)
+    {
+#ifndef WASM_BUILD
+        if(im_name_.isEmpty()){
+            im_name_ = create_fname();
+        }
+        QJsonObject jobj;
+        jobj["image_name"] = im_name_;
+        jobj["track_id"] = val.id_;
+        jobj["duration"] = val.duration_sec_;
+        stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";
+#endif
+    }
+
     bool check_alarm_condition(track_results const &pass_results)
     {
         bool alarm_on = false;
@@ -64,20 +78,8 @@ struct nanodet_worker::impl
                 if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
                     !written_id_.contains(val.id_)){
                     alarm_on = true;
-
-#ifndef WASM_BUILD
-                    if(im_name_.isEmpty()){
-                        im_name_ = create_fname();
-                    }                    
-                    QJsonObject jobj;
-                    jobj["image_name"] = im_name_;
-                    jobj["track_id"] = val.id_;
-                    jobj["duration"] = val.duration_sec_;
-                    stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";                    
-
                     written_id_.insert(val.id_);
-#endif
-                    return alarm_on;
+                    save_to_json(val);
                 }
             }
         }
