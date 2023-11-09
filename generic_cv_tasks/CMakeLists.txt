@@ -120,7 +120,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp        
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.hpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera_params.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer_params.hpp

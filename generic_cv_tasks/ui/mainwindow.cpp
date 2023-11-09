@@ -16,6 +16,8 @@
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"
 
+#include <multimedia/camera/frame_capture_qcamera.hpp>
+#include <multimedia/camera/frame_capture_qcamera_params.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/camera/frame_process_controller.hpp>
@@ -129,8 +131,10 @@ void MainWindow::create_frame_capture()
 {
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
+    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
+        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
     }else{
-        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qt_params());
+        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
     }
 }
 

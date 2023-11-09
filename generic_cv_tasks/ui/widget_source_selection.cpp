@@ -3,6 +3,7 @@
 
 #include "../config/config_source_selection.hpp"
 
+#include <multimedia/camera/frame_capture_qcamera_params.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
@@ -12,9 +13,6 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QJsonObject>
-
-#include <QCameraDevice>
-#include <QMediaDevices>
 
 namespace{
 
@@ -55,11 +53,22 @@ widget_source_selection::~widget_source_selection()
     delete ui;
 }
 
-frame_capture_qmediaplayer_params widget_source_selection::get_frame_capture_qt_params() const
+frame_capture_qmediaplayer_params widget_source_selection::get_frame_capture_qmediaplayer_params() const
 {
     frame_capture_qmediaplayer_params params;
     params.max_fps_ = get_max_fps();
     params.url_ = get_url();
+
+    return params;
+}
+
+frame_capture_qcamera_params widget_source_selection::get_frame_capture_qcamera_params() const
+{
+    frame_capture_qcamera_params params;
+    params.max_fps_ = ui->spinBoxMaxFPS->value();
+    if(!cam_devices_.empty()){
+        params.device_ = cam_devices_[ui->comboBoxWebCam->currentIndex()];
+    }
 
     return params;
 }
@@ -250,8 +259,9 @@ void widget_source_selection::set_max_fps_visible()
 
 void widget_source_selection::update_webcam_box()
 {
-    ui->comboBoxWebCam->clear();        
-    for(auto const &val :QMediaDevices::videoInputs()){
+    ui->comboBoxWebCam->clear();
+    cam_devices_ = QMediaDevices::videoInputs();
+    for(auto const &val : cam_devices_){
         ui->comboBoxWebCam->addItem(val.description());
     }
 }
