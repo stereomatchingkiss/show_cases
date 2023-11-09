@@ -62,6 +62,7 @@ public:
 };
 
 frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qmediaplayer_params const &params, QObject *parent) :
+    single_frame_with_multi_worker_base{parent},
     impl_{std::make_unique<impl>(params)}
 {
     connect(&impl_->player_, &QMediaPlayer::durationChanged, this, &frame_capture_qmediaplayer::duration_changed);
