@@ -15,6 +15,8 @@ class widget_source_selection;
 class widget_stream_player;
 class widget_tracker_alert;
 
+class QTimer;
+
 namespace flt::mm{
 
 class frame_capture_websocket;
@@ -53,9 +55,12 @@ private:
     void next_page_is_widget_source_selection();
     void next_page_is_widget_tracker_alert();
 
+    void update_position();
+
     Ui::MainWindow *ui;
 
     flt::ui::label_select_roi *label_select_roi_;
+    QTimer *timer_;
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_select_object_to_detect *widget_select_object_to_detect_;
     widget_source_selection *widget_source_selection_;

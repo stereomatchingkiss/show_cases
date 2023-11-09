@@ -21,10 +21,12 @@ public:
     void remove_listener(void *key)  override;
     void start() override;
 
+    int max_position() const noexcept;
+    void pause();
     bool is_seekable() const noexcept;
     int position() const noexcept;
 
-    void set_position(qint64 position);
+    void set_position(int position);
 
 signals:
     void duration_changed(qint64 duration);

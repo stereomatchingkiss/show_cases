@@ -48,6 +48,7 @@ public:
     {
         if(QList<QMediaMetaData> const data = player_.videoTracks(); !data.empty()){
             int const frame_rate = data[0].value(QMediaMetaData::VideoFrameRate).toInt();
+            max_duration_ = data[0].value(QMediaMetaData::Duration).toInt();
             qreal const ratio = 1.0/frame_rate;
             player_.setPlaybackRate(params_.max_fps_ * ratio);
             qDebug()<<"player play back rate == "<<player_.playbackRate();
@@ -55,6 +56,7 @@ public:
     }
 
     std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;
+    int max_duration_ = 0;
     QAudioOutput output_;
     frame_capture_qmediaplayer_params params_;
     QMediaPlayer player_;
@@ -90,6 +92,16 @@ void frame_capture_qmediaplayer::start()
     impl_->player_.play();
 }
 
+int frame_capture_qmediaplayer::max_position() const noexcept
+{
+    return impl_->max_duration_;
+}
+
+void frame_capture_qmediaplayer::pause()
+{
+    impl_->player_.pause();
+}
+
 bool frame_capture_qmediaplayer::is_seekable() const noexcept
 {
     return impl_->player_.isSeekable();
@@ -100,8 +112,8 @@ int frame_capture_qmediaplayer::position() const noexcept
     return impl_->player_.position();
 }
 
-void frame_capture_qmediaplayer::set_position(qint64 position)
-{
+void frame_capture_qmediaplayer::set_position(int position)
+{    
     impl_->player_.setPosition(position);
 }
 

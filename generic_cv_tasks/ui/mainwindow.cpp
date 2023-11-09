@@ -29,6 +29,7 @@
 #include <ui/label_select_roi.hpp>
 
 #include <QMessageBox>
+#include <QTimer>
 
 using namespace flt;
 using namespace flt::mm;
@@ -36,6 +37,7 @@ using namespace flt::mm;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , timer_(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -61,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     setMinimumSize(QSize(600, 400));
+
+    timer_->setInterval(1000);
 }
 
 MainWindow::~MainWindow()
@@ -130,11 +134,22 @@ void MainWindow::on_pushButtonPrev_clicked()
 void MainWindow::create_frame_capture()
 {
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
+        timer_->stop();
+        disconnect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
     }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
+        timer_->stop();
+        disconnect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
         sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
     }else{
         sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+
+        connect(widget_stream_player_, &widget_stream_player::pause, player, &frame_capture_qmediaplayer::pause);
+        connect(widget_stream_player_, &widget_stream_player::play, player, &frame_capture_qmediaplayer::start);
+        connect(widget_stream_player_, &widget_stream_player::seek, player, &frame_capture_qmediaplayer::set_position);
+
+        connect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
     }
 }
 
@@ -198,6 +213,14 @@ void MainWindow::next_page_is_widget_stream_player()
     create_frame_capture();
     sfwmw_->add_listener(process_controller, this);
     sfwmw_->start();
+
+    if(widget_source_selection_->get_source_type() == stream_source_type::hls ||
+        widget_source_selection_->get_source_type() == stream_source_type::video){
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+        widget_stream_player_->set_is_seekable(player->is_seekable());
+        widget_stream_player_->set_duration(player->position(), player->max_position());
+        timer_->start();
+    }
 }
 
 void MainWindow::next_page_is_widget_select_object_to_detect()
@@ -224,15 +247,27 @@ void MainWindow::next_page_is_widget_tracker_alert()
     ui->pushButtonPrev->setEnabled(true);
 }
 
+void MainWindow::update_position()
+{
+    if(sfwmw_){
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+        widget_stream_player_->set_current_position(player->position());
+    }
+}
+
 void MainWindow::next_page_is_label_select_roi()
 {
     if(!widget_source_selection_->get_is_valid_source()){
+        auto *msg_box = new QMessageBox;
+        msg_box->warning(this, tr("Warning"), tr("Invalid url"));
+        msg_box->show();
+        msg_box->deleteLater();
+    }else{
+        ui->labelTitle->setText(tr("Select roi"));
+        ui->stackedWidget->setCurrentWidget(label_select_roi_);
+        ui->pushButtonNext->setEnabled(true);
+        ui->pushButtonPrev->setEnabled(true);
 
+        create_roi_select_stream();
     }
-    ui->labelTitle->setText(tr("Select roi"));
-    ui->stackedWidget->setCurrentWidget(label_select_roi_);
-    ui->pushButtonNext->setEnabled(true);
-    ui->pushButtonPrev->setEnabled(true);
-
-    create_roi_select_stream();
 }

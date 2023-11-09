@@ -19,9 +19,20 @@ public:
 
     void display_frame(std::any results);
 
-private:    
+    void set_is_seekable(bool val);
+    void set_current_position(qint64 val);
+    void set_duration(qint64 current_duration_msec, qint64 max_duration_msec);    
 
-    Ui::widget_stream_player *ui;    
+signals:
+    void play();    
+    void pause();
+    void seek(int msec);
+
+private:
+    Ui::widget_stream_player *ui;
+
+    QString format_;
+    bool playing_;
 };
 
 #endif // WIDGET_STREAM_PLAYER_HPP
