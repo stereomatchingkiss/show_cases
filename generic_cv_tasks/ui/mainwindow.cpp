@@ -254,10 +254,8 @@ void MainWindow::update_position()
 void MainWindow::next_page_is_label_select_roi()
 {
     if(!widget_source_selection_->get_is_valid_source()){
-        auto *msg_box = new QMessageBox;
-        msg_box->warning(this, tr("Warning"), tr("Invalid url"));
-        msg_box->show();
-        msg_box->deleteLater();
+        msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
+        msg_box_->show();
     }else{
         ui->labelTitle->setText(tr("Select roi"));
         ui->stackedWidget->setCurrentWidget(label_select_roi_);
