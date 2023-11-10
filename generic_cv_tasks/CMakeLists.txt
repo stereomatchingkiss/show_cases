@@ -79,6 +79,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/coco_object_index.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp
