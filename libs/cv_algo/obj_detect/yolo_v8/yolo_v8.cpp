@@ -16,6 +16,8 @@
 
 #include "yolo_v8.hpp"
 
+#include "../ncnn_det_model_auxiliary.hpp"
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -23,131 +25,7 @@ namespace flt::cvt::det{
 
 namespace{
 
-struct GridAndStride
-{
-    int grid0;
-    int grid1;
-    int stride;
-};
-
-float fast_exp(float x)
-{
-    union {
-        uint32_t i;
-        float f;
-    } v{};
-    v.i = (1 << 23) * (1.4426950409 * x + 126.93490512f);
-    return v.f;
-}
-
-inline float sigmoid(float x)
-{
-    return 1.0f / (1.0f + fast_exp(-x));
-}
-
-inline float intersection_area(const box_info& a, const box_info& b)
-{
-    return (a.rect_ & b.rect_).area();
-}
-
-void qsort_descent_inplace(std::vector<box_info>& faceobjects, int left, int right)
-{
-    int i = left;
-    int j = right;
-    float p = faceobjects[(left + right) / 2].score_;
-
-    while (i <= j)
-    {
-        while (faceobjects[i].score_ > p)
-            ++i;
-
-        while (faceobjects[j].score_ < p)
-            --j;
-
-        if (i <= j)
-        {
-            // swap
-            std::swap(faceobjects[i], faceobjects[j]);
-
-            ++i;
-            --j;
-        }
-    }
-
-    //     #pragma omp parallel sections
-    {
-        //         #pragma omp section
-        {
-            if (left < j) qsort_descent_inplace(faceobjects, left, j);
-        }
-        //         #pragma omp section
-        {
-            if (i < right) qsort_descent_inplace(faceobjects, i, right);
-        }
-    }
-}
-
-void qsort_descent_inplace(std::vector<box_info>& faceobjects)
-{
-    if (faceobjects.empty())
-        return;
-
-    qsort_descent_inplace(faceobjects, 0, static_cast<int>(faceobjects.size() - 1));
-}
-
-void nms_sorted_bboxes(const std::vector<box_info>& faceobjects,
-                       std::vector<int>& picked,
-                       float nms_threshold)
-{    
-    std::vector<float> areas(faceobjects.size());
-    for(size_t i = 0; i < faceobjects.size(); ++i)
-    {
-        areas[i] = faceobjects[i].rect_.width * faceobjects[i].rect_.height;
-    }
-
-    picked.clear();
-    for(int i = 0; i < faceobjects.size(); ++i)
-    {
-        auto const &a = faceobjects[i];
-        bool keep = true;
-        for(size_t j = 0; j < picked.size(); ++j){
-            auto const &b = faceobjects[picked[j]];
-
-            // intersection over union
-            float const inter_area = intersection_area(a, b);
-            float const union_area = areas[i] + areas[picked[j]] - inter_area;
-            // float IoU = inter_area / union_area
-            if (inter_area / union_area > nms_threshold)
-                keep = false;
-        }
-
-        if(keep)
-            picked.push_back(i);
-    }
-}
-
-void generate_grids_and_stride(int target_w,
-                               int target_h,
-                               std::vector<int>& strides,
-                               std::vector<GridAndStride>& grid_strides)
-{
-    for(size_t i = 0; i < strides.size(); ++i){
-        int const stride = strides[i];
-        int const num_grid_w = target_w / stride;
-        int const num_grid_h = target_h / stride;
-        for(int g1 = 0; g1 < num_grid_h; ++g1){
-            for(int g0 = 0; g0 < num_grid_w; ++g0){
-                GridAndStride gs;
-                gs.grid0 = g0;
-                gs.grid1 = g1;
-                gs.stride = stride;
-                grid_strides.push_back(gs);
-            }
-        }
-    }
-}
-
-void generate_proposals(std::vector<GridAndStride> grid_strides,
+void generate_proposals(std::vector<grid_and_stride> grid_strides,
                         const ncnn::Mat& pred,
                         float prob_threshold,
                         int num_class,
@@ -281,7 +159,7 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
     ex.extract("output", out);
 
     std::vector<int> strides = {8, 16, 32}; // might have stride=64
-    std::vector<GridAndStride> grid_strides;
+    std::vector<grid_and_stride> grid_strides;
     generate_grids_and_stride(in_pad.w, in_pad.h, strides, grid_strides);
 
     std::vector<box_info> proposals;
