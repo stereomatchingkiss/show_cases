@@ -25,7 +25,9 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
+#include <QDateTime>
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QTextStream>
 
@@ -44,29 +46,40 @@ struct nanodet_worker::impl
 {
     impl(config_nanodet_worker config) :
         config_{std::move(config)},
-        names_{global_keywords().coco_names()},
-        file_{global_keywords().tracker_alert_path() + "/cam0/info.txt"}
+        names_{global_keywords().coco_names()}
     {
         create_model();
         create_obj_to_detect();
 
-        if(file_.open(QIODevice::WriteOnly)){
-            stream_.setDevice(&file_);
+        if(config_.config_tracker_alert_.save_checks_){
+            dir_path_ = global_keywords().tracker_alert_path() + "/cam0/" +
+                        QDateTime::currentDateTime().toString("yyyy_MM_dd_hh,hh_mm_ss") + "/";
+            QDir().mkpath(dir_path_);
+            file_.setFileName(dir_path_ + "/info.txt");
+
+            if(file_.open(QIODevice::WriteOnly)){
+                stream_.setDevice(&file_);
+            }
         }
     }
 
-    void save_to_json(auto const &val)
+    void save_to_json(track_duration const &val)
     {
+        if(file_.isOpen()){
 #ifndef WASM_BUILD
-        if(im_name_.isEmpty()){
-            im_name_ = create_fname();
-        }
-        QJsonObject jobj;
-        jobj["image_name"] = im_name_;
-        jobj["track_id"] = val.id_;
-        jobj["duration"] = val.duration_sec_;
-        stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";
+            if(im_name_.isEmpty()){
+                im_name_ = create_fname();
+            }
+            QJsonObject jobj;
+            jobj["image_name"] = im_name_;
+            jobj["track_id"] = val.id_;
+            jobj["time"] = QDateTime::currentDateTime().toString();
+            jobj["roi"] = std::format("x:{},y:{},width:{},height:{}",
+                                      val.rect_.x, val.rect_.y, val.rect_.width, val.rect_.height).c_str();
+            jobj["duration"] = val.duration_sec_;
+            stream_<<QJsonDocument(jobj).toJson(QJsonDocument::Compact)<<"\n";
 #endif
+        }
     }
 
     bool check_alarm_condition(track_results const &pass_results)
@@ -102,7 +115,7 @@ struct nanodet_worker::impl
 
     QString create_fname() const
     {
-        return  global_keywords().tracker_alert_path() + "/cam0/" + QString("%1").arg(im_ids_, 6, 10, QChar('0')) + ".jpg";
+        return  dir_path_ + QString("%1").arg(im_ids_, 6, 10, QChar('0')) + ".jpg";
     }
 
     void create_model()
@@ -186,6 +199,7 @@ struct nanodet_worker::impl
     }
 
     config_nanodet_worker config_;
+    QString dir_path_;
     QString im_name_;
     size_t im_ids_ = 0;
     global_keywords keywords_;
