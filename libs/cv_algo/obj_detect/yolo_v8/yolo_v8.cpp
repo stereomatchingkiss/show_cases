@@ -108,6 +108,11 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
 {
     net_.opt = ncnn::Option();
     net_.opt.num_threads = max_thread;
+
+#if NCNN_VULKAN
+    net_.opt.use_vulkan_compute = ncnn::get_gpu_count() > 0 && use_gpu;
+#endif
+
     net_.load_param(param);
     net_.load_model(bin);
 
