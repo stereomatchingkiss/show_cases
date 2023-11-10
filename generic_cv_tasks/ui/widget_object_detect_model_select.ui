@@ -21,7 +21,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="labelConfidence">
         <property name="text">
          <string>Confidence</string>
         </property>
@@ -51,7 +51,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="labelNMS">
         <property name="text">
          <string>NMS</string>
         </property>
@@ -99,19 +99,13 @@
        <widget class="QComboBox" name="comboBoxSelectModel"/>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBoxYoloV8">
+       <widget class="QGroupBox" name="groupBoxYolox">
         <property name="title">
-         <string>yolo v8</string>
+         <string>yolox</string>
         </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_6">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labelProcessSizeYolox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -123,8 +117,8 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxProcessSizeYoloV8"/>
+         <item>
+          <widget class="QComboBox" name="comboBoxProcessSizeYolox"/>
          </item>
         </layout>
        </widget>

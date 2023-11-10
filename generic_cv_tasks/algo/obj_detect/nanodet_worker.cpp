@@ -11,7 +11,7 @@
 
 #include <cv_algo/obj_detect/obj_det_utils.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
-#include <cv_algo/obj_detect/yolo_v8/yolo_v8.hpp>
+#include <cv_algo/obj_detect/yolox/yolox.hpp>
 
 #include <cv_algo/tracker/track_object_pass.hpp>
 #include <cv_algo/tracker/track_results.hpp>
@@ -140,11 +140,11 @@ struct nanodet_worker::impl
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
-        case dme::yolo_v8_n:{
-            auto const param = std::format("{}yolov8n.param", model_root);
-            auto const bin = std::format("{}yolov8n.bin", model_root);
+        case dme::yolox:{
+            auto const param = std::format("{}yoloxT.param", model_root);
+            auto const bin = std::format("{}yoloxT.bin", model_root);
             auto const psize = config_.config_object_detect_model_select_.process_size_;
-            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, psize);
+            net_ = std::make_unique<cvt::det::yolox>(param.c_str(), bin.c_str(), false, psize);
             break;
         }
         }
