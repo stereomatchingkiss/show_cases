@@ -81,7 +81,7 @@ void frame_capture_qcamera::video_frame_changed(const QVideoFrame &frame)
         impl_->last_time_ = ctime;
         if(auto mat = frame.toImage(); !mat.isNull()){
             for(auto &val : impl_->controllers_){
-                emit val.first->process_results(mat);
+                val.first->predict(mat);
             }
         }else{
             qDebug()<<__func__<<":cannot decode video frame of webcam";

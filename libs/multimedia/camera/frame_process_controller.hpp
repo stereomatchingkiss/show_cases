@@ -18,10 +18,13 @@ public:
     explicit frame_process_controller(frame_process_base_worker *worker, QObject *parent = nullptr);
     ~frame_process_controller();
 
+    void predict(std::any results);
+    void stop(bool val);
+
 signals:
-    void message_error(QString);
-    void process_results(std::any results);
+    void message_error(QString);    
     void send_process_results(std::any results);
+    void start();
 
 private:
     std::unique_ptr<QThread> thread_;

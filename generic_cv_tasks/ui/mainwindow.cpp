@@ -155,6 +155,7 @@ void MainWindow::create_roi_select_stream()
     auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             label_select_roi_, &ui::label_select_roi::display_frame);
+    emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
     sfwmw_->start();
 }
@@ -207,6 +208,7 @@ void MainWindow::next_page_is_widget_stream_player()
             widget_stream_player_, &widget_stream_player::display_frame);
 
     create_frame_capture();
+    emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
     sfwmw_->start();
 

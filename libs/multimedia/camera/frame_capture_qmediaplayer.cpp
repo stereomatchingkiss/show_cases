@@ -126,7 +126,7 @@ void frame_capture_qmediaplayer::video_frame_changed(QVideoFrame const &frame)
 {
     if(auto mat = frame.toImage(); !mat.isNull()){
         for(auto &val : impl_->controllers_){
-            emit val.first->process_results(mat);
+            val.first->predict(mat);
         }
     }else{
         qDebug()<<__func__<<":cannot decode video frame of mediaplayer";

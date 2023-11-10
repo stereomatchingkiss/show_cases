@@ -11,7 +11,7 @@ class frame_display_worker : public flt::mm::frame_process_base_worker
 public:
     explicit frame_display_worker(QObject *parent = nullptr);
     ~frame_display_worker();
-
+    
     void process_results(std::any frame) override;
 };
 

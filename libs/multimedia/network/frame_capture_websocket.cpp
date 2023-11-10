@@ -126,7 +126,7 @@ void frame_capture_websocket::process_image(cv::Mat mat)
 {
     if(!mat.empty()){
         for(auto &val : impl_->controllers_){
-            emit val.first->process_results(mat);
+            val.first->predict(mat);
         }
     }else{
         qDebug()<<__func__<<":cannot decode message";
@@ -138,7 +138,7 @@ void frame_capture_websocket::process_image(QImage mat)
 {
     if(!mat.isNull()){
         for(auto &val : impl_->controllers_){
-            emit val.first->process_results(mat);
+            emit val.first->predict(mat);
         }
     }else{
         qDebug()<<__func__<<":cannot decode message";

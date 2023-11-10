@@ -217,7 +217,7 @@ struct nanodet_worker::impl
 };
 
 nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
-    flt::mm::frame_process_base_worker(parent),
+    flt::mm::frame_process_base_worker(2, parent),
     impl_{std::make_unique<impl>(std::move(config))}
 {
 
