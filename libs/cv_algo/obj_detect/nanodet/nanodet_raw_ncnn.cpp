@@ -77,6 +77,9 @@ nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_c
     net_->opt.num_threads = max_thread_;
     load_param_success_ = net_->load_param(param);
     load_model_success_ = net_->load_model(bin);
+
+    input_name_ = net_->input_names()[0];
+    output_name_ = net_->output_names()[net_->output_names().size() - 1];
 }
 
 int nanodet_raw_ncnn::get_input_size() const
@@ -122,13 +125,13 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
     preprocess(buffer, width, height, input);
 
     auto ex = net_->create_extractor();
-    ex.input("data", input);
+    ex.input(input_name_.c_str(), input);
 
     std::vector<std::vector<box_info>> results;
     results.resize(this->num_class_);
 
     ncnn::Mat out;
-    ex.extract("output", out);
+    ex.extract(output_name_.c_str(), out);
 
     // generate center priors in format of (x, y, stride)
     std::vector<center_prior> center_priors;

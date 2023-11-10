@@ -116,6 +116,9 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
     net_.load_param(param);
     net_.load_model(bin);
 
+    input_name_ = net_.input_names()[0];
+    output_name_ = net_.output_names()[net_.output_names().size() - 1];
+
     target_size_ = input_size;
 }
 
@@ -158,10 +161,10 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
 
     ncnn::Extractor ex = net_.create_extractor();
 
-    ex.input("images", in_pad);
+    ex.input(input_name_.c_str(), in_pad);
 
     ncnn::Mat out;
-    ex.extract("output", out);
+    ex.extract(output_name_.c_str(), out);
 
     std::vector<int> strides = {8, 16, 32}; // might have stride=64
     std::vector<grid_and_stride> grid_strides;

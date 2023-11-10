@@ -63,6 +63,9 @@ yolox::yolox(const char *param, const char *bin, bool use_gpu, int input_size, i
 
     net_.load_param(param);
     net_.load_model(bin);
+
+    input_name_ = net_.input_names()[0];
+    output_name_ = net_.output_names()[net_.output_names().size() - 1];
 }
 
 yolox::~yolox()
@@ -104,15 +107,15 @@ std::vector<box_info> yolox::predict(const cv::Mat &bgr, float score_threshold, 
 
     ncnn::Extractor ex = net_.create_extractor();
 
-    ex.input("images", in_pad);
+    ex.input(input_name_.c_str(), in_pad);
 
     std::vector<box_info> proposals;
 
     {
         ncnn::Mat out;
-        ex.extract("output", out);
+        ex.extract(output_name_.c_str(), out);
 
-        static const int stride_arr[] = {8, 16, 32}; // might have stride=64 in YOLOX
+        static constexpr int stride_arr[] = {8, 16, 32}; // might have stride=64 in YOLOX
         std::vector<int> strides(stride_arr, stride_arr + sizeof(stride_arr) / sizeof(stride_arr[0]));
         std::vector<grid_and_stride> grid_strides;
         generate_grids_and_stride(target_size_, target_size_, strides, grid_strides);

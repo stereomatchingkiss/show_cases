@@ -84,6 +84,9 @@ private:
     int num_class_ = 7;
     int reg_max_ = 7;
     std::vector<int> const strides_ = { 8, 16, 32, 64 }; // strides of the multi-level feature.
+
+    std::string input_name_;
+    std::string output_name_;
 };
 
 }

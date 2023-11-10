@@ -47,6 +47,9 @@ private:
     float const mean_vals_[3];
     float const norm_vals_[3];
     int num_class_;
+
+    std::string input_name_;
+    std::string output_name_;
 };
 
 }

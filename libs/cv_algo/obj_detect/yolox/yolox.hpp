@@ -25,6 +25,9 @@ private:
     ncnn::Net net_;
     int target_size_;
     int num_class_;
+
+    std::string input_name_;
+    std::string output_name_;
 };
 
 }
