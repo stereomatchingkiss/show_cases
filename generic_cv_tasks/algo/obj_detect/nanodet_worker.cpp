@@ -143,7 +143,8 @@ struct nanodet_worker::impl
         case dme::yolo_v8_n:{
             auto const param = std::format("{}yolov8n.param", model_root);
             auto const bin = std::format("{}yolov8n.bin", model_root);
-            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
+            auto const psize = config_.config_object_detect_model_select_.process_size_;
+            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, psize);
             break;
         }
         }
