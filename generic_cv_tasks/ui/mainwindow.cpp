@@ -54,8 +54,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionReadMe, &QAction::triggered, [this](bool)
             {
                 msg_box_->warning(this, tr("Before you use"),
-                                  tr("1. Use this software at your own risk.\n"
-                                     "2. Do not sell or use it for commercial purpose"));
+                                  tr("1. The software is copyrighted by the software developer.\n"
+                                     "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
+                                     "3. When using the software, please comply with relevant laws and regulations. "
+                                     "The software developer is not responsible for any loss or damage caused by the "
+                                     "use of this software."));
             });
 
     setMinimumSize(QSize(600, 400));
