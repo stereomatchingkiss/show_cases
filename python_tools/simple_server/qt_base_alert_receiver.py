@@ -1,0 +1,95 @@
+from PyQt5.QtCore import QByteArray, QDateTime, QDir, QFile, QJsonDocument, QIODevice, QTextStream
+from PyQt5.QtNetwork import QHostAddress
+from PyQt5.QtWebSockets import QWebSocketServer
+from PyQt5.QtWidgets import QApplication, QPushButton
+from PyQt5.QtGui import QImage
+
+import argparse
+import json
+import sys
+
+ap = argparse.ArgumentParser()
+ap.add_argument("--port", required=False, type=int, default=2345)
+ap.add_argument("--save_at", type=str, default="GenericCVTasksAssets/alert/", help="Location to save the alert")
+
+args = vars(ap.parse_args())
+
+# Easier to shutdown the server if create it as a widget
+class simple_websocket_server(QPushButton):
+    def __init__(self, port : int = args["port"], parent = None):
+        super(simple_websocket_server, self).__init__(parent)
+
+        self.camera = None
+        self.port = port
+        self.server = QWebSocketServer("Simple alert server", QWebSocketServer.NonSecureMode, self)
+        self.socket = None
+
+        self.setText("Close")
+        self.clicked.connect(self.close)
+
+        if(self.server.listen(QHostAddress.Any, port)):
+            print("SSL Echo Server listening on port: ", port)
+            self.server.newConnection.connect(self.on_new_connection)
+
+    def on_new_connection(self):
+
+        print("socket connected")
+        if(self.socket):
+            print("This simple app only allowed one socket connection")
+            return
+
+        self.save_at = args["save_at"] + "/cam0/" + QDateTime.currentDateTime().toString("yyyy_MM_dd_hh,hh_mm_ss") + "/"
+        QDir().mkpath(self.save_at)
+        self.socket = self.server.nextPendingConnection()
+        self.socket.disconnected.connect(self.socket_disconnected)
+        self.socket.binaryMessageReceived.connect(self.received_binary_message)
+
+    def extract_the_image(self, jobj):
+        if("image" in jobj):
+                print("image in jobj")
+                img = QImage()
+                print("load from data")
+                img.loadFromData(QByteArray.fromBase64(QByteArray(jobj["image"].toString().encode())))
+                print("load from data end")
+                if(img.isNull() == False):
+                   img.save(self.save_at + jobj["image_name"].toString() + ".jpg")
+
+    def received_binary_message(self, message):
+        print("received message = ", len(message))
+        jobj = QJsonDocument.fromJson(message).object()
+        if jobj:
+            print("can decode to json dicts")
+            print(jobj["image_name"].toString())
+            #self.extract_the_image(jobj) #uncomment this line if you want to extract the image
+            self.qfile = QFile()
+            self.qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
+            if(self.qfile.open(QIODevice.WriteOnly)):
+                self.qstream = QTextStream(self.qfile)
+                self.qstream << message
+            else:
+                self.qstream = None
+        else:
+            print("cannot convert to json")
+
+
+    def socket_disconnected(self):
+        print("socket disconnected")
+        self.timer.stop()
+        if self.socket:
+            self.socket.deleteLater()
+            self.socket = None
+        if self.camera:
+            self.camera.release()
+            self.camera = None
+
+def main():
+    app = QApplication(sys.argv)
+
+    win = simple_websocket_server()
+    win.resize(400, 400)
+    win.show()
+
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
