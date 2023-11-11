@@ -1,6 +1,6 @@
 from PyQt5.QtNetwork import QHostAddress
 from PyQt5.QtWebSockets import QWebSocketServer
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QPushButton
 from PyQt5.QtCore import QTimer
 
 import argparse
@@ -17,7 +17,7 @@ ap.add_argument("--opencv_url", type=str, required=True,
 args = vars(ap.parse_args())
 
 # Easier to shutdown the server if create it as a widget
-class simple_websocket_server(QWidget):
+class simple_websocket_server(QPushButton):
     def __init__(self, port : int = args["port"], parent = None):
         super(simple_websocket_server, self).__init__(parent)
 
@@ -29,6 +29,10 @@ class simple_websocket_server(QWidget):
         self.socket = None
         self.timer = QTimer()
         self.timer.setInterval(int(1000.0/self.max_fps))
+
+        self.setText("Close")
+
+        self.clicked.connect(self.close)
 
         if(self.server.listen(QHostAddress.Any, port)):
             print("SSL Echo Server listening on port: ", port)
@@ -42,7 +46,7 @@ class simple_websocket_server(QWidget):
             print("This simple app only allowed one socket connection")
             return
 
-        self.socket = self.server.nextPendingConnection()        
+        self.socket = self.server.nextPendingConnection()
         self.socket.disconnected.connect(self.socket_disconnected)
 
         self.send_frame()
@@ -70,7 +74,7 @@ class simple_websocket_server(QWidget):
                 self.socket.sendBinaryMessage(buffer.tobytes())
 
         except:
-            self.camera.release()            
+            self.camera.release()
 
     def socket_disconnected(self):
         print("socket disconnected")
@@ -79,7 +83,7 @@ class simple_websocket_server(QWidget):
             self.socket.deleteLater()
             self.socket = None
         if self.camera:
-            self.camera.release()            
+            self.camera.release()
             self.camera = None
 
 def main():
