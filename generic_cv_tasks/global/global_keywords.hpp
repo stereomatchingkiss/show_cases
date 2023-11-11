@@ -16,6 +16,7 @@ public:
     QString const tracker_alert_path() const;
 
     QString state_roi() const;
+    QString state_widget_alert_settings() const;
     QString state_widget_object_detect_model_select() const;
     QString state_widget_select_object_to_detect() const;
     QString state_widget_source_selection() const;

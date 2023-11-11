@@ -46,6 +46,11 @@ QString global_keywords::state_roi() const
     return "state_roi";
 }
 
+QString global_keywords::state_widget_alert_settings() const
+{
+    return "state_widget_alert_settings";
+}
+
 QString global_keywords::state_widget_object_detect_model_select() const
 {
     return "state_widget_object_detect_model_select";

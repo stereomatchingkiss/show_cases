@@ -3,6 +3,10 @@
 
 #include "../config/config_alert_sender.hpp"
 
+#include "../global/global_object.hpp"
+
+#include <network/websocket_client.hpp>
+
 #include <QJsonObject>
 
 #include <QPushButton>
@@ -24,6 +28,7 @@ widget_alert_sender_settings::widget_alert_sender_settings(QWidget *parent) :
     connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked, [this](bool)
             {
                 close();
+        get_websocket_client().reconnect_if_needed(ui->lineEditWebsocketUrl->text());
                 emit button_ok_clicked(get_config());
             });
 }

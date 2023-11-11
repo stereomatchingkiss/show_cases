@@ -13,7 +13,7 @@ flt::mm::alert_sound_manager &get_alert_sound_manager()
 #endif    
 }
 
-flt::net::websocket_client_thread_safe &get_websocket_client_thread_safe()
+flt::net::websocket_client &get_websocket_client()
 {
-    return flt::meyers_singleton<flt::net::websocket_client_thread_safe>::get_instance();
+    return flt::meyers_singleton<flt::net::websocket_client>::get_instance();
 }

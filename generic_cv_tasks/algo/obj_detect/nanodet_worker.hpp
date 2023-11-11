@@ -19,7 +19,10 @@ public:
     ~nanodet_worker();
 
     void change_alert_sender_config(config_alert_sender const &val);
-    void process_results(std::any frame) override;    
+    void process_results(std::any frame) override;
+
+signals:
+    void send_alert(QByteArray msg);
 
 private:
     struct impl;

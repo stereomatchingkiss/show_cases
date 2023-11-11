@@ -58,11 +58,13 @@ private:
     void next_page_is_widget_source_selection();
     void next_page_is_widget_tracker_alert();
 
+    void send_alert_message(QByteArray const &msg);
+
     void update_position();
 
     Ui::MainWindow *ui;
-
-    widget_alert_sender_settings *alert_sender_settings_;
+    
+    widget_alert_sender_settings *widget_alert_sender_settings_;
     flt::ui::label_select_roi *label_select_roi_;
     QMessageBox *msg_box_;
     QTimer *timer_;

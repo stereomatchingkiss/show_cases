@@ -9,6 +9,11 @@ void config_read_write::set_roi(QJsonObject val)
     roi_ = std::move(val);
 }
 
+void config_read_write::set_widget_alert_settings(QJsonObject val)
+{
+    widget_alert_settings_ = std::move(val);
+}
+
 void config_read_write::set_widget_object_detect_model_select(QJsonObject val)
 {
     widget_object_detect_model_select_ = std::move(val);
@@ -39,6 +44,7 @@ void config_read_write::write(const QString &val)
     QJsonObject obj;
     global_keywords gk;
     obj[gk.state_roi()] = roi_;
+    obj[gk.state_widget_alert_settings()] = widget_alert_settings_;
     obj[gk.state_widget_object_detect_model_select()] = widget_object_detect_model_select_;
     obj[gk.state_widget_select_object_to_detect()] = widget_select_object_to_detect_;
     obj[gk.state_widget_source_selection()] = widget_source_selection_;

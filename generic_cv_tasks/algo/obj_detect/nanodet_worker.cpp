@@ -5,7 +5,6 @@
 #include "../../config/config_nanodet_worker.hpp"
 
 #include "../../global/global_keywords.hpp"
-#include "../../global/global_object.hpp"
 
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
@@ -32,6 +31,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 
 #include <QJsonObject>
@@ -75,12 +75,6 @@ struct nanodet_worker::impl
 #endif
     }
 
-    bool send_alert_activated() const noexcept
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        return config_.config_alert_sender_.activate_;
-    }
-
     void save_to_json(track_duration const &val, QImage const &img)
     {        
         if(file_.isOpen() || send_alert_){
@@ -88,8 +82,10 @@ struct nanodet_worker::impl
                 im_name_ = create_fname();
             }
             QJsonObject jobj;
-#ifndef WASM_BUILD
+#ifdef WASM_BUILD
             jobj["image_name"] = im_name_;
+#else
+            jobj["image_name"] = QFileInfo(im_name_).baseName();
 #endif
             jobj["track_id"] = val.id_;
             jobj["time"] = QDateTime::currentDateTime().toString();
@@ -101,13 +97,10 @@ struct nanodet_worker::impl
             jobj["image"] = QString(to_base64_img(img));
 #endif
 
-            auto const json_test = QJsonDocument(jobj).toJson(QJsonDocument::Compact);
+            alert_info_ = QJsonDocument(jobj).toJson(QJsonDocument::Compact);
 #ifndef WASM_BUILD
-            stream_<<json_test<<"\n";
-#endif
-            if(send_alert_){
-                get_websocket_client_thread_safe().send_binary_message(json_test);
-            }
+            stream_<<alert_info_<<"\n";
+#endif            
         }
     }
 
@@ -180,18 +173,9 @@ struct nanodet_worker::impl
     }
 
     void change_alert_sender_config(const config_alert_sender &val)
-    {
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            config_.config_alert_sender_ = val;
-            send_alert_ = val.activate_;
-        }
-
-        if(send_alert_){
-            get_websocket_client_thread_safe().reconnect_if_needed(val.url_);
-        }else{
-            get_websocket_client_thread_safe().close();
-        }
+    {        
+        config_.config_alert_sender_ = val;
+        send_alert_ = val.activate_;
     }
 
     void create_obj_to_detect()
@@ -243,23 +227,25 @@ struct nanodet_worker::impl
         return det_results;
     }
 
+    QByteArray alert_info_;
     config_nanodet_worker config_;
     QString dir_path_;
     QString im_name_;
     size_t im_ids_ = 0;
-    global_keywords keywords_;
-    mutable std::mutex mutex_;
+    global_keywords keywords_;    
     std::vector<std::string> names_;
     std::unique_ptr<det::obj_det_base> net_;
     std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
-    bool send_alert_ = false;
+    std::atomic<bool> send_alert_ = false;
     BYTETracker tracker_;
     std::unique_ptr<track_object_pass> track_obj_pass_;
     std::set<int> written_id_;
 
+#ifndef WASM_BUILD
     QFile file_;
     QTextStream stream_;
+#endif
 };
 
 nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
@@ -302,6 +288,7 @@ void nanodet_worker::process_results(std::any frame)
 #endif
         ++impl_->im_ids_;
         impl_->clear_written_id();
+        emit send_alert(impl_->alert_info_);
     }
 
     results.mat_ = std::move(qimg);

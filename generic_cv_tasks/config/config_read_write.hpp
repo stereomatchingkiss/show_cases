@@ -7,6 +7,7 @@ class config_read_write
 {
 public:
     void set_roi(QJsonObject val);
+    void set_widget_alert_settings(QJsonObject val);
     void set_widget_object_detect_model_select(QJsonObject val);
     void set_widget_select_object_to_detect(QJsonObject val);
     void set_widget_source_selection(QJsonObject val);
@@ -17,6 +18,7 @@ public:
 
 private:
     QJsonObject roi_;
+    QJsonObject widget_alert_settings_;
     QJsonObject widget_object_detect_model_select_;
     QJsonObject widget_select_object_to_detect_;
     QJsonObject widget_source_selection_;

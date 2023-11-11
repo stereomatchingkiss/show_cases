@@ -27,6 +27,8 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <multimedia/stream_enum.hpp>
 
+#include <network/websocket_client.hpp>
+
 #include <ui/label_select_roi.hpp>
 
 #include <QMessageBox>
@@ -38,7 +40,7 @@ using namespace flt::mm;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , alert_sender_settings_(new widget_alert_sender_settings)
+    , widget_alert_sender_settings_(new widget_alert_sender_settings)
     , msg_box_(new QMessageBox(this))
     , timer_(new QTimer(this))
 {
@@ -47,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     init_stacked_widget();
 
     ui->pushButtonPrev->setEnabled(false);
-    ui->labelTitle->setText(tr("Select model"));
+    ui->labelTitle->setText(tr("Select model"));    
 
     connect(ui->actionQt, &QAction::triggered, [this](bool)
             {
@@ -65,7 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionServer, &QAction::triggered, [this](bool)
             {
-                alert_sender_settings_->show();
+        widget_alert_sender_settings_->show();
+            });
+    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [](auto const &val)
+            {
+                get_websocket_client().reconnect_if_needed(val.url_);
             });
 
     setMinimumSize(QSize(600, 400));
@@ -77,6 +83,7 @@ MainWindow::~MainWindow()
 {    
     config_read_write crw;
     crw.set_roi(label_select_roi_->get_states());
+    crw.set_widget_alert_settings(widget_alert_sender_settings_->get_states());
     crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
     crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
     crw.set_widget_source_selection(widget_source_selection_->get_states());
@@ -185,6 +192,7 @@ void MainWindow::init_stacked_widget()
     auto const jobj = crw.read(global_keywords().cam_config_path() + "/cam0.json");
 
     label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
+    widget_alert_sender_settings_->set_states(jobj[gk.state_widget_alert_settings()].toObject());
     widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
     widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
     widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
@@ -208,19 +216,22 @@ void MainWindow::next_page_is_widget_stream_player()
     ui->pushButtonPrev->setEnabled(true);
 
     config_nanodet_worker config;
+    config.config_alert_sender_ = widget_alert_sender_settings_->get_config();
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
     config.roi_ = label_select_roi_->get_norm_rubber_band_rect();
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
 
     auto worker = new nanodet_worker(std::move(config));
-    connect(alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked,
+    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked,
             worker, &nanodet_worker::change_alert_sender_config);
+    connect(worker, &nanodet_worker::send_alert, this, &MainWindow::send_alert_message);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
+    get_websocket_client().reconnect_if_needed(widget_alert_sender_settings_->get_config().url_);
     create_frame_capture();
     emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
@@ -257,6 +268,11 @@ void MainWindow::next_page_is_widget_tracker_alert()
     ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);
     ui->pushButtonNext->setEnabled(true);
     ui->pushButtonPrev->setEnabled(true);
+}
+
+void MainWindow::send_alert_message(const QByteArray &msg)
+{
+    get_websocket_client().send_binary_message(msg);
 }
 
 void MainWindow::update_position()
