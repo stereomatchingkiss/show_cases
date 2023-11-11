@@ -22,7 +22,12 @@ public:
     explicit websocket_client_thread_safe(QObject *parent = nullptr);
     ~websocket_client_thread_safe();
 
+    void close();
     void open(QUrl const &url);
+    void reconnect_if_needed(QUrl const &url);
+    void send_binary_message(QByteArray message);
+    void send_text_message(QString message);
+    QAbstractSocket::SocketState state() const;
 
 signals:
     void error_message(QString const &message);
@@ -35,10 +40,7 @@ private:
     void closed();
     void connected();
 
-    void send_binary_message(QByteArray message);
-    void send_text_message(QString message);
     void socket_error(QAbstractSocket::SocketError error);
-    void stop();    
 
     struct impl;
     std::unique_ptr<impl> impl_;

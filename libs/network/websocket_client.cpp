@@ -27,10 +27,31 @@ websocket_client_thread_safe::~websocket_client_thread_safe()
 
 }
 
+void websocket_client_thread_safe::close()
+{
+    std::lock_guard<std::mutex> lock(impl_->mutex_);
+    impl_->socket_.close();
+}
+
 void websocket_client_thread_safe::open(const QUrl &url)
 {
     std::lock_guard<std::mutex> lock(impl_->mutex_);
     impl_->socket_.open(url);
+}
+
+void websocket_client_thread_safe::reconnect_if_needed(const QUrl &url)
+{
+    std::lock_guard<std::mutex> lock(impl_->mutex_);
+    if(impl_->socket_.state() != QAbstractSocket::ConnectedState){
+        impl_->socket_.close();
+        impl_->socket_.open(url);
+    }
+}
+
+QAbstractSocket::SocketState websocket_client_thread_safe::state() const
+{
+    std::lock_guard<std::mutex> lock(impl_->mutex_);
+    return impl_->socket_.state();
 }
 
 #ifndef WASM_BUILD
@@ -74,12 +95,6 @@ void websocket_client_thread_safe::send_text_message(QString message)
 void websocket_client_thread_safe::socket_error(QAbstractSocket::SocketError error)
 {
     qDebug()<<__func__<<":"<<error;
-}
-
-void websocket_client_thread_safe::stop()
-{
-    std::lock_guard<std::mutex> lock(impl_->mutex_);
-    impl_->socket_.close();
 }
 
 }
