@@ -1,6 +1,7 @@
 #include "mainwindow.hpp"
 #include "./ui_mainwindow.h"
 
+#include "widget_alert_sender_settings.hpp"
 #include "widget_object_detect_model_select.hpp"
 #include "widget_select_object_to_detect.hpp"
 #include "widget_source_selection.hpp"
@@ -37,6 +38,7 @@ using namespace flt::mm;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , alert_sender_settings_(new widget_alert_sender_settings)
     , msg_box_(new QMessageBox(this))
     , timer_(new QTimer(this))
 {
@@ -59,6 +61,11 @@ MainWindow::MainWindow(QWidget *parent)
                                      "3. When using the software, please comply with relevant laws and regulations. "
                                      "The software developer is not responsible for any loss or damage caused by the "
                                      "use of this software."));
+            });
+
+    connect(ui->actionServer, &QAction::triggered, [this](bool)
+            {
+                alert_sender_settings_->show();
             });
 
     setMinimumSize(QSize(600, 400));
@@ -205,8 +212,12 @@ void MainWindow::next_page_is_widget_stream_player()
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
     config.roi_ = label_select_roi_->get_norm_rubber_band_rect();
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
-    auto process_controller =
-        std::make_shared<frame_process_controller>(new nanodet_worker(std::move(config)));
+
+    auto worker = new nanodet_worker(std::move(config));
+    connect(alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked,
+            worker, &nanodet_worker::change_alert_sender_config);
+
+    auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 

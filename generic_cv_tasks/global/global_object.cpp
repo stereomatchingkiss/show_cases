@@ -1,15 +1,19 @@
 #include "global_object.hpp"
 
 #include <multimedia/sound/alert_sound_manager.hpp>
+#include <network/websocket_client.hpp>
 #include <utils/meyers_singleton.hpp>
 
 flt::mm::alert_sound_manager &get_alert_sound_manager()
 {
 #ifndef WASM_BUILD    
-    auto &manager = flt::meyers_singleton<flt::mm::alert_sound_manager>::get_instance(QUrl("assets/sound/alarm.mp3"));
+    return flt::meyers_singleton<flt::mm::alert_sound_manager>::get_instance(QUrl("assets/sound/alarm.mp3"));
 #else
-    auto &manager = flt::meyers_singleton<flt::mm::alert_sound_manager>::get_instance(QUrl("alarm.mp3"));
-#endif
+    return flt::meyers_singleton<flt::mm::alert_sound_manager>::get_instance(QUrl("alarm.mp3"));
+#endif    
+}
 
-    return manager;
+flt::net::websocket_client_thread_safe &get_websocket_client_thread_safe()
+{
+    return flt::meyers_singleton<flt::net::websocket_client_thread_safe>::get_instance();
 }

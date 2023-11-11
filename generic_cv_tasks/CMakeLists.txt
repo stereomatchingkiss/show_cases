@@ -53,6 +53,7 @@ set(PROJECT_SOURCES
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
         algo/obj_detect/obj_det_worker_results.hpp
+        config/config_alert_sender.hpp
         config/config_nanodet_worker.hpp
         config/config_object_detect_model_select.hpp
         config/object_detect_model_enum.hpp
@@ -61,13 +62,14 @@ set(PROJECT_SOURCES
         config/config_source_selection.hpp
         config/config_tracker_alert.hpp
         global/global_keywords.hpp global/global_keywords.cpp
-        global/global_object.hpp global/global_object.cpp
+        global/global_object.hpp global/global_object.cpp        
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+        ui/widget_alert_sender_settings.hpp ui/widget_alert_sender_settings.cpp ui/widget_alert_sender_settings.ui
         ui/widget_tracker_alert.hpp ui/widget_tracker_alert.cpp ui/widget_tracker_alert.ui
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
         ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
-        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui                
         ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
@@ -137,6 +139,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_client.hpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_client.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
         ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
@@ -151,7 +155,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES}        
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

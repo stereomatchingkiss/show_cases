@@ -77,7 +77,14 @@
     <addaction name="actionQt"/>
     <addaction name="actionReadMe"/>
    </widget>
+   <widget class="QMenu" name="menuAlert">
+    <property name="title">
+     <string>Alert</string>
+    </property>
+    <addaction name="actionServer"/>
+   </widget>
    <addaction name="menuQt"/>
+   <addaction name="menuAlert"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQt">
@@ -88,6 +95,11 @@
   <action name="actionReadMe">
    <property name="text">
     <string>Read me</string>
+   </property>
+  </action>
+  <action name="actionServer">
+   <property name="text">
+    <string>Server</string>
    </property>
   </action>
  </widget>

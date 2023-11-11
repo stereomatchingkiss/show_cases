@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../config/config_alert_sender.hpp"
 #include "../../config/config_nanodet_worker.hpp"
 
 #include <multimedia/camera/frame_process_base_worker.hpp>
@@ -17,7 +18,8 @@ public:
     explicit nanodet_worker(config_nanodet_worker config, QObject *parent = nullptr);
     ~nanodet_worker();
 
-    void process_results(std::any frame) override;
+    void change_alert_sender_config(config_alert_sender const &val);
+    void process_results(std::any frame) override;    
 
 private:
     struct impl;

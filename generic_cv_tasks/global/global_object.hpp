@@ -1,5 +1,4 @@
-#ifndef GLOBAL_OBJECT_HPP
-#define GLOBAL_OBJECT_HPP
+#pragma once
 
 namespace flt::mm{
 
@@ -7,6 +6,11 @@ class alert_sound_manager;
 
 }
 
-flt::mm::alert_sound_manager& get_alert_sound_manager();
+namespace flt::net{
 
-#endif // GLOBAL_OBJECT_HPP
+class websocket_client_thread_safe;
+
+}
+
+flt::mm::alert_sound_manager& get_alert_sound_manager();
+flt::net::websocket_client_thread_safe& get_websocket_client_thread_safe();
