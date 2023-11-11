@@ -9,8 +9,6 @@
 #include <QSslSocket>
 #endif
 
-#include <opencv2/core.hpp>
-
 #include <any>
 #include <memory>
 
@@ -45,11 +43,7 @@ private:
     void binary_message_received(QByteArray message);
     void closed();
     void connected();
-    void process_image(cv::Mat mat);
 
-#ifdef WASM_BUILD
-    void process_image(QImage mat);
-#endif
     void socket_error(QAbstractSocket::SocketError error);
     void stop();
     void text_message_received(QString message);

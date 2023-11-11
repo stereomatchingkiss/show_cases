@@ -7,7 +7,9 @@
 #include <QDebug>
 #include <QWebSocket>
 
+#ifndef WASM_BUILD
 #include <opencv2/imgcodecs.hpp>
+#endif
 
 #include <mutex>
 
@@ -18,6 +20,50 @@ struct frame_capture_websocket::impl
     impl(frame_capture_websocket_params const &params) :        
         params_{params}
     {        
+    }
+
+    void process_image(cv::Mat mat)
+    {
+        if(!mat.empty()){
+            for(auto &val : controllers_){
+                val.first->predict(mat);
+            }
+        }else{
+            qDebug()<<__func__<<":cannot decode message";
+        }
+    }
+
+#ifdef WASM_BUILD
+    void process_image(QImage mat)
+    {
+        if(!mat.isNull()){
+            for(auto &val : impl_->controllers_){
+                emit val.first->predict(mat);
+            }
+        }else{
+            qDebug()<<__func__<<":cannot decode message";
+        }
+    }
+#endif
+
+    void binary_message_received(QByteArray message)
+    {
+#ifndef WASM_BUILD
+        auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.data()), cv::ImreadModes::IMREAD_COLOR);
+        process_image(img);
+#else
+        process_image(QImage::fromData(message));
+#endif
+    }
+
+    void text_message_received(QString message)
+    {
+#ifndef WASM_BUILD
+        auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.toLatin1().data()), cv::ImreadModes::IMREAD_COLOR);
+        process_image(img);
+#else
+        process_image(QImage::fromData(message.toLatin1()));
+#endif
     }
 
     void remove(void *key)
@@ -94,22 +140,12 @@ void frame_capture_websocket::ssl_errors(const QList<QSslError> &errors)
 
 void frame_capture_websocket::binary_message_received(QByteArray message)
 {
-#ifndef WASM_BUILD
-    auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.data()), cv::ImreadModes::IMREAD_COLOR);
-    process_image(img);
-#else
-    process_image(QImage::fromData(message));
-#endif
+    impl_->binary_message_received(message);
 }
 
 void frame_capture_websocket::text_message_received(QString message)
 {
-#ifndef WASM_BUILD
-    auto img = cv::imdecode(cv::Mat(1, message.length(), CV_8UC1, (uchar*)message.toLatin1().data()), cv::ImreadModes::IMREAD_COLOR);
-    process_image(img);
-#else
-    process_image(QImage::fromData(message.toLatin1()));
-#endif
+    impl_->text_message_received(message);
 }
 
 void frame_capture_websocket::closed()
@@ -121,30 +157,6 @@ void frame_capture_websocket::connected()
 {
     qDebug()<<__func__<<":connected";
 }
-
-void frame_capture_websocket::process_image(cv::Mat mat)
-{
-    if(!mat.empty()){
-        for(auto &val : impl_->controllers_){
-            val.first->predict(mat);
-        }
-    }else{
-        qDebug()<<__func__<<":cannot decode message";
-    }
-}
-
-#ifdef WASM_BUILD
-void frame_capture_websocket::process_image(QImage mat)
-{
-    if(!mat.isNull()){
-        for(auto &val : impl_->controllers_){
-            emit val.first->predict(mat);
-        }
-    }else{
-        qDebug()<<__func__<<":cannot decode message";
-    }
-}
-#endif
 
 void frame_capture_websocket::socket_error(QAbstractSocket::SocketError error)
 {
