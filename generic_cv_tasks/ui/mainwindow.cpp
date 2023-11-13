@@ -27,7 +27,7 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <multimedia/stream_enum.hpp>
 
-#include <network/websocket_client.hpp>
+#include <network/websocket_client_worker.hpp>
 
 #include <ui/label_select_roi.hpp>
 

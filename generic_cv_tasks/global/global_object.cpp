@@ -1,7 +1,7 @@
 #include "global_object.hpp"
 
 #include <multimedia/sound/alert_sound_manager.hpp>
-#include <network/websocket_client.hpp>
+#include <network/websocket_client_worker.hpp>
 #include <utils/meyers_singleton.hpp>
 
 flt::mm::alert_sound_manager &get_alert_sound_manager()

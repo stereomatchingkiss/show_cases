@@ -5,7 +5,7 @@
 
 #include "../global/global_object.hpp"
 
-#include <network/websocket_client.hpp>
+#include <network/websocket_client_worker.hpp>
 
 #include <QJsonObject>
 

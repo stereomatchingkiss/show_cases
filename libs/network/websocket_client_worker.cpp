@@ -1,4 +1,4 @@
-#include "websocket_client.hpp"
+#include "websocket_client_worker.hpp"
 
 #include <QDebug>
 #include <QWebSocket>

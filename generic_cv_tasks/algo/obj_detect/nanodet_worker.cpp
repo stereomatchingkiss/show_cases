@@ -19,7 +19,7 @@
 
 #include <cv_algo/utils/draw_rect.hpp>
 
-#include <network/websocket_client.hpp>
+#include <network/websocket_client_worker.hpp>
 
 #include <utils/image_utils.hpp>
 
