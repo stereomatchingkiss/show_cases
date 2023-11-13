@@ -28,7 +28,7 @@ void websocket_client_worker::close()
     impl_->socket_->close();
 }
 
-void websocket_client_worker::create_connection()
+void websocket_client_worker::initialize()
 {
     impl_->socket_ = std::make_unique<QWebSocket>();
 
@@ -42,7 +42,7 @@ void websocket_client_worker::open(const QUrl &url)
     impl_->socket_->open(url);
 }
 
-void websocket_client_worker::restart_if_needed(const QUrl &url)
+void websocket_client_worker::reopen_if_needed(const QUrl &url)
 {
     qDebug()<<"reconnect = "<<impl_->socket_->state();
     if(impl_->socket_->state() != QAbstractSocket::ConnectedState){
