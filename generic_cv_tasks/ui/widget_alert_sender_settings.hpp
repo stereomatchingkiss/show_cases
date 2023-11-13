@@ -27,5 +27,7 @@ signals:
     void button_ok_clicked(config_alert_sender const &val);
 
 private:
+    void process_ok_button_cliked(bool);
+
     Ui::widget_alert_sender_settings *ui;
 };

@@ -5,7 +5,7 @@
 
 #include "../global/global_object.hpp"
 
-#include <network/websocket_client_worker.hpp>
+#include <network/websocket_client_controller.hpp>
 
 #include <QJsonObject>
 
@@ -25,13 +25,8 @@ widget_alert_sender_settings::widget_alert_sender_settings(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-    connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked, [this](bool)
-            {
-                close();
-                get_websocket_client().reconnect_if_needed(ui->lineEditWebsocketUrl->text());
-                emit button_ok_clicked(get_config());
-            });
+    connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked,
+            this, &widget_alert_sender_settings::process_ok_button_cliked);
 }
 
 widget_alert_sender_settings::~widget_alert_sender_settings()
@@ -70,4 +65,11 @@ void widget_alert_sender_settings::set_states(const QJsonObject &val)
     if(val.contains(state_websocket_url)){
         ui->lineEditWebsocketUrl->setText(val[state_websocket_url].toString());
     }
+}
+
+void widget_alert_sender_settings::process_ok_button_cliked(bool)
+{
+    close();
+    get_websocket_controller().reconnect_if_needed(ui->lineEditWebsocketUrl->text());
+    emit button_ok_clicked(get_config());
 }

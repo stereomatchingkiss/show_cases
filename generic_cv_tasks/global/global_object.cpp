@@ -1,7 +1,7 @@
 #include "global_object.hpp"
 
 #include <multimedia/sound/alert_sound_manager.hpp>
-#include <network/websocket_client_worker.hpp>
+#include <network/websocket_client_controller.hpp>
 #include <utils/meyers_singleton.hpp>
 
 flt::mm::alert_sound_manager &get_alert_sound_manager()
@@ -13,7 +13,7 @@ flt::mm::alert_sound_manager &get_alert_sound_manager()
 #endif    
 }
 
-flt::net::websocket_client_worker &get_websocket_client()
+flt::net::websocket_client_controller &get_websocket_controller()
 {
-    return flt::meyers_singleton<flt::net::websocket_client_worker>::get_instance();
+    return flt::meyers_singleton<flt::net::websocket_client_controller>::get_instance();
 }
