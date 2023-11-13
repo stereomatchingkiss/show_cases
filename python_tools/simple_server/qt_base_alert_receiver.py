@@ -59,7 +59,7 @@ class simple_websocket_server(QPushButton):
         if jobj:
             print("can decode to json dicts")
             print(jobj["image_name"].toString())
-            #self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
+            self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
             qfile = QFile()
             qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
             if(qfile.open(QIODevice.WriteOnly)):
@@ -70,16 +70,20 @@ class simple_websocket_server(QPushButton):
 
     def received_text_message(self, message : str):
         print("received text message len = ", len(message))
-        jobj = json.loads(message)
-        if jobj:
-            #self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
-            qfile = QFile()
-            qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"]))
-            if(qfile.open(QIODevice.WriteOnly)):
-                qstream = QTextStream(qfile)
-                qstream << json.dumps(jobj)
-        else:
-            print("cannot convert to json")
+        try:
+            jobj = json.loads(message)
+            if jobj:
+                self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
+                qfile = QFile()
+                qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"]))
+                if(qfile.open(QIODevice.WriteOnly)):
+                    del jobj["image"]
+                    qstream = QTextStream(qfile)
+                    qstream << json.dumps(jobj)
+            else:
+                print("cannot convert to json")
+        except:
+            print("cannot save alert to json by text message")
 
     def socket_disconnected(self):
         print("socket disconnected")
