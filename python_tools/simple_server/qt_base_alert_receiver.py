@@ -42,42 +42,41 @@ class simple_websocket_server(QPushButton):
         self.socket = self.server.nextPendingConnection()
         self.socket.disconnected.connect(self.socket_disconnected)
         self.socket.binaryMessageReceived.connect(self.received_binary_message)
+        self.socket.textMessageReceived.connect(self.received_text_message)
 
     def extract_the_image(self, image_text, image_name):
-        if("image" in jobj):
-            print("image in jobj")
-            img = QImage()
-            print("load from data")
-            img.loadFromData(QByteArray.fromBase64(QByteArray(image_text)))
-            print("load from data end")
-            if(img.isNull() == False):
-                img.save(self.save_at + image_name + ".jpg")
+        print("image in jobj")
+        img = QImage()
+        print("load from data")
+        img.loadFromData(QByteArray.fromBase64(QByteArray(image_text)))
+        print("load from data end")
+        if(img.isNull() == False):
+            img.save(self.save_at + image_name + ".jpg")
 
     def received_binary_message(self, message : QByteArray):
-        print("received message = ", len(message))
+        print("received binary message len = ", len(message))
         jobj = QJsonDocument.fromJson(message).object()
         if jobj:
             print("can decode to json dicts")
             print(jobj["image_name"].toString())
             #self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
-            self.qfile = QFile()
-            self.qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
-            if(self.qfile.open(QIODevice.WriteOnly)):
-                qstream = QTextStream(self.qfile)
+            qfile = QFile()
+            qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
+            if(qfile.open(QIODevice.WriteOnly)):
+                qstream = QTextStream(qfile)
                 qstream << message
         else:
             print("cannot convert to json")
 
     def received_text_message(self, message : str):
+        print("received text message len = ", len(message))
         jobj = json.loads(message)
         if jobj:
             #self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
-
             qfile = QFile()
             qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"]))
-            if(self.qfile.open(QIODevice.WriteOnly)):
-                del jobj["image"]
-                qstream = QTextStream(self.qfile)
+            if(qfile.open(QIODevice.WriteOnly)):
+                qstream = QTextStream(qfile)
                 qstream << json.dumps(jobj)
         else:
             print("cannot convert to json")
