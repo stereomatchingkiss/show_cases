@@ -26,9 +26,9 @@ public:
 
 signals:
     void close();
-    void create_connection();
+    void initialize();
     void open(QUrl const &url);
-    void restart_if_needed(QUrl const &url);
+    void reopen_if_needed(QUrl const &url);
     void send_binary_message(QByteArray message);
     void send_text_message(QString message);
 

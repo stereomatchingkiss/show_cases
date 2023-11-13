@@ -58,10 +58,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
     connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [this](auto const &val)
             {
-                emit websocket_->restart_if_needed(val.url_);
+                emit websocket_->reopen_if_needed(val.url_);
             });
 
-    emit websocket_->create_connection();
+    emit websocket_->initialize();
 
     setMinimumSize(QSize(600, 400));
 
@@ -246,7 +246,7 @@ void MainWindow::next_page_is_widget_stream_player()
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    emit websocket_->restart_if_needed(widget_alert_sender_settings_->get_config().url_);
+    emit websocket_->reopen_if_needed(widget_alert_sender_settings_->get_config().url_);
     create_frame_capture();
     emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
