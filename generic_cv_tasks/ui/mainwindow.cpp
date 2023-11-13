@@ -49,29 +49,15 @@ MainWindow::MainWindow(QWidget *parent)
     init_stacked_widget();
 
     ui->pushButtonPrev->setEnabled(false);
-    ui->labelTitle->setText(tr("Select model"));    
+    ui->labelTitle->setText(tr("Select model"));
 
-    connect(ui->actionQt, &QAction::triggered, [this](bool)
-            {
-                msg_box_->aboutQt(this, tr("About Qt"));
-            });
-    connect(ui->actionReadMe, &QAction::triggered, [this](bool)
-            {
-                msg_box_->warning(this, tr("Before you use"),
-                                  tr("1. The software is copyrighted by the software developer.\n"
-                                     "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
-                                     "3. When using the software, please comply with relevant laws and regulations. "
-                                     "The software developer is not responsible for any loss or damage caused by the "
-                                     "use of this software."));
-            });
-
-    connect(ui->actionServer, &QAction::triggered, [this](bool)
-            {
-                widget_alert_sender_settings_->show();
-            });
+    connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
+    connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
+    connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
+    connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
     connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [](auto const &val)
             {
-        get_websocket_controller().reconnect_if_needed(val.url_);
+                get_websocket_controller().reconnect_if_needed(val.url_);
             });
 
     emit get_websocket_controller().create_connection();
@@ -144,6 +130,31 @@ void MainWindow::on_pushButtonPrev_clicked()
 
         create_roi_select_stream();
     }
+}
+
+void MainWindow::action_about_qt(bool)
+{
+    msg_box_->aboutQt(this, tr("About Qt"));
+}
+
+void MainWindow::action_contact_me(bool)
+{
+    msg_box_->information(this, tr("Contact me"), tr("Please send your email to thamngapwei@gmail.com"));
+}
+
+void MainWindow::action_server_call()
+{
+    widget_alert_sender_settings_->show();
+}
+
+void MainWindow::action_warning(bool)
+{
+    msg_box_->warning(this, tr("Before you use"),
+                      tr("1. The software is copyrighted by the software developer.\n"
+                         "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
+                         "3. When using the software, please comply with relevant laws and regulations. "
+                         "The software developer is not responsible for any loss or damage caused by the "
+                         "use of this software."));
 }
 
 void MainWindow::create_frame_capture()

@@ -76,6 +76,7 @@
     </property>
     <addaction name="actionQt"/>
     <addaction name="actionReadMe"/>
+    <addaction name="actionContactMe"/>
    </widget>
    <widget class="QMenu" name="menuAlert">
     <property name="title">
@@ -100,6 +101,11 @@
   <action name="actionServer">
    <property name="text">
     <string>Server</string>
+   </property>
+  </action>
+  <action name="actionContactMe">
+   <property name="text">
+    <string>Contact me</string>
    </property>
   </action>
  </widget>

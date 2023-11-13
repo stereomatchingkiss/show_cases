@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -47,6 +47,11 @@ private slots:
     void on_pushButtonPrev_clicked();
 
 private:
+    void action_about_qt(bool);
+    void action_contact_me(bool);
+    void action_server_call();
+    void action_warning(bool);
+
     void create_frame_capture();
     void create_roi_select_stream();
 
