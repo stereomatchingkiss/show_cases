@@ -70,6 +70,6 @@ void widget_alert_sender_settings::set_states(const QJsonObject &val)
 void widget_alert_sender_settings::process_ok_button_cliked(bool)
 {
     close();
-    get_websocket_controller().reconnect_if_needed(ui->lineEditWebsocketUrl->text());
+    emit get_websocket_controller().reconnect_if_needed(ui->lineEditWebsocketUrl->text());
     emit button_ok_clicked(get_config());
 }

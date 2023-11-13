@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
         get_websocket_controller().reconnect_if_needed(val.url_);
             });
 
-    get_websocket_controller().create_connection();
+    emit get_websocket_controller().create_connection();
 
     setMinimumSize(QSize(600, 400));
 
@@ -234,7 +234,7 @@ void MainWindow::next_page_is_widget_stream_player()
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    get_websocket_controller().reconnect_if_needed(widget_alert_sender_settings_->get_config().url_);
+    emit get_websocket_controller().reconnect_if_needed(widget_alert_sender_settings_->get_config().url_);
     create_frame_capture();
     emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
@@ -275,12 +275,12 @@ void MainWindow::next_page_is_widget_tracker_alert()
 
 void MainWindow::send_alert_by_binary(const QByteArray &msg)
 {
-    get_websocket_controller().send_binary_message(msg);
+    emit get_websocket_controller().send_binary_message(msg);
 }
 
 void MainWindow::send_alert_by_text(const QString &msg)
 {
-    get_websocket_controller().send_text_message(msg);
+    emit get_websocket_controller().send_text_message(msg);
 }
 
 void MainWindow::update_position()
