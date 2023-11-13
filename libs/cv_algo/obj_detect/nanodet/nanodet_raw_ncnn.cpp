@@ -214,8 +214,8 @@ void nanodet_raw_ncnn::nms(std::vector<box_info> &input_boxes, float nms_thresho
         vArea[i] = (input_boxes.at(i).x2_ - input_boxes.at(i).rect_.x + 1)
                    * (input_boxes.at(i).y2_ - input_boxes.at(i).rect_.y + 1);
     }
-    for(int i = 0; i < int(input_boxes.size()); ++i){
-        for(int j = i + 1; j < int(input_boxes.size());){
+    for(size_t i = 0; i < input_boxes.size(); ++i){
+        for(size_t j = i + 1; j < input_boxes.size();){
             float const xx1 = (std::max)(input_boxes[i].rect_.x, input_boxes[j].rect_.x);
             float const yy1 = (std::max)(input_boxes[i].rect_.y, input_boxes[j].rect_.y);
             float const xx2 = (std::min)(input_boxes[i].x2_, input_boxes[j].x2_);

@@ -17,7 +17,10 @@ widget_tracker_alert::widget_tracker_alert(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_tracker_alert)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
+
+    ui->labelDuration->setToolTip(tr("If an object stays in the area of interest for more than this amount of time, "
+                                     "an alert will be sent."));
 }
 
 widget_tracker_alert::~widget_tracker_alert()

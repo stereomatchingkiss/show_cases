@@ -47,6 +47,8 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
     connect(ui->radioButtonWebsockets, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
 
+    ui->radioButtonVideo->setToolTip(tr("Due to browser limitations, please do not open images that are too large."));
+
     set_max_fps_visible();
 }
 

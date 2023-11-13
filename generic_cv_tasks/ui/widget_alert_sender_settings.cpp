@@ -27,6 +27,10 @@ widget_alert_sender_settings::widget_alert_sender_settings(QWidget *parent) :
 
     connect(ui->buttonBox->button(QDialogButtonBox::Ok), &QPushButton::clicked,
             this, &widget_alert_sender_settings::process_ok_button_cliked);
+
+    ui->checkBoxSendByText->setToolTip(tr("Binary data transmission offers improved performance, "
+                                          "but the server must utilize QWebsocketServer to receive the message. "
+                                          "In most instances, text transmission is sufficient."));
 }
 
 widget_alert_sender_settings::~widget_alert_sender_settings()
