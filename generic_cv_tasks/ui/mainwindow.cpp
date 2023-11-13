@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     , widget_alert_sender_settings_(new widget_alert_sender_settings)
     , msg_box_(new QMessageBox(this))
     , timer_(new QTimer(this))
+    , websocket_(std::make_unique<flt::net::websocket_client_controller>())
 {
     ui->setupUi(this);
 
@@ -55,12 +56,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
-    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [](auto const &val)
+    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [this](auto const &val)
             {
-                emit get_websocket_controller().restart_if_needed(val.url_);
+                emit websocket_->restart_if_needed(val.url_);
             });
 
-    emit get_websocket_controller().create_connection();
+    emit websocket_->create_connection();
 
     setMinimumSize(QSize(600, 400));
 
@@ -245,7 +246,7 @@ void MainWindow::next_page_is_widget_stream_player()
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    emit get_websocket_controller().restart_if_needed(widget_alert_sender_settings_->get_config().url_);
+    emit websocket_->restart_if_needed(widget_alert_sender_settings_->get_config().url_);
     create_frame_capture();
     emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
@@ -286,12 +287,12 @@ void MainWindow::next_page_is_widget_tracker_alert()
 
 void MainWindow::send_alert_by_binary(const QByteArray &msg)
 {
-    emit get_websocket_controller().send_binary_message(msg);
+    emit websocket_->send_binary_message(msg);
 }
 
 void MainWindow::send_alert_by_text(const QString &msg)
 {
-    emit get_websocket_controller().send_text_message(msg);
+    emit websocket_->send_text_message(msg);
 }
 
 void MainWindow::update_position()

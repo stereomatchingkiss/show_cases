@@ -27,6 +27,12 @@ class single_frame_with_multi_worker_base;
 
 }
 
+namespace flt::net{
+
+class websocket_client_controller;
+
+}
+
 namespace flt::ui{
 
 class label_select_roi;
@@ -78,9 +84,10 @@ private:
     widget_select_object_to_detect *widget_select_object_to_detect_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
-    widget_tracker_alert *widget_tracker_alert_;
+    widget_tracker_alert *widget_tracker_alert_;   
 
     std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
     std::unique_ptr<flt::mm::frame_capture_websocket> web_frame_;
+    std::unique_ptr<flt::net::websocket_client_controller> websocket_;
 };
 #endif // MAINWINDOW_HPP

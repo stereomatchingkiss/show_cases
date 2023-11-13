@@ -8,14 +8,14 @@
 namespace flt::net{
 
 struct websocket_client_worker::impl
-{    
-    QWebSocket socket_;
+{
+    std::unique_ptr<QWebSocket> socket_;
 };
 
 websocket_client_worker::websocket_client_worker(QObject *parent)
     : QObject{parent},
     impl_{std::make_unique<impl>()}
-{    
+{
 }
 
 websocket_client_worker::~websocket_client_worker()
@@ -25,31 +25,29 @@ websocket_client_worker::~websocket_client_worker()
 
 void websocket_client_worker::close()
 {
-    impl_->socket_.close();
+    impl_->socket_->close();
 }
 
 void websocket_client_worker::create_connection()
 {
-    disconnect(&impl_->socket_, &QWebSocket::connected, this, &websocket_client_worker::connected);
-    disconnect(&impl_->socket_, &QWebSocket::disconnected, this, &websocket_client_worker::closed);
-    disconnect(&impl_->socket_, &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
+    impl_->socket_ = std::make_unique<QWebSocket>();
 
-    connect(&impl_->socket_, &QWebSocket::connected, this, &websocket_client_worker::connected);
-    connect(&impl_->socket_, &QWebSocket::disconnected, this, &websocket_client_worker::closed);
-    connect(&impl_->socket_, &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
+    connect(impl_->socket_.get(), &QWebSocket::connected, this, &websocket_client_worker::connected);
+    connect(impl_->socket_.get(), &QWebSocket::disconnected, this, &websocket_client_worker::closed);
+    connect(impl_->socket_.get(), &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
 }
 
 void websocket_client_worker::open(const QUrl &url)
 {    
-    impl_->socket_.open(url);
+    impl_->socket_->open(url);
 }
 
 void websocket_client_worker::restart_if_needed(const QUrl &url)
 {
-    qDebug()<<"reconnect = "<<impl_->socket_.state();
-    if(impl_->socket_.state() != QAbstractSocket::ConnectedState){
-        impl_->socket_.close();
-        impl_->socket_.open(url);
+    qDebug()<<"reconnect = "<<impl_->socket_->state();
+    if(impl_->socket_->state() != QAbstractSocket::ConnectedState){
+        impl_->socket_->close();
+        impl_->socket_->open(url);
     }
 }
 
@@ -81,12 +79,12 @@ void websocket_client_worker::connected()
 
 void websocket_client_worker::send_binary_message(QByteArray message)
 {    
-    impl_->socket_.sendBinaryMessage(message);
+    impl_->socket_->sendBinaryMessage(message);
 }
 
 void websocket_client_worker::send_text_message(QString message)
 {    
-    impl_->socket_.sendTextMessage(message);
+    impl_->socket_->sendTextMessage(message);
 }
 
 void websocket_client_worker::socket_error(QAbstractSocket::SocketError error)

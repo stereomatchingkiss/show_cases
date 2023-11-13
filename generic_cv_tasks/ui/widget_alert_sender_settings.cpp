@@ -3,8 +3,6 @@
 
 #include "../config/config_alert_sender.hpp"
 
-#include "../global/global_object.hpp"
-
 #include <network/websocket_client_controller.hpp>
 
 #include <QJsonObject>
@@ -80,6 +78,5 @@ void widget_alert_sender_settings::set_states(const QJsonObject &val)
 void widget_alert_sender_settings::process_ok_button_cliked(bool)
 {
     close();
-    emit get_websocket_controller().restart_if_needed(ui->lineEditWebsocketUrl->text());
     emit button_ok_clicked(get_config());
 }
