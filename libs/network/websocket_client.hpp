@@ -15,12 +15,12 @@ class QWebSocket;
 
 namespace flt::net{
 
-class websocket_client : public QObject
+class websocket_client_worker : public QObject
 {
     Q_OBJECT
 public:
-    explicit websocket_client(QObject *parent = nullptr);
-    ~websocket_client();
+    explicit websocket_client_worker(QObject *parent = nullptr);
+    ~websocket_client_worker();
 
     void close();
     void open(QUrl const &url);
