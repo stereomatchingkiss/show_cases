@@ -58,7 +58,8 @@ private:
     void next_page_is_widget_source_selection();
     void next_page_is_widget_tracker_alert();
 
-    void send_alert_message(QByteArray const &msg);
+    void send_alert_by_binary(QByteArray const &msg);
+    void send_alert_by_text(QString const &msg);
 
     void update_position();
 

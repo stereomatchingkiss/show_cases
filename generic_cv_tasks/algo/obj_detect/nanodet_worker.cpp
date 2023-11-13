@@ -176,6 +176,7 @@ struct nanodet_worker::impl
     {        
         config_.config_alert_sender_ = val;
         send_alert_ = val.activate_;
+        send_by_text_ = val.send_by_text_;
     }
 
     void create_obj_to_detect()
@@ -238,6 +239,7 @@ struct nanodet_worker::impl
     std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
     std::atomic<bool> send_alert_ = false;
+    std::atomic<bool> send_by_text_ = true;
     BYTETracker tracker_;
     std::unique_ptr<track_object_pass> track_obj_pass_;
     std::set<int> written_id_;
@@ -287,8 +289,12 @@ void nanodet_worker::process_results(std::any frame)
         cv::imwrite(impl_->im_name_.toStdString(), mat);        
 #endif
         ++impl_->im_ids_;
-        impl_->clear_written_id();
-        emit send_alert(impl_->alert_info_);
+        impl_->clear_written_id();        
+        if(impl_->send_by_text_){
+            emit send_alert_by_text(impl_->alert_info_);
+        }else{
+            emit send_alert_by_binary(impl_->alert_info_);
+        }
     }
 
     results.mat_ = std::move(qimg);

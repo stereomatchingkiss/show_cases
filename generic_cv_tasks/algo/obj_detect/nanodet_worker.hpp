@@ -22,7 +22,8 @@ public:
     void process_results(std::any frame) override;
 
 signals:
-    void send_alert(QByteArray msg);
+    void send_alert_by_binary(QByteArray msg);
+    void send_alert_by_text(QString msg);
 
 private:
     struct impl;

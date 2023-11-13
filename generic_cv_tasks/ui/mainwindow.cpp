@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionServer, &QAction::triggered, [this](bool)
             {
-        widget_alert_sender_settings_->show();
+                widget_alert_sender_settings_->show();
             });
     connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [](auto const &val)
             {
@@ -225,7 +225,8 @@ void MainWindow::next_page_is_widget_stream_player()
     auto worker = new nanodet_worker(std::move(config));
     connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked,
             worker, &nanodet_worker::change_alert_sender_config);
-    connect(worker, &nanodet_worker::send_alert, this, &MainWindow::send_alert_message);
+    connect(worker, &nanodet_worker::send_alert_by_binary, this, &MainWindow::send_alert_by_binary);
+    connect(worker, &nanodet_worker::send_alert_by_text, this, &MainWindow::send_alert_by_text);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
@@ -270,9 +271,14 @@ void MainWindow::next_page_is_widget_tracker_alert()
     ui->pushButtonPrev->setEnabled(true);
 }
 
-void MainWindow::send_alert_message(const QByteArray &msg)
+void MainWindow::send_alert_by_binary(const QByteArray &msg)
 {
     get_websocket_client().send_binary_message(msg);
+}
+
+void MainWindow::send_alert_by_text(const QString &msg)
+{
+    get_websocket_client().send_text_message(msg);
 }
 
 void MainWindow::update_position()
