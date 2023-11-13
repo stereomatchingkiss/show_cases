@@ -319,7 +319,7 @@ void MainWindow::init_widgets_states(const QString &fname)
     widget_tracker_alert_->set_states(jobj[gk.state_tracker_alert()].toObject());
 }
 
-void MainWindow::save_settings(bool) const
+void MainWindow::save_settings(bool)
 {
 #ifndef WASM_BUILD
     if(auto const fname = QFileDialog::getSaveFileName(this, tr("Save at"));
