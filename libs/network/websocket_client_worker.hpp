@@ -7,7 +7,6 @@
 #include <QSslSocket>
 #endif
 
-#include <any>
 #include <memory>
 
 class QHostAddress;
@@ -23,14 +22,11 @@ public:
     ~websocket_client_worker();
 
     void close();
+    void create_connection();
     void open(QUrl const &url);
     void reconnect_if_needed(QUrl const &url);
     void send_binary_message(QByteArray message);
-    void send_text_message(QString message);
-    QAbstractSocket::SocketState state() const;
-
-signals:
-    void error_message(QString const &message);
+    void send_text_message(QString message);    
 
 private:
 #ifndef WASM_BUILD
@@ -44,7 +40,6 @@ private:
 
     struct impl;
     std::unique_ptr<impl> impl_;
-
 };
 
 }

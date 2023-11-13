@@ -15,10 +15,7 @@ struct websocket_client_worker::impl
 websocket_client_worker::websocket_client_worker(QObject *parent)
     : QObject{parent},
     impl_{std::make_unique<impl>()}
-{
-    connect(&impl_->socket_, &QWebSocket::connected, this, &websocket_client_worker::connected);
-    connect(&impl_->socket_, &QWebSocket::disconnected, this, &websocket_client_worker::closed);
-    connect(&impl_->socket_, &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
+{    
 }
 
 websocket_client_worker::~websocket_client_worker()
@@ -27,8 +24,19 @@ websocket_client_worker::~websocket_client_worker()
 }
 
 void websocket_client_worker::close()
-{    
+{
     impl_->socket_.close();
+}
+
+void websocket_client_worker::create_connection()
+{
+    disconnect(&impl_->socket_, &QWebSocket::connected, this, &websocket_client_worker::connected);
+    disconnect(&impl_->socket_, &QWebSocket::disconnected, this, &websocket_client_worker::closed);
+    disconnect(&impl_->socket_, &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
+
+    connect(&impl_->socket_, &QWebSocket::connected, this, &websocket_client_worker::connected);
+    connect(&impl_->socket_, &QWebSocket::disconnected, this, &websocket_client_worker::closed);
+    connect(&impl_->socket_, &QWebSocket::errorOccurred, this, &websocket_client_worker::socket_error);
 }
 
 void websocket_client_worker::open(const QUrl &url)
@@ -43,11 +51,6 @@ void websocket_client_worker::reconnect_if_needed(const QUrl &url)
         impl_->socket_.close();
         impl_->socket_.open(url);
     }
-}
-
-QAbstractSocket::SocketState websocket_client_worker::state() const
-{    
-    return impl_->socket_.state();
 }
 
 #ifndef WASM_BUILD
