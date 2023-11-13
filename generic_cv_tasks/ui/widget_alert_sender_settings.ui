@@ -57,6 +57,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBoxSaveReports">
+     <property name="text">
+      <string>Save reports to hard disk</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Ok</set>

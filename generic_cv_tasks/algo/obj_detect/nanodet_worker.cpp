@@ -54,15 +54,14 @@ struct nanodet_worker::impl
     {
         create_model();
         create_obj_to_detect();
-        open_file();
 
-        send_alert_ = config_.config_alert_sender_.activate_;
+        change_alert_sender_config(config_.config_alert_sender_);
     }
 
     void open_file()
     {
 #ifndef WASM_BUILD
-        if(config_.config_tracker_alert_.save_checks_){
+        if(save_reports_){
             dir_path_ = global_keywords().tracker_alert_path() + "/cam0/" +
                         QDateTime::currentDateTime().toString("yyyy_MM_dd_hh,hh_mm_ss") + "/";
             QDir().mkpath(dir_path_);
@@ -71,6 +70,8 @@ struct nanodet_worker::impl
             if(file_.open(QIODevice::WriteOnly)){
                 stream_.setDevice(&file_);
             }
+        }else{
+            file_.close();
         }
 #endif
     }
@@ -175,8 +176,10 @@ struct nanodet_worker::impl
     void change_alert_sender_config(const config_alert_sender &val)
     {        
         config_.config_alert_sender_ = val;
+        save_reports_ = val.save_reports_;
         send_alert_ = val.activate_;
         send_by_text_ = val.send_by_text_;
+        open_file();
     }
 
     void create_obj_to_detect()
@@ -238,6 +241,7 @@ struct nanodet_worker::impl
     std::unique_ptr<det::obj_det_base> net_;
     std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
+    std::atomic<bool> save_reports_ = true;
     std::atomic<bool> send_alert_ = false;
     std::atomic<bool> send_by_text_ = true;
     BYTETracker tracker_;
