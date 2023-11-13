@@ -44,7 +44,7 @@ void websocket_client_worker::open(const QUrl &url)
     impl_->socket_.open(url);
 }
 
-void websocket_client_worker::reconnect_if_needed(const QUrl &url)
+void websocket_client_worker::restart_if_needed(const QUrl &url)
 {
     qDebug()<<"reconnect = "<<impl_->socket_.state();
     if(impl_->socket_.state() != QAbstractSocket::ConnectedState){

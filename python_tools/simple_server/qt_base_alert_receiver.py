@@ -19,7 +19,6 @@ class simple_websocket_server(QPushButton):
     def __init__(self, port : int = args["port"], parent = None):
         super(simple_websocket_server, self).__init__(parent)
 
-        self.camera = None
         self.port = port
         self.server = QWebSocketServer("Simple alert server", QWebSocketServer.NonSecureMode, self)
         self.socket = None
@@ -44,33 +43,44 @@ class simple_websocket_server(QPushButton):
         self.socket.disconnected.connect(self.socket_disconnected)
         self.socket.binaryMessageReceived.connect(self.received_binary_message)
 
-    def extract_the_image(self, jobj):
+    def extract_the_image(self, image_text, image_name):
         if("image" in jobj):
-                print("image in jobj")
-                img = QImage()
-                print("load from data")
-                img.loadFromData(QByteArray.fromBase64(QByteArray(jobj["image"].toString().encode())))
-                print("load from data end")
-                if(img.isNull() == False):
-                   img.save(self.save_at + jobj["image_name"].toString() + ".jpg")
+            print("image in jobj")
+            img = QImage()
+            print("load from data")
+            img.loadFromData(QByteArray.fromBase64(QByteArray(image_text)))
+            print("load from data end")
+            if(img.isNull() == False):
+                img.save(self.save_at + image_name + ".jpg")
 
-    def received_binary_message(self, message):
+    def received_binary_message(self, message : QByteArray):
         print("received message = ", len(message))
         jobj = QJsonDocument.fromJson(message).object()
         if jobj:
             print("can decode to json dicts")
             print(jobj["image_name"].toString())
-            #self.extract_the_image(jobj) #uncomment this line if you want to extract the image
+            #self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
             self.qfile = QFile()
             self.qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
             if(self.qfile.open(QIODevice.WriteOnly)):
-                self.qstream = QTextStream(self.qfile)
-                self.qstream << message
-            else:
-                self.qstream = None
+                qstream = QTextStream(self.qfile)
+                qstream << message
         else:
             print("cannot convert to json")
 
+    def received_text_message(self, message : str):
+        jobj = json.loads(message)
+        if jobj:
+            #self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
+
+            qfile = QFile()
+            qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"]))
+            if(self.qfile.open(QIODevice.WriteOnly)):
+                del jobj["image"]
+                qstream = QTextStream(self.qfile)
+                qstream << json.dumps(jobj)
+        else:
+            print("cannot convert to json")
 
     def socket_disconnected(self):
         print("socket disconnected")
@@ -78,9 +88,6 @@ class simple_websocket_server(QPushButton):
         if self.socket:
             self.socket.deleteLater()
             self.socket = None
-        if self.camera:
-            self.camera.release()
-            self.camera = None
 
 def main():
     app = QApplication(sys.argv)
