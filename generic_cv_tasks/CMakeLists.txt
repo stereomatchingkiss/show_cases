@@ -139,6 +139,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.hpp
+        ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.cpp
         ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.hpp
         ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.cpp
         ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
