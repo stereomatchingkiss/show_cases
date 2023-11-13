@@ -51,6 +51,7 @@ endif()
 set(PROJECT_SOURCES
         main.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
+        algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
         algo/obj_detect/obj_det_worker_results.hpp
         config/config_alert_sender.hpp
@@ -157,7 +158,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
