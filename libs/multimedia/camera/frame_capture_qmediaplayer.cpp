@@ -11,9 +11,8 @@
 
 namespace flt::mm{
 
-struct frame_capture_qmediaplayer::impl : public QObject
+struct frame_capture_qmediaplayer::impl
 {
-
 
 public:
     impl(frame_capture_qmediaplayer_params const &params) :
