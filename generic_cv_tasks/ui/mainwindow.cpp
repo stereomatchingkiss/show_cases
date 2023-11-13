@@ -31,8 +31,12 @@
 
 #include <ui/label_select_roi.hpp>
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+
+#include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace flt;
 using namespace flt::mm;
@@ -54,12 +58,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
+    connect(ui->actionLoadSettings, &QAction::triggered, this, &MainWindow::load_settings);
+    connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::save_settings);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
     connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [this](auto const &val)
             {
                 emit websocket_->reopen_if_needed(val.url_);
-            });
+            });    
 
     emit websocket_->initialize();
 
@@ -70,14 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {    
-    config_read_write crw;
-    crw.set_roi(label_select_roi_->get_states());
-    crw.set_widget_alert_settings(widget_alert_sender_settings_->get_states());
-    crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
-    crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
-    crw.set_widget_source_selection(widget_source_selection_->get_states());
-    crw.set_widget_tracker_alert(widget_tracker_alert_->get_states());
-    crw.write(global_keywords().cam_config_path() + "/cam0.json");
+    save_settings_to_file(global_keywords().cam_config_path() + "/cam0.json");
 
     delete ui;
 }
@@ -202,15 +201,7 @@ void MainWindow::init_stacked_widget()
     global_keywords gk;
     widget_select_object_to_detect_ = new widget_select_object_to_detect(gk.coco_names());
 
-    config_read_write crw;
-    auto const jobj = crw.read(global_keywords().cam_config_path() + "/cam0.json");
-
-    label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
-    widget_alert_sender_settings_->set_states(jobj[gk.state_widget_alert_settings()].toObject());
-    widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
-    widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
-    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
-    widget_tracker_alert_->set_states(jobj[gk.state_tracker_alert()].toObject());
+    init_widgets_states(global_keywords().cam_config_path() + "/cam0.json");
 
     ui->stackedWidget->addWidget(label_select_roi_);
     ui->stackedWidget->addWidget(widget_object_detect_model_select_);
@@ -283,6 +274,71 @@ void MainWindow::next_page_is_widget_tracker_alert()
     ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);
     ui->pushButtonNext->setEnabled(true);
     ui->pushButtonPrev->setEnabled(true);
+}
+
+QJsonObject MainWindow::dump_settings() const
+{
+    config_read_write crw;
+    crw.set_roi(label_select_roi_->get_states());
+    crw.set_widget_alert_settings(widget_alert_sender_settings_->get_states());
+    crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
+    crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
+    crw.set_widget_source_selection(widget_source_selection_->get_states());
+    crw.set_widget_tracker_alert(widget_tracker_alert_->get_states());
+
+    return crw.dumps();
+}
+
+void MainWindow::load_settings(bool)
+{
+#ifndef WASM_BUILD
+    if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select settings"), "", tr("Settings (*.json)"));
+        !fname.isEmpty() && QFile(fname).exists())
+    {
+        init_widgets_states(fname);
+    }
+#else
+    auto fcontent_ready = [this](QString const&, QByteArray const &fcontent) {
+        init_widgets_states(fcontent);
+    };
+    QFileDialog::getOpenFileContent("Settings (*.json)",  fcontent_ready);
+#endif
+}
+
+void MainWindow::init_widgets_states(const QString &fname)
+{
+    config_read_write crw;
+    global_keywords gk;
+
+    auto const jobj = crw.read(fname);
+    label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
+    widget_alert_sender_settings_->set_states(jobj[gk.state_widget_alert_settings()].toObject());
+    widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
+    widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
+    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
+    widget_tracker_alert_->set_states(jobj[gk.state_tracker_alert()].toObject());
+}
+
+void MainWindow::save_settings(bool) const
+{
+#ifndef WASM_BUILD
+    if(auto const fname = QFileDialog::getSaveFileName(this, tr("Save at"));
+        !fname.isEmpty() && QFile(fname).exists())
+    {
+        if(fname.right(4) == ".json"){
+            save_settings_to_file(fname);
+        }else{
+            save_settings_to_file(fname + ".json");
+        }
+    }
+#else
+    QFileDialog::saveFileContent(QJsonDocument(dump_settings()).toJson(), "cam0.json");
+#endif
+}
+
+void MainWindow::save_settings_to_file(const QString &save_at) const
+{
+    config_read_write().write(dump_settings(), save_at);
 }
 
 void MainWindow::send_alert_by_binary(const QByteArray &msg)

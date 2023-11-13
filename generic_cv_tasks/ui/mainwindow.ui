@@ -84,8 +84,16 @@
     </property>
     <addaction name="actionServer"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSaveSettings"/>
+    <addaction name="actionLoadSettings"/>
+   </widget>
    <addaction name="menuQt"/>
    <addaction name="menuAlert"/>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQt">
@@ -106,6 +114,16 @@
   <action name="actionContactMe">
    <property name="text">
     <string>Contact me</string>
+   </property>
+  </action>
+  <action name="actionSaveSettings">
+   <property name="text">
+    <string>Save settings</string>
+   </property>
+  </action>
+  <action name="actionLoadSettings">
+   <property name="text">
+    <string>Load settings</string>
    </property>
   </action>
  </widget>

@@ -4,6 +4,8 @@
 
 #include <json/json_utils.hpp>
 
+#include <QJsonDocument>
+
 void config_read_write::set_roi(QJsonObject val)
 {
     roi_ = std::move(val);
@@ -34,12 +36,7 @@ void config_read_write::set_widget_tracker_alert(QJsonObject val)
     widget_tracker_alert_ = std::move(val);
 }
 
-QJsonObject config_read_write::read(const QString &val)
-{
-    return flt::json::parse_file_to_jobj(val);
-}
-
-void config_read_write::write(const QString &val)
+QJsonObject config_read_write::dumps() const
 {
     QJsonObject obj;
     global_keywords gk;
@@ -50,5 +47,25 @@ void config_read_write::write(const QString &val)
     obj[gk.state_widget_source_selection()] = widget_source_selection_;
     obj[gk.state_tracker_alert()] = widget_tracker_alert_;
 
+    return obj;
+}
+
+QJsonObject config_read_write::read(const QString &val)
+{
+    return flt::json::parse_file_to_jobj(val);
+}
+
+QJsonObject config_read_write::read(const QByteArray &val)
+{
+    return QJsonDocument::fromJson(val).object();
+}
+
+void config_read_write::write(const QString &val)
+{
+    flt::json::write_file_to_json(dumps(), val);
+}
+
+void config_read_write::write(const QJsonObject &obj, const QString &val)
+{
     flt::json::write_file_to_json(obj, val);
 }

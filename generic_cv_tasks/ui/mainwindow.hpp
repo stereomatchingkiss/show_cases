@@ -69,6 +69,12 @@ private:
     void next_page_is_widget_source_selection();
     void next_page_is_widget_tracker_alert();
 
+    QJsonObject dump_settings() const;
+    void load_settings(bool);
+    void init_widgets_states(QString const &fname);
+    void save_settings(bool) const;
+    void save_settings_to_file(QString const &save_at) const;
+
     void send_alert_by_binary(QByteArray const &msg);
     void send_alert_by_text(QString const &msg);
 

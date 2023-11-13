@@ -13,8 +13,11 @@ public:
     void set_widget_source_selection(QJsonObject val);
     void set_widget_tracker_alert(QJsonObject val);
 
+    QJsonObject dumps() const;
     QJsonObject read(QString const &val);
+    QJsonObject read(QByteArray const &val);
     void write(QString const &val);
+    void write(QJsonObject const &obj, QString const &val);
 
 private:
     QJsonObject roi_;
