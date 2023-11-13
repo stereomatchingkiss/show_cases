@@ -8,9 +8,10 @@ namespace flt::cvt::tracker{
 
 struct track_duration
 {
-    track_duration(int id, int duration_sec, cv::Rect2f const &rect) :
+    track_duration(int id, int duration_sec, cv::Rect2f const &rect, int label) :
         id_{id},
         duration_sec_{duration_sec},
+        label_{label},
         rect_{rect}
     {}
 
@@ -18,6 +19,7 @@ struct track_duration
 
     int id_;
     int duration_sec_;
+    int label_ = 0;
     cv::Rect rect_;
 };
 

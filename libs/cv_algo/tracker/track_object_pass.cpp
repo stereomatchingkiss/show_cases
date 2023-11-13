@@ -128,8 +128,8 @@ struct track_object_pass::impl
                         last_track.entered_roi_ = true;
                         ++track_res_.count_in_center_;
                     }
-                    auto const duration = duration_cast<seconds>(high_resolution_clock::now() - last_track.time_).count();                    
-                    track_res_.track_durations_.emplace_back(it->first, duration, cur_track.rect_);
+                    auto const duration = duration_cast<seconds>(high_resolution_clock::now() - last_track.time_).count();
+                    track_res_.track_durations_.emplace_back(it->first, duration, cur_track.rect_, cur_track.label_);
                 }else{
                     count_pass_directions(last_track, cur_track.center(), it);
                 }
