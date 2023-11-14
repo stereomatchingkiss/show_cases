@@ -70,8 +70,8 @@ struct nanodet_worker::impl
                 if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
                     !written_id_.contains(val.id_)){
                     alarm_on = true;
-                    written_id_.insert(val.id_);                    
-                    alert_save_.save_to_json(val, img, im_ids_);
+                    written_id_.insert(val.id_);
+                    alert_save_.save_to_json(val, img);
                 }
             }
         }
@@ -181,7 +181,7 @@ struct nanodet_worker::impl
 
     nanodet_alert_save alert_save_;
     config_nanodet_worker config_;
-    static size_t im_ids_;
+    size_t im_ids_ = 0;
     std::vector<std::string> names_;    
     std::unique_ptr<det::obj_det_base> net_;
     std::vector<bool> obj_to_detect_;
@@ -190,8 +190,6 @@ struct nanodet_worker::impl
     std::unique_ptr<track_object_pass> track_obj_pass_;
     std::set<int> written_id_;
 };
-
-size_t nanodet_worker::impl::im_ids_ = 0;
 
 nanodet_worker::nanodet_worker(config_nanodet_worker config, QObject *parent) :
     flt::mm::frame_process_base_worker(2, parent),
@@ -228,9 +226,6 @@ void nanodet_worker::process_results(std::any frame)
     obj_det_worker_results results;
     if(impl_->check_alarm_condition(pass_results, qimg)){
         results.alarm_on_ = true;
-#ifndef WASM_BUILD
-        cv::imwrite(impl_->alert_save_.get_im_name().toStdString(), mat);
-#endif
         ++impl_->im_ids_;
         impl_->clear_written_id();
         if(impl_->alert_save_.send_by_text()){
