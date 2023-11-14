@@ -20,7 +20,5 @@ public:
     void set_states(QJsonObject const &val);
 
 private:
-    void set_model_index(int idx) noexcept;
-
     Ui_widget_object_detect_model_select *ui;
 };

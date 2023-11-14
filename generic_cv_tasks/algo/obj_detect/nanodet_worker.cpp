@@ -13,7 +13,6 @@
 
 #include <cv_algo/obj_detect/obj_det_utils.hpp>
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
-#include <cv_algo/obj_detect/yolox/yolox.hpp>
 
 #include <cv_algo/tracker/track_object_pass.hpp>
 #include <cv_algo/tracker/track_results.hpp>
@@ -102,22 +101,31 @@ struct nanodet_worker::impl
 #endif
         switch(config_.config_object_detect_model_select_.model_){
         case dme::nanodet_plus_m_320:{
+            qDebug()<<"load nanodet_plus_m_320";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 320);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 320);
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
             break;
         }
         case dme::nanodet_plus_m_416:{
+            qDebug()<<"load nanodet_plus_m_416";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 416);
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
-        case dme::yolox:{
-            auto const param = std::format("{}yoloxT.param", model_root);
-            auto const bin = std::format("{}yoloxT.bin", model_root);
-            auto const psize = config_.config_object_detect_model_select_.process_size_;
-            net_ = std::make_unique<cvt::det::yolox>(param.c_str(), bin.c_str(), false, psize);
+        case dme::nanodet_plus_m_1_5x_320:{
+            qDebug()<<"load nanodet_plus_m_1_5x_320";
+            auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 320);
+            auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 320);
+            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
+            break;
+        }
+        case dme::nanodet_plus_m_1_5x_416:{
+            qDebug()<<"load nanodet_plus_m_1_5x_416";
+            auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 416);
+            auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 416);
+            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         }

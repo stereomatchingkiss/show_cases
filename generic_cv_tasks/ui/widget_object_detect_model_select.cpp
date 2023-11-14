@@ -11,7 +11,6 @@ namespace{
 QString const state_obj_det_confidence("state_obj_det_confidence");
 QString const state_obj_det_model_type("state_obj_det_model_type");
 QString const state_obj_det_nms("state_obj_det_nms");
-QString const state_obj_det_process_size_yolox("state_obj_det_process_size_yolox");
 
 QString const state_version("state_version");
 
@@ -19,21 +18,8 @@ struct model_types
 {
     QString const nanodet_plus_m_320_ = "nanodet_plus_m_320";
     QString const nanodet_plus_m_416_ = "nanodet_plus_m_416";
-    QString const yolox_ = "yolox";
-
-    QString get_type(int val) const noexcept
-    {
-        switch(val){
-        case 0:
-            return nanodet_plus_m_320_;
-        case 1:
-            return nanodet_plus_m_416_;
-        case 2:
-            return yolox_;
-        }
-
-        return yolox_;
-    }
+    QString const nanodet_plus_m_1_5x_320_ = "nanodet_plus_m_1_5x_320";
+    QString const nanodet_plus_m_1_5x_416_ = "nanodet_plus_m_1_5x_416";
 
     int get_ids(QString const &val) const
     {
@@ -45,11 +31,15 @@ struct model_types
             return 1;
         }
 
-        if(val == yolox_){
+        if(val == nanodet_plus_m_1_5x_320_){
             return 2;
         }
 
-        return 2;
+        if(val == nanodet_plus_m_1_5x_416_){
+            return 3;
+        }
+
+        return 1;
     }
 };
 
@@ -61,27 +51,18 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
 {
     ui->setupUi(this);
 
-    ui->comboBoxSelectModel->addItem("nanodet_plus_m_320");
-    ui->comboBoxSelectModel->addItem("nanodet_plus_m_416");
-    ui->comboBoxSelectModel->addItem("yolox");
-    ui->comboBoxSelectModel->setCurrentIndex(2);
-
-    ui->comboBoxProcessSizeYolox->addItem("320");
-    ui->comboBoxProcessSizeYolox->addItem("416");
-    ui->comboBoxProcessSizeYolox->addItem("640");
-    ui->comboBoxProcessSizeYolox->setCurrentIndex(1);
-
-    connect(ui->comboBoxSelectModel, &QComboBox::currentIndexChanged,
-            this, &widget_object_detect_model_select::set_model_index);
+    model_types const mt;
+    ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_320_);
+    ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_416_);
+    ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_320_);
+    ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_416_);
+    ui->comboBoxSelectModel->setCurrentIndex(1);
 
     ui->labelConfidence->setToolTip(tr("The higher the value, the more likely the model is to correctly identify the correct results.\n"
                                        "However, this can also lead to fewer of the correct results being identified."));
     ui->labelNMS->setToolTip(tr("The larger the NMS value, the fewer objects will be filtered.\n"
                                 "If you find that there are many repetitive objects detected under a crowded scene, "
-                                "please reduce this value."));
-    ui->labelProcessSizeYolox->setToolTip(tr("The larger the size, the object detection task performs better.\n"
-                                             "However, this can lead to slower speed.\n"
-                                             "Please choose the appropriate processor size based on your needs."));
+                                "please reduce this value."));    
 }
 
 widget_object_detect_model_select::~widget_object_detect_model_select()
@@ -95,19 +76,13 @@ config_object_detect_model_select widget_object_detect_model_select::get_config(
     results.confidence_ = static_cast<float>(ui->spinBoxConfidence->value()) / 100.0f;
     results.model_ = static_cast<object_detect_model_enum>(model_types().get_ids(ui->comboBoxSelectModel->currentText()));
     results.nms_ = static_cast<float>(ui->spinBoxNMS->value()) / 100.0f;
-    switch(static_cast<object_detect_model_enum>(ui->comboBoxSelectModel->currentIndex())){
-    case object_detect_model_enum::nanodet_plus_m_320:{
+
+    model_types const mt;
+    auto const mtext = ui->comboBoxSelectModel->currentText();
+    if(mtext == mt.nanodet_plus_m_1_5x_320_ || mtext == mt.nanodet_plus_m_320_){
         results.process_size_ = 320;
-        break;
-    }
-    case object_detect_model_enum::nanodet_plus_m_416:{
+    }else{
         results.process_size_ = 416;
-        break;
-    }
-    case object_detect_model_enum::yolox:{
-        results.process_size_ = ui->comboBoxProcessSizeYolox->currentText().toInt();
-        break;
-    }
     }
 
     return results;
@@ -118,8 +93,7 @@ QJsonObject widget_object_detect_model_select::get_states() const
     QJsonObject obj;
     obj[state_obj_det_confidence] = ui->spinBoxConfidence->value();
     obj[state_obj_det_nms] = ui->spinBoxNMS->value();
-    obj[state_obj_det_model_type] = ui->comboBoxSelectModel->currentText();
-    obj[state_obj_det_process_size_yolox] = ui->comboBoxProcessSizeYolox->currentIndex();
+    obj[state_obj_det_model_type] = ui->comboBoxSelectModel->currentText();    
     obj[state_version] = "1.0";
 
     return obj;
@@ -136,23 +110,6 @@ void widget_object_detect_model_select::set_states(const QJsonObject &val)
     }
     if(val.contains(state_obj_det_nms)){
         ui->spinBoxNMS->setValue(val[state_obj_det_nms].toInt());
-    }
-    if(val.contains(state_obj_det_process_size_yolox)){
-        ui->comboBoxProcessSizeYolox->setCurrentIndex(val[state_obj_det_process_size_yolox].toInt());
-    }
+    }    
 }
 
-void widget_object_detect_model_select::set_model_index(int idx) noexcept
-{
-    switch(static_cast<object_detect_model_enum>(idx)){
-    case object_detect_model_enum::nanodet_plus_m_320:
-    case object_detect_model_enum::nanodet_plus_m_416:{
-        ui->groupBoxYolox->setVisible(false);
-        break;
-    }
-    case object_detect_model_enum::yolox:{
-        ui->groupBoxYolox->setVisible(true);
-        break;
-    }
-    }
-}

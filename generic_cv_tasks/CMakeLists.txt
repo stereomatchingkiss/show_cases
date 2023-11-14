@@ -85,16 +85,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/layer/yolo_v5_focus.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/layer/yolo_v5_focus.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolox/yolox.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolox/yolox.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
