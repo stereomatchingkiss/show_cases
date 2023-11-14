@@ -102,7 +102,6 @@ QString nanodet_alert_save::create_fname() const
 
 void nanodet_alert_save::save_to_json() const
 {
-    qDebug()<<"dir path = "<<dir_path_ + QString("/%1.txt").arg(im_name_);
     if(QFile file(dir_path_ + QString("/%1.txt").arg(im_name_)); file.open(QIODevice::WriteOnly)){
         QTextStream stream(&file);
         stream<<alert_info_<<"\n";
