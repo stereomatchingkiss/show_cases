@@ -43,7 +43,11 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui->comboBoxWebCam->setVisible(false);
     ui->radioButtonVideo->setVisible(false);
     ui->lineEditVideo->setVisible(false);
-#endif
+    ui->pushButtonOpenVideoFolder->setVisible(false);
+    ui->radioButtonWebsockets->setChecked(true);
+
+    set_max_fps_visible();
+#endif        
 
     update_webcam_box();
 
