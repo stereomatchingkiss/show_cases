@@ -30,6 +30,10 @@ widget_alert_sender_settings::widget_alert_sender_settings(QWidget *parent) :
     ui->checkBoxSendByText->setToolTip(tr("Binary data transmission offers improved performance, "
                                           "but the server must utilize QWebsocketServer to receive the message. "
                                           "In most instances, text transmission is sufficient."));
+#ifdef WASM_BUILD
+    ui->checkBoxSaveReports->setVisible(false);
+    ui->checkBoxSaveReports->setChecked(false);
+#endif
 }
 
 widget_alert_sender_settings::~widget_alert_sender_settings()
