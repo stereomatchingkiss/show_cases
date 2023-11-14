@@ -11,7 +11,6 @@
 #include "../obj_det_utils.hpp"
 #include "../../utils/image_process.hpp"
 
-#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include <algorithm>

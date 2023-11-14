@@ -8,8 +8,6 @@
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
-#include <opencv2/videoio.hpp>
-
 #include <QFile>
 #include <QFileDialog>
 #include <QJsonObject>

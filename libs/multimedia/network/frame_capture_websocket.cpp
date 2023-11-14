@@ -20,8 +20,20 @@ struct frame_capture_websocket::impl
     impl(frame_capture_websocket_params const &params) :        
         params_{params}
     {        
-    }
+    }    
 
+#ifdef WASM_BUILD
+    void process_image(QImage mat)
+    {
+        if(!mat.isNull()){
+            for(auto &val : controllers_){
+                emit val.first->predict(mat);
+            }
+        }else{
+            qDebug()<<__func__<<":cannot decode message";
+        }
+    }
+#else
     void process_image(cv::Mat mat)
     {
         if(!mat.empty()){
@@ -31,19 +43,7 @@ struct frame_capture_websocket::impl
         }else{
             qDebug()<<__func__<<":cannot decode message";
         }
-    }
-
-#ifdef WASM_BUILD
-    void process_image(QImage mat)
-    {
-        if(!mat.isNull()){
-            for(auto &val : impl_->controllers_){
-                emit val.first->predict(mat);
-            }
-        }else{
-            qDebug()<<__func__<<":cannot decode message";
-        }
-    }
+    }    
 #endif
 
     void binary_message_received(QByteArray message)
