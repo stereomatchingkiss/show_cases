@@ -4,6 +4,8 @@
 #include "frame_capture_qmediaplayer_params.hpp"
 
 #include <QAudioOutput>
+#include <QBuffer>
+#include <QFile>
 #include <QMediaMetaData>
 #include <QMediaPlayer>
 #include <QVideoFrame>
@@ -15,8 +17,8 @@ struct frame_capture_qmediaplayer::impl
 {
 
 public:
-    impl(frame_capture_qmediaplayer_params const &params) :
-        params_{params}
+    impl(frame_capture_qmediaplayer_params params) :
+        params_{std::move(params)}
     {
         if(params.audio_on_){
             player_.setAudioOutput(&output_);
@@ -26,7 +28,14 @@ public:
             player_.setLoops(QMediaPlayer::Infinite);
         }
 
-        player_.setSource(QUrl(params_.url_));
+        if(params.video_contents_.isEmpty()){
+            player_.setSource(QUrl(params_.url_));
+        }else{
+            buffer_.setBuffer(&params.video_contents_);
+            buffer_.open(QIODevice::ReadOnly);
+            player_.setSourceDevice(&buffer_);
+        }
+
         player_.setVideoOutput(&sink_);
 
         set_fps();
@@ -54,6 +63,7 @@ public:
         }
     }
 
+    QBuffer buffer_;
     std::vector<std::pair<std::shared_ptr<frame_process_controller>, void*>> controllers_;
     int max_duration_ = 0;
     QAudioOutput output_;
@@ -62,9 +72,9 @@ public:
     QVideoSink sink_;
 };
 
-frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qmediaplayer_params const &params, QObject *parent) :
+frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qmediaplayer_params params, QObject *parent) :
     single_frame_with_multi_worker_base{parent},
-    impl_{std::make_unique<impl>(params)}
+    impl_{std::make_unique<impl>(std::move(params))}
 {
     connect(&impl_->player_, &QMediaPlayer::durationChanged, this, &frame_capture_qmediaplayer::duration_changed);
     connect(&impl_->player_, &QMediaPlayer::tracksChanged, this, &frame_capture_qmediaplayer::tracks_changed);

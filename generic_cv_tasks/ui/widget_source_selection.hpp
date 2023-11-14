@@ -57,6 +57,7 @@ private:
 
     QMediaDevices devices_;
     QList<QCameraDevice> cam_devices_;
+    mutable QByteArray video_contents_;
 };
 
 #endif // WIDGET_SOURCE_SELECTION_HPP

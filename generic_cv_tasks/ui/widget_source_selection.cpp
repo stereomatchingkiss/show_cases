@@ -36,6 +36,11 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui->radioButtonRTSP->setVisible(false);
     ui->lineEditRTSP->setVisible(false);
 
+#ifdef WASM_BUILD
+    ui->radioButtonWebcam->setVisible(false);
+    ui->comboBoxWebCam->setVisible(false);
+#endif
+
     update_webcam_box();
 
     connect(&devices_, &QMediaDevices::videoInputsChanged, this, &widget_source_selection::update_webcam_box);
@@ -59,6 +64,7 @@ frame_capture_qmediaplayer_params widget_source_selection::get_frame_capture_qme
 {
     frame_capture_qmediaplayer_params params;
     params.max_fps_ = get_max_fps();
+    params.video_contents_ = std::move(video_contents_);
     params.url_ = get_url();
 
     return params;
@@ -243,9 +249,9 @@ void widget_source_selection::set_states(const QJsonObject &val)
 }
 
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
-{
-    auto const abs_path = QFileInfo(ui->lineEditVideo->text()).absolutePath();
+{    
 #ifndef WASM_BUILD
+    auto const abs_path = QFileInfo(ui->lineEditVideo->text()).absolutePath();
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select Video"), abs_path);
         !fname.isEmpty() && QFile(fname).exists())
     {
@@ -255,13 +261,7 @@ void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 #else
     auto fcontent_ready = [this](const QString &fname, const QByteArray &fcontent) {
         ui->lineEditVideo->setText(QFileInfo(fname).fileName());
-        if(!fcontent.isEmpty()){
-            if(QFile file(fname); file.open(QIODevice::WriteOnly)){
-                file.write(fcontent);
-            }else{
-                qDebug()<<"cannot save file";
-            }
-        }
+        video_contents_ = fcontent;
     };
     QFileDialog::getOpenFileContent("Videos (*.mp4 *.avi *.wav)",  fcontent_ready);
 #endif
