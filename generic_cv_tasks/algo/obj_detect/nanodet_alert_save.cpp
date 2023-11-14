@@ -21,6 +21,8 @@
 #include <QTextStream>
 #endif
 
+#include <format>
+
 nanodet_alert_save::nanodet_alert_save(std::vector<std::string> names) :
     names_(std::move(names))
 {
