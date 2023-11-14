@@ -5,7 +5,9 @@
 #include <QObject>
 #include <QPixmap>
 
+#include <atomic>
 #include <any>
+#include <mutex>
 
 namespace flt::mm{
 
