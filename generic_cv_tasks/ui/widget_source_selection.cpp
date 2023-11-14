@@ -41,6 +41,8 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui->lineEditHLS->setVisible(false);
     ui->radioButtonWebcam->setVisible(false);
     ui->comboBoxWebCam->setVisible(false);
+    ui->radioButtonVideo->setVisible(false);
+    ui->lineEditVideo->setVisible(false);
 #endif
 
     update_webcam_box();
@@ -66,7 +68,8 @@ frame_capture_qmediaplayer_params widget_source_selection::get_frame_capture_qme
 {
     frame_capture_qmediaplayer_params params;
     params.max_fps_ = get_max_fps();
-    params.video_contents_ = std::move(video_contents_);
+    params.video_contents_ = video_contents_;
+    qDebug()<<__func__<<": params.video_contents len = "<<params.video_contents_.size();
     params.url_ = get_url();
 
     return params;
@@ -113,9 +116,15 @@ bool widget_source_selection::get_is_valid_source() const noexcept
     if(ui->radioButtonRTSP->isChecked() && ui->lineEditRTSP->text().startsWith("rtsp")){
         return true;
     }
+#ifndef WASM_BUILD
     if(ui->radioButtonVideo->isChecked() && QFile::exists(ui->lineEditVideo->text())){
         return true;
     }
+#else
+        if(ui->radioButtonVideo->isChecked()){
+            return true;
+        }
+#endif
     if(ui->radioButtonWebcam->isChecked() && ui->comboBoxWebCam->count() > 0){
         return true;
     }
@@ -263,6 +272,7 @@ void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 #else
     auto fcontent_ready = [this](const QString &fname, const QByteArray &fcontent) {
         ui->lineEditVideo->setText(QFileInfo(fname).fileName());
+        qDebug()<<"video contents from source length = "<<fcontent.size();
         video_contents_ = fcontent;
     };
     QFileDialog::getOpenFileContent("Videos (*.mp4 *.avi *.wav)",  fcontent_ready);

@@ -5,6 +5,7 @@
 
 #include <QAudioOutput>
 #include <QBuffer>
+#include <QDebug>
 #include <QFile>
 #include <QMediaMetaData>
 #include <QMediaPlayer>
@@ -18,9 +19,9 @@ struct frame_capture_qmediaplayer::impl
 
 public:
     impl(frame_capture_qmediaplayer_params params) :
-        params_{std::move(params)}
+        params_{params}
     {
-        if(params.audio_on_){
+        if(params_.audio_on_){
             player_.setAudioOutput(&output_);
         }
 
@@ -28,10 +29,12 @@ public:
             player_.setLoops(QMediaPlayer::Infinite);
         }
 
-        if(params.video_contents_.isEmpty()){
+        if(params_.video_contents_.isEmpty()){
+            qDebug()<<"video contents is empty";
             player_.setSource(QUrl(params_.url_));
         }else{
-            buffer_.setBuffer(&params.video_contents_);
+            qDebug()<<"video contents not empty. len = "<<params_.video_contents_.size();
+            buffer_.setBuffer(&params_.video_contents_);
             buffer_.open(QIODevice::ReadOnly);
             player_.setSourceDevice(&buffer_);
         }
@@ -74,7 +77,7 @@ public:
 
 frame_capture_qmediaplayer::frame_capture_qmediaplayer(frame_capture_qmediaplayer_params params, QObject *parent) :
     single_frame_with_multi_worker_base{parent},
-    impl_{std::make_unique<impl>(std::move(params))}
+    impl_{std::make_unique<impl>(params)}
 {
     connect(&impl_->player_, &QMediaPlayer::durationChanged, this, &frame_capture_qmediaplayer::duration_changed);
     connect(&impl_->player_, &QMediaPlayer::tracksChanged, this, &frame_capture_qmediaplayer::tracks_changed);
