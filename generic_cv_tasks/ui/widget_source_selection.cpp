@@ -37,6 +37,8 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui->lineEditRTSP->setVisible(false);
 
 #ifdef WASM_BUILD
+    ui->radioButtonHLS->setVisible(false);
+    ui->lineEditHLS->setVisible(false);
     ui->radioButtonWebcam->setVisible(false);
     ui->comboBoxWebCam->setVisible(false);
 #endif
