@@ -72,6 +72,7 @@ private:
     QJsonObject dump_settings() const;
     void load_settings(bool);
     void init_widgets_states(QString const &fname);
+    void init_widgets_states(QJsonObject const &jobj);
     void save_settings(bool);
     void save_settings_to_file(QString const &save_at) const;
 

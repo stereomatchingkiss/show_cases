@@ -303,18 +303,20 @@ void MainWindow::load_settings(bool)
     }
 #else
     auto fcontent_ready = [this](QString const&, QByteArray const &fcontent) {
-        init_widgets_states(fcontent);
+        init_widgets_states(config_read_write().read(fcontent));
     };
     QFileDialog::getOpenFileContent("Settings (*.json)",  fcontent_ready);
 #endif
 }
 
 void MainWindow::init_widgets_states(const QString &fname)
-{
-    config_read_write crw;
-    global_keywords gk;
+{    
+    init_widgets_states(config_read_write().read(fname));
+}
 
-    auto const jobj = crw.read(fname);
+void MainWindow::init_widgets_states(const QJsonObject &jobj)
+{
+    global_keywords gk;
     label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
     widget_alert_sender_settings_->set_states(jobj[gk.state_widget_alert_settings()].toObject());
     widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
