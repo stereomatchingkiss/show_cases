@@ -58,7 +58,7 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_416_);
     ui->comboBoxSelectModel->setCurrentIndex(1);
 
-    ui->comboBoxProcessSizeYolox->setVisible(false);
+    ui->groupBoxYolox->setVisible(false);
 
     ui->labelConfidence->setToolTip(tr("The higher the value, the more likely the model is to correctly identify the correct results.\n"
                                        "However, this can also lead to fewer of the correct results being identified."));
