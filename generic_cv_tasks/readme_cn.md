@@ -25,7 +25,8 @@
 
 # 这软体的websocket如何使用
 
-. 请参考 simple_server/qt_base_opencv_videocapture_server.py
+. 如果你要把影像透过websocket传送，请参考 [qt_base_opencv_videocapture_server.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_opencv_videocapture_server.py)
+. 如果你要接收警报，请参考 [qt_base_alert_receiver.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_alert_receiver.py)
 
 # 网页版的限制
 
@@ -55,6 +56,10 @@
 # 使用场合
 
 . 安防监控、物流运输、零售业等
+
+# 如何编译Qt6.5.2
+
+. 请参考这个文件[https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/build_qt6_wasm_steps.txt]
 
 # 其他
 
