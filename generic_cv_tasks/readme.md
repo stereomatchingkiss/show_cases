@@ -15,7 +15,7 @@ English | [简体中文](./readme_cn.md)
 
 - [opencv 4.8.0](https://github.com/opencv/opencv)
 - [ncnn-20230816](https://github.com/Tencent/ncnn)
-- [Qt6.5.2(网页版)， Qt6.5.3(桌面版)](https://www.qt.io/)
+- [Qt6.5.2](https://www.qt.io/)
 - [Eigen 3.4.0](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Boost 1.81.0](https://www.boost.org/)
 
@@ -37,8 +37,10 @@ English | [简体中文](./readme_cn.md)
 - Unable to actively write settings and alarms to local hard drive. In order to bypass this limitation, the web version provides websocket to transmit alarms.
 - Deep learning algorithms do not support GPU
 - When using websocket to transmit information, if it is not a local machine, SSL must be used, and the key used by the target must be recognized by the browser.
+- Neither OpenCV nor Qt's multimedia module provides good support for browsers, so the web version only supports image transmission using websockets.
+- Qt for WebAssembly is a very useful tool, but it is only available under the GPL and commercial licenses.
 
-# 范例
+# Examples
 
 - [Video tutorial](https://youtu.be/TNancuXjlcM)
 - ![Save and load the settings](./imgs/save_and_load.png)
@@ -65,17 +67,13 @@ English | [简体中文](./readme_cn.md)
 
 - Security monitoring, logistics transportation, retail industry, etc.
 
-# How to compile Qt6.5.2
-
-- Please refer to [this file](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/build_qt6_wasm_steps.txt)
-
 # Others
 
 - If you think it is good after using it, please give me a star, thank you
 - If you find a bug, please open an issue
 - If you need new features, please open an issue
 - GPU support will be completed by Vulkan. We don't plan to support CUDA for now, because it's too bloated and only supports Nvidia GPUs.
-- The copyright of this software belongs to the software developer.
+- The developer of this software created it as a demo and does not intend to use it for commercial purposes.
 - Except for direct sales, this software can be used for personal or commercial purposes.
 - When using this software, please comply with relevant laws and regulations. The software developer is not responsible for any losses caused by using this software.
 - How to compile Qt6.5.2 that supports SIMD and thread, please refer to [build_qt6_wasm_steps.txt](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/build_qt6_wasm_steps.txt)

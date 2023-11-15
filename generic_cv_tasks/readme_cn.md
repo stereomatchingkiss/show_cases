@@ -16,7 +16,7 @@
 
 - [opencv 4.8.0](https://github.com/opencv/opencv)
 - [ncnn-20230816](https://github.com/Tencent/ncnn)
-- [Qt6.5.2(网页版)， Qt6.5.3(桌面版)](https://www.qt.io/)
+- [Qt6.5.2](https://www.qt.io/)
 - [Eigen 3.4.0](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Boost 1.81.0](https://www.boost.org/)
 
@@ -38,6 +38,8 @@
 - 无法主动将设定，警报写入本地硬碟，为了绕开这一限制，网页版提供了websocket传送警报
 - 深度学习的算法不支援GPU
 - 使用websocket传送信息的时候，如果不是本地机器，必须使用ssl，且目标所使用的key必须被浏览器承认
+- 无论是opencv或Qt的多媒体模组，对浏览器的支援都不好，所以网页版只支持利用websocket传输影像的模式
+- Qt for webassembly虽然很好用，但他只有GPL和商用的license
 
 # 范例
 
@@ -71,7 +73,7 @@
 - 如果使用后觉得不错，请给我一颗星星，谢谢
 - 如果发现bug，请开个issue
 - 如果需要新的功能，请开个issue
-- 本软件的版权归属于软件开发者
+- 该软件的开发者仅将其作为演示创建，不打算用于商业目的。
 - 除直接售卖之外，本软件可用于个人或商业用途
 - 使用本软件时，请遵守相关法律法规。软件开发者对因使用本软件而产生的任何损失不承担任何责任
 - 如何编译支援simd和thread的Qt6.5.2，请参考[build_qt6_wasm_steps.txt](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/build_qt6_wasm_steps.txt)
