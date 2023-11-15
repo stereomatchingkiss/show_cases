@@ -1,3 +1,5 @@
+English | [简体中文](./readme_cn.md)
+
 # How to install
 
 - No installation required for web version. Open [this link](https://object-detector-and-alarm.netlify.app/generic_cv_tasks.html) in Firefox/Chrome.
@@ -27,7 +29,7 @@
 
 - If you want to transmit images through websocket, please refer to [qt_base_opencv_videocapture_server.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_opencv_videocapture_server.py)
 - If you want to receive alarms, please refer to [qt_base_alert_receiver.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_alert_receiver.py)
-- (install_qt_script.md)[https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md]，explain how to install the required packages
+- [install_qt_script.md](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md)，explain how to install the required packages
 
 # Limitations of the web version
 
@@ -35,6 +37,13 @@
 - Unable to actively write settings and alarms to local hard drive. In order to bypass this limitation, the web version provides websocket to transmit alarms.
 - Deep learning algorithms do not support GPU
 - When using websocket to transmit information, if it is not a local machine, SSL must be used, and the key used by the target must be recognized by the browser.
+
+# 范例
+
+- [Video tutorial](https://youtu.be/TNancuXjlcM)
+- ![Save and load the settings](./imgs/save_and_load.png)
+- ![Select the area to track the object](./imgs/select_roi.png)
+- ![Tracking and Counting](./imgs/track_and_count.png)
 
 # Future plans
 

@@ -1,3 +1,5 @@
+[English](./readme.md) | 简体中文
+
 # 如何安装
 
 - 网页版不需要安装，使用firefox/chrome开启[这个网址](https://object-detector-and-alarm.netlify.app/generic_cv_tasks.html)即可使用
@@ -28,7 +30,7 @@
 
 - 如果你要把影像透过websocket传送，请参考 [qt_base_opencv_videocapture_server.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_opencv_videocapture_server.py)
 - 如果你要接收警报，请参考 [qt_base_alert_receiver.py](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_alert_receiver.py)
-- (install_qt_script.md)[https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md]，解释如何安装需要的package
+- [install_qt_script.md](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md)，解释如何安装需要的package
 
 # 网页版的限制
 
@@ -36,6 +38,13 @@
 - 无法主动将设定，警报写入本地硬碟，为了绕开这一限制，网页版提供了websocket传送警报
 - 深度学习的算法不支援GPU
 - 使用websocket传送信息的时候，如果不是本地机器，必须使用ssl，且目标所使用的key必须被浏览器承认
+
+# 范例
+
+- [影片教学](https://youtu.be/TNancuXjlcM)
+- ![保存和读取设定](./imgs/save_and_load.png)
+- ![选择要追踪物件的区域](./imgs/select_roi.png)
+- ![追踪与计数](./imgs/track_and_count.png)
 
 # 将来的打算
 
