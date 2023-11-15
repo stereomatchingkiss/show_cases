@@ -1,21 +1,21 @@
 # 如何安装
 
-. 网页版不需要安装，使用firefox/chrome开启这个网址即可使用
+. 网页版不需要安装，使用firefox/chrome开启[这个网址](https://object-detector-and-alarm.netlify.app/generic_cv_tasks.html)即可使用
 . 由于是使用webassembly开发的，第一次开启需要花点时间编译，请耐心等待
 
 # 简介
 
 . 基于物件检测的深度学习算法，支持80种目标
-. 支持的模型为 nanodet-plus-m系列
+. 支持的模型为 [nanodet-plus-m](https://github.com/RangiLyu/nanodet)系列
 . 提供简单好用的物件检测工具，满足日常需求
 
 # 使用的第三方软件
 
-. opencv 4.8.0
-. ncnn-20230816
-. Qt6.5.2(网页版)， Qt6.5.3(桌面版)
-. Eigen
-. Boost
+. [opencv 4.8.0](https://github.com/opencv/opencv)
+. [ncnn-20230816](https://github.com/Tencent/ncnn)
+. [Qt6.5.2(网页版)， Qt6.5.3(桌面版)](https://www.qt.io/)
+. [Eigen 3.4.0](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+. [Boost 1.81.0](https://www.boost.org/)
 
 # 本软体的功能
 
@@ -66,6 +66,7 @@
 . 除直接售卖之外，本软件可用于个人或商业用途
 . 使用本软件时，请遵守相关法律法规。软件开发者对因使用本软件而产生的任何损失不承担任何责任
 . 如何编译支援simd和thread的Qt6.5.2，请参考build_qt6_wasm.txt
+. 释放桌面版
 
 # 联系我
 
@@ -74,7 +75,3 @@
 . 擅长开发跨平台（windows, ubuntu, android, browser）的程式，plug in(windows, ubuntu, android, ios, browser)
 . 擅长实现电脑视觉的算法，opencv contrib的image hash就是我开发的，除此之外也实现过一些paper上的算法
 . 了解如何训练新的深度学习模型以满足客户的客制化需求
-
-# 桌面版的链接
-
-. 未定
