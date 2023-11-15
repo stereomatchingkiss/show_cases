@@ -165,13 +165,11 @@ void MainWindow::action_warning(bool)
 
 void MainWindow::create_frame_capture()
 {
+    timer_->stop();
+    disconnect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
-        timer_->stop();
-        disconnect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
-        timer_->stop();
-        disconnect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
+    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){                
         sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
     }else{
         sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
@@ -256,6 +254,7 @@ void MainWindow::next_page_is_widget_stream_player()
         auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
         widget_stream_player_->set_is_seekable(player->is_seekable());
         widget_stream_player_->set_duration(player->position(), player->max_position());
+        connect(timer_, &QTimer::timeout, this, &MainWindow::update_position);
         timer_->start();
     }else{
         widget_stream_player_->set_is_seekable(false);
