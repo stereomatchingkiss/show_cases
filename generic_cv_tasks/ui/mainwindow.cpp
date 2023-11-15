@@ -56,7 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonPrev->setEnabled(false);
     ui->labelTitle->setText(tr("Select model"));
 
-    msg_box_->setMinimumWidth(600);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(600, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QGridLayout* layout = static_cast<QGridLayout*>(msg_box_->layout());
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
 
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
@@ -142,7 +144,7 @@ void MainWindow::action_about_qt(bool)
 }
 
 void MainWindow::action_contact_me(bool)
-{    
+{
     msg_box_->information(this, tr("Contact me"), tr("Please send your email to thamngapwei@gmail.com"));
 }
 
