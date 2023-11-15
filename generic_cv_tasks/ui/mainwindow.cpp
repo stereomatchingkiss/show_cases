@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonPrev->setEnabled(false);
     ui->labelTitle->setText(tr("Select model"));
 
+    msg_box_->setMinimumWidth(600);
+
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
     connect(ui->actionLoadSettings, &QAction::triggered, this, &MainWindow::load_settings);
@@ -140,7 +142,7 @@ void MainWindow::action_about_qt(bool)
 }
 
 void MainWindow::action_contact_me(bool)
-{
+{    
     msg_box_->information(this, tr("Contact me"), tr("Please send your email to thamngapwei@gmail.com"));
 }
 
@@ -253,6 +255,8 @@ void MainWindow::next_page_is_widget_stream_player()
         widget_stream_player_->set_is_seekable(player->is_seekable());
         widget_stream_player_->set_duration(player->position(), player->max_position());
         timer_->start();
+    }else{
+        widget_stream_player_->set_is_seekable(false);
     }
 }
 
