@@ -9,7 +9,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace ocv::ocr{
+namespace flt::cvt::ocr{
 
 class paddle_ocr_text_rec
 {

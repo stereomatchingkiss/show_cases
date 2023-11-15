@@ -67,15 +67,13 @@ namespace flt::cvt::ocr {
     enum PolyFillType { pftEvenOdd, pftNonZero, pftPositive, pftNegative };
 
 #ifdef use_int32
-    typedef int cInt;
+  using cInt = signed long long;
   static cInt const loRange = 0x7FFF;
   static cInt const hiRange = 0x7FFF;
 #else
-    typedef signed long long cInt;
-    static cInt const loRange = 0x3FFFFFFF;
-    static cInt const hiRange = 0x3FFFFFFFFFFFFFFFLL;
-    typedef signed long long long64;     //used by Int128 class
-    typedef unsigned long long ulong64;
+    using cInt = signed long long;
+    using long64 = signed long long;     //used by Int128 class
+    using ulong64 = unsigned long long;
 
 #endif
 

@@ -85,6 +85,13 @@ bool NEAR_ZERO(double val)
     return (((val) > -TOLERANCE) && ((val) < TOLERANCE));
 }
 
+#ifdef use_int32
+static cInt const loRange = 0x7FFF;
+static cInt const hiRange = 0x7FFF;
+#else
+static cInt const loRange = 0x3FFFFFFF;
+static cInt const hiRange = 0x3FFFFFFFFFFFFFFFLL;
+#endif
 
 }
 

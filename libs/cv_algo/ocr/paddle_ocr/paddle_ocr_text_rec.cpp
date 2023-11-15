@@ -5,7 +5,7 @@
 
 #include <net.h>
 
-namespace ocv::ocr{
+namespace flt::cvt::ocr{
 
 namespace{
 
