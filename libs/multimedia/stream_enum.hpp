@@ -14,7 +14,8 @@ enum class stream_source_type : int
     video,
     rtsp,
     websocket,
-    hls
+    hls,
+    image
 };
 
 }
