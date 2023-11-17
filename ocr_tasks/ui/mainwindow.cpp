@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include "widget_source_selection.hpp"
+#include "widget_stream_player.hpp"
 
 #include "../config/config_read_write.hpp"
 #include "../global/global_keywords.hpp"
@@ -19,15 +20,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     widget_source_selection_ = new widget_source_selection;
+    widget_stream_player_ = new widget_stream_player;
 
     ui->stackedWidget->addWidget(widget_source_selection_);
+    ui->stackedWidget->addWidget(widget_stream_player_);
 
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
     connect(ui->actionLoadSettings, &QAction::triggered, this, &MainWindow::action_load_settings);
     connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::action_save_settings);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
-
 
     ui->pushButtonPrev->setEnabled(false);
 }
@@ -46,7 +48,7 @@ void MainWindow::action_contact_me(bool)
 {
     msg_box_->setText(tr("Please send your email to thamngapwei@gmail.com.\n"
                          "Or open issue on\n"
-                         "https://github.com/stereomatchingkiss/object_detection_and_alarm/issues"));
+                         "https://github.com/stereomatchingkiss/ocr_tasks/issues"));
 
     msg_box_->show();
 }
@@ -116,12 +118,20 @@ void MainWindow::save_settings_to_file(QString const &save_at) const
 
 void MainWindow::on_pushButtonNext_clicked()
 {
-
+    if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        ui->stackedWidget->setCurrentWidget(widget_stream_player_);
+        ui->pushButtonNext->setEnabled(false);
+        ui->pushButtonPrev->setEnabled(true);
+    }
 }
 
 
 void MainWindow::on_pushButtonPrev_clicked()
 {
-
+    if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+        ui->pushButtonNext->setEnabled(true);
+        ui->pushButtonPrev->setEnabled(false);
+    }
 }
 

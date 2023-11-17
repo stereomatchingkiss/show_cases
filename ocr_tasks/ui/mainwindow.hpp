@@ -8,6 +8,7 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class widget_source_selection;
+class widget_stream_player;
 
 class QJsonObject;
 class QMessageBox;
@@ -42,5 +43,6 @@ private:
 
     QMessageBox *msg_box_;
     widget_source_selection *widget_source_selection_;
+    widget_stream_player *widget_stream_player_;
 };
 #endif // MAINWINDOW_HPP
