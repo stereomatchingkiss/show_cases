@@ -97,6 +97,8 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
         ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
+        ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
+        ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

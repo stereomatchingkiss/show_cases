@@ -4,14 +4,23 @@
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
+#include "../algo/paddle_ocr_worker.hpp"
+
+#include "../config/config_paddle_ocr_worker.hpp"
 #include "../config/config_read_write.hpp"
+
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"
+
+#include <multimedia/camera/frame_process_controller.hpp>
+#include <multimedia/camera/single_frame_with_multi_worker_base.hpp>
 
 #include <QJsonObject>
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+using namespace flt::mm;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -122,6 +131,13 @@ void MainWindow::on_pushButtonNext_clicked()
         ui->stackedWidget->setCurrentWidget(widget_stream_player_);
         ui->pushButtonNext->setEnabled(false);
         ui->pushButtonPrev->setEnabled(true);
+
+        process_controller_ = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
+        connect(widget_stream_player_, &widget_stream_player::image_selected,
+                process_controller_.get(), &frame_process_controller::predict);
+        connect(process_controller_.get(), &frame_process_controller::send_process_results,
+                widget_stream_player_, &widget_stream_player::display_frame);
+        emit process_controller_->start();
     }
 }
 

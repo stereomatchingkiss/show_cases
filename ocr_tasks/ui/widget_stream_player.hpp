@@ -9,6 +9,8 @@ namespace Ui {
 class widget_stream_player;
 }
 
+class dialog_display_details;
+
 class widget_stream_player : public QWidget
 {
     Q_OBJECT
@@ -19,16 +21,23 @@ public:
 
     void display_frame(std::any results);
 
-    void set_is_seekable(bool val);
-    void set_current_position(qint64 val);
-    void set_duration(qint64 current_duration_msec, qint64 max_duration_msec);    
+    void set_can_save_on_local(bool val);
 
+signals:
+    void image_selected(std::any img);    
+
+private slots:
+    void on_pushButtonSave_clicked();
+
+    void on_pushButtonSelectImage_clicked();
+
+    void on_pushButtonDisplayDetails_clicked();
 
 private:
-    Ui::widget_stream_player *ui;
+    Ui::widget_stream_player *ui;    
 
-    QString format_;
-    bool playing_;
+    bool can_save_on_local_ = true;
+    dialog_display_details *dialog_display_details_;
 };
 
 #endif // WIDGET_STREAM_PLAYER_HPP
