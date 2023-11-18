@@ -20,24 +20,12 @@
 
 #include <cv_algo/utils/draw_rect.hpp>
 
-#include <network/websocket_client_worker.hpp>
-
 #include <utils/image_utils.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <QDateTime>
 #include <QDebug>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
-
-#include <QJsonObject>
-#include <QJsonDocument>
-
-#include <QPixmap>
 
 #include <format>
 #include <mutex>
