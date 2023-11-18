@@ -99,6 +99,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
         config/config_paddle_ocr_worker.hpp
+        algo/paddle_ocr_worker_results.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ocr_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
