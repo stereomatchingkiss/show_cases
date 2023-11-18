@@ -63,7 +63,8 @@ set(PROJECT_SOURCES
         config/config_read_write.cpp config/config_read_write.hpp
         config/config_source_selection.hpp
 
-        global/global_keywords.cpp global/global_keywords.hpp
+        global/global_keywords.hpp global/global_keywords.cpp
+        global/global_object.hpp global/global_object.cpp
 
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
@@ -71,7 +72,7 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.cpp
         ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
         ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
@@ -89,12 +90,15 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
+        ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
+        config/config_paddle_ocr_worker.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ocr_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
