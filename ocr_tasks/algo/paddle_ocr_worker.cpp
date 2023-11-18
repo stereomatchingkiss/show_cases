@@ -10,7 +10,6 @@
 #include <utils/qimage_to_cvmat.hpp>
 
 #include <QDebug>
-#include <QPainter>
 
 using namespace flt::mm;
 using namespace flt::cvt::ocr;
@@ -25,14 +24,10 @@ struct paddle_ocr_worker::impl
                   (root_path_ + "paddleocr_keys.txt").c_str())
     {
         qDebug()<<"text_det_ load = "<<text_det_.get_load_model_state();
-        qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();
-
-        pen_.setColor(Qt::green);
-        pen_.setWidth(5);
+        qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();                    
     }
 
-    config_paddle_ocr_worker params_;
-    QPen pen_;
+    config_paddle_ocr_worker params_;    
 
 #ifdef WASM_BUILD
     std::string root_path_ = "";
@@ -78,17 +73,7 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::ranges::sort(results.text_boxes_, [](TextBox const &a, TextBox const &b)
                       {
                           return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
-                      });
-
-    QPainter painter(&qimg);
-    painter.setPen(impl_->pen_);
-    for(auto const &val : results.text_boxes_){
-        QPolygon poly;
-        for(auto const &pt : val.boxPoint){
-            poly<<QPoint(pt.x, pt.y);
-        }
-        painter.drawPolygon(poly);
-    }
+                      });    
 
     results.mat_ = std::move(qimg);
 

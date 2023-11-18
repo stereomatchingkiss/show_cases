@@ -6,59 +6,128 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>684</width>
+    <width>774</width>
     <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QPushButton" name="pushButtonDisplayDetails">
-       <property name="text">
-        <string>Display details</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" rowspan="3">
-      <widget class="QLabel" name="labelStream">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="checkBoxHideImage">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Stream</string>
+        <string>Hide image</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="pushButtonSave">
+     <item>
+      <widget class="QCheckBox" name="checkBoxHideTable">
        <property name="text">
-        <string>Save</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QTextEdit" name="textEditOcrResult">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+        <string>Hide table</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item>
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBoxTable">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QTableWidget" name="tableWidgetOcrResult">
+        <column>
+         <property name="text">
+          <string>Text</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Top left</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Top right</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Bottom right</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Bottom left</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Confidence</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="pushButtonDisplayDetails">
+        <property name="text">
+         <string>Display details</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="pushButtonSave">
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QPushButton" name="pushButtonSelectImage">
      <property name="text">
       <string>Select image</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelStream">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Stream</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="labelTextArea">
+     <property name="text">
+      <string>Text area</string>
      </property>
     </widget>
    </item>
