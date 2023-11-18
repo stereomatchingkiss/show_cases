@@ -128,6 +128,7 @@ void MainWindow::save_settings_to_file(QString const &save_at) const
 void MainWindow::on_pushButtonNext_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        ui->labelTitle->setVisible(false);
         ui->stackedWidget->setCurrentWidget(widget_stream_player_);
         ui->pushButtonNext->setEnabled(false);
         ui->pushButtonPrev->setEnabled(true);
@@ -145,6 +146,7 @@ void MainWindow::on_pushButtonNext_clicked()
 void MainWindow::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->labelTitle->setVisible(true);
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
         ui->pushButtonNext->setEnabled(true);
         ui->pushButtonPrev->setEnabled(false);
