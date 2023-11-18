@@ -134,7 +134,7 @@ bool paddle_ocr_text_rec::get_load_param_success() const noexcept
 
 int paddle_ocr_text_rec::get_load_model_state() const noexcept
 {
-    if(get_load_model_success() && get_load_param_success()){
+    if(get_load_model_success() == 0 && get_load_param_success() == 0){
         return 0;
     }
     if(get_load_model_success() == true && get_load_param_success() == false){
