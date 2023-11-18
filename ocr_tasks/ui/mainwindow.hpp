@@ -11,7 +11,6 @@ class widget_source_selection;
 class widget_stream_player;
 
 class QJsonObject;
-class QMessageBox;
 
 class MainWindow : public QMainWindow
 {
@@ -41,7 +40,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    QMessageBox *msg_box_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 };

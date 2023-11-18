@@ -6,6 +6,7 @@
 
 #include "../config/config_read_write.hpp"
 #include "../global/global_keywords.hpp"
+#include "../global/global_object.hpp"
 
 #include <QJsonObject>
 
@@ -15,7 +16,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , msg_box_{new QMessageBox{this}}
 {
     ui->setupUi(this);
 
@@ -41,16 +41,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::action_about_qt(bool)
 {
-    msg_box_->aboutQt(this, tr("About Qt"));
+    global_get_messagebox().aboutQt(this, tr("About Qt"));
 }
 
 void MainWindow::action_contact_me(bool)
 {
-    msg_box_->setText(tr("Please send your email to thamngapwei@gmail.com.\n"
-                         "Or open issue on\n"
-                         "https://github.com/stereomatchingkiss/ocr_tasks/issues"));
+    global_get_messagebox().setText(tr("Please send your email to thamngapwei@gmail.com.\n"
+                                       "Or open issue on\n"
+                                       "https://github.com/stereomatchingkiss/ocr_tasks/issues"));
 
-    msg_box_->show();
+    global_get_messagebox().show();
 }
 
 void MainWindow::action_load_settings(bool)
@@ -88,12 +88,12 @@ void MainWindow::action_save_settings(bool)
 
 void MainWindow::action_warning(bool)
 {
-    msg_box_->warning(this, tr("Before you use"),
-                      tr("1. The software is copyrighted by the software developer.\n"
-                         "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
-                         "3. When using the software, please comply with relevant laws and regulations. "
-                         "The software developer is not responsible for any loss or damage caused by the "
-                         "use of this software."));
+    global_get_messagebox().warning(this, tr("Before you use"),
+                                    tr("1. The software is copyrighted by the software developer.\n"
+                                       "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
+                                       "3. When using the software, please comply with relevant laws and regulations. "
+                                       "The software developer is not responsible for any loss or damage caused by the "
+                                       "use of this software."));
 }
 
 void MainWindow::init_widgets_states(QJsonObject const &jobj)
