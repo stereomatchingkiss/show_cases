@@ -18,14 +18,15 @@ public:
     explicit nanodet_worker(config_nanodet_worker config, QObject *parent = nullptr);
     ~nanodet_worker();
 
-    void change_alert_sender_config(config_alert_sender const &val);
-    void process_results(std::any frame) override;
+    void change_alert_sender_config(config_alert_sender const &val);    
 
 signals:
     void send_alert_by_binary(QByteArray msg);
     void send_alert_by_text(QString msg);
 
 private:
+    void process_results(std::any frame) override;
+
     struct impl;
     std::unique_ptr<impl> impl_;
 };
