@@ -1,10 +1,6 @@
 #pragma once
 
 #include <QImage>
-#include <QPixmap>
-#include <QString>
-
-#include <opencv2/core.hpp>
 
 struct obj_det_worker_results
 {
