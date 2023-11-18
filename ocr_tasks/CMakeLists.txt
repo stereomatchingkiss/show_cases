@@ -50,6 +50,7 @@ endif()
 
 set(PROJECT_SOURCES
         main.cpp
+        ui/dialog_display_details.hpp ui/dialog_display_details.cpp ui/dialog_display_details.ui
         ui/mainwindow.hpp
         ui/mainwindow.cpp
         ui/mainwindow.ui
@@ -60,6 +61,11 @@ set(PROJECT_SOURCES
         ui/widget_stream_player.cpp
         ui/widget_stream_player.ui
 
+        algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
+        algo/paddle_ocr_worker_results.hpp
+
+        config/config_dialog_display_details.hpp
+        config/config_paddle_ocr_worker.hpp
         config/config_read_write.cpp config/config_read_write.hpp
         config/config_source_selection.hpp
 
@@ -96,10 +102,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
-        config/config_paddle_ocr_worker.hpp
-        algo/paddle_ocr_worker_results.hpp
+        ${PROJECT_SOURCES}        
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ocr_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
