@@ -170,10 +170,8 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
     cv::dilate(norfMapMat, norfMapMat, cv::Mat(), cv::Point(-1, -1), 1);
 
     std::vector<TextBox> result = findRsBoxes(fMapMat, norfMapMat, box_score_thresh, 2.0f);
-    for(int i = 0; i < result.size(); i++)
-    {
-        for(int j = 0; j < result[i].boxPoint.size(); j++)
-        {
+    for(size_t i = 0; i < result.size(); ++i){
+        for(size_t j = 0; j < result[i].boxPoint.size(); ++j){
             float x = (result[i].boxPoint[j].x-(wpad/2))/scale;
             float y = (result[i].boxPoint[j].y-(hpad/2))/scale;
             x = std::max(std::min(x,(float)(width-1)),0.f);
