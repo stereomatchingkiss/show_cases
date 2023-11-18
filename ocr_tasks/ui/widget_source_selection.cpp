@@ -30,7 +30,16 @@ widget_source_selection::~widget_source_selection()
 
 config_source_selection widget_source_selection::get_config() const
 {
+    using stype = stream_source_type;
+
     config_source_selection config;
+    if(ui->radioButtonImage->isChecked()){
+        config.source_type_ = stype::image;
+    }else if(ui->radioButtonWebSockets->isChecked()){
+        config.source_type_ = stype::websocket;
+    }
+
+    config.webcam_url_ = ui->lineEditWebSockets->text();
 
     return config;
 }
