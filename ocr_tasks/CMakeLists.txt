@@ -148,6 +148,7 @@ if(ANDROID OR WIN32)
 endif()
 
 if(EMSCRIPTEN)
+    add_definitions(-Duse_int32)
     add_definitions(-DWASM_BUILD)
     add_compile_definitions(EIGEN_DONT_PARALLELIZE)
     target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
