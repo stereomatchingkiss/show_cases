@@ -54,11 +54,16 @@ paddle_ocr_worker::~paddle_ocr_worker()
 void paddle_ocr_worker::process_results(std::any frame)
 {    
     auto qimg = std::any_cast<QImage>(frame);
-    auto const mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
+    auto mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
 
     if(mat.empty()){
         qDebug()<<"cannot convert qimg with format = "<<qimg.format();
         return;
+    }
+
+    qDebug()<<"mat is continuous = "<<mat.isContinuous();
+    if(!mat.isContinuous()){
+        mat = mat.clone();
     }
 
     for(size_t i = 0; i != 10; ++i){

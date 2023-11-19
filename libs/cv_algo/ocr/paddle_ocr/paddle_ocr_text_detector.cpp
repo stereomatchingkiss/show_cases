@@ -178,7 +178,7 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
 
     std::cout<<std::format("input_name_ = {}, output_name_ = {}", input_name_, output_name_)<<std::endl;
 
-    cv::Mat fMapMat(in_pad.h, in_pad.w, CV_32FC1, (float*)out.data, out.cstep);
+    cv::Mat fMapMat(in_pad.h, in_pad.w, CV_32FC1, (float*)out.data);
     cv::Mat norfMapMat;
     norfMapMat = fMapMat > box_thresh;
 
@@ -186,10 +186,10 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
 
     std::cout<<std::format("norfMapMat rows = {}, norfMapMat cols = {}", norfMapMat.rows, norfMapMat.cols)<<std::endl;
     for(size_t i = 0; i != 10; ++i){
-        std::cout<<"fMapMat:"<<i<<":"<<fMapMat.at<float>(i)<<std::endl;
+        std::cout<<"fMapMat:"<<i<<"="<<fMapMat.at<float>(i)<<std::endl;
     }
     for(size_t i = norfMapMat.rows; i != norfMapMat.rows + 10; ++i){
-        std::cout<<"fMapMat:"<<i<<":"<<fMapMat.at<float>(i)<<std::endl;
+        std::cout<<"fMapMat:"<<i<<"="<<fMapMat.at<float>(i)<<std::endl;
     }
     std::vector<TextBox> result = findRsBoxes(fMapMat, norfMapMat, box_score_thresh, 2.0f);
     for(size_t i = 0; i < result.size(); ++i){
