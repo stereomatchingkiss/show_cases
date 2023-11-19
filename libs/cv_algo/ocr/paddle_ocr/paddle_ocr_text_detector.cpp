@@ -4,6 +4,8 @@
 
 #include <net.h>
 
+#include <format>
+
 namespace flt::cvt::ocr{
 
 namespace{
@@ -18,19 +20,24 @@ std::vector<TextBox> findRsBoxes(cv::Mat const &fMapMat,
     rsBoxes.clear();
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(norfMapMat, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    std::cout<<"contours size = "<<contours.size()<<std::endl;
     for (int i = 0; i < contours.size(); ++i)
     {
         float minSideLen, perimeter;
         std::vector<cv::Point> minBox = getMinBoxes(contours[i], minSideLen, perimeter);
+        std::cout<<std::format("{}: minSideLen = {}", i, minSideLen);
         if (minSideLen < minArea)
             continue;
         float score = boxScoreFast(fMapMat, contours[i]);
+        std::cout<<std::format("{}: score = {}", i, score);
         if (score < boxScoreThresh)
             continue;
         //---use clipper start---
         std::vector<cv::Point> clipBox = unClip(minBox, perimeter, unClipRatio);
         std::vector<cv::Point> clipMinBox = getMinBoxes(clipBox, minSideLen, perimeter);
         //---use clipper end---
+
+        std::cout<<std::format("clipBox size = {}, clipMinBox size = {}", clipBox.size(), clipMinBox.size());
 
         if (minSideLen < minArea + 2)
             continue;
@@ -146,12 +153,16 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
         h = target_size;
         w = static_cast<int>(w * scale);
     }
+    std::cout<<std::format("h = {}, w = {}, scale = {}", h, w, scale)<<std::endl;
 
     ncnn::Mat input = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_RGB, width, height, w, h);
 
     // pad to target_size rectangle
-    int wpad = (w + 31) / 32 * 32 - w;
-    int hpad = (h + 31) / 32 * 32 - h;
+    int const wpad = (w + 31) / 32 * 32 - w;
+    int const hpad = (h + 31) / 32 * 32 - h;
+
+    std::cout<<std::format("wpad = {}, hpad = {}", wpad, hpad)<<std::endl;
+
     ncnn::Mat in_pad;
     ncnn::copy_make_border(input, in_pad, hpad / 2, hpad - hpad / 2, wpad / 2, wpad - wpad / 2, ncnn::BORDER_CONSTANT, 0.f);
 
@@ -165,12 +176,21 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
     ncnn::Mat out;
     extractor.extract(output_name_.c_str(), out);
 
+    std::cout<<std::format("input_name_ = {}, output_name_ = {}", input_name_, output_name_)<<std::endl;
+
     cv::Mat fMapMat(in_pad.h, in_pad.w, CV_32FC1, (float*)out.data);
     cv::Mat norfMapMat;
     norfMapMat = fMapMat > box_thresh;
 
     cv::dilate(norfMapMat, norfMapMat, cv::Mat(), cv::Point(-1, -1), 1);
 
+    std::cout<<std::format("norfMapMat rows = {}, norfMapMat cols = {}", norfMapMat.rows, norfMapMat.cols)<<std::endl;
+    for(size_t i = 0; i != 10; ++i){
+        std::cout<<"norfMapMat:"<<i<<":"<<norfMapMat.at<cv::Vec3b>(i)<<std::endl;
+    }
+    for(size_t i = norfMapMat.rows; i != norfMapMat.rows + 10; ++i){
+        std::cout<<"norfMapMat:"<<i<<":"<<norfMapMat.at<cv::Vec3b>(i)<<std::endl;
+    }
     std::vector<TextBox> result = findRsBoxes(fMapMat, norfMapMat, box_score_thresh, 2.0f);
     for(size_t i = 0; i < result.size(); ++i){
         for(size_t j = 0; j < result[i].boxPoint.size(); ++j){

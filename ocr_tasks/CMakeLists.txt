@@ -132,6 +132,7 @@ if(${QT_VERSION} VERSION_LESS 6.1.0)
 endif()
 
 if(ANDROID OR WIN32)
+    add_definitions(-Duse_int32)
     find_package(OpenCV REQUIRED)
     find_package(ncnn REQUIRED)
 

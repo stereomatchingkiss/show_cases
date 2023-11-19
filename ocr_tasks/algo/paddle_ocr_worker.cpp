@@ -18,7 +18,7 @@ struct paddle_ocr_worker::impl
 {
     impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
-        text_det_((root_path_ + "ch_PP-OCRv4_det_opt.param").c_str(), (root_path_ + "ch_PP-OCRv4_det_opt.bin").c_str()),
+        text_det_((root_path_ + "ch_PP-OCRv3_det.param").c_str(), (root_path_ + "ch_PP-OCRv3_det.bin").c_str()),
         text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
                   (root_path_ + "ch_PP-OCRv3_rec.bin").c_str(),
                   (root_path_ + "paddleocr_keys.txt").c_str())
@@ -59,6 +59,13 @@ void paddle_ocr_worker::process_results(std::any frame)
     if(mat.empty()){
         qDebug()<<"cannot convert qimg with format = "<<qimg.format();
         return;
+    }
+
+    for(size_t i = 0; i != 10; ++i){
+        std::cout<<i<<":"<<mat.at<cv::Vec3b>(i)<<std::endl;
+    }
+    for(size_t i = mat.rows; i != mat.rows + 10; ++i){
+        std::cout<<i<<":"<<mat.at<cv::Vec3b>(i)<<std::endl;
     }
 
     paddle_ocr_worker_results results;
