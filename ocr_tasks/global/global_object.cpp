@@ -2,6 +2,7 @@
 
 #include <utils/meyers_singleton.hpp>
 
+#include <QFontDatabase>
 #include <QMessageBox>
 
 QMessageBox& global_object::messagebox()
