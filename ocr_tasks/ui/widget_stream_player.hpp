@@ -26,7 +26,10 @@ public:
 
     void display_frame(std::any results);
 
+    QJsonObject get_states() const;
+
     void set_can_save_on_local(bool val);
+    void set_states(QJsonObject const &val);
 
 signals:
     void image_selected(std::any img);

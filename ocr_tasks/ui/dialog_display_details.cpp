@@ -48,6 +48,6 @@ void dialog_display_details::set_states(const QJsonObject &val)
         ui->checkBoxShowConfidence->setChecked(val[state_show_confidence].toBool());
     }
     if(val.contains(state_show_location)){
-        ui->checkBoxShowConfidence->setChecked(val[state_show_location].toBool());
+        ui->checkBoxShowLocation->setChecked(val[state_show_location].toBool());
     }
 }

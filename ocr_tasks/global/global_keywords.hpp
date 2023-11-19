@@ -13,6 +13,7 @@ public:
     QString const ocr_tasks_assets() const;
 
     QString state_widget_source_selection() const;
+    QString state_widget_stream_player() const;
 };
 
 #endif // GLOBAL_KEYWORDS_HPP

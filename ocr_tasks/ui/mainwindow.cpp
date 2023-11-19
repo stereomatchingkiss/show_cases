@@ -45,11 +45,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pushButtonPrev->setEnabled(false);
 
+    auto const jobj = config_read_write().read(global_keywords().cam_config_path() + "/cam0.json");
+    global_keywords gk;
+    widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
+    widget_stream_player_->set_states(jobj[gk.state_widget_stream_player()].toObject());
+
     get_gobject();
 }
 
 MainWindow::~MainWindow()
 {
+    config_read_write().write(dump_settings(), global_keywords().cam_config_path() + "/cam0.json");
+
     delete ui;
 }
 
@@ -114,12 +121,14 @@ void MainWindow::init_widgets_states(QJsonObject const &jobj)
 {
     global_keywords gk;
     widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
+    widget_stream_player_->set_states(jobj[gk.state_widget_stream_player()].toObject());
 }
 
 QJsonObject MainWindow::dump_settings() const
 {
     config_read_write crw;
     crw.set_widget_source_selection(widget_source_selection_->get_states());
+    crw.set_widget_stream_player(widget_stream_player_->get_states());
 
     return crw.dumps();
 }
@@ -128,7 +137,6 @@ void MainWindow::save_settings_to_file(QString const &save_at) const
 {
     config_read_write().write(dump_settings(), save_at);
 }
-
 
 void MainWindow::on_pushButtonNext_clicked()
 {

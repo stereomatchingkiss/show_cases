@@ -16,3 +16,8 @@ QString global_keywords::state_widget_source_selection() const
 {
     return "state_widget_source_selection";
 }
+
+QString global_keywords::state_widget_stream_player() const
+{
+    return "state_widget_stream_player";
+}
