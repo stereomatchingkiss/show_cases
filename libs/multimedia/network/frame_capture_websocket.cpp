@@ -22,7 +22,7 @@ struct frame_capture_websocket::impl
     {
         if(!mat.isNull()){
             for(auto &val : controllers_){
-                emit val.first->predict(mat);
+                val.first->predict(mat);
             }
         }else{
             qDebug()<<__func__<<":cannot decode message";
