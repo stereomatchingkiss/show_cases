@@ -32,6 +32,8 @@ public:
     void remove_listener(void *key) override;
     void start() override;
 
+    void send_text_message(QString msg);
+
 signals:    
     void error_message(QString const &message);
 

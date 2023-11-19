@@ -89,6 +89,11 @@ void frame_capture_websocket::start()
     impl_->socket_.open(impl_->params_.url_);
 }
 
+void frame_capture_websocket::send_text_message(QString msg)
+{
+    impl_->socket_.sendTextMessage(msg);
+}
+
 void frame_capture_websocket::stop()
 {
     impl_->socket_.close();
