@@ -106,6 +106,7 @@ void widget_stream_player::display_frame(std::any results)
 void widget_stream_player::set_can_save_on_local(bool val)
 {
     can_save_on_local_ = val;
+    ui->pushButtonSave->setVisible(can_save_on_local_);
 }
 
 void widget_stream_player::on_pushButtonSave_clicked()
@@ -280,9 +281,8 @@ void widget_stream_player::update_table_contents()
         if(alert_config.show_location_){
             for(int j = table_tag::tl; j <= table_tag::bl; ++j){
                 QTableWidgetItem *item = new QTableWidgetItem;
-                item->setText(std::format("{},{}",
-                                          text_boxes_[i].boxPoint[j - table_tag::tl].x,
-                                          text_boxes_[i].boxPoint[j - table_tag::tl].y).c_str());
+                auto const &pt = text_boxes_[i].boxPoint[j - table_tag::tl];
+                item->setText(std::format("{},{}", pt.x, pt.y).c_str());
                 ui->tableWidgetOcrResult->setItem(i, j, item);
             }
         }
@@ -330,7 +330,6 @@ QString widget_stream_player::table_contents_to_string() const
 
 void widget_stream_player::resizeEvent(QResizeEvent *e)
 {
-
     if(last_clicked_row_ != -1){
         update_clicked_contents(last_clicked_row_);
     }
