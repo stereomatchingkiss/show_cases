@@ -8,12 +8,15 @@
 
 #include "../config/config_paddle_ocr_worker.hpp"
 #include "../config/config_read_write.hpp"
+#include "../config/config_source_selection.hpp"
 
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/camera/single_frame_with_multi_worker_base.hpp>
+#include <multimedia/network/frame_capture_websocket.hpp>
+#include <multimedia/network/frame_capture_websocket_params.hpp>
 
 #include <QJsonObject>
 
@@ -133,12 +136,29 @@ void MainWindow::on_pushButtonNext_clicked()
         ui->pushButtonNext->setEnabled(false);
         ui->pushButtonPrev->setEnabled(true);
 
-        process_controller_ = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
-        connect(widget_stream_player_, &widget_stream_player::image_selected,
-                process_controller_.get(), &frame_process_controller::predict);
-        connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                widget_stream_player_, &widget_stream_player::display_frame);
-        emit process_controller_->start();
+        if(widget_source_selection_->get_config().source_type_ == stream_source_type::image){
+            widget_stream_player_->set_can_save_on_local(true);
+
+            sfwmw_ = nullptr;
+            process_controller_ = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
+            connect(widget_stream_player_, &widget_stream_player::image_selected,
+                    process_controller_.get(), &frame_process_controller::predict);
+            connect(process_controller_.get(), &frame_process_controller::send_process_results,
+                    widget_stream_player_, &widget_stream_player::display_frame);
+            emit process_controller_->start();
+        }else{
+            widget_stream_player_->set_can_save_on_local(false);
+
+            process_controller_ = nullptr;
+            sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
+            auto process_controller = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
+            connect(process_controller.get(), &frame_process_controller::send_process_results,
+                    widget_stream_player_, &widget_stream_player::display_frame);
+
+            emit process_controller->start();
+            sfwmw_->add_listener(process_controller, this);
+            sfwmw_->start();
+        }
     }
 }
 
@@ -146,6 +166,9 @@ void MainWindow::on_pushButtonNext_clicked()
 void MainWindow::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        sfwmw_ = nullptr;
+        process_controller_ = nullptr;
+
         ui->labelTitle->setVisible(true);
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
         ui->pushButtonNext->setEnabled(true);

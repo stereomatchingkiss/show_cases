@@ -3,6 +3,7 @@
 
 #include "../config/config_source_selection.hpp"
 
+#include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
 
 #include <QJsonObject>
@@ -59,6 +60,14 @@ QJsonObject widget_source_selection::get_states() const
 
 
     return states;
+}
+
+frame_capture_websocket_params widget_source_selection::get_frame_capture_websocket_params() const
+{
+    frame_capture_websocket_params params;
+    params.url_ = ui->lineEditWebSockets->text();
+
+    return params;
 }
 
 void widget_source_selection::set_states(QJsonObject const &val)
