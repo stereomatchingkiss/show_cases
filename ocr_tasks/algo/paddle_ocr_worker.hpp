@@ -10,7 +10,7 @@ class paddle_ocr_worker  : public flt::mm::frame_process_base_worker
 {
     Q_OBJECT
 public:
-    explicit paddle_ocr_worker(config_paddle_ocr_worker params, QObject *parent = nullptr);
+    explicit paddle_ocr_worker(config_paddle_ocr_worker const &params, QObject *parent = nullptr);
     ~paddle_ocr_worker();
 
     void process_results(std::any frame) override;

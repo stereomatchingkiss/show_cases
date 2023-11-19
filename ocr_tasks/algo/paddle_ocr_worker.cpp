@@ -2,6 +2,8 @@
 
 #include "../config/config_paddle_ocr_worker.hpp"
 
+#include "../global/global_object.hpp"
+
 #include "paddle_ocr_worker_results.hpp"
 
 #include <cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.hpp>
@@ -10,13 +12,17 @@
 #include <utils/qimage_to_cvmat.hpp>
 
 #include <QDebug>
+#include <QPainter>
+#include <QPen>
+
+#include <algorithm>
 
 using namespace flt::mm;
 using namespace flt::cvt::ocr;
 
 struct paddle_ocr_worker::impl
 {
-    impl(config_paddle_ocr_worker params) :
+    impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
         text_det_((root_path_ + "ch_PP-OCRv4_det_opt.param").c_str(), (root_path_ + "ch_PP-OCRv4_det_opt.bin").c_str()),
         text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
@@ -24,10 +30,17 @@ struct paddle_ocr_worker::impl
                   (root_path_ + "paddleocr_keys.txt").c_str())
     {
         qDebug()<<"text_det_ load = "<<text_det_.get_load_model_state();
-        qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();                    
+        qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();
+
+        pen_.setColor(Qt::green);
+        pen_.setWidth(3);
+
+        font_.setFamily(global_object().font_family());
     }
 
-    config_paddle_ocr_worker params_;    
+    QFont font_;
+    config_paddle_ocr_worker params_;
+    QPen pen_;
 
 #ifdef WASM_BUILD
     std::string root_path_ = "";
@@ -39,7 +52,7 @@ struct paddle_ocr_worker::impl
     paddle_ocr_text_rec text_rec_;
 };
 
-paddle_ocr_worker::paddle_ocr_worker(config_paddle_ocr_worker params, QObject *parent) :
+paddle_ocr_worker::paddle_ocr_worker(config_paddle_ocr_worker const &params, QObject *parent) :
     frame_process_base_worker(2, parent),
     impl_(std::make_unique<impl>(params))
 {
@@ -73,7 +86,22 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::ranges::sort(results.text_boxes_, [](TextBox const &a, TextBox const &b)
                       {
                           return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
-                      });    
+                      });
+    if(impl_->params_.config_source_selection_.source_type_ == stream_source_type::websocket){        
+        QPainter painter(&qimg);
+        painter.setPen(impl_->pen_);
+        impl_->font_.setPixelSize(qimg.width() * 10);
+        painter.setFont(impl_->font_);
+        for(auto const &val : results.text_boxes_){
+            QPolygon poly;
+            for(auto const &pt : val.boxPoint){
+                poly<<QPoint(pt.x, pt.y);
+            }
+            painter.drawPolygon(poly);
+            poly[0].setY(std::max(0, poly[0].y() - 5));
+            painter.drawText(poly[0], val.text.c_str());
+        }
+    }
 
     results.mat_ = std::move(qimg);
 

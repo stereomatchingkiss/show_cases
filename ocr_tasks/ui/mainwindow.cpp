@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
 
     ui->pushButtonPrev->setEnabled(false);
+
+    get_gobject();
 }
 
 MainWindow::~MainWindow()
@@ -53,16 +55,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::action_about_qt(bool)
 {
-    global_get_messagebox().aboutQt(this, tr("About Qt"));
+    get_gobject().messagebox().aboutQt(this, tr("About Qt"));
 }
 
 void MainWindow::action_contact_me(bool)
 {
-    global_get_messagebox().setText(tr("Please send your email to thamngapwei@gmail.com.\n"
-                                       "Or open issue on\n"
-                                       "https://github.com/stereomatchingkiss/ocr_tasks/issues"));
+    get_gobject().messagebox().setText(tr("Please send your email to thamngapwei@gmail.com.\n"
+                                          "Or open issue on\n"
+                                          "https://github.com/stereomatchingkiss/ocr_tasks/issues"));
 
-    global_get_messagebox().show();
+    get_gobject().messagebox().show();
 }
 
 void MainWindow::action_load_settings(bool)
@@ -100,12 +102,12 @@ void MainWindow::action_save_settings(bool)
 
 void MainWindow::action_warning(bool)
 {
-    global_get_messagebox().warning(this, tr("Before you use"),
-                                    tr("1. The software is copyrighted by the software developer.\n"
-                                       "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
-                                       "3. When using the software, please comply with relevant laws and regulations. "
-                                       "The software developer is not responsible for any loss or damage caused by the "
-                                       "use of this software."));
+    get_gobject().messagebox().warning(this, tr("Before you use"),
+                                       tr("1. The software is copyrighted by the software developer.\n"
+                                          "2. Except for direct sale, the software can be used for personal or commercial purposes.\n"
+                                          "3. When using the software, please comply with relevant laws and regulations. "
+                                          "The software developer is not responsible for any loss or damage caused by the "
+                                          "use of this software."));
 }
 
 void MainWindow::init_widgets_states(QJsonObject const &jobj)
@@ -136,11 +138,13 @@ void MainWindow::on_pushButtonNext_clicked()
         ui->pushButtonNext->setEnabled(false);
         ui->pushButtonPrev->setEnabled(true);
 
+        config_paddle_ocr_worker worker_config;
+        worker_config.config_source_selection_ = widget_source_selection_->get_config();
         if(widget_source_selection_->get_config().source_type_ == stream_source_type::image){
             widget_stream_player_->set_can_save_on_local(true);
 
             sfwmw_ = nullptr;
-            process_controller_ = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
+            process_controller_ = std::make_shared<frame_process_controller>(new paddle_ocr_worker(worker_config));
             connect(widget_stream_player_, &widget_stream_player::image_selected,
                     process_controller_.get(), &frame_process_controller::predict);
             connect(process_controller_.get(), &frame_process_controller::send_process_results,
@@ -151,7 +155,7 @@ void MainWindow::on_pushButtonNext_clicked()
 
             process_controller_ = nullptr;
             sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-            auto process_controller = std::make_shared<frame_process_controller>(new paddle_ocr_worker({}));
+            auto process_controller = std::make_shared<frame_process_controller>(new paddle_ocr_worker(worker_config));
             connect(process_controller.get(), &frame_process_controller::send_process_results,
                     widget_stream_player_, &widget_stream_player::display_frame);
 

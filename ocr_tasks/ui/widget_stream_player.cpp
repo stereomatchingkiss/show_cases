@@ -59,7 +59,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     ui->labelStream->setAlignment(Qt::AlignCenter);
     ui->labelTextArea->setAlignment(Qt::AlignCenter);
 
-    pen_.setColor(Qt::green);
+    pen_.setColor(Qt::yellow);
     pen_.setWidth(3);
 
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_headers);
@@ -70,10 +70,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     update_table_headers();
 
 #ifdef WASM_BUILD
-    if(int const id = QFontDatabase::addApplicationFont("GB2312.ttf"); id >= 0){
-        QString const family = QFontDatabase::applicationFontFamilies(id).at(0);
-        ui->textEditOcrResult->setFontFamily(family);
-    }
+    ui->textEditOcrResult->setFontFamily(get_gobject().font_family());
 #endif
 }
 
@@ -146,7 +143,7 @@ void widget_stream_player::on_pushButtonSelectImage_clicked()
         if(QImage img(fname); !img.isNull()){
             emit image_selected(std::move(img));
         }else{
-            global_get_messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
+            get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
         }
     }
 #else
@@ -155,7 +152,7 @@ void widget_stream_player::on_pushButtonSelectImage_clicked()
             qDebug()<<"image can select";
             emit image_selected(img);
         }else{
-            global_get_messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
+            get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
         }
     };
     QFileDialog::getOpenFileContent(tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"),  func);
@@ -167,7 +164,6 @@ void widget_stream_player::on_pushButtonDisplayDetails_clicked()
 {
     dialog_display_details_->show();
 }
-
 
 void widget_stream_player::on_checkBoxHideImage_stateChanged(int)
 {
