@@ -29,7 +29,8 @@ public:
     void set_can_save_on_local(bool val);
 
 signals:
-    void image_selected(std::any img);    
+    void image_selected(std::any img);
+    void send_ocr_results(QString msg);
 
 private slots:
     void on_pushButtonSave_clicked();
@@ -48,6 +49,7 @@ private:
     void cell_cliked(int row, int col);
     void draw_all();
     QPolygon text_box_to_qpolygon(int row) const;
+    QJsonObject text_boxes_to_json() const;
     void update_clicked_contents(int row);
     void update_table_headers();
     void update_table_contents();

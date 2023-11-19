@@ -99,10 +99,14 @@ void widget_stream_player::display_frame(std::any results)
     if(!ui->checkBoxHideTable->isChecked()){
         update_table_headers();
         update_table_contents();
-    }
+    }    
 
     if(ui->checkBoxDrawAll->isChecked()){
         draw_all();
+    }
+
+    if(!can_save_on_local_){
+        emit send_ocr_results(QJsonDocument(text_boxes_to_json()).toJson(QJsonDocument::Compact));
     }
 }
 
@@ -235,6 +239,29 @@ QPolygon widget_stream_player::text_box_to_qpolygon(int row) const
     }
 
     return poly;
+}
+
+QJsonObject widget_stream_player::text_boxes_to_json() const
+{
+    auto const alert_config = dialog_display_details_->get_config();
+    QJsonArray arr;
+    for(auto const &val : text_boxes_){
+        QJsonObject obj;
+        obj["text"] = val.text.c_str();
+
+        obj["tl"] = std::format("{},{}", val.boxPoint[0].x, val.boxPoint[0].y).c_str();
+        obj["tr"] = std::format("{},{}", val.boxPoint[1].x, val.boxPoint[1].y).c_str();
+        obj["br"] = std::format("{},{}", val.boxPoint[2].x, val.boxPoint[2].y).c_str();
+        obj["bl"] = std::format("{},{}", val.boxPoint[3].x, val.boxPoint[3].y).c_str();
+
+        obj["confidence"] = val.score;
+        arr.push_back(obj);
+    }
+
+    QJsonObject result;
+    result["contents"] = arr;
+
+    return result;
 }
 
 void widget_stream_player::update_clicked_contents(int row)

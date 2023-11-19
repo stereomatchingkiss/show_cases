@@ -158,6 +158,10 @@ void MainWindow::on_pushButtonNext_clicked()
             auto process_controller = std::make_shared<frame_process_controller>(new paddle_ocr_worker(worker_config));
             connect(process_controller.get(), &frame_process_controller::send_process_results,
                     widget_stream_player_, &widget_stream_player::display_frame);
+            connect(widget_stream_player_,
+                    &widget_stream_player::send_ocr_results,
+                    static_cast<frame_capture_websocket*>(sfwmw_.get()),
+                    &frame_capture_websocket::send_text_message);
 
             emit process_controller->start();
             sfwmw_->add_listener(process_controller, this);
