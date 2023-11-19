@@ -3,6 +3,7 @@
 
 #include <cv_algo/ocr/paddle_ocr/common.hpp>
 
+#include <QFont>
 #include <QImage>
 #include <QPen>
 #include <QWidget>
@@ -41,8 +42,11 @@ private slots:
 
     void on_checkBoxHideTable_stateChanged(int arg1);
 
+    void on_checkBoxDrawAll_clicked();
+
 private:
     void cell_cliked(int row, int col);
+    void draw_all();
     QPolygon text_box_to_qpolygon(int row) const;
     void update_clicked_contents(int row);
     void update_table_headers();
@@ -58,7 +62,9 @@ private:
     bool can_save_on_local_ = true;
     dialog_display_details *dialog_display_details_;
     int last_clicked_row_ = -1;
+    QFont font_;
     QPen pen_;
+    QPen pen_all_;
     QImage qimg_;
     std::vector<flt::cvt::ocr::TextBox> text_boxes_;
 };

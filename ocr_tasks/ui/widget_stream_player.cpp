@@ -62,16 +62,18 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     pen_.setColor(Qt::yellow);
     pen_.setWidth(3);
 
+    pen_all_.setColor(Qt::green);
+    pen_all_.setWidth(3);
+
+    font_.setFamily(get_gobject().font_family());
+    ui->tableWidgetOcrResult->setFont(font_);
+
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_headers);
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_contents);
 
     connect(ui->tableWidgetOcrResult, &QTableWidget::cellClicked, this, &widget_stream_player::cell_cliked);
 
-    update_table_headers();
-
-#ifdef WASM_BUILD
-    ui->textEditOcrResult->setFontFamily(get_gobject().font_family());
-#endif
+    update_table_headers();        
 }
 
 widget_stream_player::~widget_stream_player()
@@ -97,6 +99,10 @@ void widget_stream_player::display_frame(std::any results)
     if(!ui->checkBoxHideTable->isChecked()){
         update_table_headers();
         update_table_contents();
+    }
+
+    if(ui->checkBoxDrawAll->isChecked()){
+        draw_all();
     }
 }
 
@@ -200,6 +206,25 @@ void widget_stream_player::cell_cliked(int row, int)
 {
     last_clicked_row_ = row;
     update_clicked_contents(last_clicked_row_);
+}
+
+void widget_stream_player::draw_all()
+{
+    auto qimg = qimg_.copy();
+    QPainter painter(&qimg);
+    painter.setPen(pen_all_);
+    font_.setPixelSize(qimg.width() * 10);
+    painter.setFont(font_);
+    for(size_t i = 0; i != text_boxes_.size(); ++i){
+        QPolygon poly = text_box_to_qpolygon(static_cast<int>(i));
+        painter.drawPolygon(poly);
+        poly[0].setY(std::max(0, poly[0].y() - 5));
+        painter.drawText(poly[0], text_boxes_[i].text.c_str());
+    }
+
+    int const w = ui->labelStream->width();
+    int const h = ui->labelStream->height();
+    ui->labelStream->setPixmap(QPixmap::fromImage(qimg).scaled(w, h, Qt::KeepAspectRatio));
 }
 
 QPolygon widget_stream_player::text_box_to_qpolygon(int row) const
@@ -330,5 +355,17 @@ void widget_stream_player::resizeEvent(QResizeEvent *e)
         update_clicked_contents(last_clicked_row_);
     }
     QWidget::resizeEvent(e);
+}
+
+
+void widget_stream_player::on_checkBoxDrawAll_clicked()
+{
+    if(ui->checkBoxDrawAll->isChecked()){
+        draw_all();
+    }else{
+        int const w = ui->labelStream->width();
+        int const h = ui->labelStream->height();
+        ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
+    }
 }
 
