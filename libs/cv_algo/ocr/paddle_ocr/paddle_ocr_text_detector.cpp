@@ -68,8 +68,13 @@ struct paddle_ocr_text_detector::impl
         has_gpu_ = ncnn::get_gpu_count() > 0 && use_gpu;
 #endif
         net_.opt.use_vulkan_compute = has_gpu_;
-        net_.opt.use_fp16_arithmetic = true;
+
+        net_.opt.use_fp16_packed = false;
+        net_.opt.use_fp16_storage = false;
+        net_.opt.use_fp16_arithmetic = false;
+
         net_.opt.num_threads = max_thread_;
+
         load_param_success_ = net_.load_param(param);
         load_model_success_ = net_.load_model(bin);
 
@@ -156,6 +161,9 @@ std::vector<TextBox> paddle_ocr_text_detector::impl::predict(const cv::Mat &src,
     std::cout<<std::format("h = {}, w = {}, scale = {}", h, w, scale)<<std::endl;
 
     ncnn::Mat input = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_RGB, width, height, w, h);
+    //for(int i = 0; i != 10; ++i){
+        //std::cout<<input.data<<std::endl;
+    //}
 
     // pad to target_size rectangle
     int const wpad = (w + 31) / 32 * 32 - w;

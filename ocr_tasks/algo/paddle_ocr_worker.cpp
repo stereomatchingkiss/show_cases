@@ -61,7 +61,7 @@ void paddle_ocr_worker::process_results(std::any frame)
         return;
     }
 
-    std::cout<<"mat is continuous = "<<mat.isContinuous();
+    std::cout<<"mat is continuous = "<<mat.isContinuous()<<std::endl;
     if(!mat.isContinuous()){
         mat = mat.clone();
     }
