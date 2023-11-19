@@ -19,6 +19,7 @@
 
 python qt_base_opencv_videocapture_server.py --opencv_url your_url/your_video.mp4 #This will send the frame to the client
 python qt_base_alert_receiver.py #This will listen the alert send from the client
+python qt_base_ocr_server.py --folder your_folder #This will send the images in the folder to the client and retrieve the ocr of every image
 
 # Cautions
 
