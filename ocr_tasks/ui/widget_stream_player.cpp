@@ -31,8 +31,6 @@
 
 #include <QResizeEvent>
 
-#include <opencv2/highgui.hpp>
-
 #include <format>
 
 namespace{
