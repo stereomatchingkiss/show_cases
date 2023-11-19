@@ -190,7 +190,7 @@ void widget_stream_player::on_pushButtonSelectImage_clicked()
         }
     }
 #else
-    auto func = [this](QString const&, QByteArray const &fcontent) {
+    auto func = [this](QString const &fname, QByteArray const &fcontent) {
         if(auto img = QImage::fromData(fcontent); !img.isNull()){
             qDebug()<<"image can select";
             emit image_selected(img);
