@@ -18,6 +18,7 @@
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 
+#include <QJsonDocument>
 #include <QJsonObject>
 
 #include <QFileDialog>
@@ -45,17 +46,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pushButtonPrev->setEnabled(false);
 
+#ifndef WASM_BUILD
     auto const jobj = config_read_write().read(global_keywords().cam_config_path() + "/cam0.json");
     global_keywords gk;
     widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
     widget_stream_player_->set_states(jobj[gk.state_widget_stream_player()].toObject());
+#endif
 
     get_gobject();
 }
 
 MainWindow::~MainWindow()
 {
+#ifndef WASM_BUILD
     config_read_write().write(dump_settings(), global_keywords().cam_config_path() + "/cam0.json");
+#endif
 
     delete ui;
 }
