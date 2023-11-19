@@ -57,7 +57,9 @@ struct paddle_ocr_text_detector::impl
 {
     impl(const char *param, const char *bin, bool use_gpu, int max_thread)
     {
-        has_gpu_ = ncnn::get_gpu_count() > 0 && use_gpu;        
+#if NCNN_VULKAN
+        has_gpu_ = ncnn::get_gpu_count() > 0 && use_gpu;
+#endif
         net_.opt.use_vulkan_compute = has_gpu_;
         net_.opt.use_fp16_arithmetic = true;
         net_.opt.num_threads = max_thread_;
