@@ -19,7 +19,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia WebSoc
 if(WIN32)
     message("building windows platform")
     set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
-    set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
+    set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20231027-windows-vs2019/x64/lib/cmake)
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
     #find_package(Vulkan REQUIRED)
@@ -104,7 +104,8 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
+        algo/paddle_ocr_det_opencv.hpp algo/paddle_ocr_det_opencv.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ocr_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
