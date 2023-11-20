@@ -69,9 +69,9 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::cout<<"mat is continuous = "<<mat.isContinuous()<<std::endl;
     if(!mat.isContinuous()){
         mat = mat.clone();
-    }    
+    }
 
-    /*for(size_t i = 0; i != 10; ++i){
+    for(size_t i = 0; i != 10; ++i){
         std::cout<<i<<":"<<mat.at<cv::Vec3b>(i)<<std::endl;
     }
     for(size_t i = mat.rows; i != mat.rows + 10; ++i){
@@ -79,7 +79,34 @@ void paddle_ocr_worker::process_results(std::any frame)
     }
 
     paddle_ocr_worker_results results;
-    results.text_boxes_ = impl_->text_det_.predict(mat);
+    /*results.text_boxes_ = impl_->text_det_.predict(mat);
+    for(auto const &val : results.text_boxes_){
+        for(auto const &pt : val.boxPoint){
+            std::cout<<pt<<",";
+        }
+        std::cout<<std::endl;
+    }//*/
+
+    std::vector<std::vector<cv::Point>> points{{{168, 216},{498, 224},{497, 274},{167, 266}},
+                                               {{82, 278},{587, 278},{587, 331},{82, 331}},
+                                               {{154, 336},{513, 346},{512, 399},{153, 388}},
+                                               {{80, 396},{589, 399},{588, 458},{79, 455}}};
+    for(size_t i = 0; i != 4; ++i){
+        TextBox box;
+        box.boxPoint = std::move(points[i]);
+        results.text_boxes_.push_back(box);
+    }
+
+    for(auto const &val : results.text_boxes_){
+        for(auto const &pt : val.boxPoint){
+            std::cout<<pt<<",";
+        }
+        std::cout<<std::endl;
+    }
+    //[168, 216],[498, 224],[497, 274],[167, 266],
+    //[82, 278],[587, 278],[587, 331],[82, 331],
+    //[154, 336],[513, 346],[512, 399],[153, 388],
+    //[80, 396],[589, 399],[588, 458],[79, 455],
     impl_->text_rec_.predict(mat, results.text_boxes_);
     auto [it_start, it_end] = std::ranges::remove_if(results.text_boxes_, [](auto const &val)
                                                      {
@@ -94,10 +121,10 @@ void paddle_ocr_worker::process_results(std::any frame)
 
     results.mat_ = std::move(qimg);//*/
 
-    paddle_ocr_worker_results results;
+    /*paddle_ocr_worker_results results;
     auto output = impl_->ocv_text_det_.predict(mat);
     QImage img(output.data, output.cols, output.rows, output.step, QImage::Format_Indexed8);
-    results.mat_ = img.convertToFormat(QImage::Format_ARGB32);
+    results.mat_ = img.convertToFormat(QImage::Format_ARGB32);//*/
 
     emit send_process_results(std::move(results));
 }
