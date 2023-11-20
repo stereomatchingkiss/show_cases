@@ -80,7 +80,7 @@ void paddle_ocr_worker::process_results(std::any frame)
     }
 
     paddle_ocr_worker_results results;
-    /*results.text_boxes_ = impl_->text_det_.predict(mat);
+    results.text_boxes_ = impl_->text_det_.predict(mat);
     for(auto const &val : results.text_boxes_){
         for(auto const &pt : val.boxPoint){
             std::cout<<pt<<",";
@@ -88,7 +88,7 @@ void paddle_ocr_worker::process_results(std::any frame)
         std::cout<<std::endl;
     }//*/
 
-    std::vector<std::vector<cv::Point>> points{{{168, 216},{498, 224},{497, 274},{167, 266}},
+    /*std::vector<std::vector<cv::Point>> points{{{168, 216},{498, 224},{497, 274},{167, 266}},
                                                {{82, 278},{587, 278},{587, 331},{82, 331}},
                                                {{154, 336},{513, 346},{512, 399},{153, 388}},
                                                {{80, 396},{589, 399},{588, 458},{79, 455}}};
@@ -103,7 +103,7 @@ void paddle_ocr_worker::process_results(std::any frame)
             std::cout<<pt<<",";
         }
         std::cout<<std::endl;
-    }
+    }//*/
     //[168, 216],[498, 224],[497, 274],[167, 266],
     //[82, 278],[587, 278],[587, 331],[82, 331],
     //[154, 336],[513, 346],[512, 399],[153, 388],
