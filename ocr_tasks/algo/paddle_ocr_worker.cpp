@@ -1,5 +1,7 @@
 #include "paddle_ocr_worker.hpp"
 
+#include "paddle_ocr_det_opencv.hpp"
+
 #include "../config/config_paddle_ocr_worker.hpp"
 
 #include "paddle_ocr_worker_results.hpp"
@@ -18,6 +20,7 @@ struct paddle_ocr_worker::impl
 {
     impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
+        ocv_text_det_{root_path_ + "ch_PP-OCRv3_det_simple.onnx"},
         text_det_((root_path_ + "ch_PP-OCRv3_det.param").c_str(), (root_path_ + "ch_PP-OCRv3_det.bin").c_str()),
         text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
                   (root_path_ + "ch_PP-OCRv3_rec.bin").c_str(),
@@ -34,6 +37,8 @@ struct paddle_ocr_worker::impl
 #else
     std::string root_path_ = "assets/";
 #endif
+
+    paddle_ocr_det_opencv ocv_text_det_;
 
     paddle_ocr_text_detector text_det_;
     paddle_ocr_text_rec text_rec_;
@@ -64,9 +69,9 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::cout<<"mat is continuous = "<<mat.isContinuous()<<std::endl;
     if(!mat.isContinuous()){
         mat = mat.clone();
-    }
+    }    
 
-    for(size_t i = 0; i != 10; ++i){
+    /*for(size_t i = 0; i != 10; ++i){
         std::cout<<i<<":"<<mat.at<cv::Vec3b>(i)<<std::endl;
     }
     for(size_t i = mat.rows; i != mat.rows + 10; ++i){
@@ -85,9 +90,14 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::ranges::sort(results.text_boxes_, [](TextBox const &a, TextBox const &b)
                       {
                           return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
-                      });    
+                      });
 
-    results.mat_ = std::move(qimg);
+    results.mat_ = std::move(qimg);//*/
+
+    paddle_ocr_worker_results results;
+    auto output = impl_->ocv_text_det_.predict(mat);
+    QImage img(output.data, output.cols, output.rows, output.step, QImage::Format_Indexed8);
+    results.mat_ = img.convertToFormat(QImage::Format_ARGB32);
 
     emit send_process_results(std::move(results));
 }
