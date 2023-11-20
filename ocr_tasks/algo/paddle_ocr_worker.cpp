@@ -21,10 +21,11 @@ struct paddle_ocr_worker::impl
     impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
         ocv_text_det_{root_path_ + "ch_PP-OCRv3_det_simple.onnx"},
-        text_det_((root_path_ + "ch_PP-OCRv3_det.param").c_str(), (root_path_ + "ch_PP-OCRv3_det.bin").c_str()),
-        text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
-                  (root_path_ + "ch_PP-OCRv3_rec.bin").c_str(),
-                  (root_path_ + "paddleocr_keys.txt").c_str())
+        text_det_((root_path_ + "pdocrv2.0_det-op.param").c_str(), (root_path_ + "pdocrv2.0_det-op.bin").c_str()),
+        text_rec_((root_path_ + "pdocrv2.0_rec-op.param").c_str(),
+                  (root_path_ + "pdocrv2.0_rec-op.bin").c_str(),
+                  (root_path_ + "paddleocr_keys.txt").c_str(),
+                  32)
     {
         qDebug()<<"text_det_ load = "<<text_det_.get_load_model_state();
         qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();        
