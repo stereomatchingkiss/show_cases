@@ -13,6 +13,8 @@
 #include <map>
 #include <iostream>
 
+namespace flt::cvt::ocr{
+
 namespace{
 
 // Get Output Layers Name
@@ -142,4 +144,6 @@ cv::Mat paddle_ocr_det_opencv::get_input_mat(cv::Mat const &img, const cv::Size 
     }
 
     return img_fp;
+}
+
 }

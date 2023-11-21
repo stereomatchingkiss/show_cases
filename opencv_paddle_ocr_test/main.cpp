@@ -1,10 +1,4 @@
-#include "crnn_process.h"
-#include "db_post_process.h"
-
 #include "paddle_ocr_det_opencv.hpp"
-#include "paddle_ocr_rec_opencv.hpp"
-
-#include <boost/algorithm/string.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -14,8 +8,10 @@
 #include <format>
 #include <iostream>
 
+using namespace flt::cvt::ocr;
+
 cv::Mat Visualization(cv::Mat srcimg,
-                      std::vector<flt::cvt::ocr::TextBox> const &boxes) {
+                      std::vector<TextBox> const &boxes) {
 
     cv::Mat img_vis;
     srcimg.copyTo(img_vis);

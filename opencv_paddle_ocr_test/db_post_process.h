@@ -22,6 +22,8 @@
 
 #include <opencv2/core.hpp>
 
+namespace flt::cvt::ocr{
+
 std::vector<std::vector<float>> Mat2Vector(cv::Mat const &mat);
 
 void GetContourArea(std::vector<std::vector<float>> const &box,
@@ -48,15 +50,15 @@ std::vector<std::vector<float>> GetMiniBoxes(cv::RotatedRect const &box, float &
 
 float BoxScoreFast(std::vector<std::vector<float>> const &box_array, cv::Mat const &pred);
 
-std::vector<flt::cvt::ocr::TextBox>
-BoxesFromBitmap(cv::Mat const &pred,
-                cv::Mat const &bitmap,
-                float box_thresh,
-                float unclip_ratio);
+std::vector<TextBox> BoxesFromBitmap(cv::Mat const &pred,
+                                     cv::Mat const &bitmap,
+                                     float box_thresh,
+                                     float unclip_ratio);
 
-std::vector<flt::cvt::ocr::TextBox>
-FilterTagDetRes(std::vector<flt::cvt::ocr::TextBox> &boxes,
-                float ratio_h,
-                float ratio_w,
-                int rows,
-                int cols);
+std::vector<TextBox> FilterTagDetRes(std::vector<TextBox> &boxes,
+                                     float ratio_h,
+                                     float ratio_w,
+                                     int rows,
+                                     int cols);
+
+}

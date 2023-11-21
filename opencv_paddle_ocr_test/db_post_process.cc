@@ -23,6 +23,8 @@
 
 #include <opencv2/imgproc.hpp>
 
+namespace flt::cvt::ocr{
+
 namespace{
 
 template <class T> inline T clamp(T x, T min, T max) {
@@ -278,4 +280,6 @@ FilterTagDetRes(std::vector<flt::cvt::ocr::TextBox> &boxes,
     }
 
     return root_points;
+}
+
 }
