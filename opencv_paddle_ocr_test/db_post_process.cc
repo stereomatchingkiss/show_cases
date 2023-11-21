@@ -14,7 +14,7 @@
 
 #include "db_post_process.h" // NOLINT
 
-#include "clipper.h"
+#include <cv_algo/ocr/paddle_ocr/clipper.hpp>
 
 #include <cmath>
 #include <algorithm>
@@ -55,19 +55,19 @@ cv::RotatedRect Unclip(std::vector<std::vector<float>> const &box,
 
     GetContourArea(box, unclip_ratio, distance);
 
-    ClipperLib::ClipperOffset offset;
-    ClipperLib::Path p;
-    p << ClipperLib::IntPoint(static_cast<int>(box[0][0]),
-                              static_cast<int>(box[0][1]))
-      << ClipperLib::IntPoint(static_cast<int>(box[1][0]),
-                              static_cast<int>(box[1][1]))
-      << ClipperLib::IntPoint(static_cast<int>(box[2][0]),
-                              static_cast<int>(box[2][1]))
-      << ClipperLib::IntPoint(static_cast<int>(box[3][0]),
-                              static_cast<int>(box[3][1]));
-    offset.AddPath(p, ClipperLib::jtRound, ClipperLib::etClosedPolygon);
+    flt::cvt::ocr::ClipperOffset offset;
+    flt::cvt::ocr::Path p;
+    p << flt::cvt::ocr::IntPoint(static_cast<int>(box[0][0]),
+                                 static_cast<int>(box[0][1]))
+      << flt::cvt::ocr::IntPoint(static_cast<int>(box[1][0]),
+                                 static_cast<int>(box[1][1]))
+      << flt::cvt::ocr::IntPoint(static_cast<int>(box[2][0]),
+                                 static_cast<int>(box[2][1]))
+      << flt::cvt::ocr::IntPoint(static_cast<int>(box[3][0]),
+                                 static_cast<int>(box[3][1]));
+    offset.AddPath(p, flt::cvt::ocr::jtRound, flt::cvt::ocr::etClosedPolygon);
 
-    ClipperLib::Paths soln;
+    flt::cvt::ocr::Paths soln;
     offset.Execute(soln, distance);
     std::vector<cv::Point2f> points;
 
@@ -229,14 +229,7 @@ BoxesFromBitmap(cv::Mat const &pred,
         int dest_height = pred.rows;
         flt::cvt::ocr::TextBox intcliparray;
 
-        for(int num_pt = 0; num_pt < 4; num_pt++) {
-            /*std::vector<int> a{
-          static_cast<int>(clamp(
-              roundf(cliparray[num_pt][0] / float(width) * float(dest_width)),
-              float(0), float(dest_width))),
-          static_cast<int>(clamp(
-              roundf(cliparray[num_pt][1] / float(height) * float(dest_height)),
-              float(0), float(dest_height)))};//*/
+        for(size_t num_pt = 0; num_pt < 4; ++num_pt) {
             intcliparray.boxPoint.emplace_back(static_cast<int>(clamp(
                                                    std::roundf(cliparray[num_pt][0] / float(width) * float(dest_width)),
                                                    float(0), float(dest_width))),
