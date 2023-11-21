@@ -16,10 +16,6 @@
 
 #include <cv_algo/ocr/paddle_ocr/common.hpp>
 
-#include <iostream>
-#include <map>
-#include <vector>
-
 #include <opencv2/core.hpp>
 
 namespace flt::cvt::ocr{
