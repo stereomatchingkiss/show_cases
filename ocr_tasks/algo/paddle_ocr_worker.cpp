@@ -4,7 +4,7 @@
 
 #include "paddle_ocr_worker_results.hpp"
 
-#include <cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.hpp>
+#include <cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp>
 #include <cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.hpp>
 
 #include <utils/qimage_to_cvmat.hpp>
@@ -18,12 +18,11 @@ struct paddle_ocr_worker::impl
 {
     impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
-        text_det_((root_path_ + "ch_PP-OCRv4_det_opt.param").c_str(), (root_path_ + "ch_PP-OCRv4_det_opt.bin").c_str()),
+        text_det_((root_path_ + "ch_PP-OCRv4_det_simple.onnx")),
         text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
                   (root_path_ + "ch_PP-OCRv3_rec.bin").c_str(),
                   (root_path_ + "paddleocr_keys.txt").c_str())
-    {
-        qDebug()<<"text_det_ load = "<<text_det_.get_load_model_state();
+    {        
         qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();        
     }
 
@@ -35,7 +34,7 @@ struct paddle_ocr_worker::impl
     std::string root_path_ = "assets/";
 #endif
 
-    paddle_ocr_text_detector text_det_;
+    paddle_ocr_det_opencv text_det_;
     paddle_ocr_text_rec text_rec_;
 };
 

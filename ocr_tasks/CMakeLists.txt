@@ -76,8 +76,10 @@ set(PROJECT_SOURCES
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_detector.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.cpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp
+        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.hpp
         ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.cpp
         ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
