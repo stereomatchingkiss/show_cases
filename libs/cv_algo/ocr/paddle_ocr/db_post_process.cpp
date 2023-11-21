@@ -166,12 +166,9 @@ float BoxScoreFast(std::vector<std::vector<float>> const &box_array, cv::Mat con
     int npt[] = {4};
     cv::fillPoly(mask, ppt, npt, 1, cv::Scalar(1));
 
-    cv::Mat croppedImg;
-    pred(cv::Rect(xmin, ymin, xmax - xmin + 1, ymax - ymin + 1))
-        .copyTo(croppedImg);
+    cv::Mat const croppedImg = pred(cv::Rect(xmin, ymin, xmax - xmin + 1, ymax - ymin + 1));
 
     return static_cast<float>(cv::mean(croppedImg, mask)[0]);
-
 }
 
 std::vector<flt::cvt::ocr::TextBox>
