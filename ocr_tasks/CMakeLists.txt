@@ -163,8 +163,9 @@ if(EMSCRIPTEN)
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
                           PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
-                          PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibopenjp2.a
+                          #PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibopenjp2.a
                           PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibprotobuf.a
+                          PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/libzlib.a
                           PRIVATE ${OPENCV_CV_PATH}/lib/libopencv_world.a
                           PRIVATE ${NCNN_PATH}/lib/libncnn.a
                           )
