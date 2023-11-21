@@ -80,29 +80,19 @@ cv::RotatedRect Unclip(std::vector<std::vector<float>> const &box,
     return cv::minAreaRect(points);
 }
 
-std::vector<std::vector<float>> Mat2Vector(cv::Mat const &mat) {
+std::vector<std::vector<float>> Mat2Vector(cv::Mat const &mat)
+{
     std::vector<std::vector<float>> img_vec;
-
     for(int i = 0; i < mat.rows; ++i){
+        auto ptr = mat.ptr<float>(i);
         std::vector<float> tmp;
         for (int j = 0; j < mat.cols; ++j){
-            tmp.push_back(mat.at<float>(i, j));
+            tmp.emplace_back(ptr[j]);
         }
-        img_vec.push_back(std::move(tmp));
+        img_vec.emplace_back(std::move(tmp));
     }
+
     return img_vec;
-}
-
-bool XsortFp32(std::vector<float> const &a, std::vector<float> const &b) {
-    if (a[0] != b[0])
-        return a[0] < b[0];
-    return false;
-}
-
-bool XsortInt(std::vector<int> const &a, std::vector<int> const &b) {
-    if (a[0] != b[0])
-        return a[0] < b[0];
-    return false;
 }
 
 std::vector<std::vector<float>> GetMiniBoxes(cv::RotatedRect const &box, float &ssid) {
@@ -114,27 +104,26 @@ std::vector<std::vector<float>> GetMiniBoxes(cv::RotatedRect const &box, float &
     auto array = Mat2Vector(points);
     std::sort(array.begin(), array.end(), XsortFp32);
 
-    std::vector<float> idx1 = array[0], idx2 = array[1], idx3 = array[2],
-        idx4 = array[3];
+    std::vector<float> idx1, idx2, idx3, idx4;
     if (array[3][1] <= array[2][1]) {
-        idx2 = array[3];
-        idx3 = array[2];
+        idx2 = std::move(array[3]);
+        idx3 = std::move(array[2]);
     } else {
-        idx2 = array[2];
-        idx3 = array[3];
+        idx2 = std::move(array[2]);
+        idx3 = std::move(array[3]);
     }
     if (array[1][1] <= array[0][1]) {
-        idx1 = array[1];
-        idx4 = array[0];
+        idx1 = std::move(array[1]);
+        idx4 = std::move(array[0]);
     } else {
-        idx1 = array[0];
-        idx4 = array[1];
+        idx1 = std::move(array[0]);
+        idx4 = std::move(array[1]);
     }
 
-    array[0] = idx1;
-    array[1] = idx2;
-    array[2] = idx3;
-    array[3] = idx4;
+    array[0] = std::move(idx1);
+    array[1] = std::move(idx2);
+    array[2] = std::move(idx3);
+    array[3] = std::move(idx4);
 
     return array;
 }
@@ -269,7 +258,6 @@ FilterTagDetRes(std::vector<flt::cvt::ocr::TextBox> &boxes,
                 int rows,
                 int cols)
 {
-
     for (size_t n = 0; n < boxes.size(); ++n) {
         auto &bpoints = boxes[n].boxPoint;
         for(size_t m = 0; m < bpoints.size(); ++m) {

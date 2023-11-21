@@ -32,9 +32,17 @@ cv::RotatedRect Unclip(std::vector<std::vector<float>> const &box, float unclip_
 
 std::vector<std::vector<float>> Mat2Vector(cv::Mat const &mat);
 
-bool XsortFp32(std::vector<float> const &a, std::vector<float> const &b);
+inline bool XsortFp32(std::vector<float> const &a, std::vector<float> const &b) {
+    if (a[0] != b[0])
+        return a[0] < b[0];
+    return false;
+}
 
-bool XsortInt(std::vector<int> const &a, std::vector<int> const &b);
+inline bool XsortInt(std::vector<int> const &a, std::vector<int> const &b) {
+    if (a[0] != b[0])
+        return a[0] < b[0];
+    return false;
+}
 
 std::vector<std::vector<float>> GetMiniBoxes(cv::RotatedRect const &box, float &ssid);
 

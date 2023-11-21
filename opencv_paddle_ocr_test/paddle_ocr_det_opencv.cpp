@@ -16,7 +16,7 @@
 namespace{
 
 // Get Output Layers Name
-std::vector<std::string> getOutputsNames( const cv::dnn::Net& net )
+std::vector<std::string> get_outputs_names( const cv::dnn::Net& net )
 {
     std::vector<std::string> names;
     std::vector<int32_t> const out_layers = net.getUnconnectedOutLayers();
@@ -28,7 +28,6 @@ std::vector<std::string> getOutputsNames( const cv::dnn::Net& net )
 
     return names;
 }
-
 
 // resize image to a size multiple of 32 which is required by the network
 std::tuple<std::array<float, 3>, cv::Size> get_resize_params(cv::Mat const &img, int max_size_len)
@@ -76,7 +75,7 @@ paddle_ocr_det_opencv::paddle_ocr_det_opencv(const std::string &model_weights,
     unclip_ratio_{unclip_ratio},
     use_dilate_{use_dilate},
     net_{cv::dnn::readNet(model_weights)},
-    output_names_{getOutputsNames(net_)}
+    output_names_{get_outputs_names(net_)}
 {
     net_ = cv::dnn::readNet(model_weights);
 }
@@ -99,37 +98,37 @@ std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::predict(const cv::Mat
         {"use_direction_classify", 1}
     };//*/
 
-    return RunDetModel(net_, input);
+    return run_det_model(input);
 }
 
-std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::RunDetModel(cv::dnn::Net &net, cv::Mat const &img)
+cv::Mat paddle_ocr_det_opencv::get_input_mat(cv::Mat const &img, const cv::Size &resize_size) const
 {
-    // Read img
-    int constexpr max_side_len = 960;
-    int const origin_row = img.rows;
-    int const origin_col = img.cols;
-
-    cv::Size resize_size;
-    std::array<float, 3> ratio_hw;
-    std::tie(ratio_hw, resize_size) = get_resize_params(img, max_side_len);
     cv::Mat img_fp = cv::dnn::blobFromImage(img, 1.0f / 255.0f, resize_size, cv::Scalar(123, 117, 104), false, false);
-    {
-        auto ptr = img_fp.ptr<float>(0);
-        float constexpr scale[] = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
-        for(size_t i = 0; i != img_fp.total(); i += 3){
-            for(size_t j = 0; j != 3; ++j){
-                ptr[i +j] *= scale[j];
-            }
+    auto ptr = img_fp.ptr<float>(0);
+    float constexpr scale[] = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
+    for(size_t i = 0; i != img_fp.total(); i += 3){
+        for(size_t j = 0; j != 3; ++j){
+            ptr[i +j] *= scale[j];
         }
     }
 
-    net.setInput(img_fp);
+    return img_fp;
+}
 
+std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::run_det_model(cv::Mat const &img)
+{
+    // Read img
+    int constexpr max_side_len = 960;
+    cv::Size resize_size;
+    std::array<float, 3> ratio_hw;
+    std::tie(ratio_hw, resize_size) = get_resize_params(img, max_side_len);
+
+    net_.setInput(get_input_mat(img, resize_size));
     // Run Forward Network
     std::vector<cv::Mat> detections;
-    net.forward( detections, getOutputsNames( net ) );
+    net_.forward(detections, output_names_);
 
-    auto const &det_out = detections[0];
+    auto &det_out = detections[0];
     auto const shape_out = det_out.size;
 
     cv::Mat cbuf_map(shape_out[2], shape_out[3], CV_8UC1);
@@ -158,5 +157,5 @@ std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::RunDetModel(cv::dnn::
 
     auto boxes = BoxesFromBitmap(pred_map, bit_map, box_thresh_, unclip_ratio_);
 
-    return FilterTagDetRes(boxes, ratio_hw[0], ratio_hw[1], origin_row, origin_col);
+    return FilterTagDetRes(boxes, ratio_hw[0], ratio_hw[1], img.rows, img.cols);
 }
