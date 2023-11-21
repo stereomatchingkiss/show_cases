@@ -94,8 +94,7 @@ float boxScoreFast(const cv::Mat & inMat, const std::vector<cv::Point> & inBox) 
     maskBox.push_back(box);
     cv::Mat maskMat(maxY - minY + 1, maxX - minX + 1, CV_8UC1, cv::Scalar(0, 0, 0));
     cv::fillPoly(maskMat, maskBox, cv::Scalar(1, 1, 1), 1);
-    return cv::mean(inMat(cv::Rect(cv::Point(minX, minY), cv::Point(maxX + 1, maxY + 1))).clone(),
-        maskMat).val[0];
+    return static_cast<float>(cv::mean(inMat(cv::Rect(cv::Point(minX, minY), cv::Point(maxX + 1, maxY + 1))), maskMat).val[0]);
 }
 
 std::vector<cv::Point> unClip(const std::vector<cv::Point> & inBox, float perimeter, float unClipRatio) {    
