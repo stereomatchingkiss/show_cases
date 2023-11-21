@@ -1,0 +1,41 @@
+cmake -D CMAKE_BUILD_TYPE=RELEASE ^
+-D CMAKE_INSTALL_PREFIX=../build/install ^
+-D CMAKE_BUILD_TYPE=Release ^
+-D INSTALL_C_EXAMPLES=OFF ^
+-D INSTALL_PYTHON_EXAMPLES=OFF ^
+-D WITH_QT=OFF ^
+-D CV_ENABLE_INTRINSICS=ON ^
+-D BUILD_JAVA=OFF ^
+-D BUILD_opencv_world=ON ^
+-D BUILD_PERF_TESTS=OFF ^
+-D BUILD_PACKAGE=OFF ^
+-D BUILD_TESTS=OFF ^
+-D BUILD_PERF_TESTS=OFF ^
+-D BUILD_opencv_java_bindings_generator=OFF ^
+-D BUILD_opencv_js=OFF ^
+-D BUILD_opencv_js_bindings_generator=OFF ^
+-D BUILD_opencv_datasets=OFF ^
+-D BUILD_opencv_apps=OFF ^
+-D BUILD_opencv_calib3d=ON ^
+-D BUILD_opencv_dnn=ON ^
+-D BUILD_opencv_features2d=ON ^
+-D BUILD_opencv_flann=ON ^
+-D BUILD_opencv_gapi=OFF ^
+-D BUILD_opencv_python2=OFF ^
+-D BUILD_opencv_python3=OFF ^
+-D BUILD_opencv_ts=OFF ^
+-D BUILD_opencv_gapi=OFF ^
+-D BUILD_opencv_python_bindings_generator=OFF ^
+-D BUILD_opencv_python_tests=OFF ^
+-D BUILD_opencv_xfeatures2d=OFF ^
+-D BUILD_opencv_ximgproc=OFF ^
+-D BUILD_opencv_xobjdetect=OFF ^
+-D BUILD_opencv_xphoto=OFF ^
+-D BUILD_PROTOBUF=ON ^
+-D BUILD_SHARED_LIBS=ON ^
+-D BUILD_WITH_STATIC_CRT=OFF ^
+-D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules ^
+-D BUILD_EXAMPLES=OFF ../
+
+cmake --build . -j 4
+cmake --build . --target install
