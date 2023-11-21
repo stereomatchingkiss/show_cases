@@ -87,43 +87,13 @@ paddle_ocr_det_opencv::~paddle_ocr_det_opencv()
 
 std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::predict(const cv::Mat &input)
 {
-    /*std::map<std::string, double> config{
-        {"det_db_box_thresh", 0.5},
-        {"det_db_thresh", 0.3},
-        {"det_db_unclip_ratio", 1.6},
-        {"det_db_use_dilate", 0},
-        {"det_use_polygon_score", 0},
-        {"max_side_len", 960},
-        {"rec_image_height", 48},
-        {"use_direction_classify", 1}
-    };//*/
-
-    return run_det_model(input);
-}
-
-cv::Mat paddle_ocr_det_opencv::get_input_mat(cv::Mat const &img, const cv::Size &resize_size) const
-{
-    cv::Mat img_fp = cv::dnn::blobFromImage(img, 1.0f / 255.0f, resize_size, cv::Scalar(123, 117, 104), false, false);
-    auto ptr = img_fp.ptr<float>(0);
-    float constexpr scale[] = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
-    for(size_t i = 0; i != img_fp.total(); i += 3){
-        for(size_t j = 0; j != 3; ++j){
-            ptr[i +j] *= scale[j];
-        }
-    }
-
-    return img_fp;
-}
-
-std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::run_det_model(cv::Mat const &img)
-{
     // Read img
     int constexpr max_side_len = 960;
     cv::Size resize_size;
     std::array<float, 3> ratio_hw;
-    std::tie(ratio_hw, resize_size) = get_resize_params(img, max_side_len);
+    std::tie(ratio_hw, resize_size) = get_resize_params(input, max_side_len);
 
-    net_.setInput(get_input_mat(img, resize_size));
+    net_.setInput(get_input_mat(input, resize_size));
     // Run Forward Network
     std::vector<cv::Mat> detections;
     net_.forward(detections, output_names_);
@@ -157,5 +127,19 @@ std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::run_det_model(cv::Mat
 
     auto boxes = BoxesFromBitmap(pred_map, bit_map, box_thresh_, unclip_ratio_);
 
-    return FilterTagDetRes(boxes, ratio_hw[0], ratio_hw[1], img.rows, img.cols);
+    return FilterTagDetRes(boxes, ratio_hw[0], ratio_hw[1], input.rows, input.cols);
+}
+
+cv::Mat paddle_ocr_det_opencv::get_input_mat(cv::Mat const &img, const cv::Size &resize_size) const
+{
+    cv::Mat img_fp = cv::dnn::blobFromImage(img, 1.0f / 255.0f, resize_size, cv::Scalar(123, 117, 104), false, false);
+    auto ptr = img_fp.ptr<float>(0);
+    float constexpr scale[] = {1 / 0.229f, 1 / 0.224f, 1 / 0.225f};
+    for(size_t i = 0; i != img_fp.total(); i += 3){
+        for(size_t j = 0; j != 3; ++j){
+            ptr[i +j] *= scale[j];
+        }
+    }
+
+    return img_fp;
 }
