@@ -36,5 +36,5 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE ^
 -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules ^
 -D BUILD_EXAMPLES=OFF ../
 
-cmake -D CMAKE_BUILD_TYPE=RELEASE --build . -j 4 --config Release
+cmake --build . -j 4 --config Release
 cmake --build . --target install --config Release
