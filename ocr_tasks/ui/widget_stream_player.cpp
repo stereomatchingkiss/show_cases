@@ -95,7 +95,7 @@ void widget_stream_player::display_frame(std::any results)
 
     last_clicked_row_ = -1;
 
-    if(!ui->checkBoxHideImage->isChecked()){
+    if(!ui->checkBoxHideImage->isChecked() && !qimg_.isNull()){
         ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
     }
 
