@@ -30,9 +30,10 @@ std::vector<std::string> read_keys(std::string const &fname)
 
 struct paddle_ocr_rec_onnx::impl
 {
-    impl(std::string const &model_weights, std::string const &key_files, int dst_height) :
+    impl(std::string const &model_weights, std::string const &key_files, int dst_height, int max_width) :
         dist_height_{dst_height},
-        keys_{read_keys(key_files)}
+        keys_{read_keys(key_files)},
+        max_width_{max_width}
     {
         Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "paddle_ocr_rec_onnx");
 
@@ -93,7 +94,7 @@ struct paddle_ocr_rec_onnx::impl
 
             auto crop_img = get_rotate_crop_image(mat, boxes[i].boxPoint);
             float const wh_ratio = static_cast<float>(crop_img.cols) / static_cast<float>(crop_img.rows);
-            auto resize_img = crnn_resize_img(crop_img, wh_ratio, dist_height_);
+            auto resize_img = crnn_resize_img(crop_img, wh_ratio, dist_height_, max_width_);
             normalize(resize_img);
 
             onnx_utils_.input_node_dims()[3] = resize_img.cols;
@@ -136,12 +137,16 @@ struct paddle_ocr_rec_onnx::impl
     int dist_height_;
     std::vector<std::string> keys_;
     std::vector<float> input_data_;
+    int max_width_;
     onnx_get_names_utils onnx_utils_;
     std::unique_ptr<Ort::Session> session_;
 };
 
-paddle_ocr_rec_onnx::paddle_ocr_rec_onnx(std::string const &model_weights, std::string const &key_files, int dst_height) :
-    impl_{std::make_unique<impl>(model_weights, key_files, dst_height)}
+paddle_ocr_rec_onnx::paddle_ocr_rec_onnx(std::string const &model_weights,
+                                         std::string const &key_files,
+                                         int dst_height,
+                                         int max_width) :
+    impl_{std::make_unique<impl>(model_weights, key_files, dst_height, max_width)}
 {
 
 }
