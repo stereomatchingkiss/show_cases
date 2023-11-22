@@ -36,22 +36,37 @@ void show_text_det_result(paddle_ocr_det_opencv &det, std::string const &im_name
     Visualization(input, det_out);
 }
 
-int main(int argc, char *argv[])
-{    
-    paddle_ocr_det_opencv det("ch_PP-OCRv4_det_simple.onnx");
-    //show_text_det_result(det, "english-poetry-100696.png");
-    //show_text_det_result(det, "lite_demo.png");
-
-    auto input = cv::imread("english-poetry-100696.png");
+void detect_text(std::string const &im_name, paddle_ocr_det_opencv &det, paddle_ocr_rec_onnx &rec)
+{
+    auto input = cv::imread(im_name);
     auto det_out = det.predict(input);
-    det_out.pop_back();
-    det_out.pop_back();
-    //Visualization(input, det_out);
-    paddle_ocr_rec_onnx rec("ch_PP-OCRv4_rec_infer.onnx", "ppocr_keys_v1.txt");
     rec.predict(input, det_out);
+    //Visualization(input, det_out);
 
     for(auto const &val : det_out){
         std::cout<<val.text<<std::endl;
     }
+}
+
+int main(int argc, char *argv[])
+{    
+    paddle_ocr_det_opencv det("ch_PP-OCRv4_det_simple.onnx");
+    paddle_ocr_rec_onnx rec("ch_PP-OCRv4_rec_infer.onnx", "ppocr_keys_v1.txt");
+
+    //resize_w = 498
+    //resize_w = 375
+    //resize_w = 489
+    //resize_w = 375
+    //resize_w = 85
+    //resize_w = 55
+    //detect_text("english-poetry-100696.png", det, rec);
+
+    detect_text("english.png", det, rec);
+
+    /*for(size_t i = 0; i != 10; ++i){
+        detect_text("english-poetry-100696.png", det, rec);
+        detect_text("english.png", det, rec);
+        detect_text("lite_demo.png", det, rec);
+    }//*/
 }
 
