@@ -43,13 +43,13 @@ struct paddle_ocr_rec_onnx::impl
         std::wstring mname(std::begin(model_weights), std::end(model_weights));
         session_ = std::make_unique<Ort::Session>(env, mname.c_str(), session_options);
 
-        onnx_utils_.process(*session_);
+        onnx_utils_.process(*session_);        
         onnx_utils_.input_node_dims()[0] = 1;
         onnx_utils_.input_node_dims()[2] = dist_height_;
 
         keys_.insert(keys_.begin(), "#"); // blank char for ctc
         keys_.push_back(" ");
-    }    
+    }
 
     void normalize(cv::Mat const &img)
     {
@@ -69,20 +69,19 @@ struct paddle_ocr_rec_onnx::impl
     }
 
     auto create_input_tensor()
-    {
-        auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-        return Ort::Value::CreateTensor<float>(minfo,
+    {        
+        return Ort::Value::CreateTensor<float>(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault),
                                                input_data_.data(),
                                                input_data_.size(),
                                                onnx_utils_.input_node_dims().data(),
                                                4);
     }
 
-    auto create_output_tensor(Ort::Value const &input)
+    auto create_output_tensor(Ort::Value const &input_tensor)
     {
         return  session_->Run(Ort::RunOptions{nullptr},
                              onnx_utils_.input_node_names().data(),
-                             &input,
+                             &input_tensor,
                              1,
                              onnx_utils_.output_node_names().data(),
                              1);
@@ -98,13 +97,12 @@ struct paddle_ocr_rec_onnx::impl
             normalize(resize_img);
 
             onnx_utils_.input_node_dims()[3] = resize_img.cols;
-            auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
             auto input_tensor = create_input_tensor();
             auto output_tensors = create_output_tensor(input_tensor);
 
             float const *floatarr = output_tensors.front().GetTensorData<float>();
-            auto outputInfo = output_tensors.front().GetTensorTypeAndShapeInfo();
+            auto const outputInfo = output_tensors.front().GetTensorTypeAndShapeInfo();
 
             auto &tbox = boxes[i];
             size_t last_index = 0;
@@ -116,11 +114,11 @@ struct paddle_ocr_rec_onnx::impl
                 size_t argmax_idx = 0;
                 float max_score = 0;
                 for(size_t j = 0; j != elem_size; ++j){
-                    if(data[j] > max_score){                        
+                    if(data[j] > max_score){
                         max_score = data[j];
                         argmax_idx = j;
                     }
-                }                
+                }
                 if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index))) {
                     tbox.score += max_score;
                     count += 1;
