@@ -1,6 +1,7 @@
 #include "paddle_ocr_rec_onnx.hpp"
 
 #include "crnn_process.hpp"
+#include "onnx_get_names_utils.hpp"
 
 #include <onnxruntime_cxx_api.h>
 
@@ -42,68 +43,13 @@ struct paddle_ocr_rec_onnx::impl
         std::wstring mname(std::begin(model_weights), std::end(model_weights));
         session_ = std::make_unique<Ort::Session>(env, mname.c_str(), session_options);
 
-        get_input_names();
-        get_output_names();//*/
+        onnx_utils_.process(*session_);
+        onnx_utils_.input_node_dims()[0] = 1;
+        onnx_utils_.input_node_dims()[2] = dist_height_;
 
         keys_.insert(keys_.begin(), "#"); // blank char for ctc
         keys_.push_back(" ");
-        //std::cout<<"keys size = "<<keys_.size()<<std::endl;
-
-        print_model_details();
-
-        input_node_dims_[0] = 1;
-        input_node_dims_[2] = dist_height_;
-    }
-
-    void print_model_details()
-    {
-        for(size_t j = 0; j < input_node_dims_.size(); ++j){
-            std::cout << "Input " << j << " : dim[" << j << "] =" << input_node_dims_[j] << '\n';
-        }
-        for(size_t j = 0; j != input_node_names_.size(); ++j){
-            std::cout<<"input names "<< j <<":"<<input_node_names_[j]<<"\n";
-        }
-
-        for(size_t j = 0; j < output_node_dims_.size(); ++j){
-            std::cout << "Output " << j << " : dim[" << j << "] =" << output_node_dims_[j] << '\n';
-        }
-        for(size_t j = 0; j != output_node_names_.size(); ++j){
-            std::cout<<"output names "<< j <<":"<<output_node_names_[j]<<"\n";
-        }
-        std::cout << std::flush;
-    }
-
-    void get_names(size_t node_index,
-                   std::vector<int64_t> &node_dims,
-                   std::vector<Ort::AllocatedStringPtr> &names_ptr,
-                   std::vector<const char*> &node_names,
-                   bool input) const
-    {
-        size_t const node_counts = input ? session_->GetInputCount() : session_->GetOutputCount();
-        names_ptr.reserve(node_counts);
-        node_names.reserve(node_counts);
-
-        Ort::AllocatorWithDefaultOptions allocator;
-        auto node_name = input ? session_->GetInputNameAllocated(node_index, allocator) :
-                             session_->GetOutputNameAllocated(node_index, allocator);
-        node_names.push_back(node_name.get());
-        names_ptr.push_back(std::move(node_name));
-
-        auto const type_info = session_->GetInputTypeInfo(node_index);
-        auto const tensor_info = type_info.GetTensorTypeAndShapeInfo();
-
-        node_dims = tensor_info.GetShape();
-    }
-
-    void get_input_names()
-    {
-        get_names(0, input_node_dims_, input_names_ptr_, input_node_names_, true);
-    }
-
-    void get_output_names()
-    {
-        get_names(0, output_node_dims_, output_names_ptr_, output_node_names_, false);
-    }
+    }    
 
     std::vector<float> normalize(cv::Mat const &img)
     {
@@ -115,10 +61,8 @@ struct paddle_ocr_rec_onnx::impl
         for(int c = 0; c < 3; c++){
             for (int i = 0; i < row; i++){
                 for (int j = 0; j < col; j++){
-                    if(j < col){
-                        float pix = img.ptr<uchar>(i)[j * 3 + c];
-                        input_image[c * row * col + i * col + j] = (pix / 255.0 - 0.5) / 0.5;
-                    }
+                    float pix = img.ptr<uchar>(i)[j * 3 + c];
+                    input_image[c * row * col + i * col + j] = (pix / 255.0 - 0.5) / 0.5;
                 }
             }
         }
@@ -135,17 +79,21 @@ struct paddle_ocr_rec_onnx::impl
             auto resize_img = CrnnResizeImg(crop_img, wh_ratio, dist_height_);
             auto input_data = normalize(resize_img);
 
-            input_node_dims_[3] = resize_img.cols;            
+            onnx_utils_.input_node_dims()[3] = resize_img.cols;
             auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);            
             auto input_tensor = Ort::Value::CreateTensor<float>(minfo,
                                                                 input_data.data(),
                                                                 input_data.size(),
-                                                                input_node_dims_.data(),
+                                                                onnx_utils_.input_node_dims().data(),
                                                                 4);
 
-
             auto output_tensors =
-                session_->Run(Ort::RunOptions{nullptr}, input_node_names_.data(), &input_tensor, 1, output_node_names_.data(), 1);            
+                session_->Run(Ort::RunOptions{nullptr},
+                                                onnx_utils_.input_node_names().data(),
+                                                &input_tensor,
+                                                1,
+                                                onnx_utils_.output_node_names().data(),
+                                                1);
 
             float const *floatarr = output_tensors.front().GetTensorData<float>();
             auto outputInfo = output_tensors.front().GetTensorTypeAndShapeInfo();
@@ -183,13 +131,7 @@ struct paddle_ocr_rec_onnx::impl
     int dist_height_;
     std::vector<std::string> keys_;
 
-    std::vector<int64_t> input_node_dims_;
-    std::vector<Ort::AllocatedStringPtr> input_names_ptr_;
-    std::vector<const char*> input_node_names_;
-
-    std::vector<int64_t> output_node_dims_;
-    std::vector<Ort::AllocatedStringPtr> output_names_ptr_;
-    std::vector<const char*> output_node_names_;
+    onnx_get_names_utils onnx_utils_;
 
     std::unique_ptr<Ort::Session> session_;
 };
