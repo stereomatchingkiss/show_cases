@@ -45,12 +45,12 @@ cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height
 
 cv::Mat get_rotate_crop_image(cv::Mat const &srcimage, std::vector<cv::Point> const &box)
 {
-    int const x_collect[4] = {box[0].x, box[1].x, box[2].x, box[3].x};
-    int const y_collect[4] = {box[0].y, box[1].y, box[2].y, box[3].y};
-    int const left = int(*std::min_element(x_collect, x_collect + 4));
-    int const right = int(*std::max_element(x_collect, x_collect + 4));
-    int const top = int(*std::min_element(y_collect, y_collect + 4));
-    int const bottom = int(*std::max_element(y_collect, y_collect + 4));
+    auto const lf_it = std::ranges::minmax_element(box, [](auto const &a, auto const &b){ return a.x < b.x; });
+    auto const tb_it = std::ranges::minmax_element(box, [](auto const &a, auto const &b){ return a.y < b.y; });
+    int const left = lf_it.min->x;
+    int const right = lf_it.max->x;
+    int const top = tb_it.min->y;
+    int const bottom = tb_it.max->y;
 
     cv::Mat const img_crop = srcimage(cv::Rect(left, top, right - left, bottom - top));
     cv::Point2f pointsf[4];
