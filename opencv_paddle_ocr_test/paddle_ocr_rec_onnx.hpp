@@ -16,7 +16,7 @@ public:
                                  int dst_height = 48);
     ~paddle_ocr_rec_onnx();
 
-    std::string predict(cv::Mat const &mat, std::vector<TextBox> const &boxes);
+    void predict(cv::Mat const &mat, std::vector<TextBox>& text_boxes);
 
 private:
     struct impl;

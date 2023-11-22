@@ -33,9 +33,9 @@ cv::Mat CrnnResizeImg(cv::Mat const &img, float wh_ratio, int rec_image_height)
 
     cv::Mat resize_img;
     cv::resize(img, resize_img, cv::Size(resize_w, rec_image_height), 0.f, 0.f, cv::INTER_LINEAR);
-    /*cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0,
+    cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0,
                        int(imgW - resize_img.cols), cv::BORDER_CONSTANT,
-                       {127, 127, 127});//*/
+                       {127, 127, 127});
     return resize_img;
 }
 

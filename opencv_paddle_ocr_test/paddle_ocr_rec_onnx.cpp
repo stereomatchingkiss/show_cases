@@ -51,56 +51,63 @@ struct paddle_ocr_rec_onnx::impl
         keys_.push_back(" ");
     }    
 
-    std::vector<float> normalize(cv::Mat const &img)
+    void normalize(cv::Mat const &img)
     {
         int const row = img.rows;
         int const col = img.cols;
         std::vector<float> input_image;
-        input_image.resize(img.total() * img.channels());
+        input_data_.resize(img.total() * img.channels());
 
         for(int c = 0; c < 3; c++){
             for (int i = 0; i < row; i++){
                 for (int j = 0; j < col; j++){
                     float pix = img.ptr<uchar>(i)[j * 3 + c];
-                    input_image[c * row * col + i * col + j] = (pix / 255.0 - 0.5) / 0.5;
+                    input_data_[c * row * col + i * col + j] = (pix / 255.0f - 0.5f) / 0.5f;
                 }
             }
-        }
-
-        return input_image;
+        }        
     }
 
-    std::string predict(cv::Mat const &mat, std::vector<TextBox> const &boxes)
+    auto create_input_tensor()
+    {
+        auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+        return Ort::Value::CreateTensor<float>(minfo,
+                                               input_data_.data(),
+                                               input_data_.size(),
+                                               onnx_utils_.input_node_dims().data(),
+                                               4);
+    }
+
+    auto create_output_tensor(Ort::Value const &input)
+    {
+        return  session_->Run(Ort::RunOptions{nullptr},
+                             onnx_utils_.input_node_names().data(),
+                             &input,
+                             1,
+                             onnx_utils_.output_node_names().data(),
+                             1);
+    }
+
+    void predict(cv::Mat const &mat, std::vector<TextBox> &boxes)
     {
         for(size_t i = 0; i != boxes.size(); ++i){
 
             auto crop_img = GetRotateCropImage(mat, boxes[i].boxPoint);
             float const wh_ratio = static_cast<float>(crop_img.cols) / static_cast<float>(crop_img.rows);
             auto resize_img = CrnnResizeImg(crop_img, wh_ratio, dist_height_);
-            auto input_data = normalize(resize_img);
+            normalize(resize_img);
 
             onnx_utils_.input_node_dims()[3] = resize_img.cols;
-            auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);            
-            auto input_tensor = Ort::Value::CreateTensor<float>(minfo,
-                                                                input_data.data(),
-                                                                input_data.size(),
-                                                                onnx_utils_.input_node_dims().data(),
-                                                                4);
+            auto const minfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-            auto output_tensors =
-                session_->Run(Ort::RunOptions{nullptr},
-                                                onnx_utils_.input_node_names().data(),
-                                                &input_tensor,
-                                                1,
-                                                onnx_utils_.output_node_names().data(),
-                                                1);
+            auto input_tensor = create_input_tensor();
+            auto output_tensors = create_output_tensor(input_tensor);
 
             float const *floatarr = output_tensors.front().GetTensorData<float>();
             auto outputInfo = output_tensors.front().GetTensorTypeAndShapeInfo();
 
-            std::string str_res;
-            int last_index = 0;
-            float score = 0.f;
+            auto &tbox = boxes[i];
+            size_t last_index = 0;
             int count = 0;
             size_t const elem_size = outputInfo.GetShape()[2];
             size_t const candidate = outputInfo.GetShape()[1];
@@ -115,24 +122,23 @@ struct paddle_ocr_rec_onnx::impl
                     }
                 }                
                 if (argmax_idx > 0 && (!(n > 0 && argmax_idx == last_index))) {
-                    score += max_score;
+                    tbox.score += max_score;
                     count += 1;
-                    str_res += keys_[argmax_idx];
+                    tbox.text += keys_[argmax_idx];
                 }
                 last_index = argmax_idx;
             }
 
-            std::cout<<"count = "<<count<<","<<str_res<<","<<score<<std::endl;//*/
+            if(count != 0){
+                tbox.score /= count;
+            }
         }
-
-        return {};
     }
 
     int dist_height_;
     std::vector<std::string> keys_;
-
+    std::vector<float> input_data_;
     onnx_get_names_utils onnx_utils_;
-
     std::unique_ptr<Ort::Session> session_;
 };
 
@@ -147,9 +153,9 @@ paddle_ocr_rec_onnx::~paddle_ocr_rec_onnx()
 
 }
 
-std::string paddle_ocr_rec_onnx::predict(cv::Mat const &mat, std::vector<TextBox> const &boxes)
+void paddle_ocr_rec_onnx::predict(cv::Mat const &mat, std::vector<TextBox> &boxes)
 {
-    return impl_->predict(mat, boxes);
+    impl_->predict(mat, boxes);
 }
 
 }
