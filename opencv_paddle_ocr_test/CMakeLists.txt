@@ -26,6 +26,7 @@ endif()
 
 add_executable(opencv_paddle_ocr_test main.cpp               
                crnn_process.hpp crnn_process.cpp
+               onnx_get_names_utils.hpp onnx_get_names_utils.cpp
                paddle_ocr_rec_onnx.hpp paddle_ocr_rec_onnx.cpp
 
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
