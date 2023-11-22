@@ -85,7 +85,7 @@ paddle_ocr_det_opencv::~paddle_ocr_det_opencv()
 
 }
 
-std::vector<flt::cvt::ocr::TextBox> paddle_ocr_det_opencv::predict(const cv::Mat &input)
+std::vector<TextBox> paddle_ocr_det_opencv::predict(const cv::Mat &input)
 {
     // Read img
     int constexpr max_side_len = 960;

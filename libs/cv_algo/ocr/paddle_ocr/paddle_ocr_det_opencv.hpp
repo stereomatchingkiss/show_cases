@@ -18,7 +18,7 @@ public:
                                    bool use_dilate = false);
     ~paddle_ocr_det_opencv();
 
-    std::vector<flt::cvt::ocr::TextBox> predict(cv::Mat const &input);
+    std::vector<TextBox> predict(cv::Mat const &input);
 
 private:
     cv::Mat get_input_mat(cv::Mat const &img, cv::Size const &resize_size) const;
