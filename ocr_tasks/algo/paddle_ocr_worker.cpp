@@ -5,7 +5,7 @@
 #include "paddle_ocr_worker_results.hpp"
 
 #include <cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp>
-#include <cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.hpp>
+#include <cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp>
 
 #include <utils/qimage_to_cvmat.hpp>
 
@@ -19,11 +19,9 @@ struct paddle_ocr_worker::impl
     impl(config_paddle_ocr_worker const &params) :
         params_{std::move(params)},
         text_det_((root_path_ + "ch_PP-OCRv4_det_simple.onnx")),
-        text_rec_((root_path_ + "ch_PP-OCRv3_rec.param").c_str(),
-                  (root_path_ + "ch_PP-OCRv3_rec.bin").c_str(),
-                  (root_path_ + "paddleocr_keys.txt").c_str())
-    {        
-        qDebug()<<"text_rec_ load = "<<text_rec_.get_load_model_state();        
+        text_rec_((root_path_ + "ch_PP-OCRv4_rec_infer.onnx"),
+                  (root_path_ + "paddleocr_keys.txt"))
+    {                
     }
 
     config_paddle_ocr_worker params_;    
@@ -35,7 +33,7 @@ struct paddle_ocr_worker::impl
 #endif
 
     paddle_ocr_det_opencv text_det_;
-    paddle_ocr_text_rec text_rec_;
+    paddle_ocr_rec_onnx text_rec_;
 };
 
 paddle_ocr_worker::paddle_ocr_worker(config_paddle_ocr_worker const &params, QObject *parent) :
@@ -62,7 +60,7 @@ void paddle_ocr_worker::process_results(std::any frame)
 
     paddle_ocr_worker_results results;
     results.text_boxes_ = impl_->text_det_.predict(mat);
-    impl_->text_rec_.predict(mat, results.text_boxes_);
+    impl_->text_rec_.predict(mat, results.text_boxes_);    
     auto [it_start, it_end] = std::ranges::remove_if(results.text_boxes_, [](auto const &val)
                                                      {
                                                          return val.text.empty();
@@ -72,8 +70,11 @@ void paddle_ocr_worker::process_results(std::any frame)
     std::ranges::sort(results.text_boxes_, [](TextBox const &a, TextBox const &b)
                       {
                           return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
-                      });    
+                      });
 
+    if(qimg.format() == QImage::Format_Indexed8){
+        qimg = qimg.convertToFormat(QImage::Format_ARGB32);
+    }
     results.mat_ = std::move(qimg);
 
     emit send_process_results(std::move(results));
