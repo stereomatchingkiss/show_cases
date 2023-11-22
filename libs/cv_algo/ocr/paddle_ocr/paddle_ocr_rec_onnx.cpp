@@ -1,7 +1,7 @@
 #include "paddle_ocr_rec_onnx.hpp"
 
 #include "crnn_process.hpp"
-#include "onnx_get_names_utils.hpp"
+#include "../../onnx/onnx_get_names_utils.hpp"
 
 #include <onnxruntime_cxx_api.h>
 

@@ -25,19 +25,21 @@ if(WIN32)
 endif()
 
 add_executable(opencv_paddle_ocr_test main.cpp               
-               crnn_process.hpp crnn_process.cpp
-               onnx_get_names_utils.hpp onnx_get_names_utils.cpp
-               paddle_ocr_rec_onnx.hpp paddle_ocr_rec_onnx.cpp
 
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/crnn_process.hpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/crnn_process.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
-
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.cpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.hpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.cpp
            )
 
 if(ANDROID OR WIN32)

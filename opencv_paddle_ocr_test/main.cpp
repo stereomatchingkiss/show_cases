@@ -1,6 +1,5 @@
-#include "paddle_ocr_rec_onnx.hpp"
-
 #include <cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp>
+#include <cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
