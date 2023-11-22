@@ -20,6 +20,7 @@ if(WIN32)
     message("building windows platform")
     set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
     set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
+    set(ONNX_PATH ${3RDLIBS_PATH}/onnx/onnxruntime-training-win-x64-1.16.3)
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
     #find_package(Vulkan REQUIRED)
@@ -48,6 +49,21 @@ if(EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexperimental-library")
 endif()
 
+set(FLT_CV_ALGO_SOURCE ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/crnn_process.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/crnn_process.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.hpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.cpp)
+
 set(PROJECT_SOURCES
         main.cpp
         ui/dialog_display_details.hpp ui/dialog_display_details.cpp ui/dialog_display_details.ui
@@ -72,29 +88,23 @@ set(PROJECT_SOURCES
         global/global_keywords.hpp global/global_keywords.cpp
         global/global_object.hpp global/global_object.cpp
 
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/db_post_process.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.hpp
-        ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_text_rec.cpp
+        ${FLT_CV_ALGO_SOURCE}
+
         ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
         ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
+
         ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp        
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
         ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
+
         ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
         ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
         ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
@@ -136,6 +146,7 @@ if(ANDROID OR WIN32)
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${ONNX_PATH}/include)
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
@@ -143,6 +154,8 @@ if(ANDROID OR WIN32)
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
                           PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
+                          PRIVATE ${ONNX_PATH}/lib/onnxruntime.lib
+                          PRIVATE ${ONNX_PATH}/lib/onnxruntime_providers_shared.lib
                           )
 endif()
 
