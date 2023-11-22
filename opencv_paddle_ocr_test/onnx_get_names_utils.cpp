@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+namespace flt::cvt{
+
 onnx_get_names_utils::onnx_get_names_utils()
 {
 
@@ -87,4 +89,6 @@ void onnx_get_names_utils::get_input_names(const Ort::Session &session)
 void onnx_get_names_utils::get_output_names(const Ort::Session &session)
 {
     get_names(0, output_node_dims_, output_names_ptr_, output_node_names_, session, false);
+}
+
 }

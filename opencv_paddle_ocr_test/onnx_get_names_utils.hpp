@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace flt::cvt{
+
 class onnx_get_names_utils
 {
 public:
@@ -42,3 +44,5 @@ private:
     std::vector<Ort::AllocatedStringPtr> output_names_ptr_;
     std::vector<const char*> output_node_names_;
 };
+
+}
