@@ -92,9 +92,9 @@ struct paddle_ocr_rec_onnx::impl
     {
         for(size_t i = 0; i != boxes.size(); ++i){
 
-            auto crop_img = GetRotateCropImage(mat, boxes[i].boxPoint);
+            auto crop_img = get_rotate_crop_image(mat, boxes[i].boxPoint);
             float const wh_ratio = static_cast<float>(crop_img.cols) / static_cast<float>(crop_img.rows);
-            auto resize_img = CrnnResizeImg(crop_img, wh_ratio, dist_height_);
+            auto resize_img = crnn_resize_img(crop_img, wh_ratio, dist_height_);
             normalize(resize_img);
 
             onnx_utils_.input_node_dims()[3] = resize_img.cols;

@@ -25,7 +25,7 @@
 
 namespace flt::cvt::ocr{
 
-cv::Mat CrnnResizeImg(cv::Mat const &img, float wh_ratio, int rec_image_height)
+cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height)
 {
     int const imgW = int(rec_image_height * wh_ratio);
     float const ratio = float(img.cols) / float(img.rows);
@@ -39,23 +39,7 @@ cv::Mat CrnnResizeImg(cv::Mat const &img, float wh_ratio, int rec_image_height)
     return resize_img;
 }
 
-std::vector<std::string> ReadDict(std::string const &path)
-{
-
-    std::vector<std::string> m_vec;
-    if(std::ifstream in(path); in){
-        std::string line;
-        while(getline(in, line)){
-            m_vec.emplace_back(std::move(line));
-        }
-    }else{
-        std::cout << "no such file" << std::endl;
-    }
-
-    return m_vec;
-}
-
-cv::Mat GetRotateCropImage(cv::Mat const &srcimage, std::vector<cv::Point> const &box)
+cv::Mat get_rotate_crop_image(cv::Mat const &srcimage, std::vector<cv::Point> const &box)
 {
     int const x_collect[4] = {box[0].x, box[1].x, box[2].x, box[3].x};
     int const y_collect[4] = {box[0].y, box[1].y, box[2].y, box[3].y};
