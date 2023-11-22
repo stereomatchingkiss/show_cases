@@ -21,7 +21,7 @@
 
 namespace flt::cvt::ocr{
 
-cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height);
+cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height, int rec_max_width = 500);
 
 cv::Mat get_rotate_crop_image(cv::Mat const &srcimage, std::vector<cv::Point> const &box);
 

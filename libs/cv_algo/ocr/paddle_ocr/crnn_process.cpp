@@ -25,17 +25,21 @@
 
 namespace flt::cvt::ocr{
 
-cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height)
+cv::Mat crnn_resize_img(cv::Mat const &img, float wh_ratio, int rec_image_height, int rec_max_width)
 {
     int const imgW = int(rec_image_height * wh_ratio);
     float const ratio = float(img.cols) / float(img.rows);
     int const resize_w = (ceilf(rec_image_height * ratio) > imgW) ? imgW : static_cast<int>(ceilf(rec_image_height * ratio));
 
     cv::Mat resize_img;
-    cv::resize(img, resize_img, cv::Size(resize_w, rec_image_height), 0.f, 0.f, cv::INTER_LINEAR);
-    cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0,
-                       int(imgW - resize_img.cols), cv::BORDER_CONSTANT,
-                       {127, 127, 127});
+    if(resize_w > rec_max_width){
+        cv::resize(img, resize_img, cv::Size(rec_max_width, rec_image_height), 0.f, 0.f, cv::INTER_LINEAR);
+    }else{
+        cv::resize(img, resize_img, cv::Size(resize_w, rec_image_height), 0.f, 0.f, cv::INTER_LINEAR);
+        cv::copyMakeBorder(resize_img, resize_img, 0, 0, 0,
+                           int(imgW - resize_img.cols), cv::BORDER_CONSTANT,
+                           {127, 127, 127});
+    }
     return resize_img;
 }
 
