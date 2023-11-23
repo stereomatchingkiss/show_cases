@@ -49,6 +49,29 @@ if(EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexperimental-library")
 endif()
 
+set(APP_SOURCE main.cpp
+    ui/dialog_display_details.hpp ui/dialog_display_details.cpp ui/dialog_display_details.ui
+    ui/mainwindow.hpp
+    ui/mainwindow.cpp
+    ui/mainwindow.ui
+    ui/widget_source_selection.hpp
+    ui/widget_source_selection.cpp
+    ui/widget_source_selection.ui
+    ui/widget_stream_player.hpp
+    ui/widget_stream_player.cpp
+    ui/widget_stream_player.ui
+
+    algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
+    algo/paddle_ocr_worker_results.hpp
+
+    config/config_dialog_display_details.hpp
+    config/config_paddle_ocr_worker.hpp
+    config/config_read_write.cpp config/config_read_write.hpp
+    config/config_source_selection.hpp
+
+    global/global_keywords.hpp global/global_keywords.cpp
+    global/global_object.hpp global/global_object.cpp)
+
 set(FLT_CV_ALGO_SOURCE ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
@@ -64,50 +87,29 @@ set(FLT_CV_ALGO_SOURCE ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.cpp)
 
+set(FLT_MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp)
+
+set(FLT_OTHER_SOURCE ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
+    ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
+    ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
+    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
+    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp)
+
 set(PROJECT_SOURCES
-        main.cpp
-        ui/dialog_display_details.hpp ui/dialog_display_details.cpp ui/dialog_display_details.ui
-        ui/mainwindow.hpp
-        ui/mainwindow.cpp
-        ui/mainwindow.ui
-        ui/widget_source_selection.hpp
-        ui/widget_source_selection.cpp
-        ui/widget_source_selection.ui
-        ui/widget_stream_player.hpp
-        ui/widget_stream_player.cpp
-        ui/widget_stream_player.ui
-
-        algo/paddle_ocr_worker.hpp algo/paddle_ocr_worker.cpp
-        algo/paddle_ocr_worker_results.hpp
-
-        config/config_dialog_display_details.hpp
-        config/config_paddle_ocr_worker.hpp
-        config/config_read_write.cpp config/config_read_write.hpp
-        config/config_source_selection.hpp
-
-        global/global_keywords.hpp global/global_keywords.cpp
-        global/global_object.hpp global/global_object.cpp
-
-        ${FLT_CV_ALGO_SOURCE}
-
-        ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
-        ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
-
-        ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
-        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
-        ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
-
-        ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
-        ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
-        ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
+        ${APP_SOURCE}
+        ${FLT_CV_ALGO_SOURCE}                
+        ${FLT_MULTIMEDIA_SOURCE}
+        ${FLT_OTHER_SOURCE}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
