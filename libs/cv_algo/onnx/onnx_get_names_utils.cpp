@@ -1,5 +1,7 @@
 #include "onnx_get_names_utils.hpp"
 
+#ifndef WASM_BUILD
+
 #include <iostream>
 
 namespace flt::cvt{
@@ -92,3 +94,5 @@ void onnx_get_names_utils::get_output_names(const Ort::Session &session)
 }
 
 }
+
+#endif

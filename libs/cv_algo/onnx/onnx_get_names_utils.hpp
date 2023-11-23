@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef WASM_BUILD
+
 #include <onnxruntime_cxx_api.h>
 
 #include <string>
@@ -46,3 +48,4 @@ private:
 };
 
 }
+#endif
