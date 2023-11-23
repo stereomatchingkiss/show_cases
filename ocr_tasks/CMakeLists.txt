@@ -19,7 +19,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia WebSoc
 if(WIN32)
     message("building windows platform")
     set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
-    set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
+    #set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
     set(ONNX_PATH ${3RDLIBS_PATH}/onnx/onnxruntime-training-win-x64-1.16.3)
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
@@ -31,7 +31,7 @@ endif()
 if(EMSCRIPTEN)
 
     message("build for wasm")
-    set(NCNN_PATH       ${3RDLIBS_PATH}/ncnn/ncnn-20231027/build/wasm/simd_threads/install/)
+    #set(NCNN_PATH       ${3RDLIBS_PATH}/ncnn/ncnn-20231027/build/wasm/simd_threads/install/)
     set(OPENCV_CV_PATH  ${3RDLIBS_PATH}/opencv/build/4.8.0/simd_threads/install)
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s NO_EXIT_RUNTIME=1 -s FORCE_FILESYSTEM=1 -s INITIAL_MEMORY=256MB -s ALLOW_MEMORY_GROWTH -s MAXIMUM_MEMORY=4GB -s EXIT_RUNTIME=1")
@@ -144,7 +144,7 @@ endif()
 
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
-    find_package(ncnn REQUIRED)
+    #find_package(ncnn REQUIRED)
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
@@ -152,7 +152,7 @@ if(ANDROID OR WIN32)
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
-                          PRIVATE ncnn
+                          #PRIVATE ncnn
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
                           PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
@@ -165,7 +165,7 @@ if(EMSCRIPTEN)
     add_definitions(-Duse_int32)
     add_definitions(-DWASM_BUILD)
     add_compile_definitions(EIGEN_DONT_PARALLELIZE)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
+    #target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
     target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)
     target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
@@ -178,7 +178,7 @@ if(EMSCRIPTEN)
                           PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/libzlib.a
                           PRIVATE ${OPENCV_CV_PATH}/3rdparty/lib/liblibprotobuf.a
                           PRIVATE ${OPENCV_CV_PATH}/lib/libopencv_world.a
-                          PRIVATE ${NCNN_PATH}/lib/libncnn.a
+                          #PRIVATE ${NCNN_PATH}/lib/libncnn.a
                           )
 endif()
 
