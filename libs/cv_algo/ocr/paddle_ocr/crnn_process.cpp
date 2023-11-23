@@ -20,7 +20,6 @@
 #include <memory>
 #include <string>
 
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 namespace flt::cvt::ocr{
