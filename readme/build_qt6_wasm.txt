@@ -17,5 +17,5 @@ into the CMakeLists.txt under the Src folder
 
 . sudo apt install protobuf-compiler
 . configure -qt-host-path /home/yyyy/cv_projects/3rdLibs/Qt/ -no-warnings-are-errors -platform wasm-emscripten -feature-wasm-simd128 -feature-thread -prefix $PWD/qtbase
-. cmake --build . -t qtbase -t qtdeclarative -t qtwidgets -t qtnetwork -t qtwebsocket -t qtmultimedia
+. cmake --build . -t qtbase -t qtwebsockets -t qtmultimedia
 . cmake --install .
