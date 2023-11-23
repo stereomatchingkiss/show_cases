@@ -1,9 +1,25 @@
 #include "paddle_ocr_rec_onnx.hpp"
 
 #include "crnn_process.hpp"
-#include "../../onnx/onnx_get_names_utils.hpp"
 
+#ifndef WASM_BUILD
+
+#include "../../onnx/onnx_get_names_utils.hpp"
 #include <onnxruntime_cxx_api.h>
+
+#else
+
+#include <emscripten.h>
+
+EM_JS(void, js_create_global_session, (), {
+    createGlobalSession();
+})
+
+EM_JS(void, js_rec_text, (float *input_img, int width, int height), {
+    recText(input_img, width, height);
+})
+
+#endif
 
 #include <format>
 #include <fstream>
@@ -35,6 +51,7 @@ struct paddle_ocr_rec_onnx::impl
         keys_{read_keys(key_files)},
         max_width_{max_width}
     {
+#ifndef WASM_BUILD
         Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "paddle_ocr_rec_onnx");
 
         Ort::SessionOptions session_options;
@@ -47,6 +64,13 @@ struct paddle_ocr_rec_onnx::impl
         onnx_utils_.process(*session_);        
         onnx_utils_.input_node_dims()[0] = 1;
         onnx_utils_.input_node_dims()[2] = dist_height_;
+
+        onnx_utils_.print_model_details();
+#endif
+
+#ifdef WASM_BUILD
+        js_create_global_session();
+#endif
 
         keys_.insert(keys_.begin(), "#"); // blank char for ctc
         keys_.push_back(" ");
@@ -69,6 +93,7 @@ struct paddle_ocr_rec_onnx::impl
         }        
     }
 
+#ifndef WASM_BUILD
     auto create_input_tensor()
     {        
         return Ort::Value::CreateTensor<float>(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault),
@@ -87,6 +112,7 @@ struct paddle_ocr_rec_onnx::impl
                              onnx_utils_.output_node_names().data(),
                              1);
     }
+#endif
 
     void predict(cv::Mat const &mat, std::vector<TextBox> &boxes)
     {
@@ -97,6 +123,14 @@ struct paddle_ocr_rec_onnx::impl
             auto resize_img = crnn_resize_img(crop_img, wh_ratio, dist_height_, max_width_);
             normalize(resize_img);
 
+#ifdef WASM_BUILD
+            js_rec_text(input_data_.data(), resize_img.cols, resize_img.rows);
+#endif
+
+#ifndef WASM_BUILD
+            //for(auto const &val : onnx_utils_.input_node_dims()){
+            //    std::cout<<val<<std::endl;
+            //}
             onnx_utils_.input_node_dims()[3] = resize_img.cols;
 
             auto input_tensor = create_input_tensor();
@@ -131,6 +165,7 @@ struct paddle_ocr_rec_onnx::impl
             if(count != 0){
                 tbox.score /= count;
             }
+#endif
         }
     }
 
@@ -138,8 +173,11 @@ struct paddle_ocr_rec_onnx::impl
     std::vector<std::string> keys_;
     std::vector<float> input_data_;
     int max_width_;
+
+#ifndef WASM_BUILD
     onnx_get_names_utils onnx_utils_;
     std::unique_ptr<Ort::Session> session_;
+#endif
 };
 
 paddle_ocr_rec_onnx::paddle_ocr_rec_onnx(std::string const &model_weights,
