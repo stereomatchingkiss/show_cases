@@ -152,6 +152,7 @@ void MainWindow::init_widgets_states(QJsonObject const &jobj)
 void MainWindow::resize_window()
 {
 #ifdef WASM_BUILD
+    //A hack solution to avoid layout issue on browser
     showNormal();
     showMaximized();
 #endif

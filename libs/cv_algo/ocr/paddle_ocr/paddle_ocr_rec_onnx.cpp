@@ -88,6 +88,7 @@ struct paddle_ocr_rec_onnx::impl
 #endif
 
 #ifdef WASM_BUILD
+        //Not a safe solution, because the loading process is async, the model may not ready when performing recognition
         js_create_global_session();        
 #endif
         
