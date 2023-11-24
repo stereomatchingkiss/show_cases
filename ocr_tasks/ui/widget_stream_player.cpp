@@ -137,8 +137,7 @@ void widget_stream_player::display_frame(std::any results)
     int const w = ui->labelStream->width();
     int const h = ui->labelStream->height();
 
-    qimg_ = std::move(val.mat_);
-    cv_mat_ = val.cv_mat_;
+    qimg_ = std::move(val.mat_);    
     text_boxes_ = std::move(val.text_boxes_);
     
     last_clicked_row_ = -1;
@@ -149,6 +148,7 @@ void widget_stream_player::display_frame(std::any results)
 
 #ifdef WASM_BUILD
     process_rec_index_ = 0;
+    cv_mat_ = val.cv_mat_;
     if(!text_boxes_.empty()){
         text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
         timer_->start();

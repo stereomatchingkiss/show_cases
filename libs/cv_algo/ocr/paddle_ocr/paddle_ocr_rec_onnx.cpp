@@ -140,7 +140,7 @@ struct paddle_ocr_rec_onnx::impl
             auto const im_size = preprocess(mat, boxes[i].boxPoint);
 
 #ifndef WASM_BUILD
-            onnx_utils_.input_node_dims()[3] = im_size.cols;
+            onnx_utils_.input_node_dims()[3] = im_size.width;
             
             auto input_tensor = create_input_tensor();
             auto output_tensors = create_output_tensor(input_tensor);
@@ -151,19 +151,10 @@ struct paddle_ocr_rec_onnx::impl
             size_t const elem_size = outputInfo.GetShape()[2];
             size_t const candidate = outputInfo.GetShape()[1];
 
-            process_rec_results(boxes[i], floatarr, candidate, elem_size);            
+            process_rec_results(boxes[i], floatarr, candidate, elem_size);
 #endif
         }
-    }
-
-    void predict(TextBox &tbox)
-    {
-        float *floatarr = js_get_global_buffer();
-        int const candidate = js_get_global_candidate_text_size();        
-
-        process_rec_results(tbox, floatarr, candidate);
-        releaseGlobalBuffer();
-    }
+    }    
 
     cv::Size preprocess(cv::Mat const &mat, std::vector<cv::Point> const &box_points)
     {
@@ -175,17 +166,25 @@ struct paddle_ocr_rec_onnx::impl
         return cv::Size(resize_img.cols, resize_img.rows);
     }
 
+#ifdef WASM_BUILD
+    void predict(TextBox &tbox)
+    {
+        float const *floatarr = js_get_global_buffer();
+        int const candidate = js_get_global_candidate_text_size();
+
+        process_rec_results(tbox, floatarr, candidate);
+        releaseGlobalBuffer();
+    }
+
     void async_predict(cv::Mat const &mat, TextBox const &text_boxes)
     {
         auto const im_size = preprocess(mat, text_boxes.boxPoint);
 
-#ifdef WASM_BUILD    
-        js_rec_text(&input_data_[0], im_size.width, im_size.height);                    
-#endif
-
+        js_rec_text(&input_data_[0], im_size.width, im_size.height);
     }
+#endif
     
-    void process_rec_results(TextBox &tbox, float *floatarr, size_t candidate, size_t elem_size = 6625)
+    void process_rec_results(TextBox &tbox, float const *floatarr, size_t candidate, size_t elem_size = 6625)
     {
         size_t last_index = 0;
         int count = 0;
