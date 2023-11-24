@@ -48,15 +48,13 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 setEnabled(true);
 #ifdef WASM_BUILD
-                resize(QSize(600, 600));
-                showFullScreen();
+                resize_window();
 #endif
             });
 #ifdef WASM_BUILD
     connect(widget_stream_player_, &widget_stream_player::resize_window, [this]()
             {
-                resize(QSize(600, 600));
-                showFullScreen();
+                resize_window();
             });
 #endif
 
@@ -151,6 +149,12 @@ void MainWindow::init_widgets_states(QJsonObject const &jobj)
     widget_stream_player_->set_states(jobj[gk.state_widget_stream_player()].toObject());
 }
 
+void MainWindow::resize_window()
+{
+    resize(QSize(600, 600));
+    showFullScreen();
+}
+
 QJsonObject MainWindow::dump_settings() const
 {
     config_read_write crw;
@@ -204,7 +208,7 @@ void MainWindow::on_pushButtonNext_clicked()
         }
     }
 
-    resize(origin_size_);
+    resize_window();
 }
 
 
@@ -220,6 +224,6 @@ void MainWindow::on_pushButtonPrev_clicked()
         ui->pushButtonPrev->setEnabled(false);
     }
 
-    resize(origin_size_);
+    resize_window();
 }
 
