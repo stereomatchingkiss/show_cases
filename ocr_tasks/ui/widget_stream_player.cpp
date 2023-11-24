@@ -292,6 +292,8 @@ void widget_stream_player::on_checkBoxHideImage_stateChanged(int)
             ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
         }
     }
+
+    emit resize_window();
 }
 
 void widget_stream_player::on_checkBoxHideTable_stateChanged(int)
@@ -304,6 +306,8 @@ void widget_stream_player::on_checkBoxHideTable_stateChanged(int)
     }else{
         ui->labelTextArea->clear();
     }
+
+    emit resize_window();
 }
 
 void widget_stream_player::cell_cliked(int row, int)
@@ -499,4 +503,6 @@ void widget_stream_player::on_checkBoxDrawAll_clicked()
             ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
         }
     }
+
+    emit resize_window();
 }
