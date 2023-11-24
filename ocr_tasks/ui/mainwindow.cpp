@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(widget_stream_player_, &widget_stream_player::process_done, [this]()
             {
                 setEnabled(true);
+                updateGeometry();
             });
 
     ui->pushButtonPrev->setEnabled(false);
@@ -57,7 +58,6 @@ MainWindow::MainWindow(QWidget *parent)
     widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());
     widget_stream_player_->set_states(jobj[gk.state_widget_stream_player()].toObject());
 #endif
-    ui->verticalSpacer->changeSize(10, 50);
 
     get_gobject();
 }
