@@ -17,7 +17,8 @@ std::pair<cv::Mat, bool> qimg_convert_to_cvmat_non_copy(QImage &qimg, bool gray_
     }
     case QImage::Format_RGB888:
         return {cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine()), true};
-    case QImage::Format_Indexed8:{
+    case QImage::Format_Indexed8:
+    case QImage::Format_Grayscale8:{
         if(gray_to_color){
             cv::Mat mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC1, qimg.bits(), qimg.bytesPerLine());
             cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
