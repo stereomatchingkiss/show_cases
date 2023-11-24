@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 resize(origin_size_);
             });
+    showFullScreen();
 #endif
 
     ui->pushButtonPrev->setEnabled(false);    
