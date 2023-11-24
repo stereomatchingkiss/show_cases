@@ -48,18 +48,16 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 setEnabled(true);
 #ifdef WASM_BUILD
-                resize(origin_size_);
+                resize(QSize(600, 600));
+                showFullScreen();
 #endif
             });
 #ifdef WASM_BUILD
     connect(widget_stream_player_, &widget_stream_player::resize_window, [this]()
             {
-                resize(origin_size_);
+                resize(QSize(600, 600));
+                showFullScreen();
             });
-    showFullScreen();
-    if(origin_size_.isEmpty()){
-        origin_size_ = size();
-    }
 #endif
 
     ui->pushButtonPrev->setEnabled(false);    
