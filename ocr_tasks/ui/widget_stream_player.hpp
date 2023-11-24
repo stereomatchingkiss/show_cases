@@ -88,7 +88,7 @@ private:
 #ifdef WASM_BUILD
     void update_rec_result();
 
-    flt::cvt::ocr::paddle_ocr_rec_onnx text_rec_;
+    std::unique_ptr<flt::cvt::ocr::paddle_ocr_rec_onnx> text_rec_;
 
     cv::Mat cv_mat_;
     size_t process_rec_index_ = 0;

@@ -57,12 +57,6 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     QWidget(parent)
     ,ui(new Ui::widget_stream_player)
     ,dialog_display_details_{new dialog_display_details(this)}
-#ifdef WASM_BUILD
-    ,text_rec_("ch_PP-OCRv4_rec_infer.onnx",
-                "paddleocr_keys.txt",
-                48,
-                400)
-#endif
 {
     ui->setupUi(this);
 
@@ -192,6 +186,15 @@ QJsonObject widget_stream_player::get_states() const
 
 void widget_stream_player::set_can_save_on_local(bool val)
 {
+#ifdef WASM_BUILD
+    if(!text_rec_){
+        text_rec_ = std::make_unique<flt::cvt::ocr::paddle_ocr_rec_onnx>("ch_PP-OCRv4_rec_infer.onnx",
+                                                                         "paddleocr_keys.txt",
+                                                                         48,
+                                                                         400);
+    }
+#endif
+
     can_save_on_local_ = val;
     ui->pushButtonSelectImage->setVisible(can_save_on_local_);
     ui->pushButtonSave->setVisible(can_save_on_local_);
