@@ -17,3 +17,4 @@
 - The functions defined by EM_JS can only be called in the main thread. In order to avoid program freezing, I had to modify the api and use QTimer to periodically check    whether the prediction results are complete. This increases the complexity of program design.
 - Paddle OCR rec supports arbitrary width of image input, but the image will cause memory overflow if it is too large. The confusing part of this problem is that the error message thrown by onnxruntime is very strange.
 - After the browser performs ocr on a series of images, some buttons will disappear. This problem can be solved by resizing again.
+- Qt for WebAssembly cannot use the system fonts provided by the operating system. The fonts available on the internet are either too large or incomplete.
