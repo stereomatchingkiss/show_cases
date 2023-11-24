@@ -34,6 +34,9 @@ public:
     void display_frame(std::any results);
 
     QJsonObject get_states() const;
+#ifdef WASM_BUILD
+    void init_rec_model();
+#endif
 
     void set_can_save_on_local(bool val);
     void set_states(QJsonObject const &val);

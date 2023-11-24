@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 resize_window();
             });
+    widget_stream_player_->init_rec_model();
 #endif
 
     ui->pushButtonPrev->setEnabled(false);    
