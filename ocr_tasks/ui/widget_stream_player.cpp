@@ -61,7 +61,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     ,text_rec_("ch_PP-OCRv4_rec_infer.onnx",
                "paddleocr_keys.txt",
                48,
-               320)
+               400)
 #endif
 {
     ui->setupUi(this);
@@ -92,9 +92,9 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_headers);
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_contents);
 
-    connect(ui->tableWidgetOcrResult, &QTableWidget::cellClicked, this, &widget_stream_player::cell_cliked);       
+    connect(ui->tableWidgetOcrResult, &QTableWidget::cellClicked, this, &widget_stream_player::cell_cliked);
 
-    update_table_headers();        
+    update_table_headers();
 }
 
 widget_stream_player::~widget_stream_player()
