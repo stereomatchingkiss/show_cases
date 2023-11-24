@@ -18,3 +18,4 @@
 - Paddle OCR rec supports arbitrary width of image input, but the image will cause memory overflow if it is too large. The confusing part of this problem is that the error message thrown by onnxruntime is very strange.
 - After the browser performs ocr on a series of images, some buttons will disappear. This problem can be solved by resizing again.
 - Qt for WebAssembly cannot use the system fonts provided by the operating system. The fonts available on the internet are either too large or incomplete.
+- Onnxruntime uses an asynchronous API to load parameters. You need to set a timer to check if they have been loaded completely, otherwise the program may crash (randomly).

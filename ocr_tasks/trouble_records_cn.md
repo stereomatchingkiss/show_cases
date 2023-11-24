@@ -17,4 +17,4 @@
 - paddle ocr rec支持任意宽度的图像输入，但图像过大会导致记忆体不足，这问题让人感到困惑的地方是onnxruntime抛出来的错误讯息非常奇怪
 - browser对一系列的图像执行ocr后，部分按钮会消失，这问题透过重新呼叫resize就能解决
 - Qt for webassembly无法使用OS自带的ttf，网路上能找到的ttf不是太大，就是字体不齐全
-- 初次载入的时候，有几率出现webassembly module载入不完整的问题，这可能是因为onnxruntime使用了async api载入的关系？目前还不晓得如何解决
+- onnxruntime使用非同步的api载入参数，需要另外设置一个timer来检查是否已经载入完毕，否则程序有可能崩溃（随机）
