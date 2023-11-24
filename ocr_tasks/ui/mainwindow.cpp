@@ -57,6 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
                 resize(origin_size_);
             });
     showFullScreen();
+    if(origin_size_.isEmpty()){
+        origin_size_ = size();
+    }
 #endif
 
     ui->pushButtonPrev->setEnabled(false);    
@@ -139,9 +142,6 @@ void MainWindow::action_warning(bool)
 
 void MainWindow::display_frame(std::any val)
 {
-    if(origin_size_.isEmpty()){
-        origin_size_ = size();
-    }
     setEnabled(false);
     widget_stream_player_->display_frame(std::move(val));
 }
