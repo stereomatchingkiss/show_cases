@@ -27,6 +27,10 @@ EM_JS(int, js_get_global_buffer_available, (), {
     return getGlobalBufferAvailable();
 })
 
+EM_JS(int, js_get_global_onnx_session_available, (), {
+    return getGlobalOnnxSessionAvailable();
+})
+
 EM_JS(void, js_release_global_buffer, (), {
     releaseGlobalBuffer();
 })
@@ -238,6 +242,11 @@ paddle_ocr_rec_onnx::~paddle_ocr_rec_onnx()
 }
 
 #ifdef WASM_BUILD
+
+bool paddle_ocr_rec_onnx::onnx_model_ready() const
+{
+    return js_get_global_onnx_session_available();
+}
 
 void paddle_ocr_rec_onnx::predict(TextBox &text_boxes)
 {

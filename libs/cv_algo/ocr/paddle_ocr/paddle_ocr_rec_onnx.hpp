@@ -19,6 +19,7 @@ public:
 
 #ifdef WASM_BUILD
     bool predict_results_available() const;
+    bool onnx_model_ready() const;
     void async_predict(cv::Mat const &mat, TextBox const &text_boxes);
     void predict(TextBox &text_boxes);
 #else

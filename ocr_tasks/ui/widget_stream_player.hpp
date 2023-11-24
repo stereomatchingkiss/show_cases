@@ -86,6 +86,7 @@ private:
     std::vector<flt::cvt::ocr::TextBox> text_boxes_;
 
 #ifdef WASM_BUILD
+    void start_text_rec_process();
     void update_rec_result();
 
     std::unique_ptr<flt::cvt::ocr::paddle_ocr_rec_onnx> text_rec_;
@@ -93,6 +94,7 @@ private:
     cv::Mat cv_mat_;
     size_t process_rec_index_ = 0;
     QTimer *timer_;
+    QTimer *timer_model_ready_;
 #endif    
 };
 

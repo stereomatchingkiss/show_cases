@@ -18,9 +18,14 @@ function getGlobalCandidateTextSize()
     return global_candidate_text_size;
 }
 
+function getGlobalOnnxSessionAvailable()
+{
+    return global_onnx_session != null;
+}
+
 function releaseGlobalBuffer()
 {
-    if(global_buffer != null){              
+    if(global_buffer != null){
         qtLoader.module()._free(global_buffer)
         global_buffer = null;
     }
@@ -35,19 +40,19 @@ async function recOcrText(img, width, height)
     qmodule = qtLoader.module();
     total_pixels = width * height * 3
     input_data = new Float32Array(total_pixels);
-    for(var i = 0; i != total_pixels; ++i){     
-        input_data[i] = qmodule.HEAPF32[img/Float32Array.BYTES_PER_ELEMENT + i];        
+    for(var i = 0; i != total_pixels; ++i){
+        input_data[i] = qmodule.HEAPF32[img/Float32Array.BYTES_PER_ELEMENT + i];
     }
 
     const input_tensor = new ort.Tensor('float32', input_data, [1, 3, height, width]);
     const feeds = { "x": input_tensor};
     const results = await global_onnx_session.run(feeds);
-    
+
     output_data = results["softmax_11.tmp_0"].data
     global_candidate_text_size = output_data.length / 6625;
-    
-    global_buffer = qmodule._malloc(output_data.length * Float32Array.BYTES_PER_ELEMENT);    
-    qmodule.HEAPF32.set(output_data, global_buffer >> 2);        
+
+    global_buffer = qmodule._malloc(output_data.length * Float32Array.BYTES_PER_ELEMENT);
+    qmodule.HEAPF32.set(output_data, global_buffer >> 2);
 
     global_buffer_available = true;
 }
@@ -58,6 +63,6 @@ function global_buffer_ready()
 }
 
 async function createGlobalSession()
-{    
-    global_onnx_session = await ort.InferenceSession.create('./ch_PP-OCRv4_rec_infer.onnx');    
+{
+    global_onnx_session = await ort.InferenceSession.create('./ch_PP-OCRv4_rec_infer.onnx');
 }

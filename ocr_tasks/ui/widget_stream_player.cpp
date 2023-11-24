@@ -77,7 +77,12 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     timer_ = new QTimer(this);
     timer_->setInterval(50);
     timer_->setSingleShot(true);
-    connect(timer_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);    
+    connect(timer_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);
+
+    timer_model_ready_ = new QTimer(this);
+    timer_model_ready_->setInterval(500);
+    timer_model_ready_->setSingleShot(true);
+    connect(timer_model_ready_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);
 #endif
 
     ui->labelProgress->setVisible(false);
@@ -118,6 +123,24 @@ void widget_stream_player::update_rec_result()
         timer_->start();
     }
 }
+
+void widget_stream_player::start_text_rec_process()
+{
+    if(text_rec_->onnx_model_ready()){
+        if(!text_boxes_.empty()){
+            ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
+            ui->progressBar->setMaximum(text_boxes_.size());
+            ui->labelProgress->setVisible(true);
+            ui->progressBar->setVisible(true);
+            text_rec_->async_predict(cv_mat_, text_boxes_[process_rec_index_]);
+            timer_->start();
+        }else{
+            emit process_done();
+        }
+    }else{
+        timer_model_ready_->start();
+    }
+}
 #endif
 
 void widget_stream_player::updated_text_rec_results()
@@ -156,15 +179,10 @@ void widget_stream_player::display_frame(std::any results)
 #ifdef WASM_BUILD
     process_rec_index_ = 0;
     cv_mat_ = val.cv_mat_;
-    if(!text_boxes_.empty()){
-        ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
-        ui->progressBar->setMaximum(text_boxes_.size());    
-        ui->labelProgress->setVisible(true);
-        ui->progressBar->setVisible(true);
-        text_rec_->async_predict(cv_mat_, text_boxes_[process_rec_index_]);
-        timer_->start();
+    if(text_rec_->onnx_model_ready()){
+        start_text_rec_process();
     }else{
-        emit process_done();
+        timer_model_ready_->start();
     }
 #endif    
 
