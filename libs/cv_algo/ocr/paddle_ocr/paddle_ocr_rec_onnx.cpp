@@ -173,7 +173,7 @@ struct paddle_ocr_rec_onnx::impl
         int const candidate = js_get_global_candidate_text_size();
 
         process_rec_results(tbox, floatarr, candidate);
-        releaseGlobalBuffer();
+        js_release_global_buffer();
     }
 
     void async_predict(cv::Mat const &mat, TextBox const &text_boxes)
