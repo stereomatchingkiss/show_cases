@@ -61,8 +61,9 @@ private:
     void cell_cliked(int row, int col);
     void draw_all();
     QPolygon text_box_to_qpolygon(int row) const;
-    QJsonObject text_boxes_to_json() const;
+    QJsonObject text_boxes_to_json() const;    
     void update_clicked_contents(int row);
+    void update_image_label(QImage const &img);
     void update_table_headers();
     void update_table_contents();
 

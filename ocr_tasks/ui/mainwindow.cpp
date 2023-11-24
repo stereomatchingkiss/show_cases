@@ -151,7 +151,6 @@ void MainWindow::init_widgets_states(QJsonObject const &jobj)
 
 void MainWindow::resize_window()
 {
-    resize(QSize(600, 600));
     showMaximized();
 }
 

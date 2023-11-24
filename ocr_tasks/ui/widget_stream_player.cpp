@@ -59,9 +59,9 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     ,dialog_display_details_{new dialog_display_details(this)}
 #ifdef WASM_BUILD
     ,text_rec_("ch_PP-OCRv4_rec_infer.onnx",
-               "paddleocr_keys.txt",
-               48,
-               400)
+                "paddleocr_keys.txt",
+                48,
+                400)
 #endif
 {
     ui->setupUi(this);
@@ -131,7 +131,7 @@ void widget_stream_player::updated_text_rec_results()
     if(!ui->checkBoxHideTable->isChecked()){
         update_table_headers();
         update_table_contents();
-    }    
+    }
 
     if(ui->checkBoxDrawAll->isChecked()){
         draw_all();
@@ -149,17 +149,14 @@ void widget_stream_player::updated_text_rec_results()
 
 void widget_stream_player::display_frame(std::any results)
 {
-    auto val = std::any_cast<paddle_ocr_worker_results>(results);
-    int const w = ui->labelStream->width();
-    int const h = ui->labelStream->height();
-
+    auto val = std::any_cast<paddle_ocr_worker_results>(results);    
     qimg_ = std::move(val.mat_);    
     text_boxes_ = std::move(val.text_boxes_);
     
     last_clicked_row_ = -1;
 
     if(!ui->checkBoxHideImage->isChecked() && !qimg_.isNull()){
-        ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
+        update_image_label(qimg_);
     }
 
 #ifdef WASM_BUILD
@@ -287,9 +284,7 @@ void widget_stream_player::on_checkBoxHideImage_stateChanged(int)
         ui->labelTextArea->setVisible(false);
         ui->labelTextArea->clear();
         if(!qimg_.isNull()){
-            int const w = ui->labelStream->width();
-            int const h = ui->labelStream->height();
-            ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
+            update_image_label(qimg_);
         }
     }
 
@@ -381,9 +376,7 @@ void widget_stream_player::update_clicked_contents(int row)
             clip_pt.setY(std::min(brect.y() + brect.height(), qimg_.height() - 1));
             brect.setBottomRight(clip_pt);
             auto qimg = qimg_.copy(brect);
-            int const w = ui->labelTextArea->width();
-            int const h = std::max(100, ui->labelTextArea->height());
-            ui->labelTextArea->setPixmap(QPixmap::fromImage(qimg).scaled(w, h, Qt::KeepAspectRatio));
+            update_image_label(qimg);
         }
 
         if(!ui->checkBoxHideImage->isChecked()){
@@ -392,10 +385,17 @@ void widget_stream_player::update_clicked_contents(int row)
             painter.setPen(pen_);
             painter.drawPolygon(text_box_to_qpolygon(row));
 
-            int const w = ui->labelStream->width();
-            int const h = ui->labelStream->height();
-            ui->labelStream->setPixmap(QPixmap::fromImage(qimg_copy).scaled(w, h, Qt::KeepAspectRatio));
+            update_image_label(qimg_copy);
         }
+    }
+}
+
+void widget_stream_player::update_image_label(const QImage &img)
+{
+    if(!img.isNull()){
+        int const w = ui->labelStream->width();
+        int const h = std::min(ui->labelStream->height(), height());
+        ui->labelStream->setPixmap(QPixmap::fromImage(img).scaled(w, h, Qt::KeepAspectRatio));
     }
 }
 
@@ -497,11 +497,7 @@ void widget_stream_player::on_checkBoxDrawAll_clicked()
     if(ui->checkBoxDrawAll->isChecked()){
         draw_all();
     }else{
-        if(!qimg_.isNull()){
-            int const w = ui->labelStream->width();
-            int const h = ui->labelStream->height();
-            ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
-        }
+        update_image_label(qimg_);
     }
 
     emit resize_window();
