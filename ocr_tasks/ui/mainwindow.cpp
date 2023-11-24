@@ -52,8 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
             });
 
-    ui->pushButtonPrev->setEnabled(false);
-    origin_size_ = size();
+    ui->pushButtonPrev->setEnabled(false);    
 
 #ifndef WASM_BUILD
     auto const jobj = config_read_write().read(global_keywords().cam_config_path() + "/cam0.json");
@@ -133,6 +132,9 @@ void MainWindow::action_warning(bool)
 
 void MainWindow::display_frame(std::any val)
 {
+    if(origin_size_.isEmpty()){
+        origin_size_ = size();
+    }
     setEnabled(false);
     widget_stream_player_->display_frame(std::move(val));
 }
