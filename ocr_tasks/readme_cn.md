@@ -10,7 +10,7 @@
 
 - 本ocr网页支持简体中文，繁体中文和英文
 - 使用的模型为 [paddle ocr v4](https://github.com/PaddlePaddle/PaddleOCR)
-- 提供简单好用的物件检测工具，满足日常需求
+- 提供简单好用的ocr工具，满足日常需求
 
 # 使用的第三方软件
 

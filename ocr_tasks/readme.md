@@ -10,7 +10,7 @@ English | [简体中文](./readme_cn.md)
 
 - This OCR web page supports simplified Chinese, traditional Chinese, and English.
 - The model used is [paddle ocr v4](https://github.com/PaddlePaddle/PaddleOCR)
-- Provides simple and easy-to-use object detection tools to meet daily needs.
+- Provides simple and easy-to-use ocr tools to meet daily needs.
 
 # Third-party software used
 
