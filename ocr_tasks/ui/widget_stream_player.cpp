@@ -98,10 +98,10 @@ widget_stream_player::~widget_stream_player()
 
 #ifdef WASM_BUILD
 void widget_stream_player::update_rec_result()
-{    
-    if(text_rec_.predict_results_available()){
+{
+    if(text_rec_->predict_results_available()){
         if(process_rec_index_ < text_boxes_.size()){
-            text_rec_.predict(text_boxes_[process_rec_index_]);
+            text_rec_->predict(text_boxes_[process_rec_index_]);
         }
         ++process_rec_index_;
         ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
@@ -111,7 +111,7 @@ void widget_stream_player::update_rec_result()
             cv_mat_ = cv::Mat();
             updated_text_rec_results();            
         }else{
-            text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
+            text_rec_->async_predict(cv_mat_, text_boxes_[process_rec_index_]);
             timer_->start();
         }
     }else{
@@ -160,8 +160,8 @@ void widget_stream_player::display_frame(std::any results)
         ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
         ui->progressBar->setMaximum(text_boxes_.size());    
         ui->labelProgress->setVisible(true);
-        ui->progressBar->setVisible(true);    
-        text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
+        ui->progressBar->setVisible(true);
+        text_rec_->async_predict(cv_mat_, text_boxes_[process_rec_index_]);
         timer_->start();
     }else{
         emit process_done();
