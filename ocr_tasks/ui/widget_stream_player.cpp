@@ -76,6 +76,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     pen_all_.setWidth(3);
 
     font_.setFamily(get_gobject().font_family());
+    qDebug()<<"font family is = "<<font_;
     ui->tableWidgetOcrResult->setFont(font_);
 
 #ifdef WASM_BUILD    
@@ -105,13 +106,16 @@ widget_stream_player::~widget_stream_player()
 void widget_stream_player::update_rec_result()
 {    
     if(text_rec_.predict_results_available()){
-        text_rec_.predict(text_boxes_[process_rec_index_]);        
+        if(process_rec_index_ < text_boxes_.size()){
+            text_rec_.predict(text_boxes_[process_rec_index_]);
+        }
         ++process_rec_index_;
         ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
         ui->progressBar->setValue(process_rec_index_);
         if(process_rec_index_ >= text_boxes_.size()){
             beautify_text_boxes(text_boxes_);
-            updated_text_rec_results();
+            cv_mat_ = cv::Mat();
+            updated_text_rec_results();            
         }else{
             text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
             timer_->start();
@@ -161,13 +165,15 @@ void widget_stream_player::display_frame(std::any results)
 #ifdef WASM_BUILD
     process_rec_index_ = 0;
     cv_mat_ = val.cv_mat_;
-    ui->labelProgress->setVisible(true);
-    ui->progressBar->setVisible(true);
-    ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
-    ui->progressBar->setMaximum(text_boxes_.size());
     if(!text_boxes_.empty()){
+        ui->labelProgress->setText(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
+        ui->progressBar->setMaximum(text_boxes_.size());    
+        ui->labelProgress->setVisible(true);
+        ui->progressBar->setVisible(true);    
         text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
         timer_->start();
+    }else{
+        emit process_done();
     }
 #endif    
 
