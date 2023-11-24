@@ -72,7 +72,7 @@ void paddle_ocr_worker::process_results(std::any frame)
     results.cv_mat_ = mat;
 #endif
 
-    if(qimg.format() == QImage::Format_Indexed8){
+    if(qimg.format() == QImage::Format_Indexed8 || qimg.format() == QImage::Format_Grayscale8){
         qimg = qimg.convertToFormat(QImage::Format_ARGB32);
     }
     results.mat_ = std::move(qimg);
