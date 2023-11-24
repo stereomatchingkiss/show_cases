@@ -196,6 +196,7 @@ QJsonObject widget_stream_player::get_states() const
 void widget_stream_player::set_can_save_on_local(bool val)
 {
     can_save_on_local_ = val;
+    ui->pushButtonSelectImage->setVisible(can_save_on_local_);
     ui->pushButtonSave->setVisible(can_save_on_local_);
 }
 
