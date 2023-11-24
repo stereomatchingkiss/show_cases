@@ -47,10 +47,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(widget_stream_player_, &widget_stream_player::process_done, [this]()
             {
                 setEnabled(true);
-                updateGeometry();
+#ifdef WASM_BUILD
+                resize(origin_size_);
+#endif
             });
 
     ui->pushButtonPrev->setEnabled(false);
+    origin_size_ = size();
 
 #ifndef WASM_BUILD
     auto const jobj = config_read_write().read(global_keywords().cam_config_path() + "/cam0.json");

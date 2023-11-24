@@ -57,6 +57,7 @@ private:
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
+    QSize origin_size_;
     std::shared_ptr<flt::mm::frame_process_controller> process_controller_;
     std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
 };
