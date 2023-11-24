@@ -17,10 +17,12 @@ using namespace flt::cvt::ocr;
 struct paddle_ocr_worker::impl
 {
     impl(config_paddle_ocr_worker const &params) :
-        params_{std::move(params)},
-        text_det_((root_path_ + "ch_PP-OCRv4_det_simple.onnx")),
-        text_rec_((root_path_ + "ch_PP-OCRv4_rec_infer.onnx"),
-                  (root_path_ + "paddleocr_keys.txt"))
+        params_{std::move(params)}
+        ,text_det_((root_path_ + "ch_PP-OCRv4_det_simple.onnx"))
+#ifndef WASM_BUILD
+        ,text_rec_((root_path_ + "ch_PP-OCRv4_rec_infer.onnx"),
+                   (root_path_ + "paddleocr_keys.txt"))
+#endif
     {                
     }
 
@@ -33,7 +35,9 @@ struct paddle_ocr_worker::impl
 #endif
 
     paddle_ocr_det_opencv text_det_;
+#ifndef WASM_BUILD
     paddle_ocr_rec_onnx text_rec_;
+#endif    
 };
 
 paddle_ocr_worker::paddle_ocr_worker(config_paddle_ocr_worker const &params, QObject *parent) :
@@ -51,7 +55,7 @@ paddle_ocr_worker::~paddle_ocr_worker()
 void paddle_ocr_worker::process_results(std::any frame)
 {    
     auto qimg = std::any_cast<QImage>(frame);
-    auto const mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
+    auto mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
 
     if(mat.empty()){
         qDebug()<<"cannot convert qimg with format = "<<qimg.format();
@@ -60,17 +64,13 @@ void paddle_ocr_worker::process_results(std::any frame)
 
     paddle_ocr_worker_results results;
     results.text_boxes_ = impl_->text_det_.predict(mat);
-    impl_->text_rec_.predict(mat, results.text_boxes_);    
-    auto [it_start, it_end] = std::ranges::remove_if(results.text_boxes_, [](auto const &val)
-                                                     {
-                                                         return val.text.empty();
-                                                     });
-    results.text_boxes_.erase(it_start, it_end);
 
-    std::ranges::sort(results.text_boxes_, [](TextBox const &a, TextBox const &b)
-                      {
-                          return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
-                      });
+#ifndef WASM_BUILD
+    impl_->text_rec_.predict(mat, results.text_boxes_);
+    beautify_text_boxes(results.text_boxes_);    
+#else
+    results.cv_mat_ = mat;
+#endif
 
     if(qimg.format() == QImage::Format_Indexed8){
         qimg = qimg.convertToFormat(QImage::Format_ARGB32);

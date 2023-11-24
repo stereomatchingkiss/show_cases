@@ -15,6 +15,11 @@ struct TextLine {
     std::vector<float> charScores;
 };
 
+/**
+ * Remove text box with empty text and sort them from top to down, left to right
+ */
+void beautify_text_boxes(std::vector<TextBox>& text_boxes);
+
 std::vector<cv::Point> getMinBoxes(const std::vector<cv::Point>& inVec, float& minSideLen, float& allEdgeSize);
 float boxScoreFast(const cv::Mat& inMat, const std::vector<cv::Point>& inBox);
 std::vector<cv::Point> unClip(const std::vector<cv::Point>& inBox, float perimeter, float unClipRatio);

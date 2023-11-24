@@ -3,9 +3,14 @@
 
 #include <cv_algo/ocr/paddle_ocr/common.hpp>
 
+#ifdef WASM_BUILD
+#include <cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp>
+#endif
+
 #include <QFont>
 #include <QImage>
 #include <QPen>
+#include <QTimer>
 #include <QWidget>
 
 #include <any>
@@ -13,6 +18,8 @@
 namespace Ui {
 class widget_stream_player;
 }
+
+class QTimer;
 
 class dialog_display_details;
 
@@ -59,6 +66,7 @@ private:
 
     QJsonObject table_contents_to_json() const;
     QString table_contents_to_string() const;
+    void updated_text_rec_results();
 
     void resizeEvent(QResizeEvent *e) override;
 
@@ -71,7 +79,18 @@ private:
     QPen pen_;
     QPen pen_all_;
     QImage qimg_;
+
     std::vector<flt::cvt::ocr::TextBox> text_boxes_;
+
+#ifdef WASM_BUILD
+    void update_rec_result();
+
+    flt::cvt::ocr::paddle_ocr_rec_onnx text_rec_;
+
+    cv::Mat cv_mat_;
+    size_t process_rec_index_ = 0;
+    QTimer *timer_;
+#endif    
 };
 
 #endif // WIDGET_STREAM_PLAYER_HPP

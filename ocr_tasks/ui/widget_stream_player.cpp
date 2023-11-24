@@ -28,6 +28,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QPixmap>
+#include <QTimer>
 
 #include <QResizeEvent>
 
@@ -53,9 +54,13 @@ QString const state_hide_table("state_hide_table");
 }
 
 widget_stream_player::widget_stream_player(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::widget_stream_player),
-    dialog_display_details_{new dialog_display_details(this)}
+    QWidget(parent)
+    ,ui(new Ui::widget_stream_player)
+    ,dialog_display_details_{new dialog_display_details(this)}
+#ifdef WASM_BUILD
+    ,text_rec_("ch_PP-OCRv4_rec_infer.onnx",
+               "paddleocr_keys.txt")
+#endif
 {
     ui->setupUi(this);
 
@@ -71,6 +76,13 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     font_.setFamily(get_gobject().font_family());
     ui->tableWidgetOcrResult->setFont(font_);
 
+#ifdef WASM_BUILD
+    timer_ = new QTimer(this);
+    timer_->setInterval(50);
+    timer_->setSingleShot(true);
+    connect(timer_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);
+#endif    
+
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_headers);
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_contents);
 
@@ -84,21 +96,27 @@ widget_stream_player::~widget_stream_player()
     delete ui;
 }
 
-void widget_stream_player::display_frame(std::any results)
-{
-    auto val = std::any_cast<paddle_ocr_worker_results>(results);
-    int const w = ui->labelStream->width();
-    int const h = ui->labelStream->height();
-
-    qimg_ = std::move(val.mat_);
-    text_boxes_ = std::move(val.text_boxes_);
-
-    last_clicked_row_ = -1;
-
-    if(!ui->checkBoxHideImage->isChecked() && !qimg_.isNull()){
-        ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
+#ifdef WASM_BUILD
+void widget_stream_player::update_rec_result()
+{    
+    if(text_rec_.predict_results_available()){
+        text_rec_.predict(text_boxes_[process_rec_index_]);        
+        ++process_rec_index_;
+        if(process_rec_index_ >= text_boxes_.size()){
+            beautify_text_boxes(text_boxes_);
+            updated_text_rec_results();
+        }else{
+            text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
+            timer_->start();
+        }
+    }else{
+        timer_->start();
     }
+}
+#endif
 
+void widget_stream_player::updated_text_rec_results()
+{
     if(!ui->checkBoxHideTable->isChecked()){
         update_table_headers();
         update_table_contents();
@@ -111,6 +129,35 @@ void widget_stream_player::display_frame(std::any results)
     if(!can_save_on_local_){
         emit send_ocr_results(QJsonDocument(text_boxes_to_json()).toJson(QJsonDocument::Compact));
     }
+}
+
+void widget_stream_player::display_frame(std::any results)
+{
+    auto val = std::any_cast<paddle_ocr_worker_results>(results);
+    int const w = ui->labelStream->width();
+    int const h = ui->labelStream->height();
+
+    qimg_ = std::move(val.mat_);
+    cv_mat_ = val.cv_mat_;
+    text_boxes_ = std::move(val.text_boxes_);
+    
+    last_clicked_row_ = -1;
+
+    if(!ui->checkBoxHideImage->isChecked() && !qimg_.isNull()){
+        ui->labelStream->setPixmap(QPixmap::fromImage(qimg_).scaled(w, h, Qt::KeepAspectRatio));
+    }
+
+#ifdef WASM_BUILD
+    process_rec_index_ = 0;
+    if(!text_boxes_.empty()){
+        text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
+        timer_->start();
+    }    
+#endif    
+
+#ifndef WASM_BUILD
+    updated_text_rec_results();
+#endif    
 }
 
 QJsonObject widget_stream_player::get_states() const

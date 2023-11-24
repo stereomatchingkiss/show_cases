@@ -17,6 +17,20 @@ inline bool compareBoxWidth(const TextBox &a, const TextBox& b)
 
 }
 
+void beautify_text_boxes(std::vector<TextBox>& text_boxes)
+{
+    auto [it_start, it_end] = std::ranges::remove_if(text_boxes, [](auto const &val)
+                                                     {
+                                                         return val.text.empty();
+                                                     });
+    text_boxes.erase(it_start, it_end);
+    
+    std::ranges::sort(text_boxes, [](auto const &a, auto const &b)
+                      {
+                          return std::tie(a.boxPoint[0].y, a.boxPoint[0].x) < std::tie(b.boxPoint[0].y, b.boxPoint[0].x);
+                      });
+}
+
 std::vector<cv::Point> getMinBoxes(const std::vector<cv::Point>& inVec, float& minSideLen, float& allEdgeSize) {
     std::vector<cv::Point> minBoxVec;
     cv::RotatedRect textRect = cv::minAreaRect(inVec);
