@@ -40,6 +40,7 @@ public:
 
 signals:
     void image_selected(std::any img);
+    void process_done();
     void send_ocr_results(QString msg);
 
 private slots:

@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <any>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -41,6 +43,8 @@ private:
     void action_load_settings(bool);
     void action_save_settings(bool);
     void action_warning(bool);
+
+    void display_frame(std::any val);
 
     QJsonObject dump_settings() const;
 

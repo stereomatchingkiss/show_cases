@@ -81,12 +81,16 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     timer_->setInterval(50);
     timer_->setSingleShot(true);
     connect(timer_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);
-#endif    
+#else
+    ui->labelProgress->setVisible(false);
+    ui->progressBar->setVisible(false);
+#endif
+
 
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_headers);
     connect(dialog_display_details_, &QDialog::accepted, this, &widget_stream_player::update_table_contents);
 
-    connect(ui->tableWidgetOcrResult, &QTableWidget::cellClicked, this, &widget_stream_player::cell_cliked);
+    connect(ui->tableWidgetOcrResult, &QTableWidget::cellClicked, this, &widget_stream_player::cell_cliked);       
 
     update_table_headers();        
 }
@@ -102,6 +106,8 @@ void widget_stream_player::update_rec_result()
     if(text_rec_.predict_results_available()){
         text_rec_.predict(text_boxes_[process_rec_index_]);        
         ++process_rec_index_;
+        ui->labelProgress(QString("%1/%2").arg(QString::number(process_rec_index_), QString::number(text_boxes_.size())));
+        ui->progressBar->setValue(process_rec_index_);
         if(process_rec_index_ >= text_boxes_.size()){
             beautify_text_boxes(text_boxes_);
             updated_text_rec_results();
@@ -129,6 +135,8 @@ void widget_stream_player::updated_text_rec_results()
     if(!can_save_on_local_){
         emit send_ocr_results(QJsonDocument(text_boxes_to_json()).toJson(QJsonDocument::Compact));
     }
+
+    emit process_done();
 }
 
 void widget_stream_player::display_frame(std::any results)
@@ -149,6 +157,8 @@ void widget_stream_player::display_frame(std::any results)
 #ifdef WASM_BUILD
     process_rec_index_ = 0;
     cv_mat_ = val.cv_mat_;
+    ui->labelProgress(QString("%1/%2").arg(QString::number(0), QString::number(text_boxes_.size())));
+    ui->progressBar->setMaximum(text_boxes_.size());
     if(!text_boxes_.empty()){
         text_rec_.async_predict(cv_mat_, text_boxes_[process_rec_index_]);
         timer_->start();
@@ -156,7 +166,7 @@ void widget_stream_player::display_frame(std::any results)
 #endif    
 
 #ifndef WASM_BUILD
-    updated_text_rec_results();
+    updated_text_rec_results();    
 #endif    
 }
 

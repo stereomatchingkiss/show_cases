@@ -44,6 +44,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::action_save_settings);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
 
+    connect(widget_stream_player_, &widget_stream_player::process_done, [this]()
+            {
+                setEnabled(true);
+            });
+
     ui->pushButtonPrev->setEnabled(false);
 
 #ifndef WASM_BUILD
@@ -122,6 +127,12 @@ void MainWindow::action_warning(bool)
                                           "use of this software."));
 }
 
+void MainWindow::display_frame(std::any val)
+{
+    setEnabled(false);
+    widget_stream_player_->display_frame(std::move(val));
+}
+
 void MainWindow::init_widgets_states(QJsonObject const &jobj)
 {
     global_keywords gk;
@@ -161,7 +172,7 @@ void MainWindow::on_pushButtonNext_clicked()
             connect(widget_stream_player_, &widget_stream_player::image_selected,
                     process_controller_.get(), &frame_process_controller::predict);
             connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                    widget_stream_player_, &widget_stream_player::display_frame);
+                    this, &MainWindow::display_frame);
             emit process_controller_->start();
         }else{
             widget_stream_player_->set_can_save_on_local(false);
