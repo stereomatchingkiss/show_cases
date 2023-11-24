@@ -51,6 +51,12 @@ MainWindow::MainWindow(QWidget *parent)
                 resize(origin_size_);
 #endif
             });
+#ifdef WASM_BUILD
+    connect(widget_stream_player_, &widget_stream_player::resize_window, [this]()
+            {
+                resize(origin_size_);
+            });
+#endif
 
     ui->pushButtonPrev->setEnabled(false);    
 
