@@ -15,5 +15,5 @@
 - onnxruntime的c++接口很容易和其他库产生各种冲突，建议直接使用js版本
 - EM_JS定义的函数只能在main thread中呼叫， 为了避免程序freeze，只好修改api，使用QTimer周期性的检查预测结果是否已经完成，这增加了程序设计的复杂度
 - paddle ocr rec支持任意宽度的图像输入，但图像过大会导致记忆体不足，这问题让人感到困惑的地方是onnxruntime抛出来的错误讯息非常奇怪
-- browser对一系列的图像执行ocr后，部分按钮会消失，这问题透过重新resize就能解决
+- browser对一系列的图像执行ocr后，部分按钮会消失，这问题透过重新呼叫resize就能解决
 - Qt for webassembly无法使用OS自带的ttf，网路上能找到的ttf不是太大，就是字体不齐全
