@@ -204,6 +204,8 @@ void MainWindow::on_pushButtonNext_clicked()
             sfwmw_->start();
         }
     }
+
+    resize(origin_size_);
 }
 
 
@@ -218,5 +220,7 @@ void MainWindow::on_pushButtonPrev_clicked()
         ui->pushButtonNext->setEnabled(true);
         ui->pushButtonPrev->setEnabled(false);
     }
+
+    resize(origin_size_);
 }
 
