@@ -82,7 +82,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     timer_model_ready_ = new QTimer(this);
     timer_model_ready_->setInterval(500);
     timer_model_ready_->setSingleShot(true);
-    connect(timer_model_ready_, &QTimer::timeout, this, &widget_stream_player::update_rec_result);
+    connect(timer_model_ready_, &QTimer::timeout, this, &widget_stream_player::start_text_rec_process);
 #endif
 
     ui->labelProgress->setVisible(false);
