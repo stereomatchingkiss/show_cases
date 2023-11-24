@@ -400,7 +400,9 @@ void widget_stream_player::update_clicked_contents(int row)
             clip_pt.setY(std::min(brect.y() + brect.height(), qimg_.height() - 1));
             brect.setBottomRight(clip_pt);
             auto qimg = qimg_.copy(brect);
-            update_image_label(qimg);
+            int const w = ui->labelTextArea->width();
+            int const h = ui->labelTextArea->height();
+            ui->labelTextArea->setPixmap(QPixmap::fromImage(qimg).scaled(w, h, Qt::KeepAspectRatio));
         }
 
         if(!ui->checkBoxHideImage->isChecked()){
@@ -418,7 +420,7 @@ void widget_stream_player::update_image_label(const QImage &img)
 {
     if(!img.isNull()){
         int const w = ui->labelStream->width();
-        int const h = std::min(ui->labelStream->height(), height());
+        int const h = ui->labelStream->height();
         ui->labelStream->setPixmap(QPixmap::fromImage(img).scaled(w, h, Qt::KeepAspectRatio));
     }
 }
