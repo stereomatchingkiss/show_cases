@@ -151,8 +151,10 @@ void MainWindow::init_widgets_states(QJsonObject const &jobj)
 
 void MainWindow::resize_window()
 {
+#ifdef WASM_BUILD
     showNormal();
     showMaximized();
+#endif
 }
 
 QJsonObject MainWindow::dump_settings() const
