@@ -35,7 +35,7 @@ English | [简体中文](./readme_cn.md)
 - [Video tutorial](https://youtu.be/30p-nRqsVss)
 - ![Example 1](./imgs/ocr_00.png)
 - ![Example 2](./imgs/ocr_01.png)
-- ![Example 3](./imgs/ocr_03.png)
+- ![Example 3](./imgs/ocr_02.png)
 - ![Save the results](./imgs/save_to_json_00.png)
 
 # Future plans

@@ -35,7 +35,7 @@
 - [影片教学](https://youtu.be/30p-nRqsVss)
 - ![例子1](./imgs/ocr_00.png)
 - ![例子2](./imgs/ocr_01.png)
-- ![例子3](./imgs/ocr_03.png)
+- ![例子3](./imgs/ocr_02.png)
 - ![存下结果](./imgs/save_to_json_00.png)
 
 # 将来的打算
