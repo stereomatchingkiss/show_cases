@@ -478,7 +478,7 @@ QJsonObject widget_stream_player::table_contents_to_json() const
     QJsonArray arr;
     for(int i = 0; i != ui->tableWidgetOcrResult->rowCount(); ++i){
         QJsonObject obj;
-        obj["text"] = ui->tableWidgetOcrResult->item(i, table_tag::text)->text();
+        obj["text"] = ui->tableWidgetOcrResult->item(i, table_tag::text)->text().remove("\r");
 
         if(alert_config.show_location_){
             obj["tl"] = ui->tableWidgetOcrResult->item(i, table_tag::tl)->text();
