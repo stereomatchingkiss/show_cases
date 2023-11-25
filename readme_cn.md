@@ -24,14 +24,15 @@
 # 各资料夹的说明
 
 - [generic_cv_task](https://github.com/stereomatchingkiss/object_detection_and_alarm)，一个支持物件检测、跟踪、计数、区域警报、警报记录的webapp
+- [ocr_tasks](./ocr_tasks),支援ocr的webapp
 - [libs](./libs), 各webapp的通用库
-- [python_tools](.python_tools)，收集各种为了webaapp而设计的简易程序
+- [python_tools](./python_tools)，收集各种为了webaapp而设计的简易程序
 - [simple_downloader](./simple_downloader), 这是我为了收集资料而写的一个小程序
-- [ocr_tasks](./ocr_tasks),开发中的webapp，支援简单的ocr功能
 
 # 范例
 
 - [generic_cv_task的影像](https://youtu.be/TNancuXjlcM)
+- [ocr_tasks的影像](https://youtu.be/30p-nRqsVss)
 
 # 将来的打算
 

@@ -24,14 +24,15 @@ English | [简体中文](./readme_cn.md)
 
 # Explanation of each folder
 
-- [generic_cv_task](https://github.com/stereomatchingkiss/object_detection_and_alarm), a webapp that supports object detection, tracking, counting, area alarm, and alarm recording.
+- [generic_cv_task](./generic_cv_tasks/), a webapp that supports object detection, tracking, counting, area alarm, and alarm recording.
+- [ocr_tasks](./ocr_tasks/), a webapp supports ocr
 - [libs](./libs), the common library for all webapp.
-- [python_tools](.python_tools)， collects various simple programs designed for webaapp.
+- [python_tools](./python_tools)， collects various simple programs designed for webaapp.
 - [simple_downloader](./simple_downloader), this is a small program I wrote to collect data.
-- [ocr_tasks](./ocr_tasks), a webapp under development that supports simple OCR functions(ex : batch process of images).
 
 # Examples
 - [video of generic_cv_task](https://youtu.be/TNancuXjlcM)
+- [video of ocr_tasks](https://youtu.be/30p-nRqsVss)
 
 # Future plans
 
