@@ -36,7 +36,7 @@ English | [简体中文](./readme_cn.md)
 
 # Future plans
 
-- OCR
+- Generic object classification with one shot learning
 - Face recognition
 - Emotion, age, and gender recognition and alarm
 - Fall detection
