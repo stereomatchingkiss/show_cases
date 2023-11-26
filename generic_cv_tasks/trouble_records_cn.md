@@ -12,5 +12,3 @@
 - opencv的webassembly版不支援highgui和imgcodecs，这代表videoCapture, imread都无法使用
 - Qt的MediaPlayer，QCamera在浏览器上的运行效果不佳，属于最好别用的水准
 - Github pages不支援sharedArray buffer，不得已只好选择netlify
-
-翻译成英文
