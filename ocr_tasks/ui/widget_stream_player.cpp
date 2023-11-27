@@ -209,7 +209,7 @@ void widget_stream_player::init_rec_model()
         text_rec_ = std::make_unique<flt::cvt::ocr::paddle_ocr_rec_onnx>("ch_PP-OCRv4_rec_infer.onnx",
                                                                          "paddleocr_keys.txt",
                                                                          48,
-                                                                         400);
+                                                                         416);
     }
 }
 #endif
