@@ -503,7 +503,7 @@ QString widget_stream_player::table_contents_to_string() const
 {
     QString result;
     for(int i = 0; i != ui->tableWidgetOcrResult->rowCount(); ++i){
-        result += ui->tableWidgetOcrResult->item(i, table_tag::text)->text() + "\n";
+        result += ui->tableWidgetOcrResult->item(i, table_tag::text)->text().remove("\r") + "\n";
     }
 
     return result;
