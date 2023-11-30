@@ -7,10 +7,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setOrganizationName("ThamSoft");
-    QCoreApplication::setApplicationName("GenericCVTasks");
+    QCoreApplication::setApplicationName("SimpleDownloader");
 
     MainWindow w;
-    w.show();    
+    w.show();
 
     return a.exec();
 }

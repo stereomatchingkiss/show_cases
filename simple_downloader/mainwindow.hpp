@@ -6,12 +6,13 @@
 #include <QMainWindow>
 #include <QString>
 
+#include <set>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-#include <set>
-#include <map>
+class widget_download_imgs_from_flist;
 
 class MainWindow : public QMainWindow
 {
@@ -22,7 +23,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButtonDownload_clicked();
+    void on_comboBoxFunctions_activated(int index);
 
 private:
     void check_image_existence(QString const &url);
@@ -34,11 +35,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    size_t error_count_;
-    ocv::net::download_supervisor *manager_;
-    size_t total_count_;
-    std::set<QString> urls_;
-
-    QFile *file_;
+    QWidget *widget_;
 };
 #endif // MAINWINDOW_HPP
