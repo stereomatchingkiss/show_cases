@@ -31,6 +31,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         widget_download_imgs_from_flist.hpp widget_download_imgs_from_flist.cpp widget_download_imgs_from_flist.ui
+        widget_gdrive_downloader.hpp widget_gdrive_downloader.cpp widget_gdrive_downloader.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_downloader APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
