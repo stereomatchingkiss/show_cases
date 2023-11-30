@@ -35,6 +35,7 @@ private:
 
     Ui::MainWindow *ui;
 
+    int current_index_ = 0;
     QWidget *widget_;
 };
 #endif // MAINWINDOW_HPP
