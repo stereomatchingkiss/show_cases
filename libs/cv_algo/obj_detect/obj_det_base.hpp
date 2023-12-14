@@ -14,10 +14,10 @@ public:
     virtual ~obj_det_base();
 
     virtual std::vector<box_info> predict(cv::Mat const &rgb,
-                                          float score_threshold = 0.4f,
-                                          float nms_threshold = 0.5f,
-                                          int rotation_angle = 0,
-                                          bool hflip = false) = 0;
+                                          float score_threshold,
+                                          float nms_threshold,
+                                          int rotation_angle,
+                                          bool hflip) = 0;
 
 };
 
