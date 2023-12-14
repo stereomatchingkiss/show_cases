@@ -109,7 +109,7 @@ std::vector<TextBox> paddle_ocr_det_opencv::predict(const cv::Mat &input)
     auto pred_map_ptr = pred_map.ptr<float>(0);
     for(int i = 0; i < shape_out[2] * shape_out[3]; ++i) {
         pred_map_ptr[i] = static_cast<float>(outptr[i]);
-        cbuf_map_ptr[i] = static_cast<unsigned char>((outptr[i]) * 255);
+        cbuf_map_ptr[i] = cv::saturate_cast<unsigned char>((outptr[i]) * 255);
     }
 
     //binary_map_thresh
