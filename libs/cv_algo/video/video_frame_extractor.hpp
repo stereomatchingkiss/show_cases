@@ -15,7 +15,7 @@ public:
     bool enough_frames() const noexcept;
     void extract(cv::Mat const &bgr);
 
-    cv::Mat const& get_output_blob() const noexcept;
+    cv::Mat const& get_output_blob();
     int get_target_size() const noexcept;
     int get_frames_per_batch() const noexcept;    
 

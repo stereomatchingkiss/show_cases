@@ -45,7 +45,7 @@ const std::vector<cv::Mat> &video_frame_extractor::get_blobs() const noexcept
     return input_blobs_;
 }
 
-const cv::Mat &video_frame_extractor::get_output_blob() const noexcept
+const cv::Mat &video_frame_extractor::get_output_blob()
 {
     cv::dnn::blobFromImages(input_blobs_, output_blob_);
 
