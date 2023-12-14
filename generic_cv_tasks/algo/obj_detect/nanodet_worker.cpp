@@ -160,8 +160,11 @@ struct nanodet_worker::impl
 
     auto track_obj(cv::Mat &mat)
     {
-        auto det_results = net_->predict(mat, config_.config_object_detect_model_select_.confidence_,
-                                         config_.config_object_detect_model_select_.nms_);
+        auto det_results = net_->predict(mat,
+                                         config_.config_object_detect_model_select_.confidence_,
+                                         config_.config_object_detect_model_select_.nms_,
+                                         0,
+                                         false);
         remove_invalid_target(det_results);
         auto track_obj = box_info_to_byte_track_obj(det_results);
         auto const track_ptr_vec = tracker_.update(track_obj);

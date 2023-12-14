@@ -45,13 +45,13 @@ public:
     std::vector<box_info> predict_with_resize_image(cv::Mat const &image,
                                                     float score_threshold,
                                                     float nms_threshold,
-                                                    int rotation_angle = 0,
-                                                    bool hflip = false);
+                                                    int rotation_angle,
+                                                    bool hflip);
     std::vector<box_info> predict(cv::Mat const &image,
                                   float score_threshold,
                                   float nms_threshold,
-                                  int rotation_angle = 0,
-                                  bool hflip = false) override;    
+                                  int rotation_angle,
+                                  bool hflip) override;
 
 private:
     std::unique_ptr<nanodet_raw_ncnn> net_;
