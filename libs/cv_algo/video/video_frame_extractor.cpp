@@ -4,9 +4,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <iostream>
-#include <format>
-
 namespace flt::cvt::video{
 
 video_frame_extractor::video_frame_extractor(int sampling_rate_, int num_seg) :
