@@ -43,8 +43,7 @@ using namespace flt::mm;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , widget_alert_sender_settings_(new widget_alert_sender_settings)
+    , ui(new Ui::MainWindow)    
     , msg_box_(new QMessageBox(this))
     , timer_(new QTimer(this))
     , websocket_(std::make_unique<flt::net::websocket_client_controller>())
@@ -62,9 +61,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::save_settings);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
-    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked, [this](auto const &val)
+    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked, [this](auto const &val)
             {
-                if(widget_alert_sender_settings_->get_config().activate_){
+                if(get_widget_alert_sender_settings().get_config().activate_){
                     emit websocket_->reopen_if_needed(val.url_);
                 }
             });
@@ -150,7 +149,7 @@ void MainWindow::action_contact_me(bool)
 
 void MainWindow::action_server_call()
 {
-    widget_alert_sender_settings_->show();
+    get_widget_alert_sender_settings().show();
 }
 
 void MainWindow::action_warning(bool)
@@ -225,14 +224,14 @@ void MainWindow::next_page_is_widget_stream_player()
     ui->pushButtonPrev->setEnabled(true);
 
     config_nanodet_worker config;
-    config.config_alert_sender_ = widget_alert_sender_settings_->get_config();
+    config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
     config.roi_ = label_select_roi_->get_norm_rubber_band_rect();
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
 
     auto worker = new nanodet_worker(std::move(config));
-    connect(widget_alert_sender_settings_, &widget_alert_sender_settings::button_ok_clicked,
+    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked,
             worker, &nanodet_worker::change_alert_sender_config);
     connect(worker, &nanodet_worker::send_alert_by_binary, this, &MainWindow::send_alert_by_binary);
     connect(worker, &nanodet_worker::send_alert_by_text, this, &MainWindow::send_alert_by_text);
@@ -241,8 +240,8 @@ void MainWindow::next_page_is_widget_stream_player()
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    if(widget_alert_sender_settings_->get_config().activate_){
-        emit websocket_->reopen_if_needed(widget_alert_sender_settings_->get_config().url_);
+    if(get_widget_alert_sender_settings().get_config().activate_){
+        emit websocket_->reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     }
     create_frame_capture();
     emit process_controller->start();
@@ -289,7 +288,7 @@ QJsonObject MainWindow::dump_settings() const
 {
     config_read_write crw;
     crw.set_roi(label_select_roi_->get_states());
-    crw.set_widget_alert_settings(widget_alert_sender_settings_->get_states());
+    crw.set_widget_alert_settings(get_widget_alert_sender_settings().get_states());
     crw.set_widget_object_detect_model_select(widget_object_detect_model_select_->get_states());
     crw.set_widget_select_object_to_detect(widget_select_object_to_detect_->get_states());
     crw.set_widget_source_selection(widget_source_selection_->get_states());
@@ -323,7 +322,7 @@ void MainWindow::init_widgets_states(const QJsonObject &jobj)
 {
     global_keywords gk;
     label_select_roi_->set_states(jobj[gk.state_roi()].toObject());
-    widget_alert_sender_settings_->set_states(jobj[gk.state_widget_alert_settings()].toObject());
+    get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
     widget_object_detect_model_select_->set_states(jobj[gk.state_widget_object_detect_model_select()].toObject());
     widget_select_object_to_detect_->set_states(jobj[gk.state_widget_select_object_to_detect()].toObject());
     widget_source_selection_->set_states(jobj[gk.state_widget_source_selection()].toObject());

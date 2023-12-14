@@ -9,8 +9,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class widget_alert_sender_settings;
-
 class widget_object_detect_model_select;
 class widget_select_object_to_detect;
 class widget_source_selection;
@@ -81,8 +79,7 @@ private:
     void update_position();
 
     Ui::MainWindow *ui;
-    
-    widget_alert_sender_settings *widget_alert_sender_settings_;
+        
     flt::ui::label_select_roi *label_select_roi_;
     QMessageBox *msg_box_;
     QTimer *timer_;
