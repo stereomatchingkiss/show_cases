@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace ocv::utils{
+namespace flt::utils{
 
 void fps_estimator::clear()
 {

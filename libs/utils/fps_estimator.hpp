@@ -3,7 +3,7 @@
 #include <chrono>
 #include <string>
 
-namespace ocv::utils{
+namespace flt::utils{
 
 /**
  * Estimate fps of algorithm
