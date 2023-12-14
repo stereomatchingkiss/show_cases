@@ -82,8 +82,8 @@ void video_frame_extractor::normalize(cv::Mat const &input, cv::Mat &output) con
         for(int row = 0; row != input.rows; ++row){
             auto input_ptr = input.ptr<uchar>(row);
             auto output_ptr = output.ptr<float>(row);
-            for(int col = 0; col != input.cols; ++col){
-                output_ptr[col * 3 + (channels - i - 1)] = ((input_ptr[col * 3 + i] / 255.0f) - mean_[i]) / scale_[i];
+            for(int col = 0; col < input.cols * 3; col += 3){
+                output_ptr[col + (channels - i - 1)] = ((input_ptr[col + i] / 255.0f) - mean_[i]) / scale_[i];
             }
         }
     }
