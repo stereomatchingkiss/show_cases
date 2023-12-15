@@ -15,7 +15,7 @@ flt::mm::alert_sound_manager &get_alert_sound_manager()
 #endif    
 }
 
-flt::net::websocket_client_controller &get_websocket_controller()
+flt::net::websocket_client_controller& get_websocket_controller()
 {
     return flt::meyers_singleton<flt::net::websocket_client_controller>::get_instance();
 }
