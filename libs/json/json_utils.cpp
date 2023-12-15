@@ -33,6 +33,13 @@ void write_file_to_json(const QJsonObject &obj, const QString &save_as)
     }
 }
 
+void write_file_to_json(const QJsonArray &obj, const QString &save_as)
+{
+    if(QFile save_file(save_as); save_file.open(QIODevice::WriteOnly)){
+        save_file.write(QString(QJsonDocument(obj).toJson()).toUtf8());
+    }
+}
+
 
 
 }
