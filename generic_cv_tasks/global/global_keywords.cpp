@@ -85,3 +85,8 @@ QString global_keywords::state_tracker_alert() const
 {
     return "state_tracker_alert";
 }
+
+QString global_keywords::state_version() const
+{
+    return "state_version";
+}
