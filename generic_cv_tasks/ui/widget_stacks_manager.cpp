@@ -13,7 +13,6 @@
 
 #include "../config/config_alert_sender.hpp"
 #include "../config/config_nanodet_worker.hpp"
-#include "../config/config_read_write.hpp"
 
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"

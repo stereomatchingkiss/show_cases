@@ -6,16 +6,17 @@
 #include "widget_stacks_manager.hpp"
 
 #include "../config/config_alert_sender.hpp"
-#include "../config/config_read_write.hpp"
 
 #include "../global/global_keywords.hpp"
 #include "../global/global_object.hpp"
 
+#include <json/json_utils.hpp>
 #include <network/websocket_client_controller.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     emit get_websocket_controller().initialize();
 
-    setMinimumSize(QSize(600, 400));    
+    setMinimumSize(QSize(600, 400));
 }
 
 MainWindow::~MainWindow()
@@ -85,20 +86,30 @@ void MainWindow::action_warning(bool)
                          "use of this software."));
 }
 
-
-
 void MainWindow::init_stacked_widget()
 {    
     widget_stacks_manager_ = new widget_stacks_manager;
     ui->stackedWidget->addWidget(widget_stacks_manager_);
+
+    init_widgets_states(global_keywords().cam_config_path() + "/cam0.json");
 }
 
 QJsonObject MainWindow::dump_settings() const
 {
-    config_read_write crw;    
-    crw.set_widget_alert_settings(get_widget_alert_sender_settings().get_states());
+    QJsonObject cam_state_obj;
+    global_keywords const gk;
 
-    return crw.dumps();
+    cam_state_obj[gk.cam_name()] = "cam0";
+    cam_state_obj[gk.state_stacks_manager()] = widget_stacks_manager_->get_states();
+
+    QJsonObject obj_out;
+    QJsonArray arr;
+    arr.append(cam_state_obj);
+    obj_out[gk.state_cam_states()] = arr;
+
+    obj_out[gk.state_widget_alert_settings()] = get_widget_alert_sender_settings().get_states();
+
+    return obj_out;
 }
 
 void MainWindow::load_settings(bool)
@@ -119,13 +130,26 @@ void MainWindow::load_settings(bool)
 
 void MainWindow::init_widgets_states(const QString &fname)
 {    
-    init_widgets_states(config_read_write().read(fname));
+    init_widgets_states(flt::json::parse_file_to_jobj(fname));
 }
 
 void MainWindow::init_widgets_states(const QJsonObject &jobj)
 {
-    global_keywords gk;    
-    get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
+    global_keywords const gk;
+    if(jobj.contains(gk.state_cam_states())){
+        if(auto const arr = jobj[gk.state_cam_states()].toArray(); !arr.empty()){
+            for(size_t i = 0; i != arr.size(); ++i){
+                auto const &aobj = arr[i].toObject();
+                if(aobj.contains(gk.state_stacks_manager())){
+                    widget_stacks_manager_->set_states(aobj[gk.state_stacks_manager()].toObject());
+                }
+            }
+        }
+    }
+
+    if(jobj.contains(gk.state_widget_alert_settings())){
+        get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
+    }
 }
 
 void MainWindow::save_settings(bool)
@@ -147,5 +171,5 @@ void MainWindow::save_settings(bool)
 
 void MainWindow::save_settings_to_file(const QString &save_at) const
 {
-    config_read_write().write(dump_settings(), save_at);
+    flt::json::write_file_to_json(dump_settings(), save_at);
 }
