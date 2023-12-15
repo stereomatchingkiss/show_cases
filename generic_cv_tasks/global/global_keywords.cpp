@@ -12,9 +12,19 @@ const QString global_keywords::tracker_alert_path() const
     return generic_cv_tasks_assets() + "/alert/";
 }
 
+QString global_keywords::state_cam_states() const
+{
+    return "state_cam_states";
+}
+
 QString global_keywords::cam_config_path() const
 {
     return generic_cv_tasks_assets() + "/cam_config/";
+}
+
+const QString global_keywords::cam_name() const
+{
+    return "cam_name";
 }
 
 const QString global_keywords::coco_names_path() const
@@ -44,6 +54,11 @@ std::vector<std::string> global_keywords::coco_names() const
 QString global_keywords::state_roi() const
 {
     return "state_roi";
+}
+
+QString global_keywords::state_stacks_manager() const
+{
+    return "state_stacks_manager";
 }
 
 QString global_keywords::state_widget_alert_settings() const
