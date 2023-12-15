@@ -155,7 +155,7 @@ void widget_stacks_manager::init_stacked_widget()
     widget_stream_player_    = new widget_stream_player;
     widget_tracker_alert_    = new widget_tracker_alert;
 
-    global_keywords gk;
+    global_keywords const gk;
     widget_select_object_to_detect_ = new widget_select_object_to_detect(gk.coco_names());
 
     ui->stackedWidget->addWidget(label_select_roi_);
