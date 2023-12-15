@@ -26,6 +26,7 @@ private:
 
     void init_stacked_widget();
 
+    QJsonArray dump_stacks_states() const;
     QJsonObject dump_settings() const;
     void load_settings(bool);
     void init_widgets_states(QString const &fname);

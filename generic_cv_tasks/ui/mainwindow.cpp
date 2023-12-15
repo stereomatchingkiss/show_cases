@@ -94,19 +94,27 @@ void MainWindow::init_stacked_widget()
     init_widgets_states(global_keywords().cam_config_path() + "/cam0.json");
 }
 
-QJsonObject MainWindow::dump_settings() const
+QJsonArray MainWindow::dump_stacks_states() const
 {
     QJsonObject cam_state_obj;
     global_keywords const gk;
-
     cam_state_obj[gk.cam_name()] = "cam0";
     cam_state_obj[gk.state_stacks_manager()] = widget_stacks_manager_->get_states();
 
     QJsonObject obj_out;
     QJsonArray arr;
     arr.append(cam_state_obj);
-    obj_out[gk.state_cam_states()] = arr;
 
+    return arr;
+}
+
+QJsonObject MainWindow::dump_settings() const
+{    
+    global_keywords const gk;
+    QJsonObject obj_out;
+
+    obj_out[gk.state_cam_states()] = dump_stacks_states();
+    obj_out[gk.state_version()] = "2.0";
     obj_out[gk.state_widget_alert_settings()] = get_widget_alert_sender_settings().get_states();
 
     return obj_out;
