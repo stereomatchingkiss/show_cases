@@ -149,7 +149,8 @@ set(PROJECT_SOURCES
         config/config_read_write.hpp config/config_read_write.cpp
         config/config_select_object_to_detect.hpp config/config_select_object_to_detect.cpp
         config/config_source_selection.hpp
-        config/config_tracker_alert.hpp
+        config/config_tasks_selection.hpp
+        config/config_tracker_alert.hpp        
         global/global_keywords.hpp global/global_keywords.cpp
         global/global_object.hpp global/global_object.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
@@ -158,7 +159,10 @@ set(PROJECT_SOURCES
         ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
         ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
+        ui/widget_stacks_object_tracking.hpp ui/widget_stacks_object_tracking.cpp ui/widget_stacks_object_tracking.ui
         ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
+        ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
 
         ${CV_ALGO_SOURCES}
         ${MULTIMEDIA_SOURCE}
@@ -169,7 +173,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
+        ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
