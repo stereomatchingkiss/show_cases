@@ -138,10 +138,12 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
 
 set(PROJECT_SOURCES
         main.cpp
+        algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
         algo/obj_detect/obj_det_worker_results.hpp
+        config/config_action_classify_model_select.hpp
         config/config_alert_sender.hpp
         config/config_nanodet_worker.hpp
         config/config_object_detect_model_select.hpp
@@ -154,15 +156,19 @@ set(PROJECT_SOURCES
         global/global_keywords.hpp global/global_keywords.cpp
         global/global_object.hpp global/global_object.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+        ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui
         ui/widget_alert_sender_settings.hpp ui/widget_alert_sender_settings.cpp ui/widget_alert_sender_settings.ui
-        ui/widget_tracker_alert.hpp ui/widget_tracker_alert.cpp ui/widget_tracker_alert.ui
-        ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
         ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
+        ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
+        ui/widget_select_action_to_classify.hpp ui/widget_select_action_to_classify.cpp ui/widget_select_action_to_classify.ui
+        ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui        
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stacks_action_classify.hpp ui/widget_stacks_action_classify.cpp ui/widget_stacks_action_classify.ui
         ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
         ui/widget_stacks_object_tracking.hpp ui/widget_stacks_object_tracking.cpp ui/widget_stacks_object_tracking.ui
         ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
+        ui/widget_tracker_alert.hpp ui/widget_tracker_alert.cpp ui/widget_tracker_alert.ui
 
         ${CV_ALGO_SOURCES}
         ${MULTIMEDIA_SOURCE}
@@ -173,7 +179,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
