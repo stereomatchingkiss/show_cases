@@ -16,7 +16,6 @@ inline QTime secs_to_qtime(qint64 duration_sec)
     return QTime((duration_sec / 3600) % 60,
                  (duration_sec / 60) % 60,
                  duration_sec % 60);
-
 }
 
 }

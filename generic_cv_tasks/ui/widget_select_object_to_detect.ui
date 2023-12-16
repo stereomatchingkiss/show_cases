@@ -15,11 +15,58 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="labelTitle">
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <bold>true</bold>
+       <underline>true</underline>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Select objects to detect</string>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Select object</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0" colspan="2">
+       <widget class="QPushButton" name="pushButtonSelectAllCategories">
+        <property name="text">
+         <string>Select all categories</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxSelectCategory"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="pushButtonUnSelectAllItemsOfTheCategory">
+        <property name="text">
+         <string>Unselect all items of the category</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="pushButtonUnSelectAllCategories">
+        <property name="text">
+         <string>Unselect all categories</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="sizePolicy">
@@ -32,9 +79,6 @@
          <string>Select category</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBoxSelectCategory"/>
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QTableWidget" name="tableWidget">
@@ -50,31 +94,10 @@
         </column>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButtonSelectAllCategories">
-        <property name="text">
-         <string>Select all categories</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QPushButton" name="pushButtonUnSelectAllCategories">
-        <property name="text">
-         <string>Unselect all categories</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0" colspan="2">
        <widget class="QPushButton" name="pushButtonSelectAllItemsOfTheCategory">
         <property name="text">
          <string>Select all items of the category</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QPushButton" name="pushButtonUnSelectAllItemsOfTheCategory">
-        <property name="text">
-         <string>Unselect all items of the category</string>
         </property>
        </widget>
       </item>
