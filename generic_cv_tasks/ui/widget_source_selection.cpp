@@ -247,6 +247,8 @@ void widget_source_selection::set_states(const QJsonObject &val)
             ui->radioButtonWebsockets->setChecked(true);
             break;
         }
+        default:
+            break;
         }
     }
     if(val.contains(state_video_url)){
