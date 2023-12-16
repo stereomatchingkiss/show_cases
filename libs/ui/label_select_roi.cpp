@@ -12,7 +12,11 @@
 
 namespace flt::ui{
 
+namespace{
+
 QString const state_norm_roi("state_label_select_roi_norm_roi");
+
+}
 
 label_select_roi::label_select_roi(QString const &text, QWidget *parent) :
     QLabel(text, parent)
