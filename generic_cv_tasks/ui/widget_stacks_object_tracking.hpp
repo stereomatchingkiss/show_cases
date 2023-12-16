@@ -31,9 +31,6 @@ public:
     explicit widget_stacks_object_tracking(QWidget *parent = nullptr);
     ~widget_stacks_object_tracking();
 
-    void next_button_clicked();
-    void prev_button_clicked();
-
     QJsonObject get_states() const;
 
     void set_states(QJsonObject const &val);
