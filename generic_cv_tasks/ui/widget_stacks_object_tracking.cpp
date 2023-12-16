@@ -48,9 +48,7 @@ widget_stacks_object_tracking::widget_stacks_object_tracking(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    init_stacked_widget();    
-
-    //setMinimumSize(QSize(600, 400));
+    init_stacked_widget();
 
     timer_->setInterval(1000);
 }
