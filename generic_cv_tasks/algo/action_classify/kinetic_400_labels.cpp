@@ -1,8 +1,8 @@
 #include "kinetic_400_labels.hpp"
 
-std::vector<QString> kinetic_400_labels::get_labels() const
+std::vector<QString> const& kinetic_400_labels::get_labels()
 {
-    return {"abseiling", "air_drumming", "answering_questions", "applauding", "applying_cream", "archery",
+    static std::vector<QString> const labels {"abseiling", "air_drumming", "answering_questions", "applauding", "applying_cream", "archery",
             "arm_wrestling", "arranging_flowers", "assembling_computer", "auctioning", "baby_waking_up",
             "baking_cookies", "balloon_blowing", "bandaging", "barbequing", "bartending",
             "beatboxing", "bee_keeping", "belly_dancing", "bench_pressing", "bending_back",
@@ -82,4 +82,6 @@ std::vector<QString> kinetic_400_labels::get_labels() const
             "waxing_back", "waxing_chest", "waxing_eyebrows", "waxing_legs", "weaving_basket",
             "welding", "whistling", "windsurfing", "wrapping_present", "wrestling",
             "writing", "yawning", "yoga", "zumba"};
+
+    return labels;
 }

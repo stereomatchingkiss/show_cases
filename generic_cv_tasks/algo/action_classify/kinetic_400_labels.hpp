@@ -7,5 +7,5 @@
 class kinetic_400_labels
 {
 public:
-    std::vector<QString> get_labels() const;
+    static std::vector<QString> const& get_labels();
 };
