@@ -25,6 +25,15 @@ widget_roi_selection::widget_roi_selection(QWidget *parent)
     layout_vbox_->addWidget(label_title_);
     layout_vbox_->addWidget(roi_);
 
+    QFont font;
+    font.setBold(true);
+    font.setPointSize(20);
+    font.setKerning(true);
+    font.setUnderline(true);
+    label_title_->setAlignment(Qt::AlignCenter);
+    label_title_->setText(tr("Select roi"));
+    label_title_->setFont(font);
+
     setLayout(layout_vbox_);
 }
 
