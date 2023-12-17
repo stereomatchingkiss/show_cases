@@ -7,6 +7,8 @@ namespace Ui {
 class widget_select_action_to_classify;
 }
 
+struct config_select_action_to_classify;
+
 class QTimer;
 
 class widget_select_action_to_classify : public QWidget
@@ -16,6 +18,11 @@ class widget_select_action_to_classify : public QWidget
 public:
     explicit widget_select_action_to_classify(QWidget *parent = nullptr);
     ~widget_select_action_to_classify();
+
+    config_select_action_to_classify get_config() const;
+
+    QJsonObject get_states() const;
+    void set_states(QJsonObject const &val);
 
 private slots:
     void on_lineEditSearchAction_textChanged(const QString&);

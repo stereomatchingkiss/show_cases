@@ -8,7 +8,8 @@
 
 namespace{
 
-
+QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
+QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
 
 }
 
