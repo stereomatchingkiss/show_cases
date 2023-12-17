@@ -30,13 +30,20 @@ widget_stacks_action_classify::~widget_stacks_action_classify()
 QJsonObject widget_stacks_action_classify::get_states() const
 {
     QJsonObject obj;
+    obj[state_widget_action_classify_model_select] = widget_action_classify_model_select_->get_states();
+    obj[state_widget_select_action_to_classify] = widget_select_action_to_classify_->get_states();
 
     return obj;
 }
 
 void widget_stacks_action_classify::set_states(const QJsonObject &val)
 {
-
+    if(val.contains(state_widget_action_classify_model_select)){
+        widget_action_classify_model_select_->set_states(val[state_widget_action_classify_model_select].toObject());
+    }
+    if(val.contains(state_widget_select_action_to_classify)){
+        widget_select_action_to_classify_->set_states(val[state_widget_select_action_to_classify].toObject());
+    }
 }
 
 void widget_stacks_action_classify::init_stacked_widget()
