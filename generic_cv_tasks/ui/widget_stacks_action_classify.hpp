@@ -9,6 +9,7 @@ class widget_stacks_action_classify;
 
 class widget_action_classify_model_select;
 class widget_select_action_to_classify;
+class widget_source_selection;
 
 class widget_stacks_action_classify : public QWidget
 {
@@ -37,6 +38,7 @@ private:
 
     widget_action_classify_model_select *widget_action_classify_model_select_;
     widget_select_action_to_classify *widget_select_action_to_classify_;
+    widget_source_selection *widget_source_selection_;
 };
 
 #endif // WIDGET_STACKS_ACTION_CLASSIFY_HPP
