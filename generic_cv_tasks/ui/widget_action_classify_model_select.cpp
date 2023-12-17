@@ -67,3 +67,16 @@ QJsonObject widget_action_classify_model_select::get_states() const
 
     return obj;
 }
+
+void widget_action_classify_model_select::set_states(QJsonObject const &val)
+{
+    if(val.contains(state_action_classify_confidence)){
+        ui->spinBoxConfidence->setValue(val[state_action_classify_confidence].toInt());
+    }
+    if(val.contains(state_action_classify_model_type)){
+        ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_action_classify_model_type].toString()));
+    }
+    if(val.contains(state_action_classify_top_k)){
+        ui->spinBoxTopK->setValue(val[state_action_classify_top_k].toInt());
+    }
+}
