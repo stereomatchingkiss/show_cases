@@ -74,9 +74,9 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
-        ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
         ui->pushButtonNext->setVisible(true);
-    }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
+    }else if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
         emit enable_next_button();
     }
 }
