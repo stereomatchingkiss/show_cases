@@ -1,14 +1,10 @@
 #pragma once
 
-#include "../../config/config_alert_sender.hpp"
-#include "../../config/config_nanodet_worker.hpp"
-
 #include <multimedia/camera/frame_process_base_worker.hpp>
-
-#include <QRectF>
 
 #include <memory>
 
+struct config_alert_sender;
 struct config_nanodet_worker;
 
 class nanodet_worker : public flt::mm::frame_process_base_worker

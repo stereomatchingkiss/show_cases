@@ -4,6 +4,7 @@
 
 #include "nanodet_alert_save.hpp"
 
+#include "../../config/config_alert_sender.hpp"
 #include "../../config/config_nanodet_worker.hpp"
 
 #include "../../global/global_keywords.hpp"
@@ -26,6 +27,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include <QDebug>
+#include <QRectF>
 
 #include <format>
 #include <mutex>
