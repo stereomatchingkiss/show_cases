@@ -17,10 +17,8 @@ video_classify_pptsm_opencv::~video_classify_pptsm_opencv()
 
 std::vector<std::tuple<float, size_t>> video_classify_pptsm_opencv::predict(cv::Mat const &input, int top_k)
 {
-    frame_extractor_.extract(input);
-    if(frame_extractor_.enough_frames()){
-        auto const &blobs = frame_extractor_.get_output_blob();
-        net_.setInput(blobs);
+    if(frame_extractor_.extract(input) && frame_extractor_.enough_frames()){
+        net_.setInput(frame_extractor_.get_output_blob());
         auto output = net_.forward();
         softmax(output.ptr<float>(0), output.ptr<float>(0) + 400);
 

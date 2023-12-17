@@ -13,7 +13,7 @@ public:
     explicit video_frame_extractor(int sampling_rate = 25, int num_seg = 8);
 
     bool enough_frames() const noexcept;
-    void extract(cv::Mat const &bgr);
+    bool extract(cv::Mat const &bgr);
 
     cv::Mat const& get_output_blob();
     int get_target_size() const noexcept;
@@ -22,6 +22,7 @@ public:
 private:
     void center_crop(cv::Mat const &input, cv::Mat &crop_img, int target_size) const;
     std::vector<cv::Mat> const& get_blobs() const noexcept;
+    bool is_center_idx() const noexcept;
     /**
      * Not a best practice to combine two functions in one method, but this solution
      * can save useless operations.

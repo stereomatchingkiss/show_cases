@@ -20,12 +20,11 @@ bool video_frame_extractor::enough_frames() const noexcept
     return input_blobs_.size() == num_seg_;
 }
 
-void video_frame_extractor::extract(const cv::Mat &bgr)
+bool video_frame_extractor::extract(const cv::Mat &bgr)
 {
-    if(sampling_rate_ > 1){
-        if((frame_count_ % sampling_rate_) == center_idx_){
-            input_blobs_.emplace_back(preprocess(bgr));
-        }
+    bool const is_center_idx_flag = is_center_idx();
+    if(is_center_idx()){
+        input_blobs_.emplace_back(preprocess(bgr));
     }else{
         input_blobs_.emplace_back(preprocess(bgr));
     }
@@ -35,11 +34,18 @@ void video_frame_extractor::extract(const cv::Mat &bgr)
     }
 
     ++frame_count_;
+
+    return is_center_idx_flag;
 }
 
 const std::vector<cv::Mat> &video_frame_extractor::get_blobs() const noexcept
 {
     return input_blobs_;
+}
+
+bool video_frame_extractor::is_center_idx() const noexcept
+{
+    return sampling_rate_ == 1 || (sampling_rate_ > 1 && (frame_count_ % sampling_rate_) == center_idx_);
 }
 
 const cv::Mat &video_frame_extractor::get_output_blob()
