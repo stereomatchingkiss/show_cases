@@ -4,6 +4,7 @@
 #include "widget_action_classify_model_select.hpp"
 #include "widget_select_action_to_classify.hpp"
 #include "widget_source_selection.hpp"
+#include "widget_stream_player.hpp"
 
 #include <QJsonObject>
 
@@ -12,6 +13,7 @@ namespace{
 QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
 QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
 QString const state_widget_source_selection("state_widget_source_selection");
+QString const state_widget_stream_selection("state_widget_stream_selection");
 
 }
 
@@ -57,10 +59,12 @@ void widget_stacks_action_classify::init_stacked_widget()
     widget_action_classify_model_select_ = new widget_action_classify_model_select;
     widget_select_action_to_classify_ = new widget_select_action_to_classify;
     widget_source_selection_ = new widget_source_selection;
+    widget_stream_player_ = new widget_stream_player;
 
     ui->stackedWidget->addWidget(widget_action_classify_model_select_);
     ui->stackedWidget->addWidget(widget_select_action_to_classify_);
     ui->stackedWidget->addWidget(widget_source_selection_);
+    ui->stackedWidget->addWidget(widget_stream_player_);
 }
 
 void widget_stacks_action_classify::on_pushButtonPrev_clicked()
@@ -69,6 +73,9 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
         ui->stackedWidget->setCurrentWidget(widget_action_classify_model_select_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
+    }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
+        ui->pushButtonNext->setVisible(true);
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
         emit enable_next_button();
     }
@@ -81,6 +88,9 @@ void widget_stacks_action_classify::on_pushButtonNext_clicked()
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+    }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        ui->stackedWidget->setCurrentWidget(widget_stream_player_);
+        ui->pushButtonNext->setVisible(false);
     }
 }
 
