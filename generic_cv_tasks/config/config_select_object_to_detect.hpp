@@ -8,9 +8,5 @@
 
 struct config_select_object_to_detect
 {
-    QJsonObject get_states() const;
-
-    void set_states(QJsonObject const &val);
-
     std::set<std::string> selected_object_;
 };

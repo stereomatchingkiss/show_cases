@@ -104,31 +104,11 @@ void widget_stacks_manager::setup_stacks()
 {
     switch(widget_tasks_selection_->get_config().task_){
     case enum_config_tasks::action_classify:{
-        auto widget = new widget_stacks_action_classify;
-        update_stack_widget(widget);
-        if(stacks_states_.contains(state_stacks_action_classify)){
-            connect(widget,
-                    &widget_stacks_action_classify::enable_next_button,
-                    this,
-                    &widget_stacks_manager::enable_next_button);
-            widget->set_states(stacks_states_[state_stacks_action_classify].toObject());
-        }else{
-            widget->set_states(stacks_states_[state_stacks_action_classify].toObject());
-        }
+        setup_stack_widget(new widget_stacks_action_classify, state_stacks_action_classify);
         break;
     }
-    case enum_config_tasks::object_tracking:{
-        auto widget = new widget_stacks_object_tracking;
-        update_stack_widget(widget);
-        if(stacks_states_.contains(state_stacks_object_tracking)){
-            connect(widget,
-                    &widget_stacks_object_tracking::enable_next_button,
-                    this,
-                    &widget_stacks_manager::enable_next_button);
-            widget->set_states(stacks_states_[state_stacks_object_tracking].toObject());
-        }else{
-            widget->set_states(stacks_states_[state_stacks_object_tracking].toObject());
-        }
+    case enum_config_tasks::object_tracking:{        
+        setup_stack_widget(new widget_stacks_object_tracking, state_stacks_object_tracking);
         break;
     }
     default:{

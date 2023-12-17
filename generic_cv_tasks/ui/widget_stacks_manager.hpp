@@ -31,8 +31,22 @@ private slots:
 private:
     void enable_next_button();
     void init_stacked_widget();
+    template<typename T>
+    void setup_stack_widget(T *widget, QString const &state_key)
+    {        
+        update_stack_widget(widget);
+        connect(widget,
+                &T::enable_next_button,
+                this,
+                &widget_stacks_manager::enable_next_button);
+        if(stacks_states_.contains(state_key)){
+            widget->set_states(stacks_states_[state_key].toObject());
+        }else{
+            widget->set_states(stacks_states_[state_key].toObject());
+        }
+    }
     void setup_stacks();
-    void update_stack_widget(QWidget *widget);
+    void update_stack_widget(QWidget *widget);    
 
     Ui::widget_stacks_manager *ui;
 
