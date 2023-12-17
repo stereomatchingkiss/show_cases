@@ -89,9 +89,9 @@ void widget_select_action_to_classify::search_similar_keywords()
     auto const &labels = kinetic_400_labels::get_labels();
     for(size_t i = 0; i != labels.size(); ++i){
         if(labels[i].contains(ui->lineEditSearchAction->text())){
-            ui->tableWidget->setRowHidden(i, false);
+            ui->tableWidget->setRowHidden(static_cast<int>(i), false);
         }else{
-            ui->tableWidget->setRowHidden(i, true);
+            ui->tableWidget->setRowHidden(static_cast<int>(i), true);
         }
     }
     ui->tableWidget->resizeColumnsToContents();
