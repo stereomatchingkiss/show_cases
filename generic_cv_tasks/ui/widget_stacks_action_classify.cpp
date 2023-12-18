@@ -192,12 +192,12 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
-        ui->pushButtonNext->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);        
         if(sfwmw_){
             sfwmw_ = nullptr;
         }
     }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->pushButtonNext->setVisible(true);
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
         create_roi_select_stream();        
     }else if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
