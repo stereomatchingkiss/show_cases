@@ -21,30 +21,30 @@ std::vector<std::tuple<float, size_t>> video_classify_pptsm_opencv::predict(cv::
         net_.setInput(frame_extractor_.get_output_blob());
         auto output = net_.forward();
         softmax(output.ptr<float>(0), output.ptr<float>(0) + 400);
+        results_.clear();
 
-        std::vector<std::tuple<float, size_t>> results;
         if(top_k == 1){
             auto it = std::max_element(output.ptr<float>(0), output.ptr<float>(0) + output.total());
-            results.emplace_back(*it, std::distance(output.ptr<float>(0), it));
+            results_.emplace_back(*it, std::distance(output.ptr<float>(0), it));
         }else{
-            results.resize(output.total());
+            results_.resize(output.total());
             auto const *out_ptr = output.ptr<float>(0);
-            for(size_t i = 0; i != results.size(); ++i){
-                results[i] = std::make_tuple(out_ptr[i], i);
+            for(size_t i = 0; i != results_.size(); ++i){
+                results_[i] = std::make_tuple(out_ptr[i], i);
             }
 
-            std::ranges::sort(results, [](auto const &lhs, auto const &rhs)
+            std::ranges::sort(results_, [](auto const &lhs, auto const &rhs)
                               {
                 return std::get<0>(lhs) > std::get<0>(rhs);
             });
 
-            results.resize(top_k);
+            results_.resize(top_k);
         }
 
-        return results;
+        return results_;
     }
 
-    return {};
+    return results_;
 }
 
 void video_classify_pptsm_opencv::softmax(float *begin, float *end) const noexcept

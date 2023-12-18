@@ -24,6 +24,7 @@ private:
     video_frame_extractor frame_extractor_;
 
     cv::dnn::Net net_;
+    std::vector<std::tuple<float, size_t>> results_;
 };
 
 }
