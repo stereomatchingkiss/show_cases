@@ -237,5 +237,5 @@ void nanodet_worker::process_results(std::any frame)
 
     results.mat_ = std::move(qimg);
 
-    emit send_process_results(results);
+    emit send_process_results(std::move(results));
 }
