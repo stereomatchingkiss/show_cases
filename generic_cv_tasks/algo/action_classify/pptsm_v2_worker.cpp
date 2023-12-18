@@ -38,14 +38,23 @@ struct pptsm_v2_worker::impl
 #endif
     }
 
+    void print_debug_msg(auto const &results) const
+    {
+        QString debug_str;
+        for(size_t i = 0; i != results.size(); ++i){
+            auto const [confidence, label] = results[i];
+            debug_str += std::format("{}:{:.2f},", labels_[label].toStdString(), confidence).c_str();
+        }
+        qDebug()<<debug_str;
+    }
+
     auto predict(cv::Mat const &input)
     {        
         auto results = net_.predict(input, config_.config_action_classify_model_select_.top_k_);
         auto iters = std::ranges::remove_if(results, [this](auto const &val)
-                               {
-            return std::get<0>(val) < config_.config_action_classify_model_select_.confidence_ ||
-                   config_.config_select_action_to_classify_.selected_object_[std::get<1>(val)] == false;
-        });
+                                            {
+                                                return config_.config_select_action_to_classify_.selected_object_[std::get<1>(val)] == false;
+                                            });
         results.erase(iters.begin(), iters.end());
 
         return results;
@@ -81,13 +90,15 @@ void pptsm_v2_worker::process_results(std::any frame)
     cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
 
     if(auto const results = impl_->predict(mat); !results.empty()){
+        QFont font;
+        auto const font_size = qimg.width() / 20;
+        font.setPixelSize(font_size);
         QPainter painter(&qimg);
         painter.setPen(Qt::blue);
+        painter.setFont(font);
         for(int i = 0; i != results.size(); ++i){
-            float confidence;
-            int label;
-            std::tie(confidence, label) = results[i];
-            painter.drawText(QPoint(0, (i + 1) * 10),
+            auto const [confidence, label] = results[i];
+            painter.drawText(QPoint(0, (i + 1) * font_size),
                              std::format("{}:{:.2f}", impl_->labels_[label].toStdString(), confidence).c_str());
         }
     }
