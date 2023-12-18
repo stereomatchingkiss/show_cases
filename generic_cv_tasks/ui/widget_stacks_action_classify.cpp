@@ -99,7 +99,7 @@ void widget_stacks_action_classify::next_page_is_widget_stream_player()
 
     config_ppstm_v2_worker config;
     config.config_action_classify_model_select_ = widget_action_classify_model_select_->get_config();
-    config.config_action_classify_model_select_ = widget_action_classify_model_select_->get_config();
+    config.config_select_action_to_classify_ = widget_select_action_to_classify_->get_config();
     config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
 
     auto worker = new pptsm_v2_worker(std::move(config));
