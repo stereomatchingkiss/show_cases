@@ -7,10 +7,12 @@
 #include "kinetic_400_labels.hpp"
 
 #include <cv_algo/video/video_classify_pptsm_opencv.hpp>
+#include <utils/qimage_to_cvmat.hpp>
 
 #include <opencv2/imgproc.hpp>
 
 #include <QDebug>
+#include <QPainter>
 
 #include <format>
 
@@ -37,11 +39,8 @@ struct pptsm_v2_worker::impl
     }
 
     auto predict(cv::Mat const &input)
-    {
+    {        
         auto results = net_.predict(input, config_.config_action_classify_model_select_.top_k_);
-        if(!results.empty()){
-            qDebug()<<std::get<0>(results[0])<<","<<labels_[std::get<1>(results[0])];
-        }
         auto iters = std::ranges::remove_if(results, [this](auto const &val)
                                {
             return std::get<0>(val) < config_.config_action_classify_model_select_.confidence_ ||
@@ -78,16 +77,18 @@ void pptsm_v2_worker::change_alert_sender_config(config_alert_sender const &val)
 void pptsm_v2_worker::process_results(std::any frame)
 {
     auto qimg = std::any_cast<QImage>(frame);
-    auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+    auto mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
     cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
 
     if(auto const results = impl_->predict(mat); !results.empty()){
+        QPainter painter(&qimg);
+        painter.setPen(Qt::blue);
         for(int i = 0; i != results.size(); ++i){
             float confidence;
             int label;
             std::tie(confidence, label) = results[i];
-            cv::putText(mat, std::format("{}:{:.2f}", impl_->labels_[label].toStdString(), confidence),
-                        cv::Point(0, (i + 1) * 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(200, 255, 0), 4);
+            painter.drawText(QPoint(0, (i + 1) * 10),
+                             std::format("{}:{:.2f}", impl_->labels_[label].toStdString(), confidence).c_str());
         }
     }
 
