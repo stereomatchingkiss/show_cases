@@ -43,20 +43,33 @@
       <string>General params</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="2">
+       <widget class="QSlider" name="horizontalSliderTopK">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelTopK">
+        <property name="text">
+         <string>Top K</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="labelConfidence">
         <property name="text">
          <string>Confidence</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="spinBoxConfidence">
-        <property name="minimum">
-         <number>10</number>
-        </property>
-        <property name="value">
-         <number>25</number>
         </property>
        </widget>
       </item>
@@ -73,10 +86,13 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelTopK">
-        <property name="text">
-         <string>Top K</string>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="spinBoxConfidence">
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>25</number>
         </property>
        </widget>
       </item>
@@ -93,16 +109,36 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QSlider" name="horizontalSliderTopK">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelSamplingRate">
+        <property name="text">
+         <string>Sampling rate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="spinBoxSamplingRate">
         <property name="minimum">
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>10</number>
+         <number>60</number>
         </property>
         <property name="value">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QSlider" name="horizontalSliderSamplingRate">
+        <property name="minimum">
          <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>60</number>
+        </property>
+        <property name="value">
+         <number>25</number>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -180,8 +216,8 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>96</x>
-     <y>112</y>
+     <x>130</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>142</x>
@@ -202,6 +238,38 @@
     <hint type="destinationlabel">
      <x>110</x>
      <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxSamplingRate</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderSamplingRate</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderSamplingRate</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxSamplingRate</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>144</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>
