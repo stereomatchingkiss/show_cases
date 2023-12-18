@@ -97,3 +97,19 @@ void widget_select_action_to_classify::search_similar_keywords()
     ui->tableWidget->resizeColumnsToContents();
 }
 
+
+void widget_select_action_to_classify::on_pushButtonSelectAll_clicked()
+{
+    for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
+        access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(true);
+    }
+}
+
+
+void widget_select_action_to_classify::on_pushButtonUnSelectUnselectAll_clicked()
+{
+    for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
+        access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(false);
+    }
+}
+

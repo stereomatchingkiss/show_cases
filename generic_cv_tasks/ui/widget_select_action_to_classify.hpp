@@ -27,6 +27,10 @@ public:
 private slots:
     void on_lineEditSearchAction_textChanged(const QString&);
 
+    void on_pushButtonSelectAll_clicked();
+
+    void on_pushButtonUnSelectUnselectAll_clicked();
+
 private:
     void search_similar_keywords();
 
