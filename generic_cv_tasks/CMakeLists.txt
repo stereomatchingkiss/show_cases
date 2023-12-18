@@ -138,22 +138,24 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
 
 set(PROJECT_SOURCES
         main.cpp
+        algo/generic_worker_results.hpp
         algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp
+        algo/action_classify/pptsm_v2_worker.hpp algo/action_classify/pptsm_v2_worker.cpp
         algo/frame_display_worker.hpp algo/frame_display_worker.cpp
         algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
         algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
-        algo/obj_detect/obj_det_worker_results.hpp
         config/config_action_classify_model_select.hpp
         config/config_alert_sender.hpp
         config/config_nanodet_worker.hpp
         config/config_object_detect_model_select.hpp
-        config/object_detect_model_enum.hpp
+        config/config_pptsm_v2_worker.hpp
         config/config_read_write.hpp config/config_read_write.cpp
         config/config_select_action_to_classify.hpp
-        config/config_select_object_to_detect.hpp config/config_select_object_to_detect.cpp
+        config/config_select_object_to_detect.hpp
         config/config_source_selection.hpp
         config/config_tasks_selection.hpp
         config/config_tracker_alert.hpp
+        config/object_detect_model_enum.hpp
         global/global_keywords.hpp global/global_keywords.cpp
         global/global_object.hpp global/global_object.cpp
         ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
@@ -179,7 +181,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
