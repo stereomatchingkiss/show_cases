@@ -3,10 +3,12 @@
 
 #include "widget_alert_sender_settings.hpp"
 #include "widget_action_classify_model_select.hpp"
+#include "widget_roi_selection.hpp"
 #include "widget_select_action_to_classify.hpp"
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
+#include "../algo/frame_display_worker.hpp"
 #include "../algo/action_classify/pptsm_v2_worker.hpp"
 #include "../config/config_pptsm_v2_worker.hpp"
 #include "../global/global_object.hpp"
@@ -23,9 +25,8 @@
 
 #include <network/websocket_client_controller.hpp>
 
-#include <QTimer>
-
 #include <QJsonObject>
+#include <QMessageBox>
 #include <QTimer>
 
 using namespace flt;
@@ -34,6 +35,7 @@ using namespace flt::mm;
 namespace{
 
 QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
+QString const state_widget_roi_selection("state_widget_roi_selection");
 QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
 QString const state_widget_source_selection("state_widget_source_selection");
 
@@ -42,6 +44,7 @@ QString const state_widget_source_selection("state_widget_source_selection");
 widget_stacks_action_classify::widget_stacks_action_classify(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_action_classify),
+    msg_box_{new QMessageBox(this)},
     timer_{new QTimer(this)}
 {
     ui->setupUi(this);
@@ -60,6 +63,7 @@ QJsonObject widget_stacks_action_classify::get_states() const
 {
     QJsonObject obj;
     obj[state_widget_action_classify_model_select] = widget_action_classify_model_select_->get_states();
+    obj[state_widget_roi_selection] = widget_roi_selection_->get_states();
     obj[state_widget_select_action_to_classify] = widget_select_action_to_classify_->get_states();
     obj[state_widget_source_selection] = widget_source_selection_->get_states();
 
@@ -70,6 +74,9 @@ void widget_stacks_action_classify::set_states(const QJsonObject &val)
 {
     if(val.contains(state_widget_action_classify_model_select)){
         widget_action_classify_model_select_->set_states(val[state_widget_action_classify_model_select].toObject());
+    }
+    if(val.contains(state_widget_roi_selection)){
+        widget_roi_selection_->set_states(val[state_widget_roi_selection].toObject());
     }
     if(val.contains(state_widget_select_action_to_classify)){
         widget_select_action_to_classify_->set_states(val[state_widget_select_action_to_classify].toObject());
@@ -82,14 +89,41 @@ void widget_stacks_action_classify::set_states(const QJsonObject &val)
 void widget_stacks_action_classify::init_stacked_widget()
 {
     widget_action_classify_model_select_ = new widget_action_classify_model_select;
+    widget_roi_selection_ = new widget_roi_selection;
     widget_select_action_to_classify_ = new widget_select_action_to_classify;
     widget_source_selection_ = new widget_source_selection;
     widget_stream_player_ = new widget_stream_player;
 
     ui->stackedWidget->addWidget(widget_action_classify_model_select_);
+    ui->stackedWidget->addWidget(widget_roi_selection_);
     ui->stackedWidget->addWidget(widget_select_action_to_classify_);
     ui->stackedWidget->addWidget(widget_source_selection_);
     ui->stackedWidget->addWidget(widget_stream_player_);
+}
+
+void widget_stacks_action_classify::create_roi_select_stream()
+{
+    create_frame_capture();
+    auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
+    connect(process_controller.get(), &frame_process_controller::send_process_results,
+            widget_roi_selection_, &widget_roi_selection::display_frame);
+    emit process_controller->start();
+    sfwmw_->add_listener(process_controller, this);
+    sfwmw_->start();
+}
+
+void widget_stacks_action_classify::next_page_is_label_select_roi()
+{
+    if(!widget_source_selection_->get_is_valid_source()){
+        msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
+        msg_box_->show();
+    }else{
+        ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
+        ui->pushButtonNext->setEnabled(true);
+        ui->pushButtonPrev->setEnabled(true);
+
+        create_roi_select_stream();
+    }
 }
 
 void widget_stacks_action_classify::next_page_is_widget_stream_player()
@@ -101,6 +135,7 @@ void widget_stacks_action_classify::next_page_is_widget_stream_player()
     config.config_action_classify_model_select_ = widget_action_classify_model_select_->get_config();
     config.config_select_action_to_classify_ = widget_select_action_to_classify_->get_config();
     config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
+    config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
 
     auto worker = new pptsm_v2_worker(std::move(config));
     connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked,
@@ -156,9 +191,15 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
         ui->stackedWidget->setCurrentWidget(widget_action_classify_model_select_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
-    }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+    }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
         ui->pushButtonNext->setVisible(true);
+        if(sfwmw_){
+            sfwmw_ = nullptr;
+        }
+    }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
+        create_roi_select_stream();        
     }else if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
         emit enable_next_button();
     }
@@ -172,6 +213,8 @@ void widget_stacks_action_classify::on_pushButtonNext_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        next_page_is_label_select_roi();
+    }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
         next_page_is_widget_stream_player();
     }
 }

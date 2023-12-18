@@ -14,10 +14,12 @@ class single_frame_with_multi_worker_base;
 }
 
 class widget_action_classify_model_select;
+class widget_roi_selection;
 class widget_select_action_to_classify;
 class widget_source_selection;
 class widget_stream_player;
 
+class QMessageBox;
 class QTimer;
 
 class widget_stacks_action_classify : public QWidget
@@ -42,7 +44,9 @@ private slots:
 
 private:
     void create_frame_capture();
+    void create_roi_select_stream();
     void init_stacked_widget();
+    void next_page_is_label_select_roi();
     void next_page_is_widget_stream_player();
 
     void send_alert_by_binary(QByteArray const &msg);
@@ -53,12 +57,14 @@ private:
     Ui::widget_stacks_action_classify *ui;
 
     widget_action_classify_model_select *widget_action_classify_model_select_;
+    widget_roi_selection *widget_roi_selection_;
     widget_select_action_to_classify *widget_select_action_to_classify_;
     widget_source_selection *widget_source_selection_;
     widget_stream_player *widget_stream_player_;
 
     std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
 
+    QMessageBox *msg_box_;
     QTimer *timer_;
 };
 
