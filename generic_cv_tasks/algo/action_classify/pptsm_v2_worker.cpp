@@ -98,15 +98,22 @@ void pptsm_v2_worker::process_results(std::any frame)
 {
     auto qimg = std::any_cast<QImage>(frame);
 
-    impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, qimg.width(), qimg.height());
-    auto const rect = QRect(impl_->scaled_roi_.x, impl_->scaled_roi_.y, impl_->scaled_roi_.width, impl_->scaled_roi_.height);
-    auto copy_qimg = qimg.copy(rect);
-    auto mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(copy_qimg));
-    cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
-
     QPainter painter(&qimg);
-    painter.setPen(impl_->pen_);
-    painter.drawRect(rect);
+    cv::Mat mat;
+    if(!impl_->config_.roi_.isEmpty()){
+        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, qimg.width(), qimg.height());
+        auto const rect = QRect(impl_->scaled_roi_.x, impl_->scaled_roi_.y, impl_->scaled_roi_.width, impl_->scaled_roi_.height);
+        auto copy_qimg = qimg.copy(rect);
+        mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(copy_qimg));
+        cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
+
+        painter.setPen(impl_->pen_);
+        painter.drawRect(rect);
+    }else{
+        impl_->scaled_roi_ = cv::Rect(qimg.rect().x(), qimg.rect().y(), qimg.width(), qimg.height());
+        mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
+        cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
+    }
 
     if(auto const results = impl_->predict(mat); !results.empty()){
         QFont font;

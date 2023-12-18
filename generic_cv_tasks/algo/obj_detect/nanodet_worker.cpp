@@ -213,7 +213,7 @@ void nanodet_worker::process_results(std::any frame)
     auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
     auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
 
-    if(!impl_->track_obj_pass_){
+    if(!impl_->track_obj_pass_ && impl_->config_.roi_.isValid()){
         impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
         impl_->track_obj_pass_ =
             std::make_unique<cvt::tracker::track_object_pass>(impl_->scaled_roi_, 30);

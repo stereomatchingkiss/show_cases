@@ -37,7 +37,7 @@ void label_select_roi::display_frame(std::any img)
 
 QRectF label_select_roi::get_norm_rubber_band_rect() const
 {
-    if(auto const rrect = rband_->rect(); rrect.width() > 0 && !mouse_press_point_.isNull() && !pixmap().isNull()){
+    if(auto const rrect = rband_->rect(); rrect.width() > 50 && !mouse_press_point_.isNull() && !pixmap().isNull()){
         auto const widget_size = size();
         QRectF norm_rect;
         norm_rect.setX(mouse_press_point_.x() / widget_size.width());
@@ -48,7 +48,11 @@ QRectF label_select_roi::get_norm_rubber_band_rect() const
         return norm_rect;
     }
 
-    return norm_roi_;
+    if(norm_roi_.width() > 0){
+        return norm_roi_;
+    }
+
+    return QRectF();
 }
 
 QJsonObject label_select_roi::get_states() const
