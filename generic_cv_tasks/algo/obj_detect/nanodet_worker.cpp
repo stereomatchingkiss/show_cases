@@ -1,8 +1,8 @@
 #include "nanodet_worker.hpp"
 
-#include "obj_det_worker_results.hpp"
-
 #include "nanodet_alert_save.hpp"
+
+#include "../generic_worker_results.hpp"
 
 #include "../../config/config_alert_sender.hpp"
 #include "../../config/config_nanodet_worker.hpp"
@@ -223,7 +223,7 @@ void nanodet_worker::process_results(std::any frame)
     auto const pass_results = impl_->track_obj_pass_->track(det_results);    
     impl_->draw_pass_results(mat, pass_results);
 
-    obj_det_worker_results results;
+    generic_worker_results results;
     if(impl_->check_alarm_condition(pass_results, qimg)){
         results.alarm_on_ = true;
         ++impl_->im_ids_;
