@@ -109,8 +109,7 @@ void pptsm_v2_worker::process_results(std::any frame)
 
         painter.setPen(impl_->pen_);
         painter.drawRect(rect);
-    }else{
-        impl_->scaled_roi_ = cv::Rect(qimg.rect().x(), qimg.rect().y(), qimg.width(), qimg.height());
+    }else{        
         mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
         cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
     }
