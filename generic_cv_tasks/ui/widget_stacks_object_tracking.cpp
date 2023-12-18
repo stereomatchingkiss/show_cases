@@ -30,7 +30,6 @@
 
 #include <network/websocket_client_controller.hpp>
 
-#include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
 
