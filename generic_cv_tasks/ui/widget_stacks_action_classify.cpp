@@ -1,29 +1,54 @@
 #include "widget_stacks_action_classify.hpp"
 #include "ui_widget_stacks_action_classify.h"
 
+#include "widget_alert_sender_settings.hpp"
 #include "widget_action_classify_model_select.hpp"
 #include "widget_select_action_to_classify.hpp"
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
+#include "../algo/action_classify/pptsm_v2_worker.hpp"
+#include "../config/config_pptsm_v2_worker.hpp"
+#include "../global/global_object.hpp"
+
+#include <multimedia/camera/frame_capture_qcamera.hpp>
+#include <multimedia/camera/frame_capture_qcamera_params.hpp>
+#include <multimedia/camera/frame_capture_qmediaplayer.hpp>
+#include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
+#include <multimedia/camera/frame_process_controller.hpp>
+#include <multimedia/network/frame_capture_websocket.hpp>
+#include <multimedia/network/frame_capture_websocket_params.hpp>
+#include <multimedia/sound/alert_sound_manager.hpp>
+#include <multimedia/stream_enum.hpp>
+
+#include <network/websocket_client_controller.hpp>
+
+#include <QTimer>
+
 #include <QJsonObject>
+#include <QTimer>
+
+using namespace flt;
+using namespace flt::mm;
 
 namespace{
 
 QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
 QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
 QString const state_widget_source_selection("state_widget_source_selection");
-QString const state_widget_stream_selection("state_widget_stream_selection");
 
 }
 
 widget_stacks_action_classify::widget_stacks_action_classify(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::widget_stacks_action_classify)
+    ui(new Ui::widget_stacks_action_classify),
+    timer_{new QTimer(this)}
 {
     ui->setupUi(this);
 
     init_stacked_widget();
+
+    timer_->setInterval(1000);
 }
 
 widget_stacks_action_classify::~widget_stacks_action_classify()
@@ -67,6 +92,64 @@ void widget_stacks_action_classify::init_stacked_widget()
     ui->stackedWidget->addWidget(widget_stream_player_);
 }
 
+void widget_stacks_action_classify::next_page_is_widget_stream_player()
+{
+    ui->stackedWidget->setCurrentWidget(widget_stream_player_);
+    ui->pushButtonNext->setVisible(false);
+
+    config_ppstm_v2_worker config;
+    config.config_action_classify_model_select_ = widget_action_classify_model_select_->get_config();
+    config.config_action_classify_model_select_ = widget_action_classify_model_select_->get_config();
+    config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
+
+    auto worker = new pptsm_v2_worker(std::move(config));
+    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked,
+            worker, &pptsm_v2_worker::change_alert_sender_config);
+    connect(worker, &pptsm_v2_worker::send_alert_by_binary, this, &widget_stacks_action_classify::send_alert_by_binary);
+    connect(worker, &pptsm_v2_worker::send_alert_by_text, this, &widget_stacks_action_classify::send_alert_by_text);
+
+    auto process_controller = std::make_shared<frame_process_controller>(worker);
+    connect(process_controller.get(), &frame_process_controller::send_process_results,
+            widget_stream_player_, &widget_stream_player::display_frame);
+
+    if(get_widget_alert_sender_settings().get_config().activate_){
+        emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
+    }
+    create_frame_capture();
+    emit process_controller->start();
+    sfwmw_->add_listener(process_controller, this);
+    sfwmw_->start();
+
+    if(widget_source_selection_->get_source_type() == stream_source_type::hls ||
+        widget_source_selection_->get_source_type() == stream_source_type::video){
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+        widget_stream_player_->set_is_seekable(player->is_seekable());
+        widget_stream_player_->set_duration(player->position(), player->max_position());
+        connect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
+        timer_->start();
+    }else{
+        widget_stream_player_->set_is_seekable(false);
+    }
+}
+
+void widget_stacks_action_classify::send_alert_by_binary(QByteArray const &msg)
+{
+    emit get_websocket_controller().send_binary_message(msg);
+}
+
+void widget_stacks_action_classify::send_alert_by_text(QString const &msg)
+{
+    emit get_websocket_controller().send_text_message(msg);
+}
+
+void widget_stacks_action_classify::update_position()
+{
+    if(sfwmw_){
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+        widget_stream_player_->set_current_position(player->position());
+    }
+}
+
 void widget_stacks_action_classify::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
@@ -89,8 +172,27 @@ void widget_stacks_action_classify::on_pushButtonNext_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_stream_player_);
-        ui->pushButtonNext->setVisible(false);
+        next_page_is_widget_stream_player();
+    }
+}
+
+void widget_stacks_action_classify::create_frame_capture()
+{
+    timer_->stop();
+    disconnect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
+    if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
+        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
+    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
+        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
+    }else{
+        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
+        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
+
+        connect(widget_stream_player_, &widget_stream_player::pause, player, &frame_capture_qmediaplayer::pause);
+        connect(widget_stream_player_, &widget_stream_player::play, player, &frame_capture_qmediaplayer::start);
+        connect(widget_stream_player_, &widget_stream_player::seek, player, &frame_capture_qmediaplayer::set_position);
+
+        connect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
     }
 }
 
