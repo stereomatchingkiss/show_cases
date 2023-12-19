@@ -92,7 +92,12 @@ void nanodet_alert_save::save_to_json(const flt::cvt::tracker::track_duration &v
     }
 }
 
-bool nanodet_alert_save::send_by_text() const
+bool nanodet_alert_save::send_alert() const noexcept
+{
+    return send_alert_;
+}
+
+bool nanodet_alert_save::send_by_text() const noexcept
 {
     return send_by_text_;
 }

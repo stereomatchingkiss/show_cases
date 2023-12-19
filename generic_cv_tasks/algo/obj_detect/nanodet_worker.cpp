@@ -228,10 +228,12 @@ void nanodet_worker::process_results(std::any frame)
         results.alarm_on_ = true;
         ++impl_->im_ids_;
         impl_->clear_written_id();
-        if(impl_->alert_save_.send_by_text()){
-            emit send_alert_by_text(impl_->alert_save_.get_alert_info());
-        }else{
-            emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
+        if(impl_->alert_save_.send_alert()){
+            if(impl_->alert_save_.send_by_text()){
+                emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+            }else{
+                emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
+            }
         }
     }
 
