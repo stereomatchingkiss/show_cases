@@ -235,7 +235,8 @@ void nanodet_worker::process_results(std::any frame)
         }
     }
 
-    results.mat_ = std::move(qimg);
+    //do not move it, since in the future this algo may need to support multi-stream
+    results.mat_ = qimg;
 
     emit send_process_results(std::move(results));
 }
