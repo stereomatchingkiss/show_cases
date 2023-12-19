@@ -13,6 +13,7 @@ class single_frame_with_multi_worker_base;
 
 }
 
+class widget_action_classify_alert;
 class widget_action_classify_model_select;
 class widget_roi_selection;
 class widget_select_action_to_classify;
@@ -56,6 +57,7 @@ private:
 
     Ui::widget_stacks_action_classify *ui;
 
+    widget_action_classify_alert *widget_action_classify_alert_;
     widget_action_classify_model_select *widget_action_classify_model_select_;
     widget_roi_selection *widget_roi_selection_;
     widget_select_action_to_classify *widget_select_action_to_classify_;

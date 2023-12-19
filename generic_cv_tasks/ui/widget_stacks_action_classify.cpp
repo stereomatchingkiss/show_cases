@@ -1,8 +1,9 @@
 #include "widget_stacks_action_classify.hpp"
 #include "ui_widget_stacks_action_classify.h"
 
-#include "widget_alert_sender_settings.hpp"
+#include "widget_action_classify_alert.hpp"
 #include "widget_action_classify_model_select.hpp"
+#include "widget_alert_sender_settings.hpp"
 #include "widget_roi_selection.hpp"
 #include "widget_select_action_to_classify.hpp"
 #include "widget_source_selection.hpp"
@@ -34,6 +35,7 @@ using namespace flt::mm;
 
 namespace{
 
+QString const state_widget_action_classify_alert("state_widget_action_classify_alert");
 QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
 QString const state_widget_roi_selection("state_widget_roi_selection");
 QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
@@ -62,6 +64,7 @@ widget_stacks_action_classify::~widget_stacks_action_classify()
 QJsonObject widget_stacks_action_classify::get_states() const
 {
     QJsonObject obj;
+    obj[state_widget_action_classify_alert] = widget_action_classify_alert_->get_states();
     obj[state_widget_action_classify_model_select] = widget_action_classify_model_select_->get_states();
     obj[state_widget_roi_selection] = widget_roi_selection_->get_states();
     obj[state_widget_select_action_to_classify] = widget_select_action_to_classify_->get_states();
@@ -72,6 +75,9 @@ QJsonObject widget_stacks_action_classify::get_states() const
 
 void widget_stacks_action_classify::set_states(const QJsonObject &val)
 {
+    if(val.contains(state_widget_action_classify_alert)){
+        widget_action_classify_alert_->set_states(val[state_widget_action_classify_alert].toObject());
+    }
     if(val.contains(state_widget_action_classify_model_select)){
         widget_action_classify_model_select_->set_states(val[state_widget_action_classify_model_select].toObject());
     }
@@ -88,15 +94,17 @@ void widget_stacks_action_classify::set_states(const QJsonObject &val)
 
 void widget_stacks_action_classify::init_stacked_widget()
 {
+    widget_action_classify_alert_ = new widget_action_classify_alert;
     widget_action_classify_model_select_ = new widget_action_classify_model_select;
     widget_roi_selection_ = new widget_roi_selection;
     widget_select_action_to_classify_ = new widget_select_action_to_classify;
     widget_source_selection_ = new widget_source_selection;
     widget_stream_player_ = new widget_stream_player;
 
-    ui->stackedWidget->addWidget(widget_action_classify_model_select_);
-    ui->stackedWidget->addWidget(widget_roi_selection_);
+    ui->stackedWidget->addWidget(widget_action_classify_model_select_);    
     ui->stackedWidget->addWidget(widget_select_action_to_classify_);
+    ui->stackedWidget->addWidget(widget_action_classify_alert_);
+    ui->stackedWidget->addWidget(widget_roi_selection_);
     ui->stackedWidget->addWidget(widget_source_selection_);
     ui->stackedWidget->addWidget(widget_stream_player_);
 }
@@ -189,6 +197,8 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
         ui->stackedWidget->setCurrentWidget(widget_action_classify_model_select_);
+    }else if(ui->stackedWidget->currentWidget() == widget_action_classify_alert_){
+        ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
@@ -211,6 +221,8 @@ void widget_stacks_action_classify::on_pushButtonNext_clicked()
     if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
+        ui->stackedWidget->setCurrentWidget(widget_action_classify_alert_);
+    }else if(ui->stackedWidget->currentWidget() == widget_action_classify_alert_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         next_page_is_label_select_roi();
