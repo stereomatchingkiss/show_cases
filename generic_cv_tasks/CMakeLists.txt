@@ -145,6 +145,7 @@ SET(PROJECT_MAIN_SOURCES
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
     algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
     algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
+    config/config_action_classify_alert.hpp
     config/config_action_classify_model_select.hpp
     config/config_alert_sender.hpp
     config/config_nanodet_worker.hpp
@@ -160,6 +161,7 @@ SET(PROJECT_MAIN_SOURCES
     global/global_keywords.hpp global/global_keywords.cpp
     global/global_object.hpp global/global_object.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+    ui/widget_action_classify_alert.hpp ui/widget_action_classify_alert.cpp ui/widget_action_classify_alert.ui
     ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui
     ui/widget_alert_sender_settings.hpp ui/widget_alert_sender_settings.cpp ui/widget_alert_sender_settings.ui
     ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
@@ -186,7 +188,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES}                
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
