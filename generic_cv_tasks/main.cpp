@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    QDir().mkpath(global_keywords().action_classify_alert_path() + "/cam0/");
     QDir().mkpath(global_keywords().cam_config_path());
     QDir().mkpath(global_keywords().tracker_alert_path() + "/cam0/");
 

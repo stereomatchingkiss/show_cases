@@ -9,6 +9,7 @@
 class global_keywords
 {
 public:
+    QString action_classify_alert_path() const;
     QString cam_config_path() const;
     QString const cam_name() const;
     QString const coco_names_path() const;

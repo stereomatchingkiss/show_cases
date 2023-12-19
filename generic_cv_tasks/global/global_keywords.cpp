@@ -9,12 +9,17 @@ const QString global_keywords::generic_cv_tasks_assets() const
 
 const QString global_keywords::tracker_alert_path() const
 {
-    return generic_cv_tasks_assets() + "/alert/";
+    return generic_cv_tasks_assets() + "/alert/object_tracking/";
 }
 
 QString global_keywords::state_cam_states() const
 {
     return "state_cam_states";
+}
+
+QString global_keywords::action_classify_alert_path() const
+{
+    return generic_cv_tasks_assets() + "/alert/action_classify/";
 }
 
 QString global_keywords::cam_config_path() const
