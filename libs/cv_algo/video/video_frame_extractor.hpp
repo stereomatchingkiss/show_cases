@@ -8,9 +8,9 @@ class video_frame_extractor
 {
 public:
     /**
-     * @param num_seg           number of frames input to the model, which are extracted from a video.
+     * @param num_seg number of frames input to the model, which are extracted from a video.
      */
-    explicit video_frame_extractor(int sampling_rate = 25, int num_seg = 8);
+    explicit video_frame_extractor(int sampling_rate = 25, int num_seg = 8, bool input_is_rgb = false);
 
     bool enough_frames() const noexcept;
     bool extract(cv::Mat const &bgr);
@@ -42,6 +42,7 @@ private:
 
     cv::Scalar_<float> const mean_ = {0.406f, 0.456f, 0.485f};
     cv::Scalar_<float> const scale_ = {0.225f, 0.224f, 0.229f};
+    bool input_is_rgb_;
 };
 
 }

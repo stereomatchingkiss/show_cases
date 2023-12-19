@@ -4,9 +4,10 @@
 
 namespace flt::cvt::video{
 
-video_classify_pptsm_opencv::video_classify_pptsm_opencv(std::string const &weight_path, int sampling_rate, int num_seg) :
-    frame_extractor_(sampling_rate, num_seg),
-    net_(cv::dnn::readNet(weight_path))
+video_classify_pptsm_opencv::video_classify_pptsm_opencv(std::string const &weight_path, int sampling_rate, int num_seg, bool swap_rgb) :
+    frame_extractor_{sampling_rate, num_seg},
+    net_{cv::dnn::readNet(weight_path)},
+    input_is_rgb_{swap_rgb}
 {    
 }
 
@@ -15,9 +16,9 @@ video_classify_pptsm_opencv::~video_classify_pptsm_opencv()
 
 }
 
-std::vector<std::tuple<float, size_t>> video_classify_pptsm_opencv::predict(cv::Mat const &input, int top_k)
+std::vector<std::tuple<float, size_t>> video_classify_pptsm_opencv::predict(cv::Mat const &bgr, int top_k)
 {
-    if(frame_extractor_.extract(input) && frame_extractor_.enough_frames()){
+    if(frame_extractor_.extract(bgr) && frame_extractor_.enough_frames()){
         net_.setInput(frame_extractor_.get_output_blob());
         auto output = net_.forward();
         softmax(output.ptr<float>(0), output.ptr<float>(0) + 400);

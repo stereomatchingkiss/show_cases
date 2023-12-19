@@ -6,11 +6,12 @@
 
 namespace flt::cvt::video{
 
-video_frame_extractor::video_frame_extractor(int sampling_rate_, int num_seg) :
+video_frame_extractor::video_frame_extractor(int sampling_rate_, int num_seg, bool input_is_rgb) :
     center_idx_{(sampling_rate_ / 2) - 1},
-    frame_count_{0},    
-    num_seg_{num_seg},
-    sampling_rate_{std::max(sampling_rate_, 1)}
+    frame_count_{0},
+    num_seg_{std::max(num_seg, 8)},
+    sampling_rate_{std::max(sampling_rate_, 1)},
+    input_is_rgb_{input_is_rgb}
 {
 
 }
@@ -81,12 +82,26 @@ void video_frame_extractor::center_crop(cv::Mat const &input, cv::Mat &crop_img,
 void video_frame_extractor::normalize(cv::Mat const &input, cv::Mat &output) const
 {
     int const channels = input.channels();
-    for(int i = 0; i != channels; ++i){
-        for(int row = 0; row != input.rows; ++row){
-            auto input_ptr = input.ptr<uchar>(row);
-            auto output_ptr = output.ptr<float>(row);
-            for(int col = 0; col < input.cols * 3; col += 3){
-                output_ptr[col + (channels - i - 1)] = ((input_ptr[col + i] / 255.0f) - mean_[i]) / scale_[i];
+    if(input_is_rgb_){
+        for(int i = 0; i != channels; ++i){
+            auto const offset = channels - i - 1;
+            for(int row = 0; row != input.rows; ++row){
+                auto input_ptr = input.ptr<uchar>(row);
+                auto output_ptr = output.ptr<float>(row);
+                for(int col = 0; col < input.cols * 3; col += 3){
+                    output_ptr[col] = ((input_ptr[col + i] / 255.0f) - mean_[offset]) / scale_[offset];
+                }
+            }
+        }
+    }else{
+        for(int i = 0; i != channels; ++i){
+            auto const offset = channels - i - 1;
+            for(int row = 0; row != input.rows; ++row){
+                auto input_ptr = input.ptr<uchar>(row);
+                auto output_ptr = output.ptr<float>(row);
+                for(int col = 0; col < input.cols * 3; col += 3){
+                    output_ptr[col + offset] = ((input_ptr[col + i] / 255.0f) - mean_[i]) / scale_[i];
+                }
             }
         }
     }
