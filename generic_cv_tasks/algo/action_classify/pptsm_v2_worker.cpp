@@ -4,16 +4,28 @@
 #include "../../config/config_pptsm_v2_worker.hpp"
 #include "../generic_worker_results.hpp"
 
+#include "action_classify_alert_save.hpp"
 #include "kinetic_400_labels.hpp"
 
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
 #include <cv_algo/video/video_classify_pptsm_opencv.hpp>
 #include <utils/qimage_to_cvmat.hpp>
 
+#ifdef WASM_BUILD
+
+#include <utils/image_utils.hpp>
+
+#endif
+
 #include <opencv2/imgproc.hpp>
 
 #include <QDebug>
+#include <QElapsedTimer>
 #include <QPainter>
+
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include <format>
 
@@ -29,7 +41,12 @@ struct pptsm_v2_worker::impl
         net_{create_model_root() + "ppTSMv2_8f_simple.onnx", config.config_action_classify_model_select_.sampling_rate_, 8, true}
     {
         pen_.setColor(Qt::red);
-        pen_.setWidth(5);
+        pen_.setWidth(5);        
+    }
+
+    void change_alert_sender_config(config_alert_sender const &val)
+    {
+        alert_save_.change_alert_sender_config(val);
     }
 
     std::string create_model_root() const
@@ -39,6 +56,11 @@ struct pptsm_v2_worker::impl
 #else
         return "";
 #endif
+    }    
+
+    QString create_fname() const
+    {
+        return  QString("%1").arg(QDateTime::currentDateTime().toString("hh_mm_ss"));
     }
 
     cv::Mat to_cv_mat(QPainter &painter, QImage &qimg)
@@ -85,9 +107,32 @@ struct pptsm_v2_worker::impl
         results.erase(iters.begin(), iters.end());
 
         return results;
+    }    
+
+    bool should_emit_alarm() const noexcept
+    {
+        if(duration_of_detected_label_.isValid() && config_.config_action_classify_alert_.alert_if_action_detected_on_){
+            return duration_of_detected_label_.elapsed() >
+                   config_.config_action_classify_alert_.alert_if_action_detected_duration_sec_ * 1000;
+        }
+
+        return false;
     }
 
+    void update_duration(bool result_is_empty)
+    {
+        if(!result_is_empty){
+            if(!duration_of_detected_label_.isValid()){
+                duration_of_detected_label_.start();
+            }
+        }else{
+            duration_of_detected_label_.invalidate();
+        }
+    }
+
+    action_classify_alert_save alert_save_;
     config_ppstm_v2_worker config_;
+    QElapsedTimer duration_of_detected_label_;
     std::vector<QString> labels_;
     video_classify_pptsm_opencv net_;
     QPen pen_;    
@@ -106,16 +151,17 @@ pptsm_v2_worker::~pptsm_v2_worker()
 }
 
 void pptsm_v2_worker::change_alert_sender_config(config_alert_sender const &val)
-{
-    //this is not a thread safe operation, but this algorithm do not need to worry about this issue
-    impl_->config_.config_alert_sender_ = val;
+{    
+    impl_->change_alert_sender_config(val);
 }
 
 void pptsm_v2_worker::process_results(std::any frame)
 {
     auto qimg = std::any_cast<QImage>(frame);
     QPainter painter(&qimg);
-    if(auto const results = impl_->predict(impl_->to_cv_mat(painter, qimg)); !results.empty()){
+
+    auto const results = impl_->predict(impl_->to_cv_mat(painter, qimg));
+    if(!results.empty()){
         QFont font;
         auto const font_size = qimg.width() / 20;
         font.setPixelSize(font_size);
@@ -127,10 +173,26 @@ void pptsm_v2_worker::process_results(std::any frame)
             painter.drawText(QPoint(0, (i + 1) * font_size),
                              std::format("{}:{:.2f}", impl_->labels_[label].toStdString(), confidence).c_str());
         }
+
+        impl_->update_duration(false);
+    }else{
+        impl_->update_duration(true);
     }
 
     generic_worker_results output;
-    output.mat_ = std::move(qimg);
+    output.alarm_on_ = impl_->should_emit_alarm();
+    //do not move it, since in the future this algo may need to support multi-stream
+    output.mat_ = qimg;
+    if(output.alarm_on_){
+        impl_->alert_save_.save_to_json(results, qimg, impl_->duration_of_detected_label_.elapsed());
+        if(impl_->alert_save_.send_alert()){
+            if(impl_->alert_save_.send_by_text()){
+                emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+            }else{
+                emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
+            }
+        }
+    }
 
     emit send_process_results(std::move(output));
 }
