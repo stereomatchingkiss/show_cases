@@ -138,11 +138,12 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
-SET(PROJECT_MAIN_SOURCES
-    algo/generic_worker_results.hpp
+SET(PROJECT_MAIN_SOURCES    
+    algo/action_classify/action_classify_alert_save.hpp algo/action_classify/action_classify_alert_save.cpp
     algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp
     algo/action_classify/pptsm_v2_worker.hpp algo/action_classify/pptsm_v2_worker.cpp
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
+    algo/generic_worker_results.hpp
     algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
     algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
     config/config_action_classify_alert.hpp
@@ -188,7 +189,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}                
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
