@@ -44,10 +44,12 @@
 
 # 范例
 
-- [影片教学](https://youtu.be/TNancuXjlcM)
+- [物件追踪的影片教学](https://youtu.be/TNancuXjlcM)
+- [动作分类的影片教学](https://www.youtube.com/watch?v=9eT9R8QjYug)
 - ![保存和读取设定](./imgs/save_and_load.png)
 - ![选择要追踪物件的区域](./imgs/select_roi.png)
 - ![追踪与计数](./imgs/track_and_count.png)
+- ![动作分类](./imgs/action_classify_00.png)
 
 # 将来的打算
 

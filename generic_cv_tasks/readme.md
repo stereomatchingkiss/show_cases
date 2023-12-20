@@ -43,10 +43,12 @@ English | [简体中文](./readme_cn.md)
 
 # Examples
 
-- [Video tutorial](https://youtu.be/TNancuXjlcM)
+- [Video tutorial of object tracking](https://youtu.be/TNancuXjlcM)
+- [Video tutorial of action classification](https://www.youtube.com/watch?v=9eT9R8QjYug)
 - ![Save and load the settings](./imgs/save_and_load.png)
 - ![Select the area to track the object](./imgs/select_roi.png)
 - ![Tracking and Counting](./imgs/track_and_count.png)
+- ![Action classify](./imgs/action_classify_00.png)
 
 # Future plans
 
