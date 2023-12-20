@@ -16,3 +16,4 @@ English | [简体中文](./trouble_records_cn.md)
 # Difficult problems v2.0
 
 - The C++ example for ppstm in paddleVideo has an input format error. The correct format is "rgb...rgb...rgb", not "rrr...gggg...bbbb". I spent an entire night trying to figure out what was wrong, running the Python code several times.
+- pptsmv2 is trained based on kinetic400 and is not suitable for monitoring applications. If time and resources permit, the model still needs to be fine-tuned.
