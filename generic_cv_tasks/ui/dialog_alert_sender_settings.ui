@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>widget_alert_sender_settings</class>
- <widget class="QWidget" name="widget_alert_sender_settings">
+ <class>dialog_alert_sender_settings</class>
+ <widget class="QDialog" name="dialog_alert_sender_settings">
   <property name="geometry">
    <rect>
     <x>0</x>

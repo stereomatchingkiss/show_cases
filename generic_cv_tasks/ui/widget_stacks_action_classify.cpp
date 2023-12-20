@@ -1,9 +1,9 @@
 #include "widget_stacks_action_classify.hpp"
 #include "ui_widget_stacks_action_classify.h"
 
+#include "dialog_alert_sender_settings.hpp"
 #include "widget_action_classify_alert.hpp"
 #include "widget_action_classify_model_select.hpp"
-#include "widget_alert_sender_settings.hpp"
 #include "widget_roi_selection.hpp"
 #include "widget_select_action_to_classify.hpp"
 #include "widget_source_selection.hpp"
@@ -147,7 +147,7 @@ void widget_stacks_action_classify::next_page_is_widget_stream_player()
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
 
     auto worker = new pptsm_v2_worker(std::move(config));
-    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked,
+    connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
             worker, &pptsm_v2_worker::change_alert_sender_config);
     connect(worker, &pptsm_v2_worker::send_alert_by_binary, this, &widget_stacks_action_classify::send_alert_by_binary);
     connect(worker, &pptsm_v2_worker::send_alert_by_text, this, &widget_stacks_action_classify::send_alert_by_text);

@@ -161,10 +161,10 @@ SET(PROJECT_MAIN_SOURCES
     config/object_detect_model_enum.hpp
     global/global_keywords.hpp global/global_keywords.cpp
     global/global_object.hpp global/global_object.cpp
+    ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/widget_action_classify_alert.hpp ui/widget_action_classify_alert.cpp ui/widget_action_classify_alert.ui
-    ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui
-    ui/widget_alert_sender_settings.hpp ui/widget_alert_sender_settings.cpp ui/widget_alert_sender_settings.ui
+    ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui    
     ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     ui/widget_select_action_to_classify.hpp ui/widget_select_action_to_classify.cpp ui/widget_select_action_to_classify.ui

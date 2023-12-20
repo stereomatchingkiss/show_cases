@@ -1,7 +1,7 @@
 #include "widget_stacks_object_tracking.hpp"
 #include "ui_widget_stacks_object_tracking.h"
 
-#include "widget_alert_sender_settings.hpp"
+#include "dialog_alert_sender_settings.hpp"
 #include "widget_object_detect_model_select.hpp"
 #include "widget_roi_selection.hpp"
 #include "widget_select_object_to_detect.hpp"
@@ -170,7 +170,7 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
 
     auto worker = new nanodet_worker(std::move(config));
-    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked,
+    connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
             worker, &nanodet_worker::change_alert_sender_config);
     connect(worker, &nanodet_worker::send_alert_by_binary, this, &widget_stacks_object_tracking::send_alert_by_binary);
     connect(worker, &nanodet_worker::send_alert_by_text, this, &widget_stacks_object_tracking::send_alert_by_text);

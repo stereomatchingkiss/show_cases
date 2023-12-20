@@ -1,6 +1,6 @@
 #include "global_object.hpp"
 
-#include "../ui/widget_alert_sender_settings.hpp"
+#include "../ui/dialog_alert_sender_settings.hpp"
 
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <network/websocket_client_controller.hpp>
@@ -20,7 +20,7 @@ flt::net::websocket_client_controller& get_websocket_controller()
     return flt::meyers_singleton<flt::net::websocket_client_controller>::get_instance();
 }
 
-widget_alert_sender_settings &get_widget_alert_sender_settings()
+dialog_alert_sender_settings &get_widget_alert_sender_settings()
 {
-    return flt::meyers_singleton<widget_alert_sender_settings>::get_instance();
+    return flt::meyers_singleton<dialog_alert_sender_settings>::get_instance();
 }

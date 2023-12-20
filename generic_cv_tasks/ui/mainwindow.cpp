@@ -1,7 +1,7 @@
 #include "mainwindow.hpp"
 #include "./ui_mainwindow.h"
 
-#include "widget_alert_sender_settings.hpp"
+#include "dialog_alert_sender_settings.hpp"
 
 #include "widget_stacks_manager.hpp"
 
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::save_settings);
     connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
-    connect(&get_widget_alert_sender_settings(), &widget_alert_sender_settings::button_ok_clicked, [](auto const &val)
+    connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked, [](auto const &val)
             {
                 if(get_widget_alert_sender_settings().get_config().activate_){
                     emit get_websocket_controller().reopen_if_needed(val.url_);
