@@ -186,8 +186,8 @@ void pptsm_v2_worker::process_results(std::any frame)
     output.alarm_on_ = impl_->should_emit_alarm();
     //do not move it, since in the future this algo may need to support multi-stream
     output.mat_ = qimg;
-    if(output.alarm_on_){
-        impl_->alert_save_.save_to_json(results, qimg, impl_->duration_of_detected_label_.elapsed());
+    if(output.alarm_on_){        
+        impl_->alert_save_.save_to_json(results, qimg, impl_->duration_of_detected_label_.elapsed());        
         if(impl_->alert_save_.send_alert()){
             if(impl_->alert_save_.send_by_text()){
                 emit send_alert_by_text(impl_->alert_save_.get_alert_info());

@@ -11,7 +11,7 @@ class QImage;
 class action_classify_alert_save
 {
 public:
-    explicit action_classify_alert_save(std::vector<QString> const &label_names);
+    explicit action_classify_alert_save(std::vector<QString> label_names);
     ~action_classify_alert_save();
 
     QByteArray const& get_alert_info() const;
@@ -30,7 +30,7 @@ private:
 
     QByteArray alert_info_;
     QString dir_path_;
-    std::vector<QString> const &label_names_;
+    std::vector<QString> label_names_;
     size_t im_idx_ = 0;
     QString im_name_;
     std::vector<std::string> names_;

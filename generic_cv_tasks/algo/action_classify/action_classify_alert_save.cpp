@@ -22,8 +22,8 @@
 #include <QFile>
 #include <QTextStream>
 
-action_classify_alert_save::action_classify_alert_save(std::vector<QString> const &label_names) :
-    label_names_(label_names)
+action_classify_alert_save::action_classify_alert_save(std::vector<QString> label_names) :
+    label_names_(std::move(label_names))
 {
 
 }
@@ -70,7 +70,7 @@ void action_classify_alert_save::save_to_json(std::vector<std::tuple<float, size
         QJsonArray label_arr;        
         for(auto const &val : predict_results){
             QJsonObject obj;
-            obj["label"] = names_[std::get<1>(val)].c_str();
+            obj["label"] = label_names_[std::get<1>(val)];
             label_arr.append(obj);
         }
 
@@ -84,7 +84,7 @@ void action_classify_alert_save::save_to_json(std::vector<std::tuple<float, size
         output["image"] = QString(flt::to_base64_img(img));
 #endif
         if(save_reports_){
-            save_to_json();
+            save_to_json();            
             img.save(dir_path_ + "/" + im_name_ + ".jpg");
         }
 
@@ -110,7 +110,7 @@ QString action_classify_alert_save::create_fname() const
 }
 
 void action_classify_alert_save::save_to_json() const
-{    
+{
     if(QFile file(dir_path_ + QString("/%1.txt").arg(im_name_)); file.open(QIODevice::WriteOnly)){
         QTextStream stream(&file);
         stream<<alert_info_<<"\n";
