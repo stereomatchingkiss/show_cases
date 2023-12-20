@@ -41,7 +41,9 @@ struct pptsm_v2_worker::impl
         net_{create_model_root() + "ppTSMv2_8f_simple.onnx", config.config_action_classify_model_select_.sampling_rate_, 8, true}
     {
         pen_.setColor(Qt::red);
-        pen_.setWidth(5);        
+        pen_.setWidth(5);
+
+        change_alert_sender_config(config_.config_alert_sender_);
     }
 
     void change_alert_sender_config(config_alert_sender const &val)
