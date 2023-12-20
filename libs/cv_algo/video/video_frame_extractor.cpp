@@ -1,7 +1,6 @@
 #include "video_frame_extractor.hpp"
 
 #include <opencv2/dnn.hpp>
-#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 namespace flt::cvt::video{
