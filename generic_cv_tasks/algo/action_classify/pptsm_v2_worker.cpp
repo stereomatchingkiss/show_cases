@@ -142,7 +142,7 @@ struct pptsm_v2_worker::impl
 };
 
 pptsm_v2_worker::pptsm_v2_worker(config_ppstm_v2_worker const &config, QObject *parent) :
-    frame_process_base_worker(2, parent),
+    frame_process_base_worker(20, parent),
     impl_(std::make_unique<impl>(config))
 {
 
