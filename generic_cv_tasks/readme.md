@@ -21,9 +21,10 @@ English | [简体中文](./readme_cn.md)
 
 # Features of this software
 
-- Object detection, tracking, and counting
-- Area alarm
-- Alarm record
+- Object detection, tracking, and counting(v1.0)
+- Area alarm(v1.0)
+- Alarm record(v1.0)
+- Action classify and alarm(v2.0)
 
 # How to use the websocket of this software
 
