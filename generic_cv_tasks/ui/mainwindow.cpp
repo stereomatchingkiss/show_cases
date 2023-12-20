@@ -130,7 +130,7 @@ void MainWindow::load_settings(bool)
     }
 #else
     auto fcontent_ready = [this](QString const&, QByteArray const &fcontent) {
-        init_widgets_states(config_read_write().read(fcontent));
+        init_widgets_states(QJsonDocument::fromJson(fcontent).object());
     };
     QFileDialog::getOpenFileContent("Settings (*.json)",  fcontent_ready);
 #endif
