@@ -10,7 +10,7 @@ import sys
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--port", required=False, type=int, default=2345)
-ap.add_argument("--save_at", type=str, default="GenericCVTasksAssets/alert/", help="Location to save the alert")
+ap.add_argument("--save_at", type=str, default="GenericCVTasksAssets/alert/object_tracking/", help="Location to save the alert")
 
 args = vars(ap.parse_args())
 
