@@ -59,7 +59,9 @@ class simple_websocket_server(QPushButton):
         if jobj:
             print("can decode to json dicts")
             print(jobj["image_name"].toString())
-            self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
+            if "image" in jobj:
+                self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
+                del jobj["image"]
             qfile = QFile()
             qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
             if(qfile.open(QIODevice.WriteOnly)):
@@ -73,11 +75,12 @@ class simple_websocket_server(QPushButton):
         try:
             jobj = json.loads(message)
             if jobj:
-                self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
+                if "image" in jobj:
+                    self.extract_the_image(jobj["image"].encode(), jobj["image_name"]) #uncomment this line if you want to extract the image
+                    del jobj["image"]
                 qfile = QFile()
                 qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"]))
                 if(qfile.open(QIODevice.WriteOnly)):
-                    del jobj["image"]
                     qstream = QTextStream(qfile)
                     qstream << json.dumps(jobj)
             else:
