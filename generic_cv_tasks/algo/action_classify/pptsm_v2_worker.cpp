@@ -36,6 +36,7 @@ using namespace flt::mm;
 struct pptsm_v2_worker::impl
 {
     impl(config_ppstm_v2_worker const &config) :
+        alert_save_(kinetic_400_labels::get_labels()),
         config_{config},
         labels_{kinetic_400_labels::get_labels()},
         net_{create_model_root() + "ppTSMv2_8f_simple.onnx", config.config_action_classify_model_select_.sampling_rate_, 8, true}

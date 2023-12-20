@@ -22,7 +22,8 @@
 #include <QFile>
 #include <QTextStream>
 
-action_classify_alert_save::action_classify_alert_save()
+action_classify_alert_save::action_classify_alert_save(std::vector<QString> const &label_names) :
+    label_names_(label_names)
 {
 
 }
@@ -69,7 +70,7 @@ void action_classify_alert_save::save_to_json(std::vector<std::tuple<float, size
         QJsonArray label_arr;        
         for(auto const &val : predict_results){
             QJsonObject obj;
-            obj["label"] = static_cast<int>(std::get<1>(val));
+            obj["label"] = names_[std::get<1>(val)].c_str();
             label_arr.append(obj);
         }
 
