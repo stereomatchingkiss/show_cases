@@ -126,7 +126,7 @@ void MainWindow::load_settings(bool)
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select settings"), "", tr("Settings (*.json)"));
         !fname.isEmpty() && QFile(fname).exists())
     {
-        init_widgets_states(fname);
+        init_widgets_states(fname);        
     }
 #else
     auto fcontent_ready = [this](QString const&, QByteArray const &fcontent) {
@@ -158,6 +158,8 @@ void MainWindow::init_widgets_states(const QJsonObject &jobj)
     if(jobj.contains(gk.state_widget_alert_settings())){
         get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
     }
+
+    widget_stacks_manager_->enable_next_button();
 }
 
 void MainWindow::save_settings(bool)

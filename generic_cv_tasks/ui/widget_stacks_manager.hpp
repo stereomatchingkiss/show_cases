@@ -21,6 +21,8 @@ public:
     explicit widget_stacks_manager(QWidget *parent = nullptr);
     ~widget_stacks_manager();
 
+    void enable_next_button();
+
     QJsonObject get_states();
 
     void set_states(QJsonObject const &val);
@@ -28,8 +30,7 @@ public:
 private slots:
     void on_pushButtonNext_clicked();
 
-private:
-    void enable_next_button();
+private:    
     void init_stacked_widget();
     template<typename T>
     void setup_stack_widget(T *widget, QString const &state_key)
