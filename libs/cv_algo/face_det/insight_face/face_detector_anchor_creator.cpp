@@ -17,7 +17,7 @@ void anchor::print()
     printf("Rect %f %f %f %f Sorce: %f\n", final_box_.x, final_box_.y, final_box_.width, final_box_.height, sorce_);
 }
 
-size_t anchor_creator::init(int stride, anchor_cfg const &cfg, bool dense_anchor)
+size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg, bool dense_anchor)
 {
     cret2f const base_anchor(0,0, static_cast<float>(cfg.base_size_ - 1), static_cast<float>(cfg.base_size_ - 1));
     std::vector<cret2f> ratio_anchors;
@@ -33,7 +33,7 @@ size_t anchor_creator::init(int stride, anchor_cfg const &cfg, bool dense_anchor
     return pre_anchor_.size();
 }
 
-void anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg, ncnn::Mat &pts, std::vector<anchor> &proposals)
+void face_detector_anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg, ncnn::Mat &pts, std::vector<anchor> &proposals)
 {
     int const w = cls.w;
     int const h = cls.h;
@@ -79,7 +79,7 @@ void anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg, ncnn::Mat &pt
     }
 }
 
-void anchor_creator::box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box)
+void face_detector_anchor_creator::box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box)
 {
     float const w = per_anc[2] - per_anc[0] + 1;
     float const h = per_anc[3] - per_anc[1] + 1;
@@ -104,7 +104,7 @@ void anchor_creator::box_pred(cret2f const &per_anc, cret2f const &delta, cv::Re
                            real_y_center + h_transform);
 }
 
-void anchor_creator::landmark_pred(cret2f const &box,
+void face_detector_anchor_creator::landmark_pred(cret2f const &box,
                                    std::vector<cv::Point2f> const &pts_delta,
                                    std::vector<cv::Point2f>& landmark_pre)
 {
@@ -121,7 +121,7 @@ void anchor_creator::landmark_pred(cret2f const &box,
     }
 }
 
-void anchor_creator::ratio_enum(cret2f const &base_anchor,
+void face_detector_anchor_creator::ratio_enum(cret2f const &base_anchor,
                                 std::vector<float> const &ratio,
                                 std::vector<cret2f> &ratio_anchor)
 {
@@ -146,7 +146,7 @@ void anchor_creator::ratio_enum(cret2f const &base_anchor,
     }
 }
 
-void anchor_creator::scale_enum(std::vector<cret2f>const &ratio_anchor,
+void face_detector_anchor_creator::scale_enum(std::vector<cret2f>const &ratio_anchor,
                                 std::vector<float> const &scales,
                                 std::vector<cret2f> &scale_anchor)
 {

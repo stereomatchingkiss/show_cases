@@ -89,7 +89,7 @@ public:
 };
 
 
-class anchor_creator
+class face_detector_anchor_creator
 {
 public:
     size_t init(int stride, anchor_cfg const &cfg, bool dense_anchor);
