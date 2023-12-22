@@ -55,12 +55,12 @@ public:
 
     bool operator<(const anchor &t) const noexcept
     {
-        return sorce_ < t.sorce_;
+        return score_ < t.score_;
     }
 
     bool operator>(const anchor &t) const noexcept
     {
-        return sorce_ > t.sorce_;
+        return score_ > t.score_;
     }    
 
     float operator[](int i) const noexcept
@@ -83,7 +83,7 @@ public:
 
     cv::Rect_<float> final_box_; //use to save finalbox (after adding the delta)
     cv::Rect_<float> anchor_;  // use to save orignal anchor
-    float sorce_;              // use to save the anchor sorce
+    float score_;              // use to save the anchor score
     std::vector<cv::Point2f> pts_;  // use to save the landmark point
     cv::Point center_;    
 };
@@ -93,13 +93,13 @@ class face_detector_anchor_creator
 {
 public:
     size_t init(int stride, anchor_cfg const &cfg, bool dense_anchor);
-    void filter_anchor(ncnn::Mat& cls, ncnn::Mat& reg, ncnn::Mat& pts, std::vector<anchor>& proposals);
+    void filter_anchor(ncnn::Mat& cls, ncnn::Mat& reg, ncnn::Mat& pts, std::vector<anchor>& proposals) const;
 
 private:
-    void box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box);
-    void landmark_pred(cret2f const &box, std::vector<cv::Point2f> const &pts_delta, std::vector<cv::Point2f>& landmark_pre);
-    void ratio_enum(cret2f const &base_anchor, std::vector<float> const &ratio, std::vector<cret2f> &ratio_anchor);
-    void scale_enum(std::vector<cret2f>const &ratio_anchor, std::vector<float> const &scales, std::vector<cret2f> &scale_anchor);
+    void box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box) const;
+    void landmark_pred(cret2f const &box, std::vector<cv::Point2f> const &pts_delta, std::vector<cv::Point2f>& landmark_pre) const;
+    void ratio_enum(cret2f const &base_anchor, std::vector<float> const &ratio, std::vector<cret2f> &ratio_anchor) const;
+    void scale_enum(std::vector<cret2f>const &ratio_anchor, std::vector<float> const &scales, std::vector<cret2f> &scale_anchor) const;
 
     std::vector<cret2f> pre_anchor_;
     int anchor_stride_;

@@ -14,7 +14,7 @@ anchor::anchor(){}
 
 void anchor::print()
 {
-    printf("Rect %f %f %f %f Sorce: %f\n", final_box_.x, final_box_.y, final_box_.width, final_box_.height, sorce_);
+    printf("Rect %f %f %f %f Sorce: %f\n", final_box_.x, final_box_.y, final_box_.width, final_box_.height, score_);
 }
 
 size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg, bool dense_anchor)
@@ -33,7 +33,7 @@ size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg, boo
     return pre_anchor_.size();
 }
 
-void face_detector_anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg, ncnn::Mat &pts, std::vector<anchor> &proposals)
+void face_detector_anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg, ncnn::Mat &pts, std::vector<anchor> &proposals) const
 {
     int const w = cls.w;
     int const h = cls.h;
@@ -59,7 +59,7 @@ void face_detector_anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg,
 
                     anchor res;
                     res.anchor_ = cv::Rect_<float>(pre_anchor_real[0], pre_anchor_real[1], pre_anchor_real[2], pre_anchor_real[3]);
-                    res.sorce_ = cls.channel(a + anchor_num_)[index];
+                    res.score_ = cls.channel(a + anchor_num_)[index];
                     res.center_ = cv::Point(j, i);
 
                     box_pred(pre_anchor_real, delta, res.final_box_);
@@ -79,7 +79,7 @@ void face_detector_anchor_creator::filter_anchor(ncnn::Mat &cls, ncnn::Mat &reg,
     }
 }
 
-void face_detector_anchor_creator::box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box)
+void face_detector_anchor_creator::box_pred(cret2f const &per_anc, cret2f const &delta, cv::Rect_<float> &box) const
 {
     float const w = per_anc[2] - per_anc[0] + 1;
     float const h = per_anc[3] - per_anc[1] + 1;
@@ -105,8 +105,8 @@ void face_detector_anchor_creator::box_pred(cret2f const &per_anc, cret2f const 
 }
 
 void face_detector_anchor_creator::landmark_pred(cret2f const &box,
-                                   std::vector<cv::Point2f> const &pts_delta,
-                                   std::vector<cv::Point2f>& landmark_pre)
+                                                 std::vector<cv::Point2f> const &pts_delta,
+                                                 std::vector<cv::Point2f>& landmark_pre) const
 {
     float const w = box[2] - box[0] + 1;
     float const h = box[3] - box[1] + 1;
@@ -122,8 +122,8 @@ void face_detector_anchor_creator::landmark_pred(cret2f const &box,
 }
 
 void face_detector_anchor_creator::ratio_enum(cret2f const &base_anchor,
-                                std::vector<float> const &ratio,
-                                std::vector<cret2f> &ratio_anchor)
+                                              std::vector<float> const &ratio,
+                                              std::vector<cret2f> &ratio_anchor) const
 {
     float const w = base_anchor[2] - base_anchor[0] + 1;
     float const h = base_anchor[3] - base_anchor[1] + 1;
@@ -147,8 +147,8 @@ void face_detector_anchor_creator::ratio_enum(cret2f const &base_anchor,
 }
 
 void face_detector_anchor_creator::scale_enum(std::vector<cret2f>const &ratio_anchor,
-                                std::vector<float> const &scales,
-                                std::vector<cret2f> &scale_anchor)
+                                              std::vector<float> const &scales,
+                                              std::vector<cret2f> &scale_anchor) const
 {
     for(size_t r = 0; r < ratio_anchor.size(); ++r){
         cret2f const rat_an = ratio_anchor[r];
