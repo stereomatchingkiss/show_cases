@@ -50,10 +50,10 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
     }
 
     for(size_t i = 0; i < res.size(); ++i){
-        res[i].final_box_.x = std::clamp(res[i].final_box_.x, static_cast<float>(target_size - 1), 0.f);
-        res[i].final_box_.y = std::clamp(res[i].final_box_.y, static_cast<float>(target_size - 1), 0.f);
-        res[i].final_box_.width = std::clamp(res[i].final_box_.width, static_cast<float>(target_size - 1), 0.f);
-        res[i].final_box_.height = std::clamp(res[i].final_box_.height, static_cast<float>(target_size - 1), 0.f);
+        res[i].final_box_.x = std::clamp(res[i].final_box_.x, 0.f, static_cast<float>(target_size - 1));
+        res[i].final_box_.y = std::clamp(res[i].final_box_.y, 0.f, static_cast<float>(target_size - 1));
+        res[i].final_box_.width = std::clamp(res[i].final_box_.width, 0.f, static_cast<float>(target_size - 1));
+        res[i].final_box_.height = std::clamp(res[i].final_box_.height, 0.f, static_cast<float>(target_size - 1));
     }
 }
 
