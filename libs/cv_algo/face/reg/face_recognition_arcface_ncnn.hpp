@@ -1,13 +1,13 @@
 #pragma once
 
-#include <opencv2/core.hpp>
+#include "face_recognition_base.hpp"
 
 #include <memory>
 #include <string>
 
 namespace flt::cvt::face{
 
-class face_recognition_arcface_ncnn
+class face_recognition_arcface_ncnn : public face_recognition_base
 {
 public:
     explicit face_recognition_arcface_ncnn(std::string const &param, std::string const &bin, int target_size = 112);

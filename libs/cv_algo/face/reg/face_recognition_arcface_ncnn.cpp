@@ -44,6 +44,7 @@ struct face_recognition_arcface_ncnn::impl
 
 
 face_recognition_arcface_ncnn::face_recognition_arcface_ncnn(std::string const &param, std::string const &bin, int target_size) :
+    face_recognition_base(),
     impl_{std::make_unique<impl>(param, bin, target_size)}
 {    
 }
