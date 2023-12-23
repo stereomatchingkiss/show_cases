@@ -4,6 +4,7 @@
 
 #include <net.h>
 
+#include <iostream>
 #include <map>
 #include <numeric>
 #include <ranges>
@@ -74,7 +75,7 @@ struct face_detector_insight_face_ncnn::impl
         ac_.resize(feat_stride_fpn_.size());
         for(size_t i = 0; i < feat_stride_fpn_.size(); i++){
             int const stride = feat_stride_fpn_[i];
-            ac_[i].init(stride, anchor_config_[i], false);
+            ac_[i].init(stride, anchor_config_[i]);
         }
 
         input_name_ = net_.input_names()[0];
@@ -117,28 +118,26 @@ struct face_detector_insight_face_ncnn::impl
 
     std::vector<face_detector_box> predict(cv::Mat const &bgr)
     {
-        ncnn::Mat input = ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows);
-        input.substract_mean_normalize(mean_vals_, norm_vals_);
-
+        ncnn::Mat input = ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows);        
         ncnn::Extractor ex = net_.create_extractor();
 
         ex.input(input_name_.c_str(), input);
 
         std::vector<anchor> proposals;
-        for(size_t i = 0; i < feat_stride_fpn_.size(); i++){
+        for(size_t i = 0; i < feat_stride_fpn_.size(); ++i){
             ncnn::Mat cls;
             ncnn::Mat reg;
             ncnn::Mat pts;
 
             ex.extract(cls_name_[i].c_str(), cls);
             ex.extract(reg_name_[i].c_str(), reg);
-            ex.extract(pts_name_[i].c_str(), pts);
+            ex.extract(pts_name_[i].c_str(), pts);            
 
             ac_[i].filter_anchor(cls, reg, pts, proposals);
-        }                
+        }
 
         std::vector<anchor> finalres;
-        box_nms_cpu(proposals, nms_threshold_, finalres, target_size_);
+        box_nms_cpu(proposals, nms_threshold_, finalres, target_size_);        
 
         std::vector<face_detector_box> results;
         for(size_t i = 0; i < finalres.size(); ++i){
@@ -146,15 +145,13 @@ struct face_detector_insight_face_ncnn::impl
             box.confidence_ = finalres[i].score_;
             box.rect_ = finalres[i].final_box_;
             box.landmark_pts_ = std::move(finalres[i].pts_);
+            results.emplace_back(std::move(box));
         }
 
         return results;
     }
 
     ncnn::Net net_;
-
-    static float constexpr mean_vals_[3] = {0, 0, 0};
-    static float constexpr norm_vals_[3] = {1, 1, 1};
 
     std::vector<face_detector_anchor_creator> ac_;
     std::vector<anchor_cfg> const anchor_config_ = {anchor_cfg(std::vector<float>{32,16}, std::vector<float>{1}, 16),
@@ -180,6 +177,11 @@ face_detector_insight_face_ncnn::face_detector_insight_face_ncnn(std::string con
                                                                  std::string const &bin,
                                                                  float nms_threshold) :
     impl_{std::make_unique<impl>(param, bin, nms_threshold)}
+{
+
+}
+
+face_detector_insight_face_ncnn::~face_detector_insight_face_ncnn()
 {
 
 }

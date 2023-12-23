@@ -92,7 +92,7 @@ public:
 class face_detector_anchor_creator
 {
 public:
-    size_t init(int stride, anchor_cfg const &cfg, bool dense_anchor);
+    size_t init(int stride, anchor_cfg const &cfg);
     void filter_anchor(ncnn::Mat& cls, ncnn::Mat& reg, ncnn::Mat& pts, std::vector<anchor>& proposals) const;
 
 private:

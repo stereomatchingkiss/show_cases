@@ -16,6 +16,10 @@ public:
 
     int get_load_model_state() const noexcept;
 
+    /**
+     * @param bgr Input need to resize to 300*300
+     * @return
+     */
     std::vector<face_detector_box> predict(cv::Mat const &bgr) override;
 
 private:

@@ -17,7 +17,7 @@ void anchor::print()
     printf("Rect %f %f %f %f Sorce: %f\n", final_box_.x, final_box_.y, final_box_.width, final_box_.height, score_);
 }
 
-size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg, bool dense_anchor)
+size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg)
 {
     cret2f const base_anchor(0,0, static_cast<float>(cfg.base_size_ - 1), static_cast<float>(cfg.base_size_ - 1));
     std::vector<cret2f> ratio_anchors;
@@ -25,7 +25,7 @@ size_t face_detector_anchor_creator::init(int stride, anchor_cfg const &cfg, boo
     cls_threshold_ = cfg.cls_threshold_;
 
     ratio_enum(base_anchor, cfg.ratios_, ratio_anchors);
-    scale_enum(ratio_anchors, cfg.scales_, pre_anchor_);
+    scale_enum(ratio_anchors, cfg.scales_, pre_anchor_);    
 
     anchor_stride_ = stride;
     anchor_num_ = static_cast<int>(pre_anchor_.size());
