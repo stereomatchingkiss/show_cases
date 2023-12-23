@@ -1,4 +1,4 @@
-#include "face_detector_insight_face_ncnn.hpp"
+#include "face_detector_retina_face_ncnn.hpp"
 
 #include "face_detector_anchor_creator.hpp"
 
@@ -60,7 +60,7 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
 
 }
 
-struct face_detector_insight_face_ncnn::impl
+struct face_detector_retina_face_ncnn::impl
 {
     impl(std::string const &param, std::string const &bin, float nms_threshold) :
         nms_threshold_{nms_threshold}
@@ -173,7 +173,7 @@ struct face_detector_insight_face_ncnn::impl
     int load_param_success_ = -1;
 };
 
-face_detector_insight_face_ncnn::face_detector_insight_face_ncnn(std::string const &param,
+face_detector_retina_face_ncnn::face_detector_retina_face_ncnn(std::string const &param,
                                                                  std::string const &bin,
                                                                  float nms_threshold) :
     impl_{std::make_unique<impl>(param, bin, nms_threshold)}
@@ -181,17 +181,17 @@ face_detector_insight_face_ncnn::face_detector_insight_face_ncnn(std::string con
 
 }
 
-face_detector_insight_face_ncnn::~face_detector_insight_face_ncnn()
+face_detector_retina_face_ncnn::~face_detector_retina_face_ncnn()
 {
 
 }
 
-int face_detector_insight_face_ncnn::get_load_model_state() const noexcept
+int face_detector_retina_face_ncnn::get_load_model_state() const noexcept
 {
     return impl_->get_load_model_state();
 }
 
-std::vector<face_detector_box> face_detector_insight_face_ncnn::predict(const cv::Mat &bgr)
+std::vector<face_detector_box> face_detector_retina_face_ncnn::predict(const cv::Mat &bgr)
 {
     return impl_->predict(bgr);
 }
