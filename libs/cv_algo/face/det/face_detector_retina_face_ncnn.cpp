@@ -2,6 +2,8 @@
 
 #include "face_detector_anchor_creator.hpp"
 
+#include "../../ncnn/ncnn_model_loader.hpp"
+
 #include <net.h>
 
 #include <iostream>
@@ -63,14 +65,12 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
 struct face_detector_retina_face_ncnn::impl
 {
     impl(std::string const &param, std::string const &bin, float nms_threshold) :
+        mloder_(param, bin, &net_),
         nms_threshold_{nms_threshold}
     {
         net_.opt.num_threads = 4;
         net_.opt.use_winograd_convolution = true;
         net_.opt.use_sgemm_convolution = true;
-
-        load_param_success_ = net_.load_param(param.c_str());
-        load_model_success_ = net_.load_model(bin.c_str());
 
         ac_.resize(feat_stride_fpn_.size());
         for(size_t i = 0; i < feat_stride_fpn_.size(); i++){
@@ -78,50 +78,19 @@ struct face_detector_retina_face_ncnn::impl
             ac_[i].init(stride, anchor_config_[i]);
         }
 
-        input_name_ = net_.input_names()[0];
-        output_name_ = net_.output_names()[net_.output_names().size() - 1];
-
         for(auto const &val : feat_stride_fpn_){
             cls_name_.emplace_back("face_rpn_cls_prob_reshape_stride" + std::to_string(val));
             reg_name_.emplace_back("face_rpn_bbox_pred_stride" + std::to_string(val));
             pts_name_.emplace_back("face_rpn_landmark_pred_stride" + std::to_string(val));
         }
-    }
-
-    bool get_load_model_success() const noexcept
-    {
-        return load_model_success_ == 0;
-    }
-
-    bool get_load_param_success() const noexcept
-    {
-        return load_param_success_ == 0;
-    }
-
-    int get_load_model_state() const noexcept
-    {
-        if(get_load_model_success() && get_load_param_success()){
-            return 0;
-        }
-        if(get_load_model_success() == true && get_load_param_success() == false){
-            return 1;
-        }
-        if(get_load_model_success() == false && get_load_param_success() == true){
-            return 2;
-        }
-        if(get_load_model_success() == false && get_load_param_success() == false){
-            return 3;
-        }
-
-        return -1;
-    }
+    }    
 
     std::vector<face_detector_box> predict(cv::Mat const &bgr)
     {
         ncnn::Mat input = ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows);        
         ncnn::Extractor ex = net_.create_extractor();
 
-        ex.input(input_name_.c_str(), input);
+        ex.input(mloder_.get_input_name().c_str(), input);
 
         std::vector<anchor> proposals;
         for(size_t i = 0; i < feat_stride_fpn_.size(); ++i){
@@ -152,6 +121,7 @@ struct face_detector_retina_face_ncnn::impl
     }
 
     ncnn::Net net_;
+    nc::ncnn_model_loader mloder_;
 
     std::vector<face_detector_anchor_creator> ac_;
     std::vector<anchor_cfg> const anchor_config_ = {anchor_cfg(std::vector<float>{32,16}, std::vector<float>{1}, 16),
@@ -164,13 +134,7 @@ struct face_detector_retina_face_ncnn::impl
 
     std::vector<int> const feat_stride_fpn_ = {32,16,8};
     float const nms_threshold_;
-    static int constexpr target_size_ = 300;
-
-    std::string input_name_;
-    std::string output_name_;
-
-    int load_model_success_ = -1;
-    int load_param_success_ = -1;
+    static int constexpr target_size_ = 300;    
 };
 
 face_detector_retina_face_ncnn::face_detector_retina_face_ncnn(std::string const &param,
@@ -188,7 +152,7 @@ face_detector_retina_face_ncnn::~face_detector_retina_face_ncnn()
 
 int face_detector_retina_face_ncnn::get_load_model_state() const noexcept
 {
-    return impl_->get_load_model_state();
+    return impl_->mloder_.get_load_model_state();
 }
 
 std::vector<face_detector_box> face_detector_retina_face_ncnn::predict(const cv::Mat &bgr)
