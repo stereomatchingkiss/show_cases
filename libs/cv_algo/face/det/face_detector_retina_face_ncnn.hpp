@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../face_detector_base.hpp"
-#include "../face_detector_box.hpp"
+#include "face_detector_base.hpp"
+#include "face_detector_box.hpp"
 
 #include <memory>
 #include <string>
