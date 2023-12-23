@@ -140,6 +140,7 @@ struct face_detector_retina_face_ncnn::impl
 face_detector_retina_face_ncnn::face_detector_retina_face_ncnn(std::string const &param,
                                                                  std::string const &bin,
                                                                  float nms_threshold) :
+    face_detector_base(),
     impl_{std::make_unique<impl>(param, bin, nms_threshold)}
 {
 
