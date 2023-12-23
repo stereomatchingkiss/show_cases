@@ -10,6 +10,7 @@ class face_detector_base
 {
 public:
     face_detector_base();
+    virtual ~face_detector_base();
 
     virtual std::vector<face_detector_box> predict(cv::Mat const &input) = 0;
 };

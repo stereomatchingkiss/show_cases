@@ -7,4 +7,9 @@ face_detector_base::face_detector_base()
 
 }
 
+face_detector_base::~face_detector_base()
+{
+
+}
+
 }
