@@ -19,6 +19,7 @@
 namespace flt::cvt::det{
 
 nanodet::nanodet(const char* param, const char* bin, int num_class, bool use_gpu, int input_size, int max_thread) :
+    obj_det_base(),
     net_(std::make_unique<nanodet_raw_ncnn>(param, bin, num_class, use_gpu, input_size, max_thread))
 {        
 }
