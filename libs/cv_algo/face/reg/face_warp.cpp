@@ -13,7 +13,7 @@ face_warp::face_warp(int target_size) :
                         {48.0252f, 71.7366f},
                         {33.5493f, 92.3655f},
                         {62.7299f, 92.2041f}},
-    target_face_landmarks_(5, 2, CV_32F, target_warp_points_.data()),
+    target_face_landmarks_(5, 2, CV_32F, const_cast<cv::Point2f*>(target_warp_points_.data())),
     target_size_{target_size}
 {    
 }

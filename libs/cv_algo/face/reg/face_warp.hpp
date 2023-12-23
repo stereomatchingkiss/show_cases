@@ -19,8 +19,8 @@ private:
     cv::Mat similar_transform(cv::Mat const &src,cv::Mat const &dst) const;
     cv::Mat var_axis_0(cv::Mat const &src) const;
 
-    std::vector<cv::Point2f> target_warp_points_;
-    cv::Mat target_face_landmarks_;
+    std::vector<cv::Point2f> const target_warp_points_;
+    cv::Mat const target_face_landmarks_;
 
     int target_size_;
 };
