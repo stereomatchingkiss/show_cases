@@ -27,7 +27,9 @@ void widget_stream_player::display_frame(std::any results)
     int const w = ui->labelStream->width();
     int const h = ui->labelStream->height();
 
-    ui->labelStream->setPixmap(QPixmap::fromImage(val.img).scaled(w, h, Qt::KeepAspectRatio));
+    if(!val.img.isNull()){
+        ui->labelStream->setPixmap(QPixmap::fromImage(val.img).scaled(w, h, Qt::KeepAspectRatio));
+    }
 
     emit send_text_msg(QJsonDocument(val.obj).toJson(QJsonDocument::Indented));
 }
