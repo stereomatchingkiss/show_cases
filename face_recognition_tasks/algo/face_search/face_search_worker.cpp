@@ -18,11 +18,15 @@
 
 #include <QDebug>
 
+#include <QFileInfo>
+
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
 #include <QPainter>
+
+#include <iostream>
 
 using namespace flt::cvt::face;
 using namespace flt::cvt::utils;
@@ -94,7 +98,7 @@ struct face_search_worker::impl
             auto fdet_resutls = fdet_.predict(resize_img);
 
             float const x_ratio = cv_mat.cols / 300.0f;
-            float const y_ratio = cv_mat.rows / 300.0f;
+            float const y_ratio = cv_mat.rows / 300.0f;            
             QPainter painter(&qimg);
             painter.setPen(pen_);
 
@@ -103,21 +107,23 @@ struct face_search_worker::impl
                 for(auto &val : fdet_resutls[i].landmark_pts_){
                     val.x = std::clamp(val.x * x_ratio, 0.f, static_cast<float>(cv_mat.cols - 1));
                     val.y = std::clamp(val.y * y_ratio, 0.f, static_cast<float>(cv_mat.rows - 1));
+                    //painter.drawPoint(QPoint(val.x, val.y));
                 }
                 auto const face = fwarp_.process(cv_mat, fdet_resutls[i].landmark_pts_);
                 auto const face_features = freg_.predict(face);
-                auto const rect = fdet_resutls[i].rect_;
-                painter.drawRect(rect.x * x_ratio, rect.y * y_ratio, rect.width * x_ratio, rect.height * y_ratio);
-                auto [best_name, best_score] = closest_features(face_features);
+                auto const &rect = fdet_resutls[i].rect_;
+                painter.drawRect(rect.x * x_ratio, rect.y * y_ratio, (rect.width) * x_ratio, (rect.height) * y_ratio);
+                auto const [best_name, best_score] = closest_features(face_features);
                 painter.drawText(QPoint(rect.x * x_ratio, rect.y * y_ratio),
                                  QString("%1:%2").arg(best_name, QString("%1").arg(best_score, 2)));
 
                 QJsonObject jobj;
                 jobj[gk.face_name()] = best_name;
-                jobj[gk.face_features()] = best_score;
-                info.push_back(jobj);
+                jobj[gk.face_similar_score()] = best_score;
+                info.push_back(jobj);                
             }
 
+            results.obj["location"] = obj["location"].toString();
             results.obj[gk.job_type()] = "search";
             results.obj[gk.faces_info()] = info;
             results.img = qimg;
