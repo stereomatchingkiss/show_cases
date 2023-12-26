@@ -17,6 +17,7 @@ class widget_face_det_model_select;
 class widget_face_recognition_model_select;
 class widget_faces_register;
 class widget_source_selection;
+class widget_stream_player;
 
 class widget_stacks_faces_search : public QWidget
 {
@@ -33,7 +34,7 @@ private slots:
 
 private:
     void create_frame_capture();
-    void init_stacked_widget();    
+    void init_stacked_widget();
     void next_page_is_widget_stream_player();
 
     void send_msg_by_binary(QByteArray const &msg);
@@ -47,6 +48,7 @@ private:
     widget_face_recognition_model_select *widget_face_recognition_model_select_;
     widget_faces_register *widget_faces_register_;
     widget_source_selection *widget_source_selection_;
+    widget_stream_player* widget_stream_player_;
 };
 
 #endif // WIDGET_STACKS_FACES_SEARCH_HPP
