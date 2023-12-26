@@ -48,14 +48,27 @@ widget_stacks_faces_search::~widget_stacks_faces_search()
 
 void widget_stacks_faces_search::on_pushButtonPrev_clicked()
 {
+    if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        ui->pushButtonNext->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
 
+        sfwmw_.reset();
+    }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        ui->pushButtonPrev->setVisible(false);
+        ui->stackedWidget->setCurrentWidget(widget_faces_register_);
+    }
 }
-
 
 void widget_stacks_faces_search::on_pushButtonNext_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_faces_register_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+        ui->pushButtonPrev->setVisible(true);
+        widget_faces_register_->clear_controller();
+    }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        next_page_is_widget_stream_player();
+        ui->pushButtonNext->setVisible(false);
+        ui->pushButtonPrev->setVisible(true);
     }
 }
 
