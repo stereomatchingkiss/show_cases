@@ -37,15 +37,7 @@
     <addaction name="actionReadMe"/>
     <addaction name="actionContactMe"/>
    </widget>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionSaveSettings"/>
-    <addaction name="actionLoadSettings"/>
-   </widget>
    <addaction name="menuLicense"/>
-   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQt">

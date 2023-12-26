@@ -17,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
     connect(ui->actionQt, &QAction::triggered, this, &MainWindow::action_about_qt);
-    connect(ui->actionLoadSettings, &QAction::triggered, this, &MainWindow::load_settings);
-    connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::save_settings);
-    connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);
+    //connect(ui->actionLoadSettings, &QAction::triggered, this, &MainWindow::load_settings);
+    //connect(ui->actionSaveSettings, &QAction::triggered, this, &MainWindow::save_settings);
+    connect(ui->actionReadMe, &QAction::triggered, this, &MainWindow::action_warning);           
 
     init_stacked_widget();
 }
