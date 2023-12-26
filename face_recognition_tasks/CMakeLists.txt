@@ -124,6 +124,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ui/widget_face_det_model_select.hpp ui/widget_face_det_model_select.cpp ui/widget_face_det_model_select.ui
         ui/widget_face_recognition_model_select.hpp ui/widget_face_recognition_model_select.cpp ui/widget_face_recognition_model_select.ui
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         config/config_face_det_model_select.hpp
         config/config_face_recognition_model_select.hpp
         algo/face_search/face_search_worker.hpp algo/face_search/face_search_worker.cpp
