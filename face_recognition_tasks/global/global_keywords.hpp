@@ -18,6 +18,9 @@ public:
     std::string const retina_face_bin() const;
     std::string const retina_face_param() const;
 
+    QString const face_features() const;
+    QString const face_image() const;
+
     QString const face_recognition_tasks_assets() const;
 
     QString state_cam_states() const;    

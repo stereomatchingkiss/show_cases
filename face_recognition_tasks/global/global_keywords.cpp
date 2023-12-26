@@ -75,6 +75,16 @@ const std::string global_keywords::retina_face_param() const
 #endif
 }
 
+const QString global_keywords::face_features() const
+{
+    return "face_features";
+}
+
+const QString global_keywords::face_image() const
+{
+    return "face_image";
+}
+
 QString global_keywords::state_stacks_manager() const
 {
     return "state_stacks_manager";
