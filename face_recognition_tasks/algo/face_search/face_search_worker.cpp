@@ -81,12 +81,12 @@ struct face_search_worker::impl
 
     face_search_worker_results search_best_face(QJsonObject const &obj)
     {
-        QImage qimg;
         global_keywords const gk;
-        qimg.loadFromData(QByteArray::fromBase64(obj[gk.img()].toString().toLatin1()));
+        QImage qimg;
+        qimg.loadFromData(QByteArray::fromBase64(obj[gk.img()].toString().toLatin1()), "JPG");
 
         face_search_worker_results results;
-        if(!qimg.isNull()){
+        if(!qimg.isNull()){            
             auto cv_mat = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
 
             cv::Mat resize_img;
@@ -118,8 +118,11 @@ struct face_search_worker::impl
                 info.push_back(jobj);
             }
 
+            results.obj[gk.job_type()] = "search";
             results.obj[gk.faces_info()] = info;
             results.img = qimg;
+        }else{
+            qDebug()<<"qimage is null";
         }
 
         return results;
@@ -131,7 +134,7 @@ struct face_search_worker::impl
         global_keywords const gk;
         if(obj.contains(gk.job_type())){
             if(auto const dtype = obj[gk.job_type()].toString(); dtype == "register"){
-                register_new_face(obj);
+                return register_new_face(obj);
             }else if(dtype == "search"){
                 return search_best_face(obj);
             }
@@ -163,5 +166,7 @@ face_search_worker::~face_search_worker()
 
 void face_search_worker::process_results(std::any frame)
 {
-    emit send_process_results(impl_->process_results(frame));
+    if(auto results = impl_->process_results(frame); !results.obj.isEmpty()){
+        emit send_process_results(results);
+    }
 }
