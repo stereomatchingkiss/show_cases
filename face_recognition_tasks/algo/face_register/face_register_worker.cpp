@@ -41,16 +41,21 @@ struct face_register_worker::impl
         return std::get<0>(flt::qimg_convert_to_cvmat_non_copy(qimg));
     }
 
-    face_register_results predict(cv::Mat const &input)
+    face_register_results predict(cv::Mat const &cv_mat)
     {
         cv::Mat resize_img;
-        cv::resize(input, resize_img, cv::Size(300, 300));
-        auto const fdet_resutls = fdet_.predict(resize_img);
-        qDebug()<<"face det results = "<<fdet_resutls.size();
+        cv::resize(cv_mat, resize_img, cv::Size(300, 300));
+        auto fdet_resutls = fdet_.predict(resize_img);
 
         face_register_results results;
+        float const x_ratio = cv_mat.cols / 300.0f;
+        float const y_ratio = cv_mat.rows / 300.0f;
         for(size_t i = 0; i != fdet_resutls.size(); ++i){
-            auto face = fwarp_.process(resize_img, fdet_resutls[i].landmark_pts_);
+            for(auto &val : fdet_resutls[i].landmark_pts_){
+                val.x = std::clamp(val.x * x_ratio, 0.f, static_cast<float>(cv_mat.cols - 1));
+                val.y = std::clamp(val.y * y_ratio, 0.f, static_cast<float>(cv_mat.rows - 1));
+            }
+            auto face = fwarp_.process(cv_mat, fdet_resutls[i].landmark_pts_);
             QImage img(face.data, face.cols, face.rows, QImage::Format_RGB888);
 
             results.faces_.emplace_back(img.rgbSwapped());
