@@ -7,6 +7,16 @@ const QString global_keywords::face_recognition_tasks_assets() const
     return "FaceRecognitionTasksAssets";
 }
 
+const QString global_keywords::job_type() const
+{
+    return "job_type";
+}
+
+const QString global_keywords::img() const
+{
+    return "img";
+}
+
 QString global_keywords::state_cam_states() const
 {
     return "state_cam_states";
@@ -75,6 +85,16 @@ const std::string global_keywords::retina_face_param() const
 #endif
 }
 
+const QString global_keywords::faces_info() const
+{
+    return "faces_info";
+}
+
+const QString global_keywords::face_similar_score() const
+{
+    return "face_similar_score";
+}
+
 const QString global_keywords::face_features() const
 {
     return "face_features";
@@ -83,6 +103,11 @@ const QString global_keywords::face_features() const
 const QString global_keywords::face_image() const
 {
     return "face_image";
+}
+
+const QString global_keywords::face_name() const
+{
+    return "face_name";
 }
 
 QString global_keywords::state_stacks_manager() const
