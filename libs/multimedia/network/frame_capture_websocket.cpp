@@ -16,27 +16,32 @@ struct frame_capture_websocket::impl
     impl(frame_capture_websocket_params const &params) :        
         params_{params}
     {
-    }
+    }    
 
-    void process_image(QImage mat)
+    void binary_message_received(QByteArray message)
     {
-        if(!mat.isNull()){
+        if(auto mat = QImage::fromData(message); !mat.isNull()){
             for(auto &val : controllers_){
                 val.first->predict(mat);
             }
         }else{
-            qDebug()<<__func__<<":cannot decode message";
+            for(auto &val : controllers_){
+                val.first->predict(message);
+            }
         }
     }
 
-    void binary_message_received(QByteArray message)
-    {
-        process_image(QImage::fromData(message));
-    }
-
     void text_message_received(QString message)
-    {
-        process_image(QImage::fromData(message.toLatin1()));
+    {        
+        if(auto mat = QImage::fromData(message.toLatin1()); !mat.isNull()){
+            for(auto &val : controllers_){
+                val.first->predict(mat);
+            }
+        }else{
+            for(auto &val : controllers_){
+                val.first->predict(message);
+            }
+        }
     }
 
     void remove(void *key)
