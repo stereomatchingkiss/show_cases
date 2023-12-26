@@ -53,11 +53,11 @@ void widget_faces_register::on_pushButtonSelectImage_clicked()
     {
         if(QImage img(fname); !img.isNull()){
             controller_->predict(img);
+            controller_->stop(false);
             emit controller_->start();
         }else{
             msg_box_->warning(this, tr("Warning"), tr("Cannot load the file %1").arg(fname));
         }
-
     }
 #else
     auto fcontent_ready = [this](QString const &fname, QByteArray const &fcontent) {
