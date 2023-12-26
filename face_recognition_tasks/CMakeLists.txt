@@ -130,6 +130,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         algo/face_register/face_register_worker.hpp algo/face_register/face_register_worker.cpp
         config/config_face_register_worker.hpp
         algo/face_register/face_register_results.hpp
+        algo/face_search/face_search_worker_results.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET face_recognition_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
