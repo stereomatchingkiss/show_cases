@@ -64,9 +64,10 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
 
 struct face_detector_retina_face_ncnn::impl
 {
-    impl(std::string const &param, std::string const &bin, float nms_threshold) :
+    impl(std::string const &param, std::string const &bin, float nms_threshold, bool swap_rgb) :
         mloder_(param, bin, &net_),
-        nms_threshold_{nms_threshold}
+        nms_threshold_{nms_threshold},
+        swap_rgb_{swap_rgb}
     {
         net_.opt.num_threads = 4;
         net_.opt.use_winograd_convolution = true;
@@ -87,7 +88,8 @@ struct face_detector_retina_face_ncnn::impl
 
     std::vector<face_detector_box> predict(cv::Mat const &bgr)
     {
-        ncnn::Mat input = ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows);        
+        ncnn::Mat input = swap_rgb_ ? ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows) :
+                              ncnn::Mat::from_pixels(bgr.data, ncnn::Mat::PIXEL_RGB, bgr.cols, bgr.rows);
         ncnn::Extractor ex = net_.create_extractor();
 
         ex.input(mloder_.get_input_name().c_str(), input);
@@ -134,14 +136,16 @@ struct face_detector_retina_face_ncnn::impl
 
     std::vector<int> const feat_stride_fpn_ = {32,16,8};
     float const nms_threshold_;
+    bool swap_rgb_;
     static int constexpr target_size_ = 300;    
 };
 
 face_detector_retina_face_ncnn::face_detector_retina_face_ncnn(std::string const &param,
                                                                  std::string const &bin,
-                                                                 float nms_threshold) :
+                                                                 float nms_threshold,
+                                                                 bool swap_rgb) :
     face_detector_base(),
-    impl_{std::make_unique<impl>(param, bin, nms_threshold)}
+    impl_{std::make_unique<impl>(param, bin, nms_threshold, swap_rgb)}
 {
 
 }

@@ -11,7 +11,7 @@ namespace flt::cvt::face{
 class face_detector_retina_face_ncnn : public face_detector_base
 {
 public:
-    face_detector_retina_face_ncnn(std::string const &param, std::string const &bin, float nms_threshold = 0.4);
+    face_detector_retina_face_ncnn(std::string const &param, std::string const &bin, float nms_threshold = 0.4, bool swap_rgb = true);
     ~face_detector_retina_face_ncnn();
 
     int get_load_model_state() const noexcept;
