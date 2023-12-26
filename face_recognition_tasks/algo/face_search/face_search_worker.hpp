@@ -12,7 +12,7 @@ public:
     ~face_search_worker();
 
 signals:
-    void send_msg(QString msg);
+    void send_msg_by_text(QString const &msg);
 
 private:
     void process_results(std::any frame) override;
