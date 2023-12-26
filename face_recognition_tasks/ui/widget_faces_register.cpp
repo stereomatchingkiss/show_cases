@@ -30,6 +30,8 @@ widget_faces_register::widget_faces_register(QWidget *parent) :
 
     ui->pushButtonNext->setVisible(false);
     ui->pushButtonPrev->setVisible(false);
+
+    ui->groupBoxFacesInTheImage->setVisible(fresults_.faces_.empty() == false);
 }
 
 widget_faces_register::~widget_faces_register()
@@ -105,6 +107,8 @@ void widget_faces_register::on_pushButtonAdd_clicked()
 {
     init_controller();
 
+
+
 #ifndef WASM_BUILD
     if(auto const fname = QFileDialog::getSaveFileName(this, tr("Save at")); !fname.isEmpty())
     {
@@ -170,6 +174,8 @@ void widget_faces_register::process_results(std::any results)
         ui->pushButtonNext->setVisible(false);
         ui->pushButtonPrev->setVisible(false);
     }
+
+    ui->groupBoxFacesInTheImage->setVisible(fresults_.faces_.empty() == false);
 
     controller_->stop(true);
     display_face();
