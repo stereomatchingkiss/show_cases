@@ -39,6 +39,7 @@ private slots:
     void on_pushButtonAdd_clicked();
 
 private:
+    QJsonObject generate_save_content() const;
     void display_face();
     void init_controller();
     void process_results(std::any results);    
