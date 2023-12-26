@@ -22,8 +22,9 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
         return;
     }
 
-    std::vector<size_t> indexs{0};
-    std::sort(std::begin(boxs), std::end(boxs), std::greater<anchor>());
+    std::vector<size_t> indexs(boxs.size());
+    std::iota(std::begin(indexs), std::end(indexs), 0);
+    std::ranges::sort(boxs, std::greater<anchor>());
 
     while(indexs.size() > 0){
         size_t const good_idx = indexs[0];
@@ -68,8 +69,7 @@ struct face_detector_retina_face_ncnn::impl
         mloder_(param, bin, &net_),
         nms_threshold_{nms_threshold},
         swap_rgb_{swap_rgb}
-    {
-        net_.opt.num_threads = 4;
+    {        
         net_.opt.use_winograd_convolution = true;
         net_.opt.use_sgemm_convolution = true;
 
@@ -107,9 +107,8 @@ struct face_detector_retina_face_ncnn::impl
             ac_[i].filter_anchor(cls, reg, pts, proposals);
         }
 
-        std::vector<anchor> finalres;
-        box_nms_cpu(proposals, nms_threshold_, finalres, target_size_);        
-
+        std::vector<anchor> finalres;        
+        box_nms_cpu(proposals, nms_threshold_, finalres, target_size_);
         std::vector<face_detector_box> results;
         for(size_t i = 0; i < finalres.size(); ++i){
             face_detector_box box;
