@@ -56,8 +56,8 @@ void box_nms_cpu(std::vector<anchor>& boxs, const float threshold, std::vector<a
     for(size_t i = 0; i < res.size(); ++i){
         res[i].final_box_.x = std::clamp(res[i].final_box_.x, 0.f, static_cast<float>(target_size - 1));
         res[i].final_box_.y = std::clamp(res[i].final_box_.y, 0.f, static_cast<float>(target_size - 1));
-        res[i].final_box_.width = std::clamp(res[i].final_box_.width, 0.f, static_cast<float>(target_size - 1));
-        res[i].final_box_.height = std::clamp(res[i].final_box_.height, 0.f, static_cast<float>(target_size - 1));
+        res[i].final_box_.width = std::clamp(res[i].final_box_.width - res[i].final_box_.x, 0.f, static_cast<float>(target_size - 1));
+        res[i].final_box_.height = std::clamp(res[i].final_box_.height - res[i].final_box_.y, 0.f, static_cast<float>(target_size - 1));
     }
 }
 
@@ -113,7 +113,7 @@ struct face_detector_retina_face_ncnn::impl
         for(size_t i = 0; i < finalres.size(); ++i){
             face_detector_box box;
             box.confidence_ = finalres[i].score_;
-            box.rect_ = finalres[i].final_box_;
+            box.rect_ = finalres[i].final_box_;            
             box.landmark_pts_ = std::move(finalres[i].pts_);
             results.emplace_back(std::move(box));
         }
