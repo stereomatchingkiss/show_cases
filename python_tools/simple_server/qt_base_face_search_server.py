@@ -106,6 +106,7 @@ class qt_base_face_search_server(QPushButton):
 
         im_string = str(ba.toBase64())
         data_to_send["img"] = im_string[1:]
+        data_to_send["location"] = self.last_image_to_search
 
         self.socket.sendTextMessage(json.dumps(data_to_send))
 
