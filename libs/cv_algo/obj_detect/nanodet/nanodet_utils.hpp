@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace ocv::det{
+namespace flt::cvt::det{
 
 class nanodet;
 

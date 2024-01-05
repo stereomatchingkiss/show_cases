@@ -8,7 +8,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-namespace ocv::det{
+namespace flt::cvt::det{
 
 std::tuple<int, cv::Mat> predict_image(nanodet &net,
                                        const std::string &img_path,
@@ -58,12 +58,12 @@ std::pair<int, std::string> predict_bboxes(cv::Mat const &input,
     if(should_swap){
         std::swap(effect_roi.height_, effect_roi.width_);
         std::swap(effect_roi.y_, effect_roi.x_);
-        nanodet::scale_bbox(input.rows, input.cols, boxes_info, effect_roi);
+        scale_bbox(input.rows, input.cols, boxes_info, effect_roi);
         for(auto const &val : boxes_info){
             predict_results += val.to_string(input.rows, input.cols);
         }
     }else{
-        nanodet::scale_bbox(input.cols, input.rows, boxes_info, effect_roi);
+        scale_bbox(input.cols, input.rows, boxes_info, effect_roi);
         for(auto const &val : boxes_info){
             predict_results += val.to_string(input.cols, input.rows);
         }
