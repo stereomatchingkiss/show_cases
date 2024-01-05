@@ -138,11 +138,11 @@ struct paddle_ocr_rec_onnx::impl
     }
 #endif
     
-    void predict(cv::Mat const &mat, std::vector<TextBox> &boxes)
+    void predict(cv::Mat const &bgr, std::vector<TextBox> &boxes)
     {
         for(size_t i = 0; i != boxes.size(); ++i){
             
-            auto const im_size = preprocess(mat, boxes[i].boxPoint);
+            auto const im_size = preprocess(bgr, boxes[i].boxPoint);
 
 #ifndef WASM_BUILD
             onnx_utils_.input_node_dims()[3] = im_size.width;
@@ -265,9 +265,9 @@ void paddle_ocr_rec_onnx::async_predict(cv::Mat const &mat, TextBox const &text_
 
 #else
 
-void paddle_ocr_rec_onnx::predict(cv::Mat const &mat, std::vector<TextBox> &boxes)
+void paddle_ocr_rec_onnx::predict(cv::Mat const &bgr, std::vector<TextBox> &boxes)
 {
-    impl_->predict(mat, boxes);
+    impl_->predict(bgr, boxes);
 }
 
 

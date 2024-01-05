@@ -23,7 +23,7 @@ public:
     void async_predict(cv::Mat const &mat, TextBox const &text_boxes);
     void predict(TextBox &text_boxes);
 #else
-    void predict(cv::Mat const &mat, std::vector<TextBox>& text_boxes);    
+    void predict(cv::Mat const &bgr, std::vector<TextBox>& text_boxes);
 #endif
 
 private:
