@@ -65,10 +65,6 @@ set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/clipper.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/common.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_results.hpp
