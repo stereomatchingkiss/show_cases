@@ -115,7 +115,7 @@ int nanodet_raw_ncnn::get_load_model_state() const noexcept
     return -1;
 }
 
-std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char *buffer,
+std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char *bgr_buffer,
                                                                   int width,
                                                                   int height,
                                                                   float score_threshold,

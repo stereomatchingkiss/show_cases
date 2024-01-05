@@ -31,8 +31,8 @@ class nanodet : public obj_det_base
 public:    
     nanodet(const char* param,
             const char* bin,
-            int num_class,            
-            bool swap_rgb = false,
+            int num_class,
+            bool use_gpu = false,
             int input_size = 320,
             int max_thread = 4);
 
@@ -42,12 +42,12 @@ public:
     bool get_load_param_success() const noexcept;
     int get_load_model_state() const noexcept;
     //To fix : too many params
-    std::vector<box_info> predict_with_resize_image(cv::Mat const &image,
+    std::vector<box_info> predict_with_resize_image(cv::Mat const &bgr,
                                                     float score_threshold,
                                                     float nms_threshold,
                                                     int rotation_angle,
                                                     bool hflip);
-    std::vector<box_info> predict(cv::Mat const &image,
+    std::vector<box_info> predict(cv::Mat const &bgr,
                                   float score_threshold,
                                   float nms_threshold,
                                   int rotation_angle = 0,

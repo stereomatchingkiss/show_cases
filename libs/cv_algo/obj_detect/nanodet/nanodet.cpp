@@ -44,24 +44,24 @@ int nanodet::get_load_model_state() const noexcept
     return net_->get_load_model_state();
 }
 
-std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat const &image,
+std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat const &bgr,
                                                          float score_threshold,
                                                          float nms_threshold,
                                                          int rotation_angle,
                                                          bool hflip)
 {
-    adjust_img_orientation(image, rotation_angle, hflip);
-    return net_->predict_with_resize_image(image.data, image.cols, image.rows, score_threshold, nms_threshold);
+    adjust_img_orientation(bgr, rotation_angle, hflip);
+    return net_->predict_with_resize_image(bgr.data, bgr.cols, bgr.rows, score_threshold, nms_threshold);
 }
 
-std::vector<box_info> nanodet::predict(cv::Mat const &image,
+std::vector<box_info> nanodet::predict(cv::Mat const &bgr,
                                        float score_threshold,
                                        float nms_threshold,
                                        int rotation_angle,
                                        bool hflip)
 {
     object_rect effect_roi;
-    resize_uniform(image, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
+    resize_uniform(bgr, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
 
     auto boxes_info = predict_with_resize_image(resized_img_, score_threshold, nms_threshold, rotation_angle, hflip);
 
@@ -70,9 +70,9 @@ std::vector<box_info> nanodet::predict(cv::Mat const &image,
     if(should_swap){
         std::swap(effect_roi.height_, effect_roi.width_);
         std::swap(effect_roi.y_, effect_roi.x_);
-        scale_bbox(image.rows, image.cols, boxes_info, effect_roi);
+        scale_bbox(bgr.rows, bgr.cols, boxes_info, effect_roi);
     }else{
-        scale_bbox(image.cols, image.rows, boxes_info, effect_roi);
+        scale_bbox(bgr.cols, bgr.rows, boxes_info, effect_roi);
     }
 
     return boxes_info;
