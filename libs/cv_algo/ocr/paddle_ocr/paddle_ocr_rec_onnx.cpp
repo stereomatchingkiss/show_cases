@@ -2,6 +2,8 @@
 
 #include "crnn_process.hpp"
 
+#include "../../../utils/file_reader.hpp"
+
 #ifndef WASM_BUILD
 
 #include "../../onnx/onnx_get_names_utils.hpp"
@@ -48,30 +50,11 @@ EM_JS(void, js_create_global_session, (), {
 
 namespace flt::cvt::ocr{
 
-namespace{
-
-std::vector<std::string> read_keys(std::string const &fname)
-{
-    std::vector<std::string> keys_vec;
-    if(std::ifstream in(fname); in.is_open()){
-        std::string line;
-        while(getline(in, line)){
-            keys_vec.emplace_back(line);
-        }
-    }else{
-        std::cout<<"cannot open fname = "<<fname<<std::endl;
-    }
-    
-    return keys_vec;
-}
-
-}
-
 struct paddle_ocr_rec_onnx::impl
 {
     impl(std::string const &model_weights, std::string const &key_files, int dst_height, int max_width) :
         dist_height_{dst_height},
-        keys_{read_keys(key_files)},
+        keys_{read_file_per_lines(key_files)},
         max_width_{max_width}
     {
 #ifndef WASM_BUILD
