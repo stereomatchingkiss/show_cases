@@ -38,8 +38,12 @@ add_executable(opencv_paddle_ocr_test main.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_onnx.cpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.hpp
+               ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.cpp
                ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.hpp
                ${PLUGIN_LIBS_PATH}/cv_algo/onnx/onnx_get_names_utils.cpp
+               ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
+               ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
            )
 
 if(ANDROID OR WIN32)
