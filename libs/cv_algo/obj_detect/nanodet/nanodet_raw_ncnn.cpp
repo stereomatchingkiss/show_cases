@@ -122,7 +122,7 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
                                                                   float nms_threshold)
 {
     ncnn::Mat input;
-    preprocess(buffer, width, height, input);
+    preprocess(bgr_buffer, width, height, input);
 
     auto ex = net_->create_extractor();
     ex.input(input_name_.c_str(), input);
