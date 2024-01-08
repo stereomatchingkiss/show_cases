@@ -10,10 +10,6 @@ struct TextBox {
     float score;
     std::string text;
 };
-struct TextLine {
-    std::string text;
-    std::vector<float> charScores;
-};
 
 /**
  * Remove text box with empty text and sort them from top to down, left to right
