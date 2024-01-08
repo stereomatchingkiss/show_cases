@@ -39,13 +39,12 @@ struct paddle_ocr_rec_opencv::impl
         }
     }
 
-    cv::Mat preprocess(cv::Mat const &mat, std::vector<cv::Point> const &box_points) const
+    cv::Mat preprocess(cv::Mat const &mat, std::vector<cv::Point> const &box_points)
     {
         auto crop_img = get_rotate_crop_image(mat, box_points);
-        cv::Mat resize_img;
-        cv::resize(crop_img, resize_img, cv::Size(dst_width_, dst_height_), 0.f, 0.f, cv::INTER_LINEAR);
+        cv::resize(crop_img, resize_img_, cv::Size(dst_width_, dst_height_), 0.f, 0.f, cv::INTER_LINEAR);
 
-        return resize_img;
+        return resize_img_;
     }
 
     void process_rec_results(TextBox &tbox, float const *floatarr, size_t candidate, size_t elem_size = 6625) const
@@ -81,6 +80,7 @@ struct paddle_ocr_rec_opencv::impl
     std::vector<float> input_data_;
     std::vector<std::string> keys_;
     cv::Scalar const mean_{0.5, 0.5, 0.5};
+    cv::Mat resize_img_;
     cv::dnn::Net net_;
 };
 
