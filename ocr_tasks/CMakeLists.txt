@@ -101,6 +101,8 @@ set(FLT_MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
 
 set(FLT_OTHER_SOURCE ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
     ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
+    ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
+    ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
     ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp)
