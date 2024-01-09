@@ -58,12 +58,13 @@ struct anpr_algo::impl
     }
 
     template<std::forward_iterator T>
-    auto find_plate_of_vehicle(T car_it, T plate_beg_it, T plate_end_it) const noexcept
+    auto find_plate_of_vehicle(cv::Rect const &car_rect, T plate_beg_it, T plate_end_it) const noexcept
     {
-        return std::find_if(plate_beg_it, plate_end_it, [car_it](box_info const &plate_box)
-                                   {
-                                       return (plate_box.rect_ & car_it->rect_) == plate_box.rect_;
-                                   });
+        return std::find_if(plate_beg_it, plate_end_it, [car_rect](box_info const &plate_box)
+                            {
+                                auto const plate_rect = plate_box.to_cv_rect();
+                                return (plate_rect & car_rect) == plate_rect;
+                            });
     }
 
     TextBox ocr_reg(cv::Mat const &bgr, std::vector<cv::Point> pts) const
@@ -82,9 +83,9 @@ struct anpr_algo::impl
     {
         auto obj_det_res = det_->predict(bgr, config_model_det_.confidence_, config_model_det_.nms_);
         auto car_end_it = std::partition(std::begin(obj_det_res), std::end(obj_det_res), [](auto const &val)
-                                           {
-                                               return val.label_ == 0;
-                                           });
+                                         {
+                                             return val.label_ == 0;
+                                         });
 
         std::vector<anpr_algo_predict_results> outputs;
         for(auto car_beg_it = std::begin(obj_det_res); car_beg_it != car_end_it; ++car_beg_it){
@@ -93,7 +94,7 @@ struct anpr_algo::impl
 
             //Vehicle is easier to find, this algorithm only perform ocr if it could find the
             //plate within the bounding rect of the vehicle
-            if(auto plate_it = find_plate_of_vehicle(car_beg_it, car_end_it, std::end(obj_det_res));
+            if(auto plate_it = find_plate_of_vehicle(car_beg_it->to_cv_rect(), car_end_it, std::end(obj_det_res));
                 plate_it != std::end(obj_det_res)){
                 TextBox tbox = ocr_reg(bgr, plate_it->box_pts());
                 result.plate_num_ = tbox.text.c_str();
