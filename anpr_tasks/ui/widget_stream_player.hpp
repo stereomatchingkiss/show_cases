@@ -9,6 +9,12 @@ namespace Ui {
 class widget_stream_player;
 }
 
+namespace flt::mm{
+
+enum class stream_source_type;
+
+}
+
 class widget_stream_player : public QWidget
 {
     Q_OBJECT
@@ -18,9 +24,14 @@ public:
     ~widget_stream_player();
 
     void display_frame(std::any results);
+    void set_source_type(flt::mm::stream_source_type source_type);
 
 signals:
+    void image_selected(std::any img);
     void send_text_msg(QString msg);
+
+private slots:
+    void on_pushButtonSelectImage_clicked();
 
 private:
     Ui::widget_stream_player *ui;    

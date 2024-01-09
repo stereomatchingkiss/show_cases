@@ -27,6 +27,13 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonSelectImage">
+     <property name="text">
+      <string>Select image</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
