@@ -5,7 +5,6 @@
 #include "../config/config_object_detect_model_select.hpp"
 #include "../global/global_keywords.hpp"
 
-#include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
 
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
@@ -14,14 +13,13 @@
 
 #include <cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.hpp>
 
-#include <utils/qimage_to_cvmat.hpp>
-
 #include <QDebug>
 #include <QImage>
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <any>
 #include <iterator>
 
 using namespace flt::cvt::det;
@@ -81,7 +79,7 @@ struct anpr_algo::impl
 
     std::vector<anpr_algo_predict_results> predict(cv::Mat const &bgr)
     {
-        auto obj_det_res = det_->predict(bgr, config_model_det_.confidence_, config_model_det_.nms_);
+        auto obj_det_res = det_->predict(bgr, config_model_det_.confidence_, config_model_det_.nms_);        
         auto car_end_it = std::partition(std::begin(obj_det_res), std::end(obj_det_res), [](auto const &val)
                                          {
                                              return val.label_ == 0;
@@ -108,13 +106,12 @@ struct anpr_algo::impl
     }
 
     std::vector<anpr_algo_predict_results> predict(QImage &rgb)
-    {
-        if(auto cv_img = std::get<0>(flt::qimg_convert_to_cvmat_non_copy(rgb)); !cv_img.empty()){
-            cv::cvtColor(cv_img, bgr_, cv::COLOR_RGB2BGR);
-            return predict(bgr_);
-        }
+    {        
+        auto qimg = rgb.convertToFormat(QImage::Format_RGB888);
+        auto cv_img = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+        cv::cvtColor(cv_img, bgr_, cv::COLOR_RGB2BGR);
 
-        return {};
+        return predict(bgr_);
     }
 
     config_object_detect_model_select config_model_det_;
