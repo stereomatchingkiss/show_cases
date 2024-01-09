@@ -139,6 +139,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         algo/anpr_algo.hpp algo/anpr_algo.cpp
         algo/anpr_algo_predict_results.hpp
+        algo/anpr_worker.hpp algo/anpr_worker.cpp
+        config/config_anpr_worker.hpp
         config/config_object_detect_model_select.hpp
         config/config_source_selection.hpp
         global/global_keywords.hpp global/global_keywords.cpp
@@ -146,7 +148,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ui/widget_source_selection.cpp ui/widget_source_selection.hpp ui/widget_source_selection.ui
         ui/widget_stacks_manager.cpp ui/widget_stacks_manager.hpp ui/widget_stacks_manager.ui
         ui/widget_stream_player.hpp ui/widget_stream_player.cpp
-        ui/widget_stacks_anpr.hpp ui/widget_stacks_anpr.cpp ui/widget_stacks_anpr.ui        
+        ui/widget_stacks_anpr.hpp ui/widget_stacks_anpr.cpp ui/widget_stacks_anpr.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET anpr_tasks APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
