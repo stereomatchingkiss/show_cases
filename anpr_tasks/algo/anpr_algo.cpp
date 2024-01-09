@@ -76,7 +76,7 @@ struct anpr_algo::impl
 
         ocr_rec_->predict(bgr, tboxes);
 
-        return tboxes[0];
+        return std::move(tboxes[0]);
     }
 
     std::vector<anpr_algo_predict_results> predict(cv::Mat const &bgr)
