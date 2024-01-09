@@ -147,7 +147,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.ui
         ui/widget_source_selection.cpp ui/widget_source_selection.hpp ui/widget_source_selection.ui
         ui/widget_stacks_manager.cpp ui/widget_stacks_manager.hpp ui/widget_stacks_manager.ui
-        ui/widget_stream_player.hpp ui/widget_stream_player.cpp
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         ui/widget_stacks_anpr.hpp ui/widget_stacks_anpr.cpp ui/widget_stacks_anpr.ui
     )
 # Define target properties for Android with Qt 6 as:
