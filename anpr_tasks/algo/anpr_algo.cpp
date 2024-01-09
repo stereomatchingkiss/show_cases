@@ -77,6 +77,26 @@ struct anpr_algo::impl
         return std::move(tboxes[0]);
     }
 
+    template<std::forward_iterator T>
+    void found_plate_not_in_car(T car_end_it,
+                                T plate_end_it,
+                                cv::Mat const &bgr,
+                                std::set<T> const &found_plate,
+                                std::vector<anpr_algo_predict_results> &outputs)
+    {
+        if(auto const plate_size = std::distance(car_end_it, plate_end_it); found_plate.size() != plate_size){
+            for(auto plate_it = car_end_it; plate_it != plate_end_it; ++plate_it){
+                if(!found_plate.contains(plate_it)){
+                    anpr_algo_predict_results result;
+                    TextBox tbox = ocr_reg(bgr, plate_it->box_pts());
+                    result.plate_num_ = tbox.text.c_str();
+                    result.plate_rect_ = cv::boundingRect(tbox.boxPoint);
+                    outputs.emplace_back(std::move(result));
+                }
+            }
+        }
+    }
+
     std::vector<anpr_algo_predict_results> predict(cv::Mat const &bgr)
     {
         auto obj_det_res = det_->predict(bgr, config_model_det_.confidence_, config_model_det_.nms_);        
@@ -86,6 +106,7 @@ struct anpr_algo::impl
                                          });
 
         std::vector<anpr_algo_predict_results> outputs;
+        std::set<decltype(car_end_it)> found_plate;
         for(auto car_beg_it = std::begin(obj_det_res); car_beg_it != car_end_it; ++car_beg_it){
             anpr_algo_predict_results result;
             result.vehicle_rect_ = car_beg_it->to_cv_rect();
@@ -97,10 +118,13 @@ struct anpr_algo::impl
                 TextBox tbox = ocr_reg(bgr, plate_it->box_pts());
                 result.plate_num_ = tbox.text.c_str();
                 result.plate_rect_ = cv::boundingRect(tbox.boxPoint);
+                found_plate.insert(plate_it);
             }
 
             outputs.emplace_back(std::move(result));
         }
+
+        found_plate_not_in_car(car_end_it, std::end(obj_det_res), bgr_, found_plate, outputs);
 
         return outputs;
     }
