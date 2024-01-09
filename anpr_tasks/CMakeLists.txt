@@ -144,6 +144,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         config/config_object_detect_model_select.hpp
         config/config_source_selection.hpp
         global/global_keywords.hpp global/global_keywords.cpp
+        global/global_object.hpp global/global_object.cpp
         ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.ui
         ui/widget_source_selection.cpp ui/widget_source_selection.hpp ui/widget_source_selection.ui
         ui/widget_stacks_manager.cpp ui/widget_stacks_manager.hpp ui/widget_stacks_manager.ui
