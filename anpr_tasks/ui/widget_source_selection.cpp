@@ -24,6 +24,8 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui(new Ui::widget_source_selection)
 {
     ui->setupUi(this);
+
+    ui->radioButtonImage->setChecked(true);
 }
 
 widget_source_selection::~widget_source_selection()
