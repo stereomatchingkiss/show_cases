@@ -22,14 +22,29 @@ box_info::box_info(float x1, float y1, float x2, float y2, float score, int labe
 
 }
 
+std::vector<cv::Point> box_info::box_pts() const
+{
+    return {tl(), tr(), br(), bl()};
+}
+
 cv::Point2f box_info::center() const noexcept
 {
     return {(x2_ - rect_.x) / 2 + rect_.x, (y2_ - rect_.y) / 2 + rect_.y};
 }
 
+cv::Point2f box_info::bl() const noexcept
+{
+    return {rect_.x, y2_};
+}
+
 cv::Point2f box_info::tl() const noexcept
 {
     return {rect_.x, rect_.y};
+}
+
+cv::Point2f box_info::tr() const noexcept
+{
+    return {x2_, rect_.y};
 }
 
 cv::Point2f box_info::br() const noexcept
