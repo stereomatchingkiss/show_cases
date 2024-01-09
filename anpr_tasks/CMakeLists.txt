@@ -48,8 +48,7 @@ if(EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fexperimental-library")
 endif()
 
-set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
+set(CV_ALGO_SOURCES
     ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.cpp
 
@@ -78,22 +77,7 @@ set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_det_opencv.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.cpp
-
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_results.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Rect.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/ocr/paddle_ocr/paddle_ocr_rec_opencv.cpp    
 
     ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.cpp
@@ -200,8 +184,7 @@ if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
     find_package(ncnn REQUIRED)
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
-    target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})    
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
 
     target_link_libraries(${PROJECT_NAME}
@@ -218,8 +201,7 @@ if(EMSCRIPTEN)
     add_compile_definitions(EIGEN_DONT_PARALLELIZE)
     target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
     target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
-    target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})    
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
 
 
