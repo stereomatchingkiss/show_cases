@@ -13,4 +13,9 @@ cv::Rect convert_qrectf_to_cv_rect(const QRectF &qrect, int scale_x, int scale_y
     return rband;
 }
 
+QRect convert_cv_rect_to_qrect(const cv::Rect &rect, int scale_x, int scale_y)
+{
+    return QRect(rect.x, rect.y, rect.width, rect.height);
+}
+
 }
