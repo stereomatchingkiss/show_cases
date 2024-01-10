@@ -24,7 +24,7 @@
 
 # 范例
 
-- [影片教学](https://youtu.be/30p-nRqsVss)
+- [影片教学](https://www.youtube.com/watch?v=Eyp1smxac1k)
 - ![例子1](./imgs/anpr_00.png)
 - ![例子2](./imgs/anpr_01.png)
 - ![例子3](./imgs/anpr_02.png)

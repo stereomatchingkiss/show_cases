@@ -26,7 +26,7 @@ English | [简体中文](./readme_cn.md)
 
 # Examples
 
-- [Video tutorial](https://youtu.be/30p-nRqsVss)
+- [Video tutorial](https://www.youtube.com/watch?v=Eyp1smxac1k)
 - ![Example 1](./imgs/anpr_00.png)
 - ![Example 2](./imgs/anpr_01.png)
 - ![Example 3](./imgs/anpr_02.png)
