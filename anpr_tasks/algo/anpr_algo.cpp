@@ -86,7 +86,7 @@ struct anpr_algo::impl
     {
         if(auto const plate_size = std::distance(car_end_it, plate_end_it); found_plate.size() != plate_size){
             for(auto plate_it = car_end_it; plate_it != plate_end_it; ++plate_it){
-                if(!found_plate.contains(plate_it)){
+                if(!found_plate.contains(plate_it)){                    
                     anpr_algo_predict_results result;
                     TextBox tbox = ocr_reg(bgr, plate_it->box_pts());
                     result.plate_num_ = tbox.text.c_str();
@@ -124,7 +124,7 @@ struct anpr_algo::impl
             outputs.emplace_back(std::move(result));
         }
 
-        found_plate_not_in_car(car_end_it, std::end(obj_det_res), bgr_, found_plate, outputs);
+        found_plate_not_in_car(car_end_it, std::end(obj_det_res), bgr, found_plate, outputs);
 
         return outputs;
     }
