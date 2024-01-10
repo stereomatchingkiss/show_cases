@@ -139,7 +139,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         algo/anpr_algo.hpp algo/anpr_algo.cpp
         algo/anpr_algo_predict_results.hpp
+        algo/anpr_results_drawer.hpp algo/anpr_results_drawer.cpp
         algo/anpr_worker.hpp algo/anpr_worker.cpp
+        algo/anpr_worker_results.hpp
         config/config_anpr_worker.hpp
         config/config_object_detect_model_select.hpp
         config/config_source_selection.hpp
