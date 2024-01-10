@@ -34,6 +34,7 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
     ui->labelStream->setAlignment(Qt::AlignCenter);
 
     ui->tableWidget->setVisible(false);
+    ui->tableWidget->setFont(QFont(global_object().font_family()));
 
     connect(ui->tableWidget, &QTableWidget::cellClicked, this, &widget_stream_player::cell_clicked);
 }
@@ -53,7 +54,7 @@ void widget_stream_player::display_frame(std::any results)
             auto const &val = results_.plate_results_[i];
             if(!val.plate_num_.isEmpty() && !val.plate_rect_.empty()){
                 ui->tableWidget->setItem(i, 0, new QTableWidgetItem(val.plate_num_));
-                ui->tableWidget->setItem(i, 1, new QTableWidgetItem(cv_rect_to_str(val.vehicle_rect_)));
+                ui->tableWidget->setItem(i, 1, new QTableWidgetItem(cv_rect_to_str(val.plate_rect_)));
             }
         }
 
