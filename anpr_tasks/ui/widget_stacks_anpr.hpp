@@ -10,7 +10,6 @@ class widget_stacks_anpr;
 }
 
 class widget_object_detect_model_select;
-class widget_source_selection;
 class widget_stream_player;
 
 namespace flt::mm{
@@ -39,8 +38,7 @@ private:
 
     Ui::widget_stacks_anpr *ui;
 
-    widget_object_detect_model_select *widget_object_detect_model_select_;
-    widget_source_selection *widget_source_selection_;    
+    widget_object_detect_model_select *widget_object_detect_model_select_;    
     widget_stream_player *widget_stream_player_;
 
     std::shared_ptr<flt::mm::frame_process_controller> process_controller_;
