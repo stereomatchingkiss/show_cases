@@ -1,16 +1,29 @@
 #include "widget_stream_player.hpp"
 #include "ui_widget_stream_player.h"
 
-#include "../config/config_source_selection.hpp"
+#include "../algo/anpr_results_drawer.hpp"
 
 #include "../global/global_object.hpp"
+
+#include <multimedia/stream_enum.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 #include <QPixmap>
 
+#include <format>
+
 using stype = flt::mm::stream_source_type;
+
+namespace{
+
+inline QString cv_rect_to_str(cv::Rect const &rect)
+{
+    return std::format("{},{},{},{}", rect.x, rect.y, rect.width, rect.height).c_str();
+}
+
+}
 
 widget_stream_player::widget_stream_player(QWidget *parent) :
     QWidget(parent),
@@ -18,7 +31,11 @@ widget_stream_player::widget_stream_player(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->labelStream->setAlignment(Qt::AlignCenter);    
+    ui->labelStream->setAlignment(Qt::AlignCenter);
+
+    ui->tableWidget->setVisible(false);
+
+    connect(ui->tableWidget, &QTableWidget::cellClicked, this, &widget_stream_player::cell_clicked);
 }
 
 widget_stream_player::~widget_stream_player()
@@ -28,13 +45,32 @@ widget_stream_player::~widget_stream_player()
 
 void widget_stream_player::display_frame(std::any results)
 {
-    auto const img = std::any_cast<QImage>(results);
+    results_ = std::any_cast<anpr_worker_results>(results);
+    if(!results_.qimg_.isNull()){
+        draw_all();
+        ui->tableWidget->setRowCount(static_cast<int>(results_.plate_results_.size()));
+        for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
+            auto const &val = results_.plate_results_[i];
+            if(!val.plate_num_.isEmpty() && !val.plate_rect_.empty()){
+                ui->tableWidget->setItem(i, 0, new QTableWidgetItem(val.plate_num_));
+                ui->tableWidget->setItem(i, 1, new QTableWidgetItem(cv_rect_to_str(val.vehicle_rect_)));
+            }
+        }
+
+        ui->tableWidget->resizeColumnsToContents();
+    }
+}
+
+void widget_stream_player::draw_all()
+{
+    anpr_results_drawer drawer;
+    auto img = results_.qimg_.copy();
+    drawer.draw(img, results_.full_results_);
+
     int const w = ui->labelStream->width();
     int const h = ui->labelStream->height();
 
-    if(!img.isNull()){
-        ui->labelStream->setPixmap(QPixmap::fromImage(img).scaled(w, h, Qt::KeepAspectRatio));
-    }    
+    ui->labelStream->setPixmap(QPixmap::fromImage(img).scaled(w, h, Qt::KeepAspectRatio));
 }
 
 void widget_stream_player::set_source_type(flt::mm::stream_source_type source_type)
@@ -74,5 +110,28 @@ void widget_stream_player::on_pushButtonSelectImage_clicked()
     };
     QFileDialog::getOpenFileContent(tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"),  func);
 #endif
+}
+
+
+void widget_stream_player::on_checkBoxShowTable_clicked()
+{
+    ui->tableWidget->setVisible(ui->checkBoxShowTable->isChecked());
+    if(!ui->checkBoxShowTable->isChecked()){
+        draw_all();
+    }
+}
+
+void widget_stream_player::cell_clicked(int row, int)
+{
+    if(row < results_.plate_results_.size()){
+        anpr_results_drawer drawer;
+        auto img = results_.qimg_.copy();
+        drawer.draw(img, results_.plate_results_[row]);
+
+        int const w = ui->labelStream->width();
+        int const h = ui->labelStream->height();
+
+        ui->labelStream->setPixmap(QPixmap::fromImage(img).scaled(w, h, Qt::KeepAspectRatio));
+    }
 }
 

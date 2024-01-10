@@ -1,6 +1,8 @@
 #ifndef WIDGET_STREAM_PLAYER_HPP
 #define WIDGET_STREAM_PLAYER_HPP
 
+#include "../algo/anpr_worker_results.hpp"
+
 #include <QWidget>
 
 #include <any>
@@ -31,10 +33,17 @@ signals:
     void send_text_msg(QString msg);
 
 private slots:
-    void on_pushButtonSelectImage_clicked();
+    void on_pushButtonSelectImage_clicked();    
+
+    void on_checkBoxShowTable_clicked();
 
 private:
-    Ui::widget_stream_player *ui;    
+    void cell_clicked(int row, int col);
+    void draw_all();
+
+    Ui::widget_stream_player *ui;
+
+    anpr_worker_results results_;
 };
 
 #endif // WIDGET_STREAM_PLAYER_HPP
