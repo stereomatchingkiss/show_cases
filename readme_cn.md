@@ -23,7 +23,11 @@
 
 # 各资料夹的说明
 
-- [generic_cv_task](https://github.com/stereomatchingkiss/object_detection_and_alarm)，一个支持物件检测、跟踪、计数、区域警报、警报记录的webapp
+- [anpr_tasks](https://github.com/stereomatchingkiss/show_cases/tree/master/anpr_tasks)， 车牌辨识的demo，这个问题相较于10年前容易解决的多，
+我相信就算是独立开发，只要勤于收集资料，训练对应的模型，针对不同的地区调试，要做出商业水平的作品不是问题
+- [face_recognition_tasks](https://github.com/stereomatchingkiss/show_cases/tree/master/face_recognition_tasks)，支援批量人脸辨识的demo。
+这已经是一个很成熟的技术，不乏公开且达到商用水准的模型，不过因为许可证的问题，想商用的话得自己动手训练。由于训练资料和代码都是公开的，要复现不是问题
+- [generic_cv_task](https://github.com/stereomatchingkiss/object_detection_and_alarm)，一个支持物件检测、行为分类，跟踪、计数、区域警报、警报记录的webapp
 - [ocr_tasks](./ocr_tasks),支援ocr的webapp
 - [libs](./libs), 各webapp的通用库
 - [python_tools](./python_tools)，收集各种为了webaapp而设计的简易程序
@@ -31,16 +35,16 @@
 
 # 范例
 
+- [anpr_tasks的影像](https://www.youtube.com/watch?v=Eyp1smxac1k)
+- [face_recognition_tasks的影像](https://www.youtube.com/watch?v=PICwMVUFLPw)
 - [generic_cv_task的影像](https://youtu.be/TNancuXjlcM)
 - [ocr_tasks的影像](https://youtu.be/30p-nRqsVss)
 
 # 将来的打算
 
 - 一次性学习的通用物体分类
-- 人脸辨识
 - 情绪，年龄，性别辨识和警报
 - 摔倒检测
-- 行为检测
 - 姿势辨识
 - 图像放大(super resolution)
 - 图像生成(stable diffusion)
