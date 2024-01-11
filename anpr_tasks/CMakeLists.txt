@@ -101,16 +101,10 @@ set(MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
 SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
     ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp
     ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
-    ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
-    ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
     ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.hpp
     ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.cpp
     ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.hpp
     ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.cpp
-    ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
-    ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
-    ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp
-    ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
     ${PLUGIN_LIBS_PATH}/ui/utils/utility.hpp
     ${PLUGIN_LIBS_PATH}/ui/utils/utility.cpp
     ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
