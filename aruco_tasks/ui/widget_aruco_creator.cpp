@@ -1,12 +1,16 @@
 #include "widget_aruco_creator.hpp"
 #include "ui_widget_aruco_creator.h"
 
+#include <utils/image_utils.hpp>
+
 #include <QDataStream>
 #include <QDebug>
 #include <QFileDialog>
 #include <QTimer>
 
 #include <opencv2/aruco.hpp>
+
+using namespace flt;
 
 widget_aruco_creator::widget_aruco_creator(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +25,7 @@ widget_aruco_creator::widget_aruco_creator(QWidget *parent) :
     ui->horizontalSliderMarkerSize->setRange(ui->spinBoxMarkerSize->minimum(), ui->spinBoxMarkerSize->maximum());
 
     ui->comboBoxDictionary->setCurrentIndex(0);
+    ui->spinBoxMarkerID->setValue(0);
     generate_aruco_image(0);
 
     connect(timer_generate_aruco_, &QTimer::timeout, this, &widget_aruco_creator::generate_aruco_image_time_up);
@@ -41,10 +46,11 @@ void widget_aruco_creator::on_pushButtonSaveAs_clicked()
         if(auto const fname = QFileDialog::getSaveFileName(this, tr("Save at"), aruco_name, tr("Images (*.png)"));
             !fname.isEmpty())
         {
-            qimg_aruco_.save(fname);
+            qimg_aruco_.save(fname, "PNG");
         }
 #else
-        qimg_aruco_.save(aruco_name);
+        auto results = encode_qimage_to(qimg_aruco_, "PNG");
+        QFileDialog::saveFileContent(results, aruco_name);
 #endif
     }
 }
@@ -107,7 +113,7 @@ void widget_aruco_creator::generate_aruco_image(int id)
     cv::Mat output;
     cv::aruco::generateImageMarker(dict, id, ui->spinBoxMarkerSize->value(), output);
 
-    qimg_aruco_ = QImage(output.data, output.cols, output.rows, output.step, QImage::Format_Grayscale8);
+    qimg_aruco_ = QImage(output.data, output.cols, output.rows, output.step, QImage::Format_Grayscale8).copy();
     ui->labelImage->setPixmap(QPixmap::fromImage(qimg_aruco_));
 }
 
