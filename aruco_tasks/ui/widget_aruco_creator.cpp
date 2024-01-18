@@ -19,18 +19,25 @@ widget_aruco_creator::widget_aruco_creator(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    timer_generate_aruco_->setSingleShot(true);
+    timer_generate_aruco_->setInterval(100);
+
     init_aruco_combo_box();
+
+    ui->spinBoxMarkerBorderBit->setRange(1, 5);
+    ui->horizontalSliderMarkerBorderBit->setRange(1, 5);
 
     ui->spinBoxMarkerSize->setRange(100, 800);
     ui->horizontalSliderMarkerSize->setRange(ui->spinBoxMarkerSize->minimum(), ui->spinBoxMarkerSize->maximum());
 
     ui->comboBoxDictionary->setCurrentIndex(0);
-    ui->spinBoxMarkerID->setValue(0);
+
+    ui->spinBoxMarkerID->setValue(1);
+    ui->spinBoxMarkerBorderBit->setValue(1);
+
     generate_aruco_image(0);
 
     connect(timer_generate_aruco_, &QTimer::timeout, this, &widget_aruco_creator::generate_aruco_image_time_up);
-    timer_generate_aruco_->setSingleShot(true);
-    timer_generate_aruco_->setInterval(100);
 }
 
 widget_aruco_creator::~widget_aruco_creator()
@@ -100,7 +107,6 @@ void widget_aruco_creator::set_marker_range(int min, int max)
     ui->horizontalSliderMarkerID->setRange(0, max);
 }
 
-
 void widget_aruco_creator::on_comboBoxDictionary_currentIndexChanged(int)
 {
     set_marker_range(0, aruco_size_[ui->comboBoxDictionary->currentIndex()]);
@@ -111,7 +117,8 @@ void widget_aruco_creator::generate_aruco_image(int id)
 {
     cv::aruco::Dictionary dict = cv::aruco::getPredefinedDictionary(ui->comboBoxDictionary->currentIndex());
     cv::Mat output;
-    cv::aruco::generateImageMarker(dict, id, ui->spinBoxMarkerSize->value(), output);
+    cv::aruco::generateImageMarker(dict, id, ui->spinBoxMarkerSize->value(), output,
+                                   std::max(ui->spinBoxMarkerBorderBit->value(), 1));
 
     qimg_aruco_ = QImage(output.data, output.cols, output.rows, output.step, QImage::Format_Grayscale8).copy();
     ui->labelImage->setPixmap(QPixmap::fromImage(qimg_aruco_));
@@ -128,6 +135,11 @@ void widget_aruco_creator::on_spinBoxMarkerID_valueChanged(int arg1)
 }
 
 void widget_aruco_creator::on_spinBoxMarkerSize_valueChanged(int arg1)
+{
+    timer_generate_aruco_->start();
+}
+
+void widget_aruco_creator::on_spinBoxMarkerBorderBit_valueChanged(int arg1)
 {
     timer_generate_aruco_->start();
 }

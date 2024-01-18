@@ -29,6 +29,8 @@ private slots:
 
     void on_spinBoxMarkerSize_valueChanged(int arg1);
 
+    void on_spinBoxMarkerBorderBit_valueChanged(int arg1);
+
 private:
     void generate_aruco_image(int id);
     void generate_aruco_image_time_up();

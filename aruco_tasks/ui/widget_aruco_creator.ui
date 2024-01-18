@@ -16,29 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="spinBoxMarkerSize">
-       <property name="minimum">
-        <number>10</number>
-       </property>
-       <property name="maximum">
-        <number>500</number>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="comboBoxDictionary"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="QSpinBox" name="spinBoxMarkerID">
-       <property name="minimum">
-        <number>10</number>
-       </property>
-       <property name="maximum">
-        <number>500</number>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="2">
       <widget class="QSlider" name="horizontalSliderMarkerSize">
        <property name="minimum">
@@ -52,16 +29,26 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QSlider" name="horizontalSliderMarkerID">
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="spinBoxMarkerID">
        <property name="minimum">
         <number>10</number>
        </property>
        <property name="maximum">
         <number>500</number>
        </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="comboBoxDictionary"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="spinBoxMarkerSize">
+       <property name="minimum">
+        <number>10</number>
+       </property>
+       <property name="maximum">
+        <number>500</number>
        </property>
       </widget>
      </item>
@@ -79,10 +66,40 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="2">
+      <widget class="QSlider" name="horizontalSliderMarkerID">
+       <property name="minimum">
+        <number>10</number>
+       </property>
+       <property name="maximum">
+        <number>500</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Marker side pixel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Marker border bit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="spinBoxMarkerBorderBit"/>
+     </item>
+     <item row="3" column="2">
+      <widget class="QSlider" name="horizontalSliderMarkerBorderBit">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -129,12 +146,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>95</x>
-     <y>50</y>
+     <x>146</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>137</x>
-     <y>45</y>
+     <x>290</x>
+     <y>59</y>
     </hint>
    </hints>
   </connection>
@@ -145,8 +162,8 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>50</y>
+     <x>287</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
      <x>112</x>
@@ -165,8 +182,8 @@
      <y>83</y>
     </hint>
     <hint type="destinationlabel">
-     <x>122</x>
-     <y>79</y>
+     <x>275</x>
+     <y>87</y>
     </hint>
    </hints>
   </connection>
@@ -177,12 +194,44 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>138</x>
-     <y>69</y>
+     <x>291</x>
+     <y>87</y>
     </hint>
     <hint type="destinationlabel">
-     <x>98</x>
-     <y>73</y>
+     <x>146</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxMarkerBorderBit</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderMarkerBorderBit</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderMarkerBorderBit</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxMarkerBorderBit</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>118</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>
