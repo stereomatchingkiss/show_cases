@@ -96,7 +96,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         algo/aruco_detect_worker.hpp algo/aruco_detect_worker.cpp
-        config/config_aruco_worker.hpp
+        config/config_aruco_detect_worker.hpp
         config/config_source_selection.hpp
         config/config_tasks_selection.hpp
         ui/widget_aruco_creator.hpp ui/widget_aruco_creator.cpp ui/widget_aruco_creator.ui        
@@ -105,6 +105,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
         ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
         ui/dialog_aruco_detector_params.hpp ui/dialog_aruco_detector_params.cpp ui/dialog_aruco_detector_params.ui
+        algo/aruco_detect_worker_results.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
