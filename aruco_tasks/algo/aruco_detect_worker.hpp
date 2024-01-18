@@ -4,13 +4,13 @@
 
 #include <memory>
 
-struct config_anpr_worker;
+struct config_aruco_detect_worker;
 
 class aruco_detect_worker : public flt::mm::frame_process_base_worker
 {
     Q_OBJECT
 public:
-    explicit aruco_detect_worker(QObject *parent = nullptr);
+    explicit aruco_detect_worker(config_aruco_detect_worker const &config, QObject *parent = nullptr);
     ~aruco_detect_worker();
 
 private:
