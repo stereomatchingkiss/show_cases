@@ -1,6 +1,8 @@
 #include "dialog_aruco_detector_params.hpp"
 #include "ui_dialog_aruco_detector_params.h"
 
+#include "../config/config_aruco_detect_worker.hpp"
+
 #include <opencv2/aruco.hpp>
 
 dialog_aruco_detector_params::dialog_aruco_detector_params(QWidget *parent) :
@@ -20,6 +22,35 @@ dialog_aruco_detector_params::dialog_aruco_detector_params(QWidget *parent) :
 dialog_aruco_detector_params::~dialog_aruco_detector_params()
 {
     delete ui;
+}
+
+config_aruco_detect_worker dialog_aruco_detector_params::get_config() const
+{
+    config_aruco_detect_worker config;
+    config.dictionary_ = cv::aruco::getPredefinedDictionary(ui->comboBoxDictionary->currentIndex());
+
+    auto &det_param = config.detector_params_;
+    det_param.minMarkerPerimeterRate = ui->doubleSpinBoxMinMarkerPerimeterRate->value();
+    det_param.maxMarkerPerimeterRate = ui->doubleSpinBoxMaxMarkerPerimeterRate->value();
+    det_param.polygonalApproxAccuracyRate = ui->doubleSpinBoxPolygonalApproxAccuracyRate->value();
+    det_param.minCornerDistanceRate = ui->doubleSpinBoxMinCornerDistanceRate->value();
+    det_param.minMarkerDistanceRate = ui->doubleSpinBoxMinMarkerDistanceRate->value();
+    det_param.minDistanceToBorder = ui->spinBoxMinDistanceToBorder->value();
+
+    det_param.adaptiveThreshConstant = ui->spinBoxAdaptiveThreshConstant->value();
+    det_param.adaptiveThreshWinSizeMin = ui->spinBoxAdaptiveThreshWinSizeMin->value();
+    det_param.adaptiveThreshWinSizeMax = ui->spinBoxAdaptiveThreshWinSizeMax->value();
+    det_param.adaptiveThreshWinSizeStep = ui->spinBoxAdaptiveThreshWinSizeStep->value();
+
+    det_param.markerBorderBits = ui->spinBoxMarkerBorderBits->value();
+    det_param.minOtsuStdDev = ui->doubleSpinBoxMinOtsuStdDev->value();
+    det_param.perspectiveRemoveIgnoredMarginPerCell = ui->spinBoxPerspectiveRemovePixelPerCell->value();
+    det_param.perspectiveRemoveIgnoredMarginPerCell = ui->doubleSpinBoxPerspectiveRemoveIgnoredMarginPerCell->value();
+
+    det_param.maxErroneousBitsInBorderRate = ui->doubleSpinBoxMaxErroneousBitsInBorderRate->value();
+    det_param.errorCorrectionRate = ui->doubleSpinBoxErrorCorrectionRate->value();
+
+    return config;
 }
 
 void dialog_aruco_detector_params::generate_aruco_option(int bit_size)

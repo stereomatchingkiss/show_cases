@@ -7,6 +7,8 @@ namespace Ui {
 class dialog_aruco_detector_params;
 }
 
+struct config_aruco_detect_worker;
+
 class dialog_aruco_detector_params : public QDialog
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ class dialog_aruco_detector_params : public QDialog
 public:
     explicit dialog_aruco_detector_params(QWidget *parent = nullptr);
     ~dialog_aruco_detector_params();
+
+    config_aruco_detect_worker get_config() const;
 
 private:
     void adaptive_value_change(int);
