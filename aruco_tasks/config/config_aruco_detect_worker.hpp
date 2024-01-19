@@ -2,7 +2,7 @@
 
 #include <opencv2/aruco.hpp>
 
-struct config_aruco_worker
+struct config_aruco_detect_worker
 {
     cv::aruco::DetectorParameters detector_params_;
     cv::aruco::Dictionary dictionary_;
