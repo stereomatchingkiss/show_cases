@@ -11,6 +11,8 @@ namespace flt::mm{
 
 struct frame_capture_websocket_params;
 
+enum class stream_source_type;
+
 }
 
 struct config_source_selection;
@@ -24,6 +26,7 @@ public:
     ~widget_source_selection();
 
     config_source_selection get_config() const;
+    flt::mm::stream_source_type get_source_type() const noexcept;
     QJsonObject get_states() const;
 
     flt::mm::frame_capture_websocket_params get_frame_capture_websocket_params() const;

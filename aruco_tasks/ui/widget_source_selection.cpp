@@ -17,6 +17,8 @@ QString const state_websocket_url("state_websocket_url");
 
 using namespace flt::mm;
 
+using stype = stream_source_type;
+
 widget_source_selection::widget_source_selection(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_source_selection)
@@ -30,9 +32,7 @@ widget_source_selection::~widget_source_selection()
 }
 
 config_source_selection widget_source_selection::get_config() const
-{
-    using stype = stream_source_type;
-
+{    
     config_source_selection config;
     if(ui->radioButtonImage->isChecked()){
         config.source_type_ = stype::image;
@@ -43,6 +43,15 @@ config_source_selection widget_source_selection::get_config() const
     config.websocket_url_ = ui->lineEditWebSockets->text();
 
     return config;
+}
+
+stream_source_type widget_source_selection::get_source_type() const noexcept
+{
+    if(ui->radioButtonImage->isChecked()){
+        return stype::image;
+    }
+
+    return stype::websocket;
 }
 
 QJsonObject widget_source_selection::get_states() const
