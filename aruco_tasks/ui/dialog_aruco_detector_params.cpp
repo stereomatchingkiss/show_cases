@@ -62,6 +62,46 @@ void dialog_aruco_detector_params::generate_aruco_option(int bit_size)
     ui->comboBoxDictionary->addItem(QString("DICT_%1X%1_1000").arg(num));
 }
 
+void dialog_aruco_detector_params::set_default_value_bits_extraction()
+{
+    cv::aruco::DetectorParameters const params;
+
+    ui->spinBoxMarkerBorderBits->setValue(params.markerBorderBits);
+    ui->doubleSpinBoxMinOtsuStdDev->setValue(params.minOtsuStdDev);
+    ui->spinBoxPerspectiveRemovePixelPerCell->setValue(params.perspectiveRemovePixelPerCell);
+    ui->doubleSpinBoxPerspectiveRemoveIgnoredMarginPerCell->setValue(params.perspectiveRemoveIgnoredMarginPerCell);
+}
+
+void dialog_aruco_detector_params::set_default_value_contour_filtering()
+{
+    cv::aruco::DetectorParameters const params;
+
+    ui->doubleSpinBoxMaxMarkerPerimeterRate->setValue(params.maxMarkerPerimeterRate);
+    ui->doubleSpinBoxMinMarkerPerimeterRate->setValue(params.minMarkerPerimeterRate);
+    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setValue(params.polygonalApproxAccuracyRate);
+    ui->doubleSpinBoxMinCornerDistanceRate->setValue(params.minCornerDistanceRate);
+    ui->doubleSpinBoxMinMarkerDistanceRate->setValue(params.minMarkerDistanceRate);
+    ui->spinBoxMinDistanceToBorder->setValue(params.minDistanceToBorder);
+}
+
+void dialog_aruco_detector_params::set_default_value_marker_identification()
+{
+    cv::aruco::DetectorParameters const params;
+
+    ui->doubleSpinBoxMaxErroneousBitsInBorderRate->setValue(params.maxErroneousBitsInBorderRate);
+    ui->doubleSpinBoxErrorCorrectionRate->setValue(params.errorCorrectionRate);
+}
+
+void dialog_aruco_detector_params::set_default_value_threshold()
+{
+    cv::aruco::DetectorParameters const params;
+
+    ui->spinBoxAdaptiveThreshWinSizeMin->setValue(params.adaptiveThreshWinSizeMin);
+    ui->spinBoxAdaptiveThreshWinSizeMax->setValue(params.adaptiveThreshWinSizeMax);
+    ui->spinBoxAdaptiveThreshWinSizeStep->setValue(params.adaptiveThreshWinSizeStep);
+    ui->spinBoxAdaptiveThreshConstant->setValue(params.adaptiveThreshConstant);
+}
+
 void dialog_aruco_detector_params::init_aruco_combo_box()
 {
     generate_aruco_option(4);
@@ -78,88 +118,72 @@ void dialog_aruco_detector_params::init_aruco_combo_box()
 }
 
 void dialog_aruco_detector_params::init_bits_extraction()
-{
-    cv::aruco::DetectorParameters const params;
-
-    ui->spinBoxMarkerBorderBits->setRange(0, 5);
-    ui->spinBoxMarkerBorderBits->setValue(params.markerBorderBits);
+{           
+    ui->spinBoxMarkerBorderBits->setRange(0, 5);    
 
     ui->doubleSpinBoxMinOtsuStdDev->setRange(0, 50);
-    ui->doubleSpinBoxMinOtsuStdDev->setSingleStep(0.01);
-    ui->doubleSpinBoxMinOtsuStdDev->setValue(params.minOtsuStdDev);
+    ui->doubleSpinBoxMinOtsuStdDev->setSingleStep(0.01);    
 
-    ui->spinBoxPerspectiveRemovePixelPerCell->setRange(1, 20);
-    ui->spinBoxPerspectiveRemovePixelPerCell->setValue(params.perspectiveRemovePixelPerCell);
+    ui->spinBoxPerspectiveRemovePixelPerCell->setRange(1, 20);    
 
     ui->doubleSpinBoxPerspectiveRemoveIgnoredMarginPerCell->setRange(0, 1.0);
     ui->doubleSpinBoxPerspectiveRemoveIgnoredMarginPerCell->setSingleStep(0.01);
-    ui->doubleSpinBoxPerspectiveRemoveIgnoredMarginPerCell->setValue(params.perspectiveRemoveIgnoredMarginPerCell);
+
+    set_default_value_bits_extraction();
 }
 
 void dialog_aruco_detector_params::init_contour_filtering()
-{
-    cv::aruco::DetectorParameters const params;
-
+{    
     ui->doubleSpinBoxMinMarkerPerimeterRate->setRange(0.01, 4);
-    ui->doubleSpinBoxMinMarkerPerimeterRate->setSingleStep(0.01);
-    ui->doubleSpinBoxMinMarkerPerimeterRate->setValue(params.minMarkerPerimeterRate);
+    ui->doubleSpinBoxMinMarkerPerimeterRate->setSingleStep(0.01);   
 
     ui->doubleSpinBoxMaxMarkerPerimeterRate->setRange(0.01, 4);
-    ui->doubleSpinBoxMaxMarkerPerimeterRate->setSingleStep(0.01);
-    ui->doubleSpinBoxMaxMarkerPerimeterRate->setValue(params.maxMarkerPerimeterRate);
+    ui->doubleSpinBoxMaxMarkerPerimeterRate->setSingleStep(0.01);    
+
+    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setRange(0, 1);
+    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setSingleStep(0.01);    
+
+    ui->doubleSpinBoxMinCornerDistanceRate->setRange(0.01, 1.0);
+    ui->doubleSpinBoxMinCornerDistanceRate->setSingleStep(0.01);    
+
+    ui->doubleSpinBoxMinMarkerDistanceRate->setRange(0.01, 5.0);
+    ui->doubleSpinBoxMinMarkerDistanceRate->setSingleStep(0.01);    
+
+    ui->spinBoxMinDistanceToBorder->setRange(0, 500);
+    ui->spinBoxMinDistanceToBorder->setSingleStep(1);
+
+    set_default_value_contour_filtering();
 
     connect(ui->doubleSpinBoxMinMarkerDistanceRate, &QDoubleSpinBox::valueChanged,
             this, &dialog_aruco_detector_params::marker_perimeter_rate_changed);
     connect(ui->doubleSpinBoxMaxMarkerPerimeterRate, &QDoubleSpinBox::valueChanged,
             this, &dialog_aruco_detector_params::marker_perimeter_rate_changed);
-
-    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setRange(0, 1);
-    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setSingleStep(0.01);
-    ui->doubleSpinBoxPolygonalApproxAccuracyRate->setValue(params.polygonalApproxAccuracyRate);
-
-    ui->doubleSpinBoxMinCornerDistanceRate->setRange(0.01, 1.0);
-    ui->doubleSpinBoxMinCornerDistanceRate->setSingleStep(0.01);
-    ui->doubleSpinBoxMinCornerDistanceRate->setValue(params.minCornerDistanceRate);
-
-    ui->doubleSpinBoxMinMarkerDistanceRate->setRange(0.01, 5.0);
-    ui->doubleSpinBoxMinMarkerDistanceRate->setSingleStep(0.01);
-    ui->doubleSpinBoxMinMarkerDistanceRate->setValue(params.minMarkerDistanceRate);
-
-    ui->spinBoxMinDistanceToBorder->setRange(0, 500);
-    ui->spinBoxMinDistanceToBorder->setSingleStep(1);
-    ui->spinBoxMinDistanceToBorder->setValue(params.minDistanceToBorder);
 }
 
 void dialog_aruco_detector_params::init_marker_identification()
 {
-    cv::aruco::DetectorParameters const params;
-
     ui->doubleSpinBoxMaxErroneousBitsInBorderRate->setRange(0, 1.0);
     ui->doubleSpinBoxMaxErroneousBitsInBorderRate->setSingleStep(0.01);
-    ui->doubleSpinBoxMaxErroneousBitsInBorderRate->setValue(params.maxErroneousBitsInBorderRate);
 
     ui->doubleSpinBoxErrorCorrectionRate->setRange(0, 1.0);
     ui->doubleSpinBoxErrorCorrectionRate->setSingleStep(0.01);
-    ui->doubleSpinBoxErrorCorrectionRate->setValue(params.errorCorrectionRate);
+
+    set_default_value_marker_identification();
 }
 
 void dialog_aruco_detector_params::init_threshold()
 {
-    cv::aruco::DetectorParameters const params;
-
     ui->spinBoxAdaptiveThreshWinSizeMin->setRange(1, 51);
     ui->spinBoxAdaptiveThreshWinSizeMin->setSingleStep(2);
-    ui->spinBoxAdaptiveThreshWinSizeMin->setValue(params.adaptiveThreshWinSizeMin);
 
     ui->spinBoxAdaptiveThreshWinSizeMax->setRange(1, 51);
     ui->spinBoxAdaptiveThreshWinSizeMax->setSingleStep(2);
-    ui->spinBoxAdaptiveThreshWinSizeMax->setValue(params.adaptiveThreshWinSizeMax);
 
     ui->spinBoxAdaptiveThreshWinSizeStep->setRange(1, 15);
-    ui->spinBoxAdaptiveThreshWinSizeStep->setValue(params.adaptiveThreshWinSizeStep);
 
     ui->spinBoxAdaptiveThreshConstant->setRange(0, 127);
-    ui->spinBoxAdaptiveThreshConstant->setValue(params.adaptiveThreshConstant);
+
+    set_default_value_threshold();
 
     connect(ui->spinBoxAdaptiveThreshWinSizeMin, &QSpinBox::valueChanged, this, &dialog_aruco_detector_params::adaptive_value_change);
     connect(ui->spinBoxAdaptiveThreshWinSizeMax, &QSpinBox::valueChanged, this, &dialog_aruco_detector_params::adaptive_value_change);
@@ -199,3 +223,27 @@ void dialog_aruco_detector_params::adaptive_value_change(int)
         ui->spinBoxAdaptiveThreshWinSizeStep->setValue(ui->spinBoxAdaptiveThreshWinSizeMax->value());
     }
 }
+
+void dialog_aruco_detector_params::on_pushButtonContourFilteringDefault_clicked()
+{
+    set_default_value_contour_filtering();
+}
+
+
+void dialog_aruco_detector_params::on_pushButtonThresholdDefault_clicked()
+{
+    set_default_value_threshold();
+}
+
+
+void dialog_aruco_detector_params::on_pushButtonBitsExtractionDefault_clicked()
+{
+    set_default_value_bits_extraction();
+}
+
+
+void dialog_aruco_detector_params::on_pushButtonMarkerIdentificationDefault_clicked()
+{
+    set_default_value_marker_identification();
+}
+

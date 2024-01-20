@@ -19,10 +19,24 @@ public:
 
     config_aruco_detect_worker get_config() const;
 
+private slots:
+    void on_pushButtonContourFilteringDefault_clicked();
+
+    void on_pushButtonThresholdDefault_clicked();
+
+    void on_pushButtonBitsExtractionDefault_clicked();
+
+    void on_pushButtonMarkerIdentificationDefault_clicked();
+
 private:
     void adaptive_value_change(int);
 
     void generate_aruco_option(int bit_size);
+
+    void set_default_value_bits_extraction();
+    void set_default_value_contour_filtering();
+    void set_default_value_marker_identification();
+    void set_default_value_threshold();
 
     void init_aruco_combo_box();
     void init_bits_extraction();
