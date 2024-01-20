@@ -101,13 +101,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         config/config_source_selection.hpp
         config/config_tasks_selection.hpp
         global/global_object.hpp global/global_object.cpp
-        ui/widget_aruco_creator.hpp ui/widget_aruco_creator.cpp ui/widget_aruco_creator.ui        
+        ui/dialog_aruco_detector_params.hpp ui/dialog_aruco_detector_params.cpp ui/dialog_aruco_detector_params.ui
+        ui/widget_aruco_creator.hpp ui/widget_aruco_creator.cpp ui/widget_aruco_creator.ui
+        ui/widget_image_player.hpp ui/widget_image_player.cpp ui/widget_image_player.ui
+        ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
         ui/widget_stacks_aruco_creator.hpp ui/widget_stacks_aruco_creator.cpp ui/widget_stacks_aruco_creator.ui
         ui/widget_stacks_aruco_detector.hpp ui/widget_stacks_aruco_detector.cpp ui/widget_stacks_aruco_detector.ui
-        ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
-        ui/dialog_aruco_detector_params.hpp ui/dialog_aruco_detector_params.cpp ui/dialog_aruco_detector_params.ui        
-        ui/widget_image_player.hpp ui/widget_image_player.cpp ui/widget_image_player.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
