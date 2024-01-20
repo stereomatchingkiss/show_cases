@@ -7,6 +7,7 @@
 
 #include "dialog_aruco_detector_params.hpp"
 #include "widget_image_player.hpp"
+#include "widget_stream_player.hpp"
 #include "widget_source_selection.hpp"
 
 #include <multimedia/camera/frame_capture_qcamera.hpp>
@@ -40,29 +41,14 @@ void widget_stacks_aruco_detector::init_stacked_widget()
     dialog_aruco_detector_params_ = new dialog_aruco_detector_params;
     widget_image_player_ = new widget_image_player;
     widget_source_selection_ = new widget_source_selection;
+    widget_stream_player_ = new widget_stream_player;
 
     ui->stackedWidget->addWidget(dialog_aruco_detector_params_);
     ui->stackedWidget->addWidget(widget_source_selection_);
     ui->stackedWidget->addWidget(widget_image_player_);
+    ui->stackedWidget->addWidget(widget_stream_player_);
 
     ui->stackedWidget->setCurrentWidget(widget_source_selection_);
-}
-
-void widget_stacks_aruco_detector::create_frame_capture()
-{
-    if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
-        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-
-        connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                widget_image_player_, &widget_image_player::display_frame);
-    }else{
-        sfwmw_ = nullptr;
-        connect(widget_image_player_, &widget_image_player::image_selected,
-                process_controller_.get(), &frame_process_controller::predict);
-        connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                this, &widget_stacks_aruco_detector::display_frame);
-        emit process_controller_->start();
-    }
 }
 
 void widget_stacks_aruco_detector::display_frame(std::any input)
@@ -72,22 +58,23 @@ void widget_stacks_aruco_detector::display_frame(std::any input)
 
 void widget_stacks_aruco_detector::next_page_is_widget_image_player()
 {
-    ui->stackedWidget->setCurrentWidget(widget_image_player_);
     ui->pushButtonNext->setVisible(false);
 
     config_aruco_detect_worker config = dialog_aruco_detector_params_->get_config();
     auto worker = new aruco_detect_worker(std::move(config));
 
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
+        ui->stackedWidget->setCurrentWidget(widget_stream_player_);
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
         process_controller_ = std::make_shared<frame_process_controller>(worker);
         connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                widget_image_player_, &widget_image_player::display_frame);
+                widget_stream_player_, &widget_stream_player::display_frame);
 
         emit process_controller_->start();
         sfwmw_->add_listener(process_controller_, this);
         sfwmw_->start();
     }else{
+        ui->stackedWidget->setCurrentWidget(widget_image_player_);
         sfwmw_ = nullptr;
         process_controller_ = std::make_shared<frame_process_controller>(worker);
         connect(widget_image_player_, &widget_image_player::image_selected,

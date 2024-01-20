@@ -12,6 +12,7 @@ class widget_stacks_aruco_detector;
 class dialog_aruco_detector_params;
 class widget_image_player;
 class widget_source_selection;
+class widget_stream_player;
 
 namespace flt::mm{
 
@@ -36,8 +37,7 @@ private slots:
 
     void on_pushButtonNext_clicked();
 
-private:
-    void create_frame_capture();
+private:    
     void display_frame(std::any input);
     void init_stacked_widget();
     void next_page_is_widget_image_player();
@@ -47,6 +47,7 @@ private:
     dialog_aruco_detector_params *dialog_aruco_detector_params_;
     widget_image_player *widget_image_player_;
     widget_source_selection *widget_source_selection_;
+    widget_stream_player *widget_stream_player_;
 
     std::shared_ptr<flt::mm::frame_process_controller> process_controller_;
     std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
