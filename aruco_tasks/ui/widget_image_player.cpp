@@ -12,12 +12,19 @@ widget_image_player::widget_image_player(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_image_player)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);       
 }
 
 widget_image_player::~widget_image_player()
 {
     delete ui;
+}
+
+void widget_image_player::call_image_selected()
+{
+    if(!origin_img_.isNull()){
+        emit image_selected(origin_img_.copy());
+    }
 }
 
 void widget_image_player::display_frame(std::any input)
@@ -36,17 +43,17 @@ void widget_image_player::on_pushButtonSelectImage_clicked()
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select image"), "", tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"));
         !fname.isEmpty() && QFile(fname).exists())
     {
-        if(QImage img(fname); !img.isNull()){
-            emit image_selected(std::move(img));
+        if(origin_img_.load(fname); !origin_img_.isNull()){
+            emit image_selected(origin_img_.copy());
         }else{
             get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
         }
     }
 #else
     auto func = [this](QString const &fname, QByteArray const &fcontent) {
-        if(auto img = QImage::fromData(fcontent); !img.isNull()){
+        if(origin_img_ = QImage::fromData(fcontent); !origin_img_.isNull()){
             qDebug()<<"image can select";
-            emit image_selected(img);
+            emit image_selected(origin_img_.copy());
         }else{
             get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
         }

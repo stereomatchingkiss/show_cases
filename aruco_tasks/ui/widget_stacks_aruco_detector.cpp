@@ -83,6 +83,8 @@ void widget_stacks_aruco_detector::next_page_is_widget_image_player()
                 this, &widget_stacks_aruco_detector::display_frame);
 
         emit process_controller_->start();
+
+        widget_image_player_->call_image_selected();
     }
 }
 
