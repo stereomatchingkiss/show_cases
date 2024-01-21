@@ -9,8 +9,6 @@
 #include <opencv2/aruco.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <mutex>
-
 struct aruco_detect_worker::impl
 {
     impl(config_aruco_detect_worker const &config) :
@@ -26,13 +24,13 @@ struct aruco_detect_worker::impl
 
         aruco_detect_worker_results results;
         results.qimg_ = std::any_cast<QImage>(rgb).convertToFormat(QImage::Format_RGB888);
+        if(results.qimg_.width() > 640){
+            results.qimg_ = results.qimg_.scaledToWidth(640, Qt::SmoothTransformation);
+        }
         auto mat = cv::Mat(results.qimg_.height(), results.qimg_.width(), CV_8UC3, results.qimg_.bits(), results.qimg_.bytesPerLine());
 
         cv::cvtColor(mat, bgr_, cv::COLOR_RGB2BGR);
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            det_.detectMarkers(bgr_, results.marker_corners_, results.marker_ids_, results.rejected_candidates_);
-        }
+        det_.detectMarkers(bgr_, results.marker_corners_, results.marker_ids_, results.rejected_candidates_);
 
         cv::aruco::drawDetectedMarkers(mat, results.marker_corners_, results.marker_ids_);
 
@@ -43,9 +41,7 @@ struct aruco_detect_worker::impl
 
     cv::aruco::ArucoDetector det_;
     cv::aruco::DetectorParameters detector_params_;
-    cv::aruco::Dictionary dictionary_;
-
-    std::mutex mutex_;
+    cv::aruco::Dictionary dictionary_;    
 };
 
 aruco_detect_worker::aruco_detect_worker(config_aruco_detect_worker const &config, QObject *parent) :
