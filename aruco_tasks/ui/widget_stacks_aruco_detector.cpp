@@ -10,10 +10,6 @@
 #include "widget_stream_player.hpp"
 #include "widget_source_selection.hpp"
 
-#include <multimedia/camera/frame_capture_qcamera.hpp>
-#include <multimedia/camera/frame_capture_qcamera_params.hpp>
-#include <multimedia/camera/frame_capture_qmediaplayer.hpp>
-#include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
