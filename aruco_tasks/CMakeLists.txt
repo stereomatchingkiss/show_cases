@@ -23,7 +23,7 @@ if(WIN32)
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
     #find_package(Vulkan REQUIRED)
     #target_link_libraries(target ${Vulkan_LIBRARIES})
-    set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${NCNN_PATH};${CMAKE_PREFIX_PATH};")
+    set(CMAKE_PREFIX_PATH "${OPENCV_CV_PATH};${CMAKE_PREFIX_PATH};")
 endif()
 
 if(EMSCRIPTEN)
@@ -97,7 +97,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}        
         algo/aruco_detect_worker.hpp algo/aruco_detect_worker.cpp
         algo/aruco_detect_worker_results.hpp
+        algo/aruco_stitch_worker.hpp algo/aruco_stitch_worker.cpp
+        algo/aruco_stitch_worker_results.hpp
         config/config_aruco_detect_worker.hpp
+        config/config_aruco_stitch_worker.hpp
         config/config_source_selection.hpp
         config/config_tasks_selection.hpp
         global/global_object.hpp global/global_object.cpp
@@ -109,6 +112,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ui/widget_stacks_aruco_detector.hpp ui/widget_stacks_aruco_detector.cpp ui/widget_stacks_aruco_detector.ui
         ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
         ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
+        ui/widget_stacks_aruco_stitch.hpp ui/widget_stacks_aruco_stitch.cpp ui/widget_stacks_aruco_stitch.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
