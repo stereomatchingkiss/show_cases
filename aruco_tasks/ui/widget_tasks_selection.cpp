@@ -19,7 +19,7 @@ widget_tasks_selection::widget_tasks_selection(QWidget *parent) :
 
     ui->comboBoxTasks->addItem(tr("Aruco create"));
     ui->comboBoxTasks->addItem(tr("Aruco detect"));
-    ui->comboBoxTasks->addItem(tr("Aruco stitch"));
+    //ui->comboBoxTasks->addItem(tr("Aruco stitch"));
 }
 
 widget_tasks_selection::~widget_tasks_selection()
