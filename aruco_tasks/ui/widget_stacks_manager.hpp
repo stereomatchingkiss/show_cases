@@ -9,6 +9,7 @@ class widget_stacks_manager;
 
 class widget_stacks_aruco_creator;
 class widget_stacks_aruco_detector;
+class widget_stacks_aruco_stitch;
 class widget_tasks_selection;
 
 class widget_stacks_manager : public QWidget
@@ -28,6 +29,7 @@ private:
 
     widget_stacks_aruco_creator *widget_stacks_aruco_creator_;
     widget_stacks_aruco_detector *widget_stacks_aruco_detector_;
+    widget_stacks_aruco_stitch *widget_stacks_aruco_stitch_;
     widget_tasks_selection *widget_tasks_selection_;
 };
 

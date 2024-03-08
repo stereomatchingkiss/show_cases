@@ -3,6 +3,7 @@
 
 #include "widget_stacks_aruco_creator.hpp"
 #include "widget_stacks_aruco_detector.hpp"
+#include "widget_stacks_aruco_stitch.hpp"
 #include "widget_tasks_selection.hpp"
 
 widget_stacks_manager::widget_stacks_manager(QWidget *parent) :
