@@ -5,11 +5,11 @@
 
 namespace flt::cvt::pose{
 
-struct pose_estimation_results
+struct keypoint
 {
-    std::vector<std::vector<float>> confidences_;
-    std::vector<std::vector<cv::Point>> keypoints_;    
-    std::vector<cv::Rect> rects_;
+    float x;
+    float y;
+    float score;
 };
 
 }
