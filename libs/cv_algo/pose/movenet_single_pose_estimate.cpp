@@ -21,7 +21,6 @@ struct movenet_single_pose_estimate::pimpl
           int target_size) :
         target_size_(target_size)
     {
-        net_.clear();
         net_.load_param(param.c_str());
         net_.load_model(bin.c_str());
 
@@ -44,10 +43,10 @@ struct movenet_single_pose_estimate::pimpl
         }
     }
 
-    std::vector<keypoint> detect_pose(cv::Mat &rgb)
+    /*float get_scale_factor(cv::Mat const &bgr) const
     {
-        int w = rgb.cols;
-        int h = rgb.rows;
+        int w = bgr.cols;
+        int h = bgr.rows;
         float scale = 1.f;
         if(w > h){
             scale = (float)target_size_ / w;
@@ -59,27 +58,50 @@ struct movenet_single_pose_estimate::pimpl
             w = static_cast<int>(w * scale);
         }
 
-        ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
-        int wpad = target_size_ - w;
-        int hpad = target_size_ - h;
+        return scale;
+    }//*/
+
+    std::tuple<ncnn::Mat, int, int, float> preprocess(cv::Mat const &bgr)
+    {
+        int w = bgr.cols;
+        int h = bgr.rows;
+        float scale = 1.f;
+        if(w > h){
+            scale = (float)target_size_ / w;
+            w = target_size_;
+            h = static_cast<int>(h * scale);
+        }else{
+            scale = (float)target_size_ / h;
+            h = target_size_;
+            w = static_cast<int>(w * scale);
+        }
+
+        ncnn::Mat in = ncnn::Mat::from_pixels_resize(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows, w, h);
+        int const wpad = target_size_ - w;
+        int const hpad = target_size_ - h;
         ncnn::Mat in_pad;
         ncnn::copy_make_border(in, in_pad, hpad / 2, hpad - hpad / 2, wpad / 2, wpad - wpad / 2, ncnn::BORDER_CONSTANT, 0.f);
 
-        ncnn::Extractor ex = net_.create_extractor();
         in_pad.substract_mean_normalize(mean_vals, norm_vals_);
 
+        return {std::move(in_pad), wpad, hpad, scale};
+    }
+
+    std::vector<keypoint> predict(cv::Mat const &bgr)
+    {
+        auto [in_pad, wpad, hpad, scale] = preprocess(bgr);
+        ncnn::Extractor ex = net_.create_extractor();
         ex.input("input", in_pad);
 
         ncnn::Mat regress, center, heatmap, offset;
-
         ex.extract("regress", regress);
         ex.extract("offset", offset);
         ex.extract("heatmap", heatmap);
         ex.extract("center", center);
 
-        float* center_data = (float*)center.data;
-        float* heatmap_data = (float*)heatmap.data;
-        float* offset_data = (float*)offset.data;
+        float *center_data = static_cast<float*>(center.data);
+        float *heatmap_data = static_cast<float*>(heatmap.data);
+        float *offset_data = static_cast<float*>(offset.data);
 
         int top_index = static_cast<int>(argmax(center_data, center_data+center.h));
         int const ct_y = (top_index / feature_size_);
@@ -87,17 +109,16 @@ struct movenet_single_pose_estimate::pimpl
 
         int constexpr num_joints = 17;
         std::vector<float> y_regress(num_joints), x_regress(num_joints);
-        float* regress_data = (float*)regress.channel(ct_y).row(ct_x);
+        float *regress_data = static_cast<float*>(regress.channel(ct_y).row(ct_x));
         for(size_t i = 0; i < num_joints; ++i){
             y_regress[i] = regress_data[i] + (float)ct_y;
             x_regress[i] = regress_data[i + num_joints] + (float)ct_x;
         }
 
         ncnn::Mat kpt_scores = ncnn::Mat(feature_size_ * feature_size_, num_joints, sizeof(float));
-        float* scores_data = (float*)kpt_scores.data;
+        float* scores_data = static_cast<float*>(kpt_scores.data);
         for(int i = 0; i < feature_size_; ++i){
-            for (int j = 0; j < feature_size_; ++j)
-            {
+            for (int j = 0; j < feature_size_; ++j){
                 std::vector<float> score;
                 for (int c = 0; c < num_joints; ++c)
                 {
@@ -109,8 +130,7 @@ struct movenet_single_pose_estimate::pimpl
             }
         }
         std::vector<int> kpts_ys, kpts_xs;
-        for (int i = 0; i < num_joints; i++)
-        {
+        for(int i = 0; i < num_joints; ++i){
             top_index = int(argmax(scores_data + feature_size_ * feature_size_ *i, scores_data + feature_size_ * feature_size_ *(i+1)));
             int top_y = (top_index / feature_size_);
             int top_x = top_index - top_y * feature_size_;
@@ -119,8 +139,7 @@ struct movenet_single_pose_estimate::pimpl
         }
 
         std::vector<keypoint> points;
-        for (int i = 0; i < num_joints; i++)
-        {
+        for(int i = 0; i < num_joints; ++i){
             float kpt_offset_x = offset_data[kpts_ys[i] * feature_size_ * num_joints*2 + kpts_xs[i] * num_joints * 2 + i * 2];
             float kpt_offset_y = offset_data[kpts_ys[i] * feature_size_ * num_joints * 2 + kpts_xs[i] * num_joints * 2 + i * 2+1];
 
@@ -135,49 +154,6 @@ struct movenet_single_pose_estimate::pimpl
         }
 
         return points;
-    }
-
-    int draw(cv::Mat& rgb)
-    {
-        auto const points = detect_pose(rgb);
-
-        size_t constexpr skele_index[][2] = { {0,1},{0,2},{1,3},{2,4},{0,5},{0,6},{5,6},{5,7},{7,9},{6,8},{8,10},{11,12},
-                                             {5,11},{11,13},{13,15},{6,12},{12,14},{14,16} };
-        int constexpr color_index[][3] = { {255, 0, 0},
-            {0, 0, 255},
-            {255, 0, 0},
-            {0, 0, 255},
-            {255, 0, 0},
-            {0, 0, 255},
-            {0, 255, 0},
-            {255, 0, 0},
-            {255, 0, 0},
-            {0, 0, 255},
-            {0, 0, 255},
-            {0, 255, 0},
-            {255, 0, 0},
-            {255, 0, 0},
-            {255, 0, 0},
-            {0, 0, 255},
-            {0, 0, 255},
-            {0, 0, 255}, };
-
-        for (int i = 0; i < 18; i++){
-            if(points[skele_index[i][0]].score_ > 0.3f && points[skele_index[i][1]].score_ > 0.3f){
-                cv::line(rgb, cv::Point(points[skele_index[i][0]].x_,points[skele_index[i][0]].y_),
-                         cv::Point(points[skele_index[i][1]].x_,points[skele_index[i][1]].y_),
-                         cv::Scalar(color_index[i][0], color_index[i][1], color_index[i][2]), 2);
-            }
-        }
-
-        int constexpr num_joints = 17;
-        for(int i = 0; i < num_joints; i++)
-        {
-            if (points[i].score_ > 0.3f){
-                cv::circle(rgb, cv::Point(points[i].x_,points[i].y_), 3, cv::Scalar(100, 255, 150), -1);
-            }
-        }
-        return 0;
     }
 
     ncnn::Net net_;
@@ -200,14 +176,9 @@ movenet_single_pose_estimate::~movenet_single_pose_estimate()
 
 }
 
-std::vector<keypoint> movenet_single_pose_estimate::predict(cv::Mat &rgb)
+std::vector<keypoint> movenet_single_pose_estimate::predict(cv::Mat const &bgr)
 {
-    return pimpl_->detect_pose(rgb);
-}
-
-int movenet_single_pose_estimate::draw(cv::Mat& rgb)
-{
-    return pimpl_->draw(rgb);
+    return pimpl_->predict(bgr);
 }
 
 }

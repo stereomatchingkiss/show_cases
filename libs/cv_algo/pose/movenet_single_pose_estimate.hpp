@@ -19,9 +19,7 @@ public:
             int target_size = 192);
     ~movenet_single_pose_estimate();
 
-    std::vector<keypoint> predict(cv::Mat &rgb);
-
-    int draw(cv::Mat& rgb);
+    std::vector<keypoint> predict(cv::Mat const &bgr);
 
 private:
     struct pimpl;
