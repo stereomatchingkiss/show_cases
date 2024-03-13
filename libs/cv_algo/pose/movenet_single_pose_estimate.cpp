@@ -36,8 +36,8 @@ struct movenet_single_pose_estimate::pimpl
             std::vector<float> x, y;
             for (int j = 0; j < feature_size_; j++)
             {
-                x.push_back(j);
-                y.push_back(i);
+                x.push_back(static_cast<float>(j));
+                y.push_back(static_cast<float>(i));
             }
             dist_y_.push_back(y);
             dist_x_.push_back(x);
@@ -52,11 +52,11 @@ struct movenet_single_pose_estimate::pimpl
         if(w > h){
             scale = (float)target_size_ / w;
             w = target_size_;
-            h = h * scale;
+            h = static_cast<int>(h * scale);
         }else{
             scale = (float)target_size_ / h;
             h = target_size_;
-            w = w * scale;
+            w = static_cast<int>(w * scale);
         }
 
         ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
@@ -81,11 +81,9 @@ struct movenet_single_pose_estimate::pimpl
         float* heatmap_data = (float*)heatmap.data;
         float* offset_data = (float*)offset.data;
 
-        int top_index = 0;
-        top_index = int(argmax(center_data, center_data+center.h));
-
-        int ct_y = (top_index / feature_size_);
-        int ct_x = top_index - ct_y * feature_size_;
+        int top_index = static_cast<int>(argmax(center_data, center_data+center.h));
+        int const ct_y = (top_index / feature_size_);
+        int const ct_x = top_index - ct_y * feature_size_;
 
         int constexpr num_joints = 17;
         std::vector<float> y_regress(num_joints), x_regress(num_joints);
@@ -105,7 +103,7 @@ struct movenet_single_pose_estimate::pimpl
                 {
                     float y = (dist_y_[i][j] - y_regress[c]) * (dist_y_[i][j] - y_regress[c]);
                     float x = (dist_x_[i][j] - x_regress[c]) * (dist_x_[i][j] - x_regress[c]);
-                    float dist_weight = std::sqrt(y + x) + 1.8;
+                    float dist_weight = std::sqrt(y + x) + 1.8f;
                     scores_data[c* feature_size_ * feature_size_ +i* feature_size_ +j] = heatmap_data[i * feature_size_ * num_joints + j * num_joints + c] / dist_weight;
                 }
             }
@@ -130,9 +128,9 @@ struct movenet_single_pose_estimate::pimpl
             float y = (kpts_ys[i] + kpt_offset_x) * kpt_scale_ * target_size_;
 
             keypoint kpt;
-            kpt.x = (x - (wpad / 2)) / scale;
-            kpt.y = (y - (hpad / 2)) / scale;
-            kpt.score = heatmap_data[kpts_ys[i] * feature_size_ * num_joints + kpts_xs[i] * num_joints + i];
+            kpt.x_ = static_cast<int>((x - (wpad / 2)) / scale);
+            kpt.y_ = static_cast<int>((y - (hpad / 2)) / scale);
+            kpt.score_ = heatmap_data[kpts_ys[i] * feature_size_ * num_joints + kpts_xs[i] * num_joints + i];
             points.push_back(kpt);
         }
 
@@ -143,9 +141,9 @@ struct movenet_single_pose_estimate::pimpl
     {
         auto const points = detect_pose(rgb);
 
-        int skele_index[][2] = { {0,1},{0,2},{1,3},{2,4},{0,5},{0,6},{5,6},{5,7},{7,9},{6,8},{8,10},{11,12},
-                                {5,11},{11,13},{13,15},{6,12},{12,14},{14,16} };
-        int color_index[][3] = { {255, 0, 0},
+        size_t constexpr skele_index[][2] = { {0,1},{0,2},{1,3},{2,4},{0,5},{0,6},{5,6},{5,7},{7,9},{6,8},{8,10},{11,12},
+                                             {5,11},{11,13},{13,15},{6,12},{12,14},{14,16} };
+        int constexpr color_index[][3] = { {255, 0, 0},
             {0, 0, 255},
             {255, 0, 0},
             {0, 0, 255},
@@ -165,16 +163,19 @@ struct movenet_single_pose_estimate::pimpl
             {0, 0, 255}, };
 
         for (int i = 0; i < 18; i++){
-            if(points[skele_index[i][0]].score > 0.3 && points[skele_index[i][1]].score > 0.3)
-                cv::line(rgb, cv::Point(points[skele_index[i][0]].x,points[skele_index[i][0]].y),
-                         cv::Point(points[skele_index[i][1]].x,points[skele_index[i][1]].y), cv::Scalar(color_index[i][0], color_index[i][1], color_index[i][2]), 2);
+            if(points[skele_index[i][0]].score_ > 0.3f && points[skele_index[i][1]].score_ > 0.3f){
+                cv::line(rgb, cv::Point(points[skele_index[i][0]].x_,points[skele_index[i][0]].y_),
+                         cv::Point(points[skele_index[i][1]].x_,points[skele_index[i][1]].y_),
+                         cv::Scalar(color_index[i][0], color_index[i][1], color_index[i][2]), 2);
+            }
         }
 
         int constexpr num_joints = 17;
         for(int i = 0; i < num_joints; i++)
         {
-            if (points[i].score > 0.3)
-                cv::circle(rgb, cv::Point(points[i].x,points[i].y), 3, cv::Scalar(100, 255, 150), -1);
+            if (points[i].score_ > 0.3f){
+                cv::circle(rgb, cv::Point(points[i].x_,points[i].y_), 3, cv::Scalar(100, 255, 150), -1);
+            }
         }
         return 0;
     }

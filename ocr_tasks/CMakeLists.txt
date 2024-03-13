@@ -20,7 +20,7 @@ if(WIN32)
     message("building windows platform")
     set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
     #set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
-    set(ONNX_PATH ${3RDLIBS_PATH}/onnx/onnxruntime-training-win-x64-1.16.3)
+    set(ONNX_PATH ${3RDLIBS_PATH}/onnx/onnxruntime-training-win-x64-1.16.3)    
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
     #find_package(Vulkan REQUIRED)

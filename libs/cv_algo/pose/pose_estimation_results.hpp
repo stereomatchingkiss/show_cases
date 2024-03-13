@@ -7,9 +7,9 @@ namespace flt::cvt::pose{
 
 struct keypoint
 {
-    float x;
-    float y;
-    float score;
+    int x_;
+    int y_;
+    float score_;
 };
 
 }
