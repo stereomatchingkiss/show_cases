@@ -18,8 +18,10 @@ struct movenet_single_pose_estimate::pimpl
 {
     pimpl(std::string const &param,
           std::string const &bin,
-          int target_size) :
-        target_size_(target_size)
+          int target_size,
+          bool swap_rgb) :
+        target_size_{target_size},
+        swap_rgb_{swap_rgb}
     {
         net_.load_param(param.c_str());
         net_.load_model(bin.c_str());
@@ -41,25 +43,7 @@ struct movenet_single_pose_estimate::pimpl
             dist_y_.push_back(y);
             dist_x_.push_back(x);
         }
-    }
-
-    /*float get_scale_factor(cv::Mat const &bgr) const
-    {
-        int w = bgr.cols;
-        int h = bgr.rows;
-        float scale = 1.f;
-        if(w > h){
-            scale = (float)target_size_ / w;
-            w = target_size_;
-            h = static_cast<int>(h * scale);
-        }else{
-            scale = (float)target_size_ / h;
-            h = target_size_;
-            w = static_cast<int>(w * scale);
-        }
-
-        return scale;
-    }//*/
+    }    
 
     std::tuple<ncnn::Mat, int, int, float> preprocess(cv::Mat const &bgr)
     {
@@ -76,7 +60,8 @@ struct movenet_single_pose_estimate::pimpl
             w = static_cast<int>(w * scale);
         }
 
-        ncnn::Mat in = ncnn::Mat::from_pixels_resize(bgr.data, ncnn::Mat::PIXEL_BGR2RGB, bgr.cols, bgr.rows, w, h);
+        ncnn::Mat in = ncnn::Mat::from_pixels_resize(bgr.data, swap_rgb_ ? ncnn::Mat::PIXEL_BGR2RGB : ncnn::Mat::PIXEL_RGB,
+                                                     bgr.cols, bgr.rows, w, h);
         int const wpad = target_size_ - w;
         int const hpad = target_size_ - h;
         ncnn::Mat in_pad;
@@ -163,10 +148,14 @@ struct movenet_single_pose_estimate::pimpl
     float mean_vals[3] = {127.5f, 127.5f,  127.5f};
     float norm_vals_[3] = {1/ 127.5f, 1 / 127.5f, 1 / 127.5f};
     std::vector<std::vector<float>> dist_y_, dist_x_;
+    bool swap_rgb_;
 };
 
-movenet_single_pose_estimate::movenet_single_pose_estimate(const std::string &param, const std::string &bin, int target_size) :
-    pimpl_(std::make_unique<pimpl>(param, bin, target_size))
+movenet_single_pose_estimate::movenet_single_pose_estimate(const std::string &param,
+                                                           const std::string &bin,
+                                                           int target_size,
+                                                           bool swap_rgb) :
+    pimpl_(std::make_unique<pimpl>(param, bin, target_size, swap_rgb))
 {
 
 }
