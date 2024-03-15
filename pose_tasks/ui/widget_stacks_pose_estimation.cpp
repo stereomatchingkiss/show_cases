@@ -7,6 +7,7 @@
 #include "widget_stream_player.hpp"
 
 #include "../algo/pose_estimation_worker.hpp"
+#include "../algo/pose_estimation_worker_results.hpp"
 #include "../config/config_pose_estimation_worker.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
@@ -82,7 +83,7 @@ void widget_stacks_pose_estimation::next_page_is_pose_estimation_display()
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
         process_controller_ = std::make_shared<frame_process_controller>(worker);
         connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                widget_stream_player_, &widget_stream_player::display_frame);
+                this, &widget_stacks_pose_estimation::send_process_results);
 
         emit process_controller_->start();
         sfwmw_->add_listener(process_controller_, this);
@@ -100,5 +101,11 @@ void widget_stacks_pose_estimation::next_page_is_pose_estimation_display()
 
         widget_image_player_->call_image_selected();
     }
+}
+
+void widget_stacks_pose_estimation::send_process_results(std::any val)
+{
+    static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(std::any_cast<pose_estimation_worker_results>(val).json_text_);
+    widget_stream_player_->display_frame(val);
 }
 

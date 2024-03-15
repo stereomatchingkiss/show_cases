@@ -36,6 +36,7 @@ private slots:
 private:
     void init_stacked_widget();
     void next_page_is_pose_estimation_display();
+    void send_process_results(std::any val);
 
     Ui::widget_stacks_pose_estimation *ui;
 

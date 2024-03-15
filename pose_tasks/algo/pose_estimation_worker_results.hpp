@@ -6,7 +6,7 @@
 
 struct pose_estimation_worker_results
 {
-    QImage qimg_;
-
+    QString json_text_;
     std::vector<flt::cvt::pose::keypoint> points_;
+    QImage qimg_;
 };

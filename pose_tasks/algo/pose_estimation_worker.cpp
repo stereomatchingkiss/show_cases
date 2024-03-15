@@ -9,7 +9,13 @@
 
 #include <QDebug>
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <opencv2/imgproc.hpp>
+
+#include <format>
 
 using namespace flt::cvt::pose;
 
@@ -41,6 +47,22 @@ struct pose_estimation_worker::impl
         return model_root() + "thunder.param";
     }
 
+    QString convert_to_json(std::vector<keypoint> const &input) const
+    {
+        QJsonArray pts;
+        for(auto const &val : input){
+            QJsonObject obj;
+            obj["x"] = val.x_;
+            obj["y"] = val.y_;
+            obj["score"] = val.score_;
+            pts.push_back(obj);
+        }
+
+        QJsonObject jobj;
+        jobj["pts"] = pts;
+        return QJsonDocument(jobj).toJson(QJsonDocument::Compact);
+    }
+
     pose_estimation_worker_results process_results(QImage rgb)
     {        
         pose_estimation_worker_results results;
@@ -62,6 +84,8 @@ struct pose_estimation_worker::impl
                 results.qimg_ = QImage(mat.data, mat.cols, mat.rows, mat.step[0], QImage::Format_RGB888).copy();
             }
         }
+
+        results.json_text_ = convert_to_json(results.points_);
 
         return results;
     }
