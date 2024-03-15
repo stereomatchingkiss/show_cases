@@ -51,23 +51,48 @@ endif()
 set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimate.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimate.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_results.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.cpp
+    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
+)
+
+set(MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
 )
 
 set(PROJECT_SOURCES
-        main.cpp
-        ui/mainwindow.cpp
-        ui/mainwindow.hpp
-        ui/mainwindow.ui
-        ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
-        ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
+        main.cpp        
+        algo/pose_estimation_worker.hpp algo/pose_estimation_worker.cpp
+        algo/pose_estimation_worker_results.hpp
+        config/config_pose_estimation_worker.hpp
+        config/config_source_selection.hpp
         config/config_tasks_selection.hpp
+        config/pose_estimation_model_enum.hpp
+        global/global_object.hpp global/global_object.cpp
+        ui/mainwindow.hpp ui/mainwindow.cpp ui/mainwindow.ui
+        ui/widget_image_player.hpp ui/widget_image_player.cpp ui/widget_image_player.ui
+        ui/widget_pose_estimation_params.hpp ui/widget_pose_estimation_params.cpp ui/widget_pose_estimation_params.ui
+        ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
+        ui/widget_stacks_pose_estimation.hpp ui/widget_stacks_pose_estimation.cpp ui/widget_stacks_pose_estimation.ui
+        ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
+        ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui        
         ${CV_ALGO_SOURCES}
+        ${MULTIMEDIA_SOURCE}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES}        
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
