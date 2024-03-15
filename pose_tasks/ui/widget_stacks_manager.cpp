@@ -1,7 +1,7 @@
 #include "widget_stacks_manager.hpp"
 #include "ui_widget_stacks_manager.h"
 
-#include "widget_tasks_selection.hpp"
+#include "widget_stacks_pose_estimation.hpp"
 
 widget_stacks_manager::widget_stacks_manager(QWidget *parent) :
     QWidget(parent),
@@ -17,23 +17,8 @@ widget_stacks_manager::~widget_stacks_manager()
     delete ui;
 }
 
-void widget_stacks_manager::back_to_task_selection()
-{
-    ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
-}
-
 void widget_stacks_manager::init_stacked_widget()
 {
-    widget_tasks_selection_ = new widget_tasks_selection;
-
-    ui->stackedWidget->addWidget(widget_tasks_selection_);
-
-    ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
-
-    connect(widget_tasks_selection_, &widget_tasks_selection::task_selected, this, &widget_stacks_manager::switch_task);    
-}
-
-void widget_stacks_manager::switch_task(int index)
-{
-
+    widget_stacks_pose_estimation_ = new widget_stacks_pose_estimation;
+    ui->stackedWidget->addWidget(widget_stacks_pose_estimation_);
 }
