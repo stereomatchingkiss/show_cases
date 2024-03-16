@@ -38,7 +38,7 @@ English | [简体中文](./readme_cn.md)
 
 # Examples
 
-- ![Video tutorial](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [Video tutorial](https://www.youtube.com/watch?v=LGUZxGAwyCw)
 - ![example1](./imgs/00.png)
 - ![example2](./imgs/01.png)
 - ![example3](./imgs/02.png)

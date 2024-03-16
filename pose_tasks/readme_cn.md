@@ -38,7 +38,7 @@
 
 # 范例
 
-- ![影片教学](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [影片教学](https://www.youtube.com/watch?v=LGUZxGAwyCw)
 - ![范例1](./imgs/00.png)
 - ![范例2](./imgs/01.png)
 - ![范例3](./imgs/02.png)
