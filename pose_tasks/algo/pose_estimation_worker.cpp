@@ -66,25 +66,21 @@ struct pose_estimation_worker::impl
     pose_estimation_worker_results process_results(QImage rgb)
     {        
         pose_estimation_worker_results results;
-        if(config_.source_type_ == flt::mm::stream_source_type::image){
-            results.qimg_ = std::any_cast<QImage>(rgb).convertToFormat(QImage::Format_RGB888);
-            auto mat = cv::Mat(results.qimg_.height(), results.qimg_.width(), CV_8UC3, results.qimg_.bits(), results.qimg_.bytesPerLine());
-            results.points_ = net_.predict(mat);
-            flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
+        auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(rgb);
+        cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+
+        results.points_ = net_.predict(mat);
+        flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
+        if(non_copy){
+            results.qimg_ = rgb;
         }else{
-            auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(rgb);
-            cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-            results.points_ = net_.predict(mat);
-            flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
-            if(non_copy){
-                results.qimg_ = rgb;
-            }else{
-                //Todo : reduce useless operations
-                results.qimg_ = QImage(mat.data, mat.cols, mat.rows, mat.step[0], QImage::Format_RGB888).copy();
-            }
+            //Todo : reduce useless operations
+            results.qimg_ = QImage(mat.data, mat.cols, mat.rows, mat.step[0], QImage::Format_RGB888).copy();
         }
 
-        results.json_text_ = convert_to_json(results.points_);
+        if(config_.source_type_ == flt::mm::stream_source_type::websocket){
+            results.json_text_ = convert_to_json(results.points_);
+        }
 
         return results;
     }
