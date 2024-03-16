@@ -67,7 +67,6 @@ struct pose_estimation_worker::impl
     {        
         pose_estimation_worker_results results;
         if(config_.source_type_ == flt::mm::stream_source_type::image){
-            //convert rgb to RGB888 may make the predict results weird
             results.qimg_ = std::any_cast<QImage>(rgb).convertToFormat(QImage::Format_RGB888);
             auto mat = cv::Mat(results.qimg_.height(), results.qimg_.width(), CV_8UC3, results.qimg_.bits(), results.qimg_.bytesPerLine());
             results.points_ = net_.predict(mat);
