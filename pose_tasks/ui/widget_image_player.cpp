@@ -11,7 +11,9 @@ widget_image_player::widget_image_player(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_image_player)
 {
-    ui->setupUi(this);       
+    ui->setupUi(this);
+
+    ui->labelStream->setAlignment(Qt::AlignCenter);
 }
 
 widget_image_player::~widget_image_player()
