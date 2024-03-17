@@ -18,6 +18,7 @@ widget_tasks_selection::widget_tasks_selection(QWidget *parent) :
     ui->setupUi(this);
 
     ui->comboBoxTasks->addItem(tr("Pose estimation"));
+    ui->comboBoxTasks->addItem(tr("Estimate pose similarity"));
 }
 
 widget_tasks_selection::~widget_tasks_selection()
@@ -31,6 +32,10 @@ config_tasks_selection widget_tasks_selection::get_config() const noexcept
     switch(ui->comboBoxTasks->currentIndex()){
     case 0:{
         resutls.task_ = enum_config_tasks::pose_estimation;
+        break;
+    }
+    case 1:{
+        resutls.task_ = enum_config_tasks::estimate_pose_similarity;
         break;
     }
     default:
