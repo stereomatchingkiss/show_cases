@@ -38,16 +38,16 @@ void widget_stacks_pose_estimation::on_pushButtonPrev_clicked()
 {
     ui->pushButtonNext->setVisible(true);
     if(ui->stackedWidget->currentWidget() == widget_pose_estimation_params_){
-        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
-        ui->pushButtonPrev->setVisible(false);
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);        
     }else if(ui->stackedWidget->currentWidget() == widget_image_player_ || ui->stackedWidget->currentWidget() == widget_stream_player_){
         ui->stackedWidget->setCurrentWidget(widget_pose_estimation_params_);
+    }else{
+        emit prev_button_clicked();
     }
 }
 
 void widget_stacks_pose_estimation::on_pushButtonNext_clicked()
-{
-    ui->pushButtonPrev->setVisible(true);
+{    
     if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_pose_estimation_params_);
     }else if(ui->stackedWidget->currentWidget() == widget_pose_estimation_params_){

@@ -28,6 +28,9 @@ public:
     explicit widget_stacks_pose_estimation(QWidget *parent = nullptr);
     ~widget_stacks_pose_estimation();
 
+signals:
+    void prev_button_clicked();
+
 private slots:
     void on_pushButtonPrev_clicked();
 

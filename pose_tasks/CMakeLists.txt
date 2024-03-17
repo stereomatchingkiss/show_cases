@@ -91,7 +91,9 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
+        ui/widget_stacks_estimate_pose_similarity.hpp ui/widget_stacks_estimate_pose_similarity.cpp ui/widget_stacks_estimate_pose_similarity.ui
+        ui/widget_image_pair_player.hpp ui/widget_image_pair_player.cpp ui/widget_image_pair_player.ui
 
     )
 # Define target properties for Android with Qt 6 as:
