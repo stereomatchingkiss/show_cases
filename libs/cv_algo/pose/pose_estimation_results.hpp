@@ -1,5 +1,4 @@
-#ifndef POSE_ESTIMATION_RESULTS_HPP
-#define POSE_ESTIMATION_RESULTS_HPP
+#pragma once
 
 #include <opencv2/core.hpp>
 
@@ -9,9 +8,9 @@ struct keypoint
 {
     int x_;
     int y_;
+    int hx_; //h == heatmap
+    int hy_;
     float score_;
 };
 
 }
-
-#endif // POSE_ESTIMATION_RESULTS_HPP
