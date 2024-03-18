@@ -17,7 +17,7 @@ public:
     movenet_single_pose_estimate(std::string const &param,
                                  std::string const &bin,
                                  int target_size = 192,
-                                 bool swap_rgb = false);
+                                 bool swap_rgb = true);
     ~movenet_single_pose_estimate();
 
     std::vector<keypoint> predict(cv::Mat const &bgr);

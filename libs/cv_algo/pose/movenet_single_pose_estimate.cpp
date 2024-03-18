@@ -103,39 +103,42 @@ struct movenet_single_pose_estimate::pimpl
         ncnn::Mat kpt_scores = ncnn::Mat(feature_size_ * feature_size_, num_joints, sizeof(float));
         float* scores_data = static_cast<float*>(kpt_scores.data);
         for(int i = 0; i < feature_size_; ++i){
-            for (int j = 0; j < feature_size_; ++j){
-                std::vector<float> score;
-                for (int c = 0; c < num_joints; ++c)
-                {
-                    float y = (dist_y_[i][j] - y_regress[c]) * (dist_y_[i][j] - y_regress[c]);
-                    float x = (dist_x_[i][j] - x_regress[c]) * (dist_x_[i][j] - x_regress[c]);
-                    float dist_weight = std::sqrt(y + x) + 1.8f;
+            for(int j = 0; j < feature_size_; ++j){
+                for(int c = 0; c < num_joints; ++c){
+                    float const y = (dist_y_[i][j] - y_regress[c]) * (dist_y_[i][j] - y_regress[c]);
+                    float const x = (dist_x_[i][j] - x_regress[c]) * (dist_x_[i][j] - x_regress[c]);
+                    float const dist_weight = std::sqrt(y + x) + 1.8f;
                     scores_data[c* feature_size_ * feature_size_ +i* feature_size_ +j] = heatmap_data[i * feature_size_ * num_joints + j * num_joints + c] / dist_weight;
                 }
             }
         }
+
+        std::vector<keypoint> points;
         std::vector<int> kpts_ys, kpts_xs;
         for(int i = 0; i < num_joints; ++i){
             top_index = int(argmax(scores_data + feature_size_ * feature_size_ *i, scores_data + feature_size_ * feature_size_ *(i+1)));
-            int top_y = (top_index / feature_size_);
-            int top_x = top_index - top_y * feature_size_;
+            int const top_y = (top_index / feature_size_);
+            int const top_x = top_index - top_y * feature_size_;
+
+            keypoint kpt;
+            kpt.hx_ = top_x;
+            kpt.hy_ = top_y;
+            points.emplace_back(kpt);
+
             kpts_ys.push_back(top_y);
             kpts_xs.push_back(top_x);
         }
 
-        std::vector<keypoint> points;
         for(int i = 0; i < num_joints; ++i){
-            float kpt_offset_x = offset_data[kpts_ys[i] * feature_size_ * num_joints*2 + kpts_xs[i] * num_joints * 2 + i * 2];
-            float kpt_offset_y = offset_data[kpts_ys[i] * feature_size_ * num_joints * 2 + kpts_xs[i] * num_joints * 2 + i * 2+1];
+            float const kpt_offset_x = offset_data[kpts_ys[i] * feature_size_ * num_joints*2 + kpts_xs[i] * num_joints * 2 + i * 2];
+            float const kpt_offset_y = offset_data[kpts_ys[i] * feature_size_ * num_joints * 2 + kpts_xs[i] * num_joints * 2 + i * 2+1];
 
-            float x = (kpts_xs[i] + kpt_offset_y) * kpt_scale_ * target_size_;
-            float y = (kpts_ys[i] + kpt_offset_x) * kpt_scale_ * target_size_;
+            float const x = (kpts_xs[i] + kpt_offset_y) * kpt_scale_ * target_size_;
+            float const y = (kpts_ys[i] + kpt_offset_x) * kpt_scale_ * target_size_;
 
-            keypoint kpt;
-            kpt.x_ = static_cast<int>((x - (wpad / 2)) / scale);
-            kpt.y_ = static_cast<int>((y - (hpad / 2)) / scale);
-            kpt.score_ = heatmap_data[kpts_ys[i] * feature_size_ * num_joints + kpts_xs[i] * num_joints + i];
-            points.push_back(kpt);
+            points[i].x_ = static_cast<int>((x - (wpad / 2)) / scale);
+            points[i].y_ = static_cast<int>((y - (hpad / 2)) / scale);
+            points[i].score_ = heatmap_data[kpts_ys[i] * feature_size_ * num_joints + kpts_xs[i] * num_joints + i];
         }
 
         return points;
