@@ -23,11 +23,12 @@
 
 # 各资料夹的说明
 
-- [anpr_tasks](https://github.com/stereomatchingkiss/show_cases/tree/master/anpr_tasks)， 车牌辨识的demo，这个问题相较于10年前容易解决的多，
+- [aruco_tasks](./aruco_tasks/) : 跟aruco有关的工具，目前支持aruco检测和生成
+- [anpr_tasks](./anpr_tasks)， 车牌辨识的demo，这个问题相较于10年前容易解决的多，
 我相信就算是独立开发，只要勤于收集资料，训练对应的模型，针对不同的地区调试，要做出商业水平的作品不是问题
-- [face_recognition_tasks](https://github.com/stereomatchingkiss/show_cases/tree/master/face_recognition_tasks)，支援批量人脸辨识的demo。
+- [face_recognition_tasks](./face_recognition_tasks)，支援批量人脸辨识的demo。
 这已经是一个很成熟的技术，不乏公开且达到商用水准的模型，不过因为许可证的问题，想商用的话得自己动手训练。由于训练资料和代码都是公开的，要复现不是问题
-- [generic_cv_task](https://github.com/stereomatchingkiss/object_detection_and_alarm)，一个支持物件检测、行为分类，跟踪、计数、区域警报、警报记录的webapp
+- [generic_cv_task](./generic_cv_tasks)，一个支持物件检测、行为分类，跟踪、计数、区域警报、警报记录的webapp
 - [ocr_tasks](./ocr_tasks),支援ocr的webapp
 - [libs](./libs), 各webapp的通用库
 - [python_tools](./python_tools)，收集各种为了webaapp而设计的简易程序
