@@ -52,6 +52,9 @@ set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimat
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_results.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_base.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_base.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_results.hpp
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
