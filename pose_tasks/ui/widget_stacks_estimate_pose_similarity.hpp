@@ -39,12 +39,17 @@ private slots:
 private:
     void init_stacked_widget();
     void next_page_is_estimate_pose_similarity_display();
+    void process_source_image(QImage img);
+    void process_target_image(QImage img);
 
     Ui::widget_stacks_estimate_pose_similarity *ui;
 
     widget_image_pair_player *widget_image_pair_player_;
     widget_pose_estimation_params *widget_pose_estimation_params_;
     widget_source_selection *widget_source_selection_;
+
+    std::shared_ptr<flt::mm::frame_process_controller> process_controller_;
+    std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
 };
 
 #endif // WIDGET_STACKS_ESTIMATE_POSE_SIMILARITY_HPP

@@ -51,6 +51,7 @@ endif()
 set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimate.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimate.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_results.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.cpp
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
@@ -68,7 +69,10 @@ set(MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
 )
 
 set(PROJECT_SOURCES
-        main.cpp        
+        main.cpp
+        algo/estimate_pose_similarity_input.hpp
+        algo/estimate_pose_similarity_results.hpp
+        algo/estimate_pose_similarity_worker.hpp algo/estimate_pose_similarity_worker.cpp
         algo/pose_estimation_worker.hpp algo/pose_estimation_worker.cpp
         algo/pose_estimation_worker_results.hpp
         config/config_pose_estimation_worker.hpp
@@ -77,9 +81,11 @@ set(PROJECT_SOURCES
         config/pose_estimation_model_enum.hpp
         global/global_object.hpp global/global_object.cpp
         ui/mainwindow.hpp ui/mainwindow.cpp ui/mainwindow.ui
+        ui/widget_image_pair_player.hpp ui/widget_image_pair_player.cpp ui/widget_image_pair_player.ui
         ui/widget_image_player.hpp ui/widget_image_player.cpp ui/widget_image_player.ui
         ui/widget_pose_estimation_params.hpp ui/widget_pose_estimation_params.cpp ui/widget_pose_estimation_params.ui
         ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
+        ui/widget_stacks_estimate_pose_similarity.hpp ui/widget_stacks_estimate_pose_similarity.cpp ui/widget_stacks_estimate_pose_similarity.ui
         ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
         ui/widget_stacks_pose_estimation.hpp ui/widget_stacks_pose_estimation.cpp ui/widget_stacks_pose_estimation.ui
         ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
@@ -92,9 +98,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ui/widget_stacks_estimate_pose_similarity.hpp ui/widget_stacks_estimate_pose_similarity.cpp ui/widget_stacks_estimate_pose_similarity.ui
-        ui/widget_image_pair_player.hpp ui/widget_image_pair_player.cpp ui/widget_image_pair_player.ui
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
