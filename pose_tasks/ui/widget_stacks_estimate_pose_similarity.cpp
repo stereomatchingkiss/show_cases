@@ -5,8 +5,8 @@
 #include "widget_pose_estimation_params.hpp"
 #include "widget_source_selection.hpp"
 
-#include "../algo/estimate_pose_similarity_input.hpp"
 #include "../algo/estimate_pose_similarity_worker.hpp"
+#include "../algo/estimate_pose_similarity_worker_input.hpp"
 #include "../algo/estimate_pose_similarity_worker_results.hpp"
 #include "../config/config_pose_estimation_worker.hpp"
 
@@ -84,7 +84,7 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
 
 void widget_stacks_estimate_pose_similarity::process_source_image(QImage img)
 {
-    estimate_pose_similarity_input input;
+    estimate_pose_similarity_worker_input input;
     input.qimg_ = std::move(img);
     input.is_target_ = false;
 
@@ -93,7 +93,7 @@ void widget_stacks_estimate_pose_similarity::process_source_image(QImage img)
 
 void widget_stacks_estimate_pose_similarity::process_target_image(QImage img)
 {
-    estimate_pose_similarity_input input;
+    estimate_pose_similarity_worker_input input;
     input.qimg_ = std::move(img);
     input.is_target_ = true;
 

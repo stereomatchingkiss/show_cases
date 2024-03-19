@@ -5,7 +5,7 @@
 #include <cv_algo/pose/pose_similarity_estimation.hpp>
 #include <utils/qimage_to_cvmat.hpp>
 
-#include "estimate_pose_similarity_input.hpp"
+#include "estimate_pose_similarity_worker_input.hpp"
 #include "estimate_pose_similarity_worker_results.hpp"
 
 #include "../config/config_pose_estimation_worker.hpp"
@@ -46,7 +46,7 @@ struct estimate_pose_similarity_worker::impl
         return model_root() + "thunder.param";
     }
 
-    estimate_pose_similarity_worker_results predict(estimate_pose_similarity_input &input)
+    estimate_pose_similarity_worker_results predict(estimate_pose_similarity_worker_input &input)
     {
         auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(input.qimg_);
         cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
@@ -65,7 +65,7 @@ struct estimate_pose_similarity_worker::impl
         return results;
     }
 
-    estimate_pose_similarity_worker_results process_image(estimate_pose_similarity_input &input)
+    estimate_pose_similarity_worker_results process_image(estimate_pose_similarity_worker_input &input)
     {
         estimate_pose_similarity_worker_results results = predict(input);
         if(input.is_target_){
@@ -102,7 +102,7 @@ estimate_pose_similarity_worker::~estimate_pose_similarity_worker()
 
 void estimate_pose_similarity_worker::process_results(std::any input)
 {
-    auto data = std::any_cast<estimate_pose_similarity_input>(input);
+    auto data = std::any_cast<estimate_pose_similarity_worker_input>(input);
     if(impl_->config_.source_type_ == stype::image){
         emit send_process_results(impl_->process_image(data));
     }

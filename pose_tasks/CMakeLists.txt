@@ -73,7 +73,7 @@ set(MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
 
 set(PROJECT_SOURCES
         main.cpp
-        algo/estimate_pose_similarity_input.hpp
+        algo/estimate_pose_similarity_worker_input.hpp
         algo/estimate_pose_similarity_worker_results.hpp
         algo/estimate_pose_similarity_worker.hpp algo/estimate_pose_similarity_worker.cpp
         algo/pose_estimation_worker.hpp algo/pose_estimation_worker.cpp

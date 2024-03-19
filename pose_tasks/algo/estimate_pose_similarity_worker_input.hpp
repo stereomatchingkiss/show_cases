@@ -2,7 +2,7 @@
 
 #include <QImage>
 
-struct estimate_pose_similarity_input
+struct estimate_pose_similarity_worker_input
 {
     bool is_target_ = false;
     QImage qimg_;
