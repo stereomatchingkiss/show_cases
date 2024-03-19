@@ -6,7 +6,7 @@
 #include <utils/qimage_to_cvmat.hpp>
 
 #include "estimate_pose_similarity_input.hpp"
-#include "estimate_pose_similarity_results.hpp"
+#include "estimate_pose_similarity_worker_results.hpp"
 
 #include "../config/config_pose_estimation_worker.hpp"
 
@@ -46,12 +46,12 @@ struct estimate_pose_similarity_worker::impl
         return model_root() + "thunder.param";
     }
 
-    estimate_pose_similarity_results predict(estimate_pose_similarity_input &input)
+    estimate_pose_similarity_worker_results predict(estimate_pose_similarity_input &input)
     {
         auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(input.qimg_);
         cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
 
-        estimate_pose_similarity_results results;
+        estimate_pose_similarity_worker_results results;
         results.is_target_ = input.is_target_;
         results.points_ = net_.predict(mat);
         flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
@@ -65,9 +65,9 @@ struct estimate_pose_similarity_worker::impl
         return results;
     }
 
-    estimate_pose_similarity_results process_image(estimate_pose_similarity_input &input)
+    estimate_pose_similarity_worker_results process_image(estimate_pose_similarity_input &input)
     {
-        estimate_pose_similarity_results results = predict(input);
+        estimate_pose_similarity_worker_results results = predict(input);
         if(input.is_target_){
             source_points_ = std::move(results.points_);
         }else{

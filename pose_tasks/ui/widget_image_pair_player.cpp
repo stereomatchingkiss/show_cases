@@ -1,7 +1,7 @@
 #include "widget_image_pair_player.hpp"
 #include "ui_widget_image_pair_player.h"
 
-#include "../algo/estimate_pose_similarity_results.hpp"
+#include "../algo/estimate_pose_similarity_worker_results.hpp"
 #include "../global/global_object.hpp"
 
 #include <QFileDialog>
@@ -24,7 +24,7 @@ widget_image_pair_player::~widget_image_pair_player()
 
 void widget_image_pair_player::display_frame(std::any input)
 {
-    auto const results = std::any_cast<estimate_pose_similarity_results>(input);
+    auto const results = std::any_cast<estimate_pose_similarity_worker_results>(input);
     if(results.is_target_){
         set_image(results.qimg_, ui->labelTargetImage);
     }else{

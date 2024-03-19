@@ -4,7 +4,7 @@
 
 #include <QImage>
 
-struct estimate_pose_similarity_results
+struct estimate_pose_similarity_worker_results
 {
     bool is_target_ = false;
     QImage qimg_;

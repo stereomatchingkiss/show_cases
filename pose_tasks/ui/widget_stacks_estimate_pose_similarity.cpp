@@ -6,8 +6,8 @@
 #include "widget_source_selection.hpp"
 
 #include "../algo/estimate_pose_similarity_input.hpp"
-#include "../algo/estimate_pose_similarity_results.hpp"
 #include "../algo/estimate_pose_similarity_worker.hpp"
+#include "../algo/estimate_pose_similarity_worker_results.hpp"
 #include "../config/config_pose_estimation_worker.hpp"
 
 #include <multimedia/camera/frame_process_controller.hpp>
