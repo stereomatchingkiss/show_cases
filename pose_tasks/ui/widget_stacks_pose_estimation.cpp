@@ -77,21 +77,22 @@ void widget_stacks_pose_estimation::next_page_is_pose_estimation_display()
     auto config = widget_pose_estimation_params_->get_config();
     config.source_type_ = widget_source_selection_->get_source_type();
     auto worker = new pose_estimation_worker(config);
+    process_controller_ = std::make_shared<frame_process_controller>(worker);
 
     if(widget_source_selection_->get_source_type() == stype::websocket){
-        ui->stackedWidget->setCurrentWidget(widget_stream_player_);
-        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-        process_controller_ = std::make_shared<frame_process_controller>(worker);
+        ui->stackedWidget->setCurrentWidget(widget_stream_player_);                
         connect(process_controller_.get(), &frame_process_controller::send_process_results,
                 this, &widget_stacks_pose_estimation::send_process_results);
 
         emit process_controller_->start();
+
+        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
         sfwmw_->add_listener(process_controller_, this);
         sfwmw_->start();
     }else{
         ui->stackedWidget->setCurrentWidget(widget_image_player_);
         sfwmw_ = nullptr;
-        process_controller_ = std::make_shared<frame_process_controller>(worker);
+
         connect(widget_image_player_, &widget_image_player::image_selected,
                 process_controller_.get(), &frame_process_controller::predict);
         connect(process_controller_.get(), &frame_process_controller::send_process_results,
