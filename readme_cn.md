@@ -34,12 +34,13 @@
 - [python_tools](./python_tools)，收集各种为了webaapp而设计的简易程序
 - [simple_downloader](./simple_downloader), 这是我为了收集资料而写的一个小程序
 
-# 范例
+# 视频示例
 
-- [anpr_tasks的影像](https://www.youtube.com/watch?v=Eyp1smxac1k)
-- [face_recognition_tasks的影像](https://www.youtube.com/watch?v=PICwMVUFLPw)
-- [generic_cv_task的影像](https://youtu.be/TNancuXjlcM)
-- [ocr_tasks的影像](https://youtu.be/30p-nRqsVss)
+- [anpr_tasks](https://www.youtube.com/watch?v=Eyp1smxac1k)
+- [pose_tasks](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [face_recognition_tasks](https://www.youtube.com/watch?v=PICwMVUFLPw)
+- [generic_cv_task](https://youtu.be/TNancuXjlcM)
+- [ocr_tasks](https://youtu.be/30p-nRqsVss)
 
 # 将来的打算
 

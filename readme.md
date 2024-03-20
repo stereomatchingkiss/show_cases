@@ -34,11 +34,13 @@ This is already a very mature technology, and there are many open and commercial
 - [python_tools](./python_tools) : collects various simple programs designed for webaapp.
 - [simple_downloader](./simple_downloader) : this is a small program I wrote to collect data.
 
-# Examples
-- [video of anpr_tasks](https://www.youtube.com/watch?v=Eyp1smxac1k)
-- [video of face_recognition_tasks](https://www.youtube.com/watch?v=PICwMVUFLPw)
-- [video of generic_cv_task](https://youtu.be/TNancuXjlcM)
-- [video of ocr_tasks](https://youtu.be/30p-nRqsVss)
+# Video examples
+
+- [anpr_tasks](https://www.youtube.com/watch?v=Eyp1smxac1k)
+- [pose_tasks](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [face_recognition_tasks](https://www.youtube.com/watch?v=PICwMVUFLPw)
+- [generic_cv_task](https://youtu.be/TNancuXjlcM)
+- [ocr_tasks](https://youtu.be/30p-nRqsVss)
 
 # Future plans
 
