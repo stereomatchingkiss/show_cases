@@ -7,6 +7,7 @@
 
 #include "estimate_pose_similarity_worker_input.hpp"
 #include "estimate_pose_similarity_worker_results.hpp"
+#include "pose_estimation_common_func.hpp"
 
 #include "../config/config_pose_estimation_worker.hpp"
 
@@ -22,45 +23,15 @@ struct estimate_pose_similarity_worker::impl
 {
     impl(config_psoe_estimation_worker const &config) :
         config_{config},
-        net_{param_path(), bin_path(), 256, false}
+        net_{pose_param_path(), pose_bin_path(), 256, false}
     {
 
-    }
-
-    std::string model_root() const
-    {
-#ifndef WASM_BUILD
-        return "assets/";
-#else
-        return "";
-#endif
-    }
-
-    std::string bin_path() const
-    {
-        return model_root() + "thunder.bin";
-    }
-
-    std::string param_path() const
-    {
-        return model_root() + "thunder.param";
-    }
+    }    
 
     estimate_pose_similarity_worker_results predict(estimate_pose_similarity_worker_input &input)
     {
-        auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(input.qimg_);
-        cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-
-        estimate_pose_similarity_worker_results results;
+        auto results = predict_pose<estimate_pose_similarity_worker_results>(input.qimg_, config_.confidence_, net_);
         results.is_target_ = input.is_target_;
-        results.points_ = net_.predict(mat);
-        flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
-        if(non_copy){
-            results.qimg_ = input.qimg_;
-        }else{
-            //Todo : reduce useless operations
-            results.qimg_ = QImage(mat.data, mat.cols, mat.rows, mat.step[0], QImage::Format_RGB888).copy();
-        }
 
         return results;
     }
