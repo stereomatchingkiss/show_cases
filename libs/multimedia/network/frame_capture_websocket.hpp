@@ -50,6 +50,9 @@ private:
     void stop();
     void text_message_received(QString message);
 
+    void json_binary_message_received(QByteArray message);
+    void json_text_message_received(QString message);
+
     struct impl;
     std::unique_ptr<impl> impl_;
 };

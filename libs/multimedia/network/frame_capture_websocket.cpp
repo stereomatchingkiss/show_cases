@@ -16,7 +16,7 @@ struct frame_capture_websocket::impl
     impl(frame_capture_websocket_params const &params) :        
         params_{params}
     {
-    }    
+    }
 
     void binary_message_received(QByteArray message)
     {
@@ -44,6 +44,20 @@ struct frame_capture_websocket::impl
         }
     }
 
+    void json_binary_message_received(QByteArray message)
+    {
+        for(auto &val : controllers_){
+            val.first->predict(message);
+        }
+    }
+
+    void json_text_message_received(QString message)
+    {
+        for(auto &val : controllers_){
+            val.first->predict(message);
+        }
+    }
+
     void remove(void *key)
     {
         auto func = [key](auto const &val)
@@ -64,8 +78,13 @@ flt::mm::frame_capture_websocket::frame_capture_websocket(frame_capture_websocke
     single_frame_with_multi_worker_base{parent},
     impl_{std::make_unique<impl>(params)}
 {
-    connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::binary_message_received);
-    connect(&impl_->socket_, &QWebSocket::textMessageReceived, this, &frame_capture_websocket::text_message_received);
+    if(params.is_json_){
+        connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::json_binary_message_received);
+        connect(&impl_->socket_, &QWebSocket::textMessageReceived, this, &frame_capture_websocket::json_text_message_received);
+    }else{
+        connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::binary_message_received);
+        connect(&impl_->socket_, &QWebSocket::textMessageReceived, this, &frame_capture_websocket::text_message_received);
+    }
     connect(&impl_->socket_, &QWebSocket::connected, this, &frame_capture_websocket::connected);
     connect(&impl_->socket_, &QWebSocket::disconnected, this, &frame_capture_websocket::closed);
     connect(&impl_->socket_, &QWebSocket::errorOccurred, this, &frame_capture_websocket::socket_error);
@@ -129,6 +148,16 @@ void frame_capture_websocket::binary_message_received(QByteArray message)
 void frame_capture_websocket::text_message_received(QString message)
 {
     impl_->text_message_received(message);
+}
+
+void frame_capture_websocket::json_binary_message_received(QByteArray message)
+{
+    impl_->json_binary_message_received(message);
+}
+
+void frame_capture_websocket::json_text_message_received(QString message)
+{
+    impl_->json_text_message_received(message);
 }
 
 void frame_capture_websocket::closed()
