@@ -9,6 +9,8 @@ namespace Ui {
 class widget_stacks_estimate_pose_similarity;
 }
 
+class widget_estimate_many_pose_similarity_params;
+class widget_estimate_similar_poses_player;
 class widget_image_pair_player;
 class widget_pose_estimation_params;
 class widget_source_selection;
@@ -41,9 +43,12 @@ private:
     void next_page_is_estimate_pose_similarity_display();
     void process_source_image(QImage img);
     void process_target_image(QImage img);
+    void received_process_msg(QString msg);
 
     Ui::widget_stacks_estimate_pose_similarity *ui;
 
+    widget_estimate_many_pose_similarity_params *widget_estimate_many_pose_similarity_params_;
+    widget_estimate_similar_poses_player *widget_estimate_similar_poses_player_;
     widget_image_pair_player *widget_image_pair_player_;
     widget_pose_estimation_params *widget_pose_estimation_params_;
     widget_source_selection *widget_source_selection_;
