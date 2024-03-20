@@ -1,7 +1,7 @@
 #include "widget_estimate_many_pose_similarity_params.hpp"
 #include "ui_widget_estimate_many_pose_similarity_params.h"
 
-#include "../config/config_widget_estimate_many_pose_similarity_params.hpp"
+#include "../config/config_estimate_many_pose_similarity_worker.hpp"
 
 #include <QFileDialog>
 
@@ -17,9 +17,9 @@ widget_estimate_many_pose_similarity_params::~widget_estimate_many_pose_similari
     delete ui;
 }
 
-config_widget_estimate_many_pose_similarity_params widget_estimate_many_pose_similarity_params::get_config() const
+config_estimate_many_pose_similarity_worker widget_estimate_many_pose_similarity_params::get_config() const
 {
-    config_widget_estimate_many_pose_similarity_params config;
+    config_estimate_many_pose_similarity_worker config;
     config.confidence_ = ui->spinBoxConfidence->value() / 100.0f;
     config.data_folder_ = ui->lineEditData->text();
     config.image_folder_ = ui->lineEditImages->text();
