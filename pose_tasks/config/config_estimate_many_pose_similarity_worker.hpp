@@ -1,5 +1,4 @@
-#ifndef CONFIG_ESTIMATE_MANY_POSE_SIMILARITY_WORKER_HPP
-#define CONFIG_ESTIMATE_MANY_POSE_SIMILARITY_WORKER_HPP
+#pragma once
 
 #include "pose_estimation_model_enum.hpp"
 
@@ -12,6 +11,6 @@ struct config_estimate_many_pose_similarity_worker
 
     QString data_folder_;
     QString image_folder_;
-};
 
-#endif // CONFIG_ESTIMATE_MANY_POSE_SIMILARITY_WORKER_HPP
+    QString generate_json_info() const;
+};
