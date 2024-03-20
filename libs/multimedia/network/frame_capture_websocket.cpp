@@ -78,7 +78,7 @@ flt::mm::frame_capture_websocket::frame_capture_websocket(frame_capture_websocke
     single_frame_with_multi_worker_base{parent},
     impl_{std::make_unique<impl>(params)}
 {
-    if(params.is_json_){
+    if(params.not_encoded_image_){
         connect(&impl_->socket_, &QWebSocket::binaryMessageReceived, this, &frame_capture_websocket::json_binary_message_received);
         connect(&impl_->socket_, &QWebSocket::textMessageReceived, this, &frame_capture_websocket::json_text_message_received);
     }else{
