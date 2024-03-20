@@ -24,29 +24,10 @@ struct pose_estimation_worker::impl
 {
     impl(config_psoe_estimation_worker const &config) :
         config_{config},
-        net_{param_path(), bin_path(), 256, false}
+        net_{pose_param_path(), pose_bin_path(), 256, false}
     {
 
-    }
-
-    std::string model_root() const
-    {
-#ifndef WASM_BUILD
-        return "assets/";
-#else
-        return "";
-#endif
-    }
-
-    std::string bin_path() const
-    {
-        return model_root() + "thunder.bin";
-    }
-
-    std::string param_path() const
-    {
-        return model_root() + "thunder.param";
-    }
+    }    
 
     QString convert_to_json(std::vector<keypoint> const &input) const
     {
