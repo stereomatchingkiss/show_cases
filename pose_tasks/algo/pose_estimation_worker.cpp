@@ -4,6 +4,7 @@
 #include <cv_algo/pose/pose_estimation_utils.hpp>
 #include <utils/qimage_to_cvmat.hpp>
 
+#include "pose_estimation_common_func.hpp"
 #include "pose_estimation_worker_results.hpp"
 #include "../config/config_pose_estimation_worker.hpp"
 
@@ -65,19 +66,7 @@ struct pose_estimation_worker::impl
 
     pose_estimation_worker_results process_results(QImage rgb)
     {        
-        pose_estimation_worker_results results;
-        auto [mat, non_copy] = flt::qimg_convert_to_cvmat_non_copy(rgb);
-        cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-
-        results.points_ = net_.predict(mat);
-        flt::cvt::pose::draw(mat, results.points_, config_.confidence_);
-        if(non_copy){
-            results.qimg_ = rgb;
-        }else{
-            //Todo : reduce useless operations
-            results.qimg_ = QImage(mat.data, mat.cols, mat.rows, mat.step[0], QImage::Format_RGB888).copy();
-        }
-
+        auto results = predict_pose<pose_estimation_worker_results>(rgb, config_.confidence_, net_);
         if(config_.source_type_ == flt::mm::stream_source_type::websocket){
             results.json_text_ = convert_to_json(results.points_);
         }
