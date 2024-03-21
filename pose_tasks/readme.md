@@ -37,7 +37,8 @@ English | [简体中文](./readme_cn.md)
 
 # Examples
 
-- [Video tutorial](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [Video tutorial, pose estimation](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [Video tutorial, similar pose search](https://www.youtube.com/watch?v=VJIFm6UnS0I)
 - ![example1](./imgs/00.png)
 - ![example2](./imgs/01.png)
 - ![example3](./imgs/02.png)

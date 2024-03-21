@@ -37,7 +37,8 @@
 # 视频示例
 
 - [anpr_tasks](https://www.youtube.com/watch?v=Eyp1smxac1k)
-- [pose_tasks](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [pose_tasks, 姿态估计](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [pose_tasks, 搜寻相似姿态](https://www.youtube.com/watch?v=VJIFm6UnS0I)
 - [face_recognition_tasks](https://www.youtube.com/watch?v=PICwMVUFLPw)
 - [generic_cv_task](https://youtu.be/TNancuXjlcM)
 - [ocr_tasks](https://youtu.be/30p-nRqsVss)

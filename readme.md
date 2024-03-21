@@ -37,7 +37,8 @@ This is already a very mature technology, and there are many open and commercial
 # Video examples
 
 - [anpr_tasks](https://www.youtube.com/watch?v=Eyp1smxac1k)
-- [pose_tasks](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [pose_tasks, pose estimation](https://www.youtube.com/watch?v=LGUZxGAwyCw)
+- [pose_tasks, search similar pose](https://www.youtube.com/watch?v=VJIFm6UnS0I)
 - [face_recognition_tasks](https://www.youtube.com/watch?v=PICwMVUFLPw)
 - [generic_cv_task](https://youtu.be/TNancuXjlcM)
 - [ocr_tasks](https://youtu.be/30p-nRqsVss)
