@@ -39,6 +39,7 @@ private slots:
     void on_pushButtonNext_clicked();
 
 private:
+    void image_selected(QString info);
     void init_stacked_widget();
     void next_page_is_estimate_pose_similarity_display();
     void process_source_image(QImage img);

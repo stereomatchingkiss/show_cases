@@ -66,10 +66,15 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
         auto worker = new estimate_many_pose_similarity_worker(config);
         connect(worker, &estimate_many_pose_similarity_worker::send_msg,
                 this, &widget_stacks_estimate_pose_similarity::received_process_msg);
+        connect(worker, &estimate_many_pose_similarity_worker::send_similar_pose,
+                widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::set_similar_pose);
+        connect(widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::image_selected,
+                this, &widget_stacks_estimate_pose_similarity::image_selected);
+
         process_controller_ = std::make_shared<frame_process_controller>(worker);
 
-        //connect(process_controller_.get(), &frame_process_controller::send_process_results,
-        //        this, &widget_stacks_pose_estimation::send_process_results);
+        connect(process_controller_.get(), &frame_process_controller::send_process_results,
+                widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::display_frame);
 
         emit process_controller_->start();
 
@@ -78,6 +83,8 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
         sfwmw_ = std::make_unique<frame_capture_websocket>(wsocket_config);
         sfwmw_->add_listener(process_controller_, this);
         sfwmw_->start();
+
+        setEnabled(false);
     }else{
         auto config = widget_pose_estimation_params_->get_config();
         config.source_type_ = widget_source_selection_->get_source_type();
@@ -120,8 +127,11 @@ void widget_stacks_estimate_pose_similarity::received_process_msg(QString msg)
     if(msg == "start"){
         auto const config = widget_estimate_many_pose_similarity_params_->get_config();
         static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(config.generate_json_info());
-    }else{
+    }else if(msg == "next"){
         static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(msg);
+    }else if(msg == "add done"){
+        setEnabled(true);
+        widget_estimate_similar_poses_player_->set_label_text(tr("Select the image you want to compare similarity"));
     }
 }
 
@@ -151,5 +161,10 @@ void widget_stacks_estimate_pose_similarity::on_pushButtonNext_clicked()
                ui->stackedWidget->currentWidget() == widget_estimate_many_pose_similarity_params_){
         next_page_is_estimate_pose_similarity_display();
     }
+}
+
+void widget_stacks_estimate_pose_similarity::image_selected(QString info)
+{
+    process_controller_->predict(info);
 }
 
