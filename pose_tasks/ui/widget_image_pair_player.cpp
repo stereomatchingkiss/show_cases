@@ -64,7 +64,7 @@ void widget_image_pair_player::load_image(QImage &output)
         }
     }
 #else
-    auto func = [this](QString const &fname, QByteArray const &fcontent) {
+    auto func = [this, &output](QString const &fname, QByteArray const &fcontent) {
         if(output = QImage::fromData(fcontent); output.isNull()){
             get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
         }
