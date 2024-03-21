@@ -10,7 +10,6 @@
 
 #include <QDebug>
 
-#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -27,29 +26,13 @@ struct pose_estimation_worker::impl
         net_{pose_param_path(), pose_bin_path(), 256, false}
     {
 
-    }    
-
-    QString convert_to_json(std::vector<keypoint> const &input) const
-    {
-        QJsonArray pts;
-        for(auto const &val : input){
-            QJsonObject obj;
-            obj["x"] = val.x_;
-            obj["y"] = val.y_;
-            obj["score"] = val.score_;
-            pts.push_back(obj);
-        }
-
-        QJsonObject jobj;
-        jobj["pts"] = pts;
-        return QJsonDocument(jobj).toJson(QJsonDocument::Compact);
     }
 
     pose_estimation_worker_results process_results(QImage rgb)
     {        
         auto results = predict_pose<pose_estimation_worker_results>(rgb, config_.confidence_, net_);
         if(config_.source_type_ == flt::mm::stream_source_type::websocket){
-            results.json_text_ = convert_to_json(results.points_);
+            results.json_text_ = QJsonDocument(convert_to_json(results.points_)).toJson(QJsonDocument::Compact);
         }
 
         return results;
