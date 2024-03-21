@@ -32,7 +32,7 @@ private slots:
     void on_pushButtonTargetImage_clicked();
 
 private:
-    void load_image(QImage &output);
+    void load_image(QImage &output, bool is_source_image);
     void set_image(QImage const &img, QLabel *label);
 
     Ui::widget_image_pair_player *ui;

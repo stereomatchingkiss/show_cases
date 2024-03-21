@@ -38,22 +38,16 @@ void widget_image_pair_player::display_frame(std::any input)
 }
 
 void widget_image_pair_player::on_pushButtonSourceImage_clicked()
-{
-    load_image(source_img_);
-    if(!source_img_.isNull()){
-        emit source_image_selected(source_img_);
-    }
+{    
+    load_image(source_img_, true);
 }
 
 void widget_image_pair_player::on_pushButtonTargetImage_clicked()
 {
-    load_image(target_img_);
-    if(!target_img_.isNull()){
-        emit target_image_selected(target_img_);
-    }
+    load_image(target_img_, false);
 }
 
-void widget_image_pair_player::load_image(QImage &output)
+void widget_image_pair_player::load_image(QImage &output, bool is_source_image)
 {
 #ifndef WASM_BUILD
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select image"), "", tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"));
@@ -61,12 +55,24 @@ void widget_image_pair_player::load_image(QImage &output)
     {
         if(output.load(fname); output.isNull()){
             get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
+        }else{
+            if(is_source_image){
+                emit source_image_selected(output);
+            }else{
+                emit target_image_selected(target_img_);
+            }
         }
     }
 #else
-    auto func = [this, &output](QString const &fname, QByteArray const &fcontent) {
+    auto func = [this, &output, is_source_image](QString const &fname, QByteArray const &fcontent) {
         if(output = QImage::fromData(fcontent); output.isNull()){
             get_gobject().messagebox().warning(this, tr("Warning"), tr("Cannot open image %1").arg(fname));
+        }else{
+            if(is_source_image){
+                emit source_image_selected(output);
+            }else{
+                emit target_image_selected(output);
+            }
         }
     };
     QFileDialog::getOpenFileContent(tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"),  func);
