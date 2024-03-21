@@ -36,7 +36,7 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
             self.server.newConnection.connect(self.on_new_connection)
 
     def send_start_message(self):
-        self.socket.sendTextMessage("start")
+        self.socket.sendTextMessage(json.dumps({"mode": "start"}))
 
     def on_new_connection(self):
 
@@ -49,7 +49,7 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
         self.socket.disconnected.connect(self.socket_disconnected)
         self.socket.textMessageReceived.connect(self.received_text_message)
 
-        self.socket.sendTextMessage("start")
+        self.send_start_message()
 
     def is_valid_folder(self, folder_name) -> bool:
         return len(folder_name) > 0 and QDir(folder_name).exists()
@@ -80,10 +80,12 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
             else:
                 im_full_path = "{}/{}".format(im_folder, im_path)
                 print("im full path =", im_full_path)
-                jcontent = {"im" : read_image_as_base64_string(im_full_path), "im_path" : im_full_path}
+                jcontent = {"mode" : "add", "im" : read_image_as_base64_string(im_full_path), "im_path" : im_full_path}
                 self.socket.sendTextMessage(json.dumps(jcontent))
 
             self.im_paths.pop(0)
+        else:
+            self.socket.sendTextMessage(json.dumps({"mode" : "add done"}))
 
     def received_text_message(self, message : str):
         print("received text message = ", (message))
