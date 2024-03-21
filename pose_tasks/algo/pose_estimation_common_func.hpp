@@ -8,6 +8,8 @@
 
 #include <concepts>
 
+class QJsonObject;
+
 template<typename T>
 requires std::is_class_v<T>
 T predict_pose(QImage &qimg, float confidence, flt::cvt::pose::movenet_single_pose_estimate &net)
@@ -28,24 +30,10 @@ T predict_pose(QImage &qimg, float confidence, flt::cvt::pose::movenet_single_po
     return results;
 }
 
-inline
-std::string pose_model_root()
-{
-#ifndef WASM_BUILD
-    return "assets/";
-#else
-    return "";
-#endif
-}
+QJsonObject convert_to_json(std::vector<flt::cvt::pose::keypoint> const &input);
 
-inline
-std::string pose_bin_path()
-{
-    return pose_model_root() + "thunder.bin";
-}
+std::string pose_model_root();
 
-inline
-std::string pose_param_path()
-{
-    return pose_model_root() + "thunder.param";
-}
+std::string pose_bin_path();
+
+std::string pose_param_path();
