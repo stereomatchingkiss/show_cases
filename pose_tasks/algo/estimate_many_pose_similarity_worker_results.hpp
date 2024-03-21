@@ -5,7 +5,7 @@
 #include <QImage>
 
 struct estimate_many_pose_similarity_worker_results
-{
+{    
     QImage qimg_;
     std::vector<flt::cvt::pose::keypoint> points_;
 };
