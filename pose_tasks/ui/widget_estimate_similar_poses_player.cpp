@@ -35,7 +35,7 @@ widget_estimate_similar_poses_player::widget_estimate_similar_poses_player(QWidg
 {
     ui->setupUi(this);
     ui->labelSimilarImage->setVisible(false);
-    ui->labelSimilarImage->setMidLineWidth(200);
+    ui->labelSimilarImage->setMinimumWidth(200);
 
     connect(ui->tableWidget, &QTableWidget::cellClicked, this, &widget_estimate_similar_poses_player::cell_cliked);
 }
