@@ -16,6 +16,7 @@ public:
 
 signals:
     void send_msg(QString info);
+    void send_similar_pose(std::any info);
 
 private:
     void process_results(std::any input) override;

@@ -1,18 +1,18 @@
 #include "estimate_many_pose_similarity_worker.hpp"
 
+#include "estimate_many_pose_similarity_worker_results.hpp"
+#include "../algo/pose_estimation_common_func.hpp"
+#include "../config/config_estimate_many_pose_similarity_worker.hpp"
+
 #include <cv_algo/pose/movenet_single_pose_estimate.hpp>
 #include <cv_algo/pose/pose_estimation_utils.hpp>
 #include <cv_algo/pose/pose_similarity_estimation.hpp>
+#include <cv_algo/pose/pose_similarity_search.hpp>
+#include <cv_algo/pose/pose_similarity_search_results.hpp>
 #include <utils/qimage_to_cvmat.hpp>
-
-//#include "estimate_pose_similarity_worker_input.hpp"
-//#include "estimate_pose_similarity_worker_results.hpp"
-
-#include "../config/config_estimate_many_pose_similarity_worker.hpp"
 
 #include <QDebug>
 
-#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -23,12 +23,49 @@ using namespace flt::cvt::pose;
 struct estimate_many_pose_similarity_worker::impl
 {
     impl(config_estimate_many_pose_similarity_worker const &config) :
-        config_{config}
+        config_{config},
+        net_{pose_param_path(), pose_bin_path(), 256, false},
+        search_{10}
     {
 
     }
 
+    estimate_many_pose_similarity_worker_results add(QJsonObject const &jobj, QString const &mode)
+    {
+        if(mode == "add" && jobj.contains("im")){
+            QImage qimg;
+            qimg.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
+            if(!qimg.isNull()){
+                auto results = predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
+                qDebug()<<jobj["im_path"].toString();
+                search_.add_pose(jobj["im_path"].toString().toStdString(), std::move(results.points_));
+
+                return results;
+            }
+        }
+
+        return {};
+    }
+
+    std::tuple<pose_similarity_search_results, QImage> find_similar_images(QJsonObject const &jobj, QString const &mode)
+    {
+        QImage qimg;
+        qimg.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
+        if(!qimg.isNull()){
+            auto pose_est =
+                predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
+            auto results = search_.find_top_k(std::move(pose_est.points_));
+            return {std::move(results), std::move(pose_est.qimg_)};
+        }else{
+            qDebug()<<"qimage is none for find_similar_images";
+        }
+
+        return {};
+    }
+
     config_estimate_many_pose_similarity_worker const config_;
+    movenet_single_pose_estimate net_;
+    pose_similarity_search search_;
 };
 
 estimate_many_pose_similarity_worker::
@@ -46,16 +83,17 @@ estimate_many_pose_similarity_worker::~estimate_many_pose_similarity_worker()
 
 void estimate_many_pose_similarity_worker::process_results(std::any input)
 {
-    static int count = 0;
-    qDebug()<<"count = "<<++count;
-    auto const contents = std::any_cast<QString>(input);
-    if(contents != "start"){
-        qDebug()<<"contents size = "<<contents.size();
-        auto const jobj = QJsonDocument::fromJson(contents.toLatin1()).object();
-        qDebug()<<"im path = "<<jobj["im_path"].toString();
+    static int count = 0;    
+    auto const jobj = QJsonDocument::fromJson(std::any_cast<QString>(input).toLatin1()).object();
+    auto const mode = jobj["mode"].toString();
+    qDebug()<<"count = "<<++count<<", mode = "<<mode;
+    if(mode == "add"){
+        auto results = impl_->add(jobj, mode);
+        emit send_process_results(std::move(results));
         emit send_msg("next");
+    }else if(mode == "compare"){
+        emit send_similar_pose(impl_->find_similar_images(jobj, mode));
     }else{
-        qDebug()<<"can start : ";
-        emit send_msg("start");
+        emit send_msg(mode);
     }
 }
