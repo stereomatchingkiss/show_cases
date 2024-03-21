@@ -45,6 +45,11 @@ widget_estimate_similar_poses_player::~widget_estimate_similar_poses_player()
     delete ui;
 }
 
+void widget_estimate_similar_poses_player::clear_table()
+{
+    ui->tableWidget->setRowCount(0);
+}
+
 void widget_estimate_similar_poses_player::cell_cliked(int row, int)
 {
     emit similar_img_clicked(ui->tableWidget->item(row, 0)->text());
@@ -102,6 +107,7 @@ void widget_estimate_similar_poses_player::set_similar_pose_visible(bool val)
 
 void widget_estimate_similar_poses_player::on_pushButtonSourceImage_clicked()
 {
+    ui->tableWidget->setRowCount(0);
 #ifndef WASM_BUILD
     if(auto const fname = QFileDialog::getOpenFileName(this, tr("Select image"), "", tr("Image (*.jpg *.jpeg *.png *.tiff *.bmp)"));
         !fname.isEmpty() && QFile(fname).exists())

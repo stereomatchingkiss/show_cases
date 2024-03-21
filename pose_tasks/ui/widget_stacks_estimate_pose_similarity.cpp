@@ -83,6 +83,7 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
 
     if(widget_source_selection_->get_source_type() == stype::websocket){
         widget_estimate_similar_poses_player_->set_similar_pose_visible(false);
+        widget_estimate_similar_poses_player_->clear_table();
         ui->stackedWidget->setCurrentWidget(widget_estimate_similar_poses_player_);        
 
         auto const config = widget_estimate_many_pose_similarity_params_->get_config();

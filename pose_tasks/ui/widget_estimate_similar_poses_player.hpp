@@ -20,6 +20,7 @@ public:
     explicit widget_estimate_similar_poses_player(QWidget *parent = nullptr);
     ~widget_estimate_similar_poses_player();
 
+    void clear_table();
     void display_frame(estimate_many_pose_similarity_worker_results const &input);
     void set_label_text(QString const &text);
     void set_request_image(QImage img);
