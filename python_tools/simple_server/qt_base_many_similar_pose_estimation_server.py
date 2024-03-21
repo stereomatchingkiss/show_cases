@@ -104,6 +104,12 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
             im_full_path = jobj["im_path"]
             jcontent = {"mode" : "send_request_img", "im" : read_image_as_base64_string(im_full_path)}
             self.socket.sendTextMessage(json.dumps(jcontent))
+        elif mode == "store_json":
+            im_path = jobj["im_path"]
+            im_name = im_path.replace("\\", "/").split("/")[-1]
+            im_base_name = im_name.split(".")[0]
+            with open(self.data_folder + "/" + im_base_name + ".json", "w") as fout:
+                    json.dump(jobj, fout)
 
     def socket_disconnected(self):
         print("socket disconnected")

@@ -10,6 +10,8 @@ QJsonObject convert_to_json(std::vector<flt::cvt::pose::keypoint> const &input)
         QJsonObject obj;
         obj["x"] = val.x_;
         obj["y"] = val.y_;
+        obj["hx"] = val.hx_;
+        obj["hy"] = val.hy_;
         obj["score"] = val.score_;
         pts.push_back(obj);
     }

@@ -50,10 +50,9 @@ void widget_estimate_similar_poses_player::cell_cliked(int row, int)
     emit similar_img_clicked(ui->tableWidget->item(row, 0)->text());
 }
 
-void widget_estimate_similar_poses_player::display_frame(std::any input)
-{
-    auto const val = std::any_cast<estimate_many_pose_similarity_worker_results>(input);
-    set_image(val.qimg_, ui->labelSourceImage);
+void widget_estimate_similar_poses_player::display_frame(estimate_many_pose_similarity_worker_results const &input)
+{    
+    set_image(input.qimg_, ui->labelSourceImage);
 }
 
 void widget_estimate_similar_poses_player::set_label_text(QString const &text)

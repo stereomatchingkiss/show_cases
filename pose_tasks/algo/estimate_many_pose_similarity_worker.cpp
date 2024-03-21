@@ -37,8 +37,9 @@ struct estimate_many_pose_similarity_worker::impl
             qimg.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
             if(!qimg.isNull()){
                 auto results = predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
+                results.im_path_ = jobj["im_path"].toString();
                 qDebug()<<jobj["im_path"].toString();
-                search_.add_pose(jobj["im_path"].toString().toStdString(), std::move(results.points_));
+                search_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
 
                 return results;
             }
@@ -54,7 +55,7 @@ struct estimate_many_pose_similarity_worker::impl
         if(!qimg.isNull()){
             auto pose_est =
                 predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
-            auto results = search_.find_top_k(std::move(pose_est.points_));
+            auto results = search_.find_top_k(pose_est.points_);
             return {std::move(results), std::move(pose_est.qimg_)};
         }else{
             qDebug()<<"qimage is none for find_similar_images";

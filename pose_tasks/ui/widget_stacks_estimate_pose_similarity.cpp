@@ -8,8 +8,10 @@
 #include "widget_source_selection.hpp"
 
 #include "../algo/estimate_many_pose_similarity_worker.hpp"
+#include "../algo/estimate_many_pose_similarity_worker_results.hpp"
 #include "../algo/estimate_pose_similarity_worker.hpp"
 #include "../algo/estimate_pose_similarity_worker_input.hpp"
+#include "../algo/pose_estimation_common_func.hpp"
 
 #include "../config/config_pose_estimation_worker.hpp"
 #include "../config/config_estimate_many_pose_similarity_worker.hpp"
@@ -95,7 +97,7 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
         process_controller_ = std::make_shared<frame_process_controller>(worker);
 
         connect(process_controller_.get(), &frame_process_controller::send_process_results,
-                widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::display_frame);
+                this, &widget_stacks_estimate_pose_similarity::send_process_results);
 
         emit process_controller_->start();
 
@@ -163,6 +165,16 @@ void widget_stacks_estimate_pose_similarity::similar_img_clicked(QString const &
     obj["mode"] = "get_image";
     obj["im_path"] = path;
     static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(QJsonDocument(obj).toJson());
+}
+
+void widget_stacks_estimate_pose_similarity::send_process_results(std::any results)
+{
+    auto const val = std::any_cast<estimate_many_pose_similarity_worker_results>(results);
+    auto jobj = convert_to_json(val.points_);
+    jobj["mode"] = "store_json";
+    jobj["im_path"] = val.im_path_;
+    static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(QJsonDocument(jobj).toJson());
+    widget_estimate_similar_poses_player_->display_frame(val);
 }
 
 void widget_stacks_estimate_pose_similarity::on_pushButtonPrev_clicked()
