@@ -10,6 +10,10 @@ widget_estimate_many_pose_similarity_params::widget_estimate_many_pose_similarit
     ui(new Ui::widget_estimate_many_pose_similarity_params)
 {
     ui->setupUi(this);
+#ifdef WASM_BUILD
+    ui->pushButtonData->setVisible(false);
+    ui->pushButtonImages->setVisible(false);
+#endif
 }
 
 widget_estimate_many_pose_similarity_params::~widget_estimate_many_pose_similarity_params()
