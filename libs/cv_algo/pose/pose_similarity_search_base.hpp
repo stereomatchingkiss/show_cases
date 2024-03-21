@@ -12,7 +12,7 @@ class pose_similarity_search_base
 {
 public:
     pose_similarity_search_base();
-    ~pose_similarity_search_base();
+    virtual ~pose_similarity_search_base();
 
     virtual void add_pose(std::string im_path, std::vector<keypoint> kpts) = 0;
     virtual void clear() = 0;
