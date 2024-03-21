@@ -23,8 +23,9 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
         self.server = QWebSocketServer("Simple websocket server", QWebSocketServer.NonSecureMode, self)
         self.socket = None
 
-        self.jobj = None
         self.dpaths = None
+        self.data_folder = None
+        self.im_folder = None
         self.im_paths = None
 
         self.setText("Close similar pose estimation server")
@@ -64,17 +65,17 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
 
     def get_im_paths(self, jobj : dict) -> list:
         if self.is_valid_folder(jobj["im_folder"]):
-            return get_files(self.jobj["im_folder"])
+            return get_files(jobj["im_folder"])
 
         return []
 
     def send_next_data(self):
         if len(self.im_paths) > 0:
-            im_folder = self.jobj["im_folder"]
+            im_folder = self.im_folder
             im_path = self.im_paths[0]
             im_base_name = im_path.split(".")[0]
             if im_base_name in self.dpaths:
-                with open(self.jobj["data_folder"] + "/" + im_base_name + ".json", "r") as fin:
+                with open(self.data_folder + "/" + im_base_name + ".json", "r") as fin:
                     jcontent = json.load(fin)
                     self.socket.sendTextMessage(json.dumps(jcontent))
             else:
@@ -85,17 +86,24 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
 
             self.im_paths.pop(0)
         else:
-            self.socket.sendTextMessage(json.dumps({"mode" : "add done"}))
+            self.socket.sendTextMessage(json.dumps({"mode" : "add_done"}))
 
     def received_text_message(self, message : str):
         print("received text message = ", (message))
-        if message != "next":
-            self.jobj = json.loads(message)
-            self.dpaths = self.get_data_paths(self.jobj)
-            self.im_paths = self.get_im_paths(self.jobj)
+        jobj = json.loads(message)
+        mode = jobj["mode"]
+        if mode == "start":
+            self.data_folder = jobj["data_folder"]
+            self.im_folder = jobj["im_folder"]
+            self.dpaths = self.get_data_paths(jobj)
+            self.im_paths = self.get_im_paths(jobj)
             self.send_next_data()
-        else:
+        elif mode == "next":
            self.send_next_data()
+        elif mode == "get_image":
+            im_full_path = jobj["im_path"]
+            jcontent = {"mode" : "send_request_img", "im" : read_image_as_base64_string(im_full_path)}
+            self.socket.sendTextMessage(json.dumps(jcontent))
 
     def socket_disconnected(self):
         print("socket disconnected")

@@ -93,6 +93,10 @@ void estimate_many_pose_similarity_worker::process_results(std::any input)
         emit send_msg("next");
     }else if(mode == "compare"){
         emit send_similar_pose(impl_->find_similar_images(jobj, mode));
+    }else if(mode == "send_request_img"){
+        QImage qimg;
+        qimg.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
+        emit send_request_image(qimg);
     }else{
         emit send_msg(mode);
     }

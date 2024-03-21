@@ -34,6 +34,10 @@ widget_estimate_similar_poses_player::widget_estimate_similar_poses_player(QWidg
     ui(new Ui::widget_estimate_similar_poses_player)
 {
     ui->setupUi(this);
+    ui->labelSimilarImage->setVisible(false);
+    ui->labelSimilarImage->setMinimumSize(QSize(480, 320));
+
+    connect(ui->tableWidget, &QTableWidget::cellClicked, this, &widget_estimate_similar_poses_player::cell_cliked);
 }
 
 widget_estimate_similar_poses_player::~widget_estimate_similar_poses_player()
@@ -41,19 +45,38 @@ widget_estimate_similar_poses_player::~widget_estimate_similar_poses_player()
     delete ui;
 }
 
+void widget_estimate_similar_poses_player::cell_cliked(int row, int)
+{
+    emit similar_img_clicked(ui->tableWidget->item(row, 0)->text());
+}
+
 void widget_estimate_similar_poses_player::display_frame(std::any input)
 {
     auto const val = std::any_cast<estimate_many_pose_similarity_worker_results>(input);
-    int const w = ui->labelSourceImage->width();
-    int const h = ui->labelSourceImage->height();
-
-    ui->labelSourceImage->setPixmap(QPixmap::fromImage(val.qimg_).scaled(w,h,Qt::KeepAspectRatio));
+    set_image(val.qimg_, ui->labelSourceImage);
 }
 
 void widget_estimate_similar_poses_player::set_label_text(QString const &text)
 {
     ui->labelSourceImage->clear();
     ui->labelSourceImage->setText(text);
+}
+
+void widget_estimate_similar_poses_player::set_image(QImage const &qimg, QLabel *label)
+{
+    if(!qimg.isNull()){
+        int const w = label->width();
+        int const h = label->height();
+        label->setPixmap(QPixmap::fromImage(qimg).scaled(w,h,Qt::KeepAspectRatio));
+    }
+}
+
+void widget_estimate_similar_poses_player::set_request_image(QImage img)
+{
+    if(!img.isNull()){
+        ui->labelSimilarImage->setVisible(true);
+        set_image(img, ui->labelSimilarImage);
+    }
 }
 
 void widget_estimate_similar_poses_player::set_similar_pose(std::any input)
@@ -70,11 +93,12 @@ void widget_estimate_similar_poses_player::set_similar_pose(std::any input)
 
     ui->tableWidget->resizeColumnsToContents();
 
-    int const w = ui->labelSourceImage->width();
-    int const h = ui->labelSourceImage->height();
+    set_image(std::get<1>(results), ui->labelSourceImage);
+}
 
-    QImage const qimg = std::get<1>(results);
-    ui->labelSourceImage->setPixmap(QPixmap::fromImage(qimg).scaled(w,h,Qt::KeepAspectRatio));
+void widget_estimate_similar_poses_player::set_similar_pose_visible(bool val)
+{
+    ui->labelSimilarImage->setVisible(val);
 }
 
 void widget_estimate_similar_poses_player::on_pushButtonSourceImage_clicked()

@@ -16,6 +16,7 @@ public:
 
 signals:
     void send_msg(QString info);
+    void send_request_image(QImage img);
     void send_similar_pose(std::any info);
 
 private:

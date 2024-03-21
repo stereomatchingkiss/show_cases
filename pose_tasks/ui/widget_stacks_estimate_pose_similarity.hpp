@@ -45,6 +45,7 @@ private:
     void process_source_image(QImage img);
     void process_target_image(QImage img);
     void received_process_msg(QString msg);
+    void similar_img_clicked(QString const &path);
 
     Ui::widget_stacks_estimate_pose_similarity *ui;
 

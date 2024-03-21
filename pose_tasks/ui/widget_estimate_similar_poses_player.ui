@@ -38,6 +38,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="labelSimilarImage">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableWidget" name="tableWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">

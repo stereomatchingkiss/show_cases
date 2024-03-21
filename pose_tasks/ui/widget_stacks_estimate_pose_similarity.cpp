@@ -20,9 +20,24 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <multimedia/stream_enum.hpp>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 using namespace flt::mm;
 
 using stype = stream_source_type;
+
+namespace{
+
+QString create_mode(QString const &mode)
+{
+    QJsonObject obj;
+    obj["mode"] = mode;
+
+    return QJsonDocument(obj).toJson();
+}
+
+}
 
 widget_stacks_estimate_pose_similarity::widget_stacks_estimate_pose_similarity(QWidget *parent) :
     QWidget(parent),
@@ -53,6 +68,11 @@ void widget_stacks_estimate_pose_similarity::init_stacked_widget()
     ui->stackedWidget->addWidget(widget_source_selection_);
 
     ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+
+    connect(widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::image_selected,
+            this, &widget_stacks_estimate_pose_similarity::image_selected);
+    connect(widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::similar_img_clicked,
+            this, &widget_stacks_estimate_pose_similarity::similar_img_clicked);
 }
 
 void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similarity_display()
@@ -60,16 +80,17 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
     ui->pushButtonNext->setVisible(false);
 
     if(widget_source_selection_->get_source_type() == stype::websocket){
-        ui->stackedWidget->setCurrentWidget(widget_estimate_similar_poses_player_);
+        widget_estimate_similar_poses_player_->set_similar_pose_visible(false);
+        ui->stackedWidget->setCurrentWidget(widget_estimate_similar_poses_player_);        
 
         auto const config = widget_estimate_many_pose_similarity_params_->get_config();
         auto worker = new estimate_many_pose_similarity_worker(config);
         connect(worker, &estimate_many_pose_similarity_worker::send_msg,
                 this, &widget_stacks_estimate_pose_similarity::received_process_msg);
+        connect(worker, &estimate_many_pose_similarity_worker::send_request_image,
+                widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::set_request_image);
         connect(worker, &estimate_many_pose_similarity_worker::send_similar_pose,
                 widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::set_similar_pose);
-        connect(widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::image_selected,
-                this, &widget_stacks_estimate_pose_similarity::image_selected);
 
         process_controller_ = std::make_shared<frame_process_controller>(worker);
 
@@ -128,11 +149,20 @@ void widget_stacks_estimate_pose_similarity::received_process_msg(QString msg)
         auto const config = widget_estimate_many_pose_similarity_params_->get_config();
         static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(config.generate_json_info());
     }else if(msg == "next"){
-        static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(msg);
-    }else if(msg == "add done"){
+        static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(create_mode("next"));
+    }else if(msg == "add_done"){
         setEnabled(true);
         widget_estimate_similar_poses_player_->set_label_text(tr("Select the image you want to compare similarity"));
     }
+}
+
+void widget_stacks_estimate_pose_similarity::similar_img_clicked(QString const &path)
+{
+    qDebug()<<"similar_img_clicked = "<<path;
+    QJsonObject obj;
+    obj["mode"] = "get_image";
+    obj["im_path"] = path;
+    static_cast<frame_capture_websocket*>(sfwmw_.get())->send_text_message(QJsonDocument(obj).toJson());
 }
 
 void widget_stacks_estimate_pose_similarity::on_pushButtonPrev_clicked()
