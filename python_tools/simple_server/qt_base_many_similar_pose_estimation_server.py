@@ -74,12 +74,15 @@ class qt_base_many_similar_pose_estimation_server(QPushButton):
             im_folder = self.im_folder
             im_path = self.im_paths[0]
             im_base_name = im_path.split(".")[0]
+            im_full_path = "{}/{}".format(im_folder, im_path)
             if im_base_name in self.dpaths:
                 with open(self.data_folder + "/" + im_base_name + ".json", "r") as fin:
                     jcontent = json.load(fin)
+                    jcontent["im"] = read_image_as_base64_string(im_full_path)
+                    jcontent["mode"] = "add_by_json"
+                    jcontent["im_path"] = im_full_path
                     self.socket.sendTextMessage(json.dumps(jcontent))
             else:
-                im_full_path = "{}/{}".format(im_folder, im_path)
                 print("im full path =", im_full_path)
                 jcontent = {"mode" : "add", "im" : read_image_as_base64_string(im_full_path), "im_path" : im_full_path}
                 self.socket.sendTextMessage(json.dumps(jcontent))

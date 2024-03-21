@@ -13,6 +13,7 @@
 
 #include <QDebug>
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -46,6 +47,29 @@ struct estimate_many_pose_similarity_worker::impl
         }
 
         return {};
+    }
+
+    estimate_many_pose_similarity_worker_results add_by_json(QJsonObject const &jobj, QString const&)
+    {
+        estimate_many_pose_similarity_worker_results results;
+        results.im_path_ = jobj["im_path"].toString();
+        auto const pts_arr = jobj["pts"].toArray();
+        for(int i = 0; i != pts_arr.size(); ++i){
+            keypoint kpt;
+            auto const obj = pts_arr[i].toObject();
+            kpt.x_ = obj["x"].toInt();
+            kpt.y_ = obj["y"].toInt();
+            kpt.hx_ = obj["hx"].toInt();
+            kpt.hy_ = obj["hy"].toInt();
+            kpt.score_ = obj["score"].toDouble();
+            results.points_.emplace_back(kpt);
+        }
+
+        results.qimg_.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
+        qDebug()<<jobj["im_path"].toString();
+        search_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
+
+        return results;
     }
 
     std::tuple<pose_similarity_search_results, QImage> find_similar_images(QJsonObject const &jobj, QString const &mode)
@@ -98,6 +122,10 @@ void estimate_many_pose_similarity_worker::process_results(std::any input)
         QImage qimg;
         qimg.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
         emit send_request_image(qimg);
+    }else if(mode == "add_by_json"){
+        auto results = impl_->add_by_json(jobj, mode);
+        emit send_process_results(std::move(results));
+        emit send_msg("next");
     }else{
         emit send_msg(mode);
     }
