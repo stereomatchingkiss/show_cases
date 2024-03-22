@@ -7,9 +7,9 @@ const QString global_keywords::face_recognition_tasks_assets() const
     return "FaceRecognitionTasksAssets";
 }
 
-const QString global_keywords::job_type() const
+const QString global_keywords::mode() const
 {
-    return "job_type";
+    return "mode";
 }
 
 const QString global_keywords::img() const

@@ -76,7 +76,7 @@ struct face_search_worker::impl
         auto const fname = obj[gk.face_name()].toString();
         if(auto it = features_.find(fname); it == std::end(features_)){
             features_.emplace(fname, qjson_array_to_float_array(obj[gk.face_features()].toArray()));
-            results.obj[gk.job_type()] = "register";
+            results.obj[gk.mode()] = "register";
             results.obj[gk.face_name()] = fname;
         }
 
@@ -124,7 +124,7 @@ struct face_search_worker::impl
             }
 
             results.obj["location"] = obj["location"].toString();
-            results.obj[gk.job_type()] = "search";
+            results.obj[gk.mode()] = "search";
             results.obj[gk.faces_info()] = info;
             results.img = qimg;
         }else{
@@ -138,8 +138,8 @@ struct face_search_worker::impl
     {
         QJsonObject obj = QJsonDocument::fromJson(std::any_cast<QString>(frame).toLatin1()).object();
         global_keywords const gk;
-        if(obj.contains(gk.job_type())){
-            if(auto const dtype = obj[gk.job_type()].toString(); dtype == "register"){
+        if(obj.contains(gk.mode())){
+            if(auto const dtype = obj[gk.mode()].toString(); dtype == "register"){
                 return register_new_face(obj);
             }else if(dtype == "search"){
                 return search_best_face(obj);

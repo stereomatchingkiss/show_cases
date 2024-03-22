@@ -72,8 +72,8 @@ class qt_base_face_search_server(QPushButton):
     def received_text_message(self, message : str):
         print("received text message")
         jobj = json.loads(message)
-        print("job_type = ", jobj["job_type"])
-        if(jobj["job_type"] == "search"):
+        mode = jobj["mode"]
+        if(mode == "search"):
             bname = QFileInfo(self.last_image_to_search).baseName()
             fname = args["save_at"] + "/" + bname + ".json"
             if QFile(fname).exists():
@@ -91,13 +91,13 @@ class qt_base_face_search_server(QPushButton):
                 data = json.load(f)
                 data_to_send = {}
                 data_to_send["face_features"] = data["face_features"]
-                data_to_send["job_type"] = "register"
+                data_to_send["mode"] = "register"
                 data_to_send["face_name"] = QFileInfo(loc).baseName()
                 self.socket.sendTextMessage(json.dumps(data_to_send))
 
     def send_image_by_socket(self, qimg):
         data_to_send = {}
-        data_to_send["job_type"] = "search"
+        data_to_send["mode"] = "search"
 
         ba = QByteArray()
         bu = QBuffer(ba)
@@ -111,14 +111,15 @@ class qt_base_face_search_server(QPushButton):
         self.socket.sendTextMessage(json.dumps(data_to_send))
 
     def send_image(self):
-        self.last_image_to_search = self.search_file_location.pop(0)
-        print("send image = ", self.last_image_to_search)
-        qimg = QImage(self.last_image_to_search)
-        if(qimg.isNull()):
-            print("cannot read img ", self.last_image_to_search)
-            self.send_data()
-        else:
-            self.send_image_by_socket(qimg)
+        if len(self.search_file_location) > 0:
+            self.last_image_to_search = self.search_file_location.pop(0)
+            print("send image = ", self.last_image_to_search)
+            qimg = QImage(self.last_image_to_search)
+            if(qimg.isNull()):
+                print("cannot read img ", self.last_image_to_search)
+                self.send_data()
+            else:
+                self.send_image_by_socket(qimg)
 
     def send_data(self):
         try:

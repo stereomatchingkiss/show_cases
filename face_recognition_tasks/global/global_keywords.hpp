@@ -25,8 +25,8 @@ public:
     QString const face_name() const;
 
     QString const face_recognition_tasks_assets() const;
-
-    QString const job_type() const;
+    
+    QString const mode() const;
 
     QString const img() const;
 
