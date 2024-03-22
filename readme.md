@@ -26,13 +26,14 @@ English | [简体中文](./readme_cn.md)
 
 - [aruco_tasks](./aruco_tasks/) : A collection of tasks related to aruco. Support aruco generation and detection
 - [anpr_tasks](./anpr_tasks) : Demo of license plate recognition. This problem is much easier to solve than 10 years ago. I believe that even if you develop independently, as long as you are diligent in collecting data, training corresponding models, and tune them for different regions, it will not be a problem to create commercial-level works.
-- [face_recognition_tasks](./face_recognition_tasks) : demo that supports batch face recognition.
+- [face_recognition_tasks](./face_recognition_tasks) : Demo that supports batch face recognition.
 This is already a very mature technology, and there are many open and commercial-level models. However, due to licensing issues, if you want to use it commercially, you have to do your own training. Since the training materials and codes are public, reproducing them is not a problem.
-- [generic_cv_task](./generic_cv_tasks/) : a webapp that supports object detection, action classify, tracking, counting, area alarm, and alarm recording.
-- [ocr_tasks](./ocr_tasks/) : a webapp supports ocr
-- [libs](./libs) : the common library for all webapp.
-- [python_tools](./python_tools) : collects various simple programs designed for webaapp.
-- [simple_downloader](./simple_downloader) : this is a small program I wrote to collect data.
+- [generic_cv_task](./generic_cv_tasks/) : A webapp that supports object detection, action classify, tracking, counting, area alarm, and alarm recording.
+- [ocr_tasks](./ocr_tasks/) : A webapp supports ocr(Chinese and English, support batch processing)
+- [pose_tasks](./pose_tasks/) : A webapp support pose estimation and similar pose search from images
+- [libs](./libs) : The common library for all webapp.
+- [python_tools](./python_tools) : Collects various simple programs designed for webaapp.
+- [simple_downloader](./simple_downloader) : This is a small program I wrote to collect data.
 
 # Video examples
 

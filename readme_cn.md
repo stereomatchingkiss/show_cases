@@ -30,6 +30,7 @@
 这已经是一个很成熟的技术，不乏公开且达到商用水准的模型，不过因为许可证的问题，想商用的话得自己动手训练。由于训练资料和代码都是公开的，要复现不是问题
 - [generic_cv_task](./generic_cv_tasks)，一个支持物件检测、行为分类，跟踪、计数、区域警报、警报记录的webapp
 - [ocr_tasks](./ocr_tasks),支援ocr的webapp
+- [pose_tasks](./pose_tasks/) : 支持姿势估计，从大量图像中搜索相似姿势的webapp
 - [libs](./libs), 各webapp的通用库
 - [python_tools](./python_tools)，收集各种为了webaapp而设计的简易程序
 - [simple_downloader](./simple_downloader), 这是我为了收集资料而写的一个小程序
