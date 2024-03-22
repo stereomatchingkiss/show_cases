@@ -24,7 +24,8 @@
 
 # 这软体的websocket如何使用
 
-- 如果你要把影像透过websocket传送，请参考 [qt_base_pose_estimation_server](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_pose_estimation_server.py)
+- 如果你要把影像透过websocket传送，请参考 [qt_base_pose_estimation_server](../python_tools/simple_server/qt_base_pose_estimation_server.py)
+- 如果你想从一堆图片中找到相似的姿态，请参考 [qt_base_many_similar_pose_estimation_server](../python_tools/simple_server/qt_base_many_similar_pose_estimation_server.py)
 - [install_qt_script.md](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md)，解释如何安装需要的package
 
 # 网页版的限制

@@ -24,7 +24,8 @@ English | [简体中文](./readme_cn.md)
 
 # How to use the websocket of this software
 
-- If you want to transmit images through websocket, please refer to [qt_base_pose_estimation_server](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/qt_base_pose_estimation_server.py)
+- If you want to transmit images through websocket, please refer to [qt_base_pose_estimation_server](../python_tools/simple_server/qt_base_pose_estimation_server.py)
+- If you want to search similar poses from a lot of images, please refer to [qt_base_many_similar_pose_estimation_server](../python_tools/simple_server/qt_base_many_similar_pose_estimation_server.py)
 - [install_qt_script.md](https://github.com/stereomatchingkiss/object_detection_and_alarm/blob/main/install_qt_script.md)，explain how to install the required packages
 
 # Limitations of the web version
