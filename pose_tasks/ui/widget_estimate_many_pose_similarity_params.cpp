@@ -24,8 +24,8 @@ widget_estimate_many_pose_similarity_params::~widget_estimate_many_pose_similari
 config_estimate_many_pose_similarity_worker widget_estimate_many_pose_similarity_params::get_config() const
 {
     config_estimate_many_pose_similarity_worker config;
-    config.confidence_ = ui->spinBoxConfidence->value() / 100.0f;
-    config.data_folder_ = ui->lineEditData->text();
+    config.confidence_ = ui->spinBoxConfidence->value() / 100.0f;    
+    config.data_folder_ = ui->lineEditData->text();    
     config.image_folder_ = ui->lineEditImages->text();
 
     return config;

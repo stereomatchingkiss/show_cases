@@ -133,3 +133,9 @@ void widget_estimate_similar_poses_player::on_pushButtonSourceImage_clicked()
 #endif
 }
 
+
+void widget_estimate_similar_poses_player::on_checkBoxFastSearch_clicked()
+{
+    emit fast_search_clicked(ui->checkBoxFastSearch->isChecked());
+}
+

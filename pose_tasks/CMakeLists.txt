@@ -53,6 +53,7 @@ set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/pose/movenet_single_pose_estimat
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_estimation_utils.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_estimation.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_fast_search.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_fast_search.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_base.hpp ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_base.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/pose/pose_similarity_search_results.hpp
     ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp ${PLUGIN_LIBS_PATH}/utils/image_utils.cpp
@@ -136,13 +137,14 @@ if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.${PROJECT_NAME})
 endif()
 
+#add_definitions(-DANNOYLIB_MULTITHREADED_BUILD)
+target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/annoy/src/)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
+target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
+
 if(ANDROID OR WIN32)
     find_package(OpenCV REQUIRED)
-    find_package(ncnn REQUIRED)
-
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
-    #target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
+    find_package(ncnn REQUIRED)               
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
@@ -155,13 +157,9 @@ endif()
 
 if(EMSCRIPTEN)
     add_definitions(-DWASM_BUILD)
-    #add_compile_definitions(EIGEN_DONT_PARALLELIZE)
+    #add_compile_definitions(EIGEN_DONT_PARALLELIZE)    
     target_include_directories(${PROJECT_NAME} PRIVATE ${NCNN_PATH}/include/ncnn)
     target_include_directories(${PROJECT_NAME} PRIVATE ${OPENCV_CV_PATH}/include/opencv4)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
-    #target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
-
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

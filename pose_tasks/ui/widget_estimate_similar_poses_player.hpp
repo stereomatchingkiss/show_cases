@@ -27,12 +27,15 @@ public:
     void set_similar_pose(std::any input);
     void set_similar_pose_visible(bool val);
 
-signals:    
+signals:
+    void fast_search_clicked(bool val);
     void image_selected(QString img);
     void similar_img_clicked(QString const &path);
 
 private slots:
     void on_pushButtonSourceImage_clicked();
+
+    void on_checkBoxFastSearch_clicked();
 
 private:
     void cell_cliked(int row, int);

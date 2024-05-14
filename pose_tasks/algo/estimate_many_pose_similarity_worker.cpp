@@ -7,6 +7,7 @@
 #include <cv_algo/pose/movenet_single_pose_estimate.hpp>
 #include <cv_algo/pose/pose_estimation_utils.hpp>
 #include <cv_algo/pose/pose_similarity_estimation.hpp>
+#include <cv_algo/pose/pose_similarity_fast_search.hpp>
 #include <cv_algo/pose/pose_similarity_search.hpp>
 #include <cv_algo/pose/pose_similarity_search_results.hpp>
 #include <utils/qimage_to_cvmat.hpp>
@@ -18,6 +19,8 @@
 #include <QJsonObject>
 
 #include <opencv2/imgproc.hpp>
+
+#include <atomic>
 
 using namespace flt::cvt::pose;
 
@@ -39,7 +42,7 @@ struct estimate_many_pose_similarity_worker::impl
             if(!qimg.isNull()){
                 auto results = predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
                 results.im_path_ = jobj["im_path"].toString();
-                qDebug()<<jobj["im_path"].toString();
+                fsearch_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
                 search_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
 
                 return results;
@@ -67,6 +70,7 @@ struct estimate_many_pose_similarity_worker::impl
 
         results.qimg_.loadFromData(QByteArray::fromBase64(jobj["im"].toString().toLatin1()), "JPG");
         qDebug()<<jobj["im_path"].toString();
+        fsearch_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
         search_.add_pose(jobj["im_path"].toString().toStdString(), results.points_);
 
         return results;
@@ -79,7 +83,17 @@ struct estimate_many_pose_similarity_worker::impl
         if(!qimg.isNull()){
             auto pose_est =
                 predict_pose<estimate_many_pose_similarity_worker_results>(qimg, config_.confidence_, net_);
-            auto results = search_.find_top_k(pose_est.points_);
+            pose_similarity_search_results results;
+            if(fast_search_){
+                if(!builded_){
+                    fsearch_.build();
+                    builded_ = true;
+                }
+                results = fsearch_.find_top_k(pose_est.points_);
+            }else{
+                results = search_.find_top_k(pose_est.points_);
+            }
+
             return {std::move(results), std::move(pose_est.qimg_)};
         }else{
             qDebug()<<"qimage is none for find_similar_images";
@@ -88,8 +102,16 @@ struct estimate_many_pose_similarity_worker::impl
         return {};
     }
 
+    void set_fast_search(bool val)
+    {
+        fast_search_ = val;
+    }
+
+    bool builded_ = false;
     config_estimate_many_pose_similarity_worker const config_;
+    std::atomic<bool> fast_search_ = false;
     movenet_single_pose_estimate net_;
+    pose_similarity_fast_search fsearch_;
     pose_similarity_search search_;
 };
 
@@ -104,6 +126,11 @@ estimate_many_pose_similarity_worker::
 estimate_many_pose_similarity_worker::~estimate_many_pose_similarity_worker()
 {
 
+}
+
+void estimate_many_pose_similarity_worker::set_fast_search(bool val)
+{
+    impl_->set_fast_search(val);
 }
 
 void estimate_many_pose_similarity_worker::process_results(std::any input)

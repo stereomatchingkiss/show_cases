@@ -31,12 +31,14 @@ struct pose_similarity_fast_search::impl
 
     void add_pose(std::string im_path, std::vector<keypoint> kpts)
     {
-        to_annoy_item(kpts);
+        if(!name_key_.contains(im_path)){
+            to_annoy_item(kpts);
 
-        annoy_tree_.add_item(annoy_id_, annoy_item_.data());
-        name_key_.insert({im_path, {annoy_id_, std::move(kpts)}});
-        annoy_id_key_.insert({annoy_id_, std::move(im_path)});
-        ++annoy_id_;
+            annoy_tree_.add_item(annoy_id_, annoy_item_.data());
+            name_key_.insert({im_path, {annoy_id_, std::move(kpts)}});
+            annoy_id_key_.insert({annoy_id_, std::move(im_path)});
+            ++annoy_id_;
+        }
     }
 
     void build()
@@ -91,7 +93,7 @@ struct pose_similarity_fast_search::impl
     static int constexpr annoy_item_size_ = 34;
     int annoy_id_ = 0;
     std::array<annoy_val_type, annoy_item_size_> annoy_item_;
-    annoy_tree annoy_tree_;
+    annoy_tree annoy_tree_;    
     int n_tree_;
     std::map<std::string, std::tuple<int, std::vector<keypoint>>> name_key_;
     std::map<int, std::string> annoy_id_key_;

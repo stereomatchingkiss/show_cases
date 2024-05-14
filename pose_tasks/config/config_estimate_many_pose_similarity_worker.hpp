@@ -6,7 +6,7 @@
 
 struct config_estimate_many_pose_similarity_worker
 {
-    float confidence_ = 0.3f;
+    float confidence_ = 0.3f;    
     pose_estimation_model_enum model_ = pose_estimation_model_enum::movenet_single_thunder;
 
     QString data_folder_;

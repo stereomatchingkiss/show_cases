@@ -61,7 +61,7 @@ void widget_stacks_estimate_pose_similarity::init_stacked_widget()
     widget_estimate_similar_poses_player_ = new widget_estimate_similar_poses_player;
     widget_image_pair_player_ = new widget_image_pair_player;
     widget_pose_estimation_params_ = new widget_pose_estimation_params;
-    widget_source_selection_ = new widget_source_selection;
+    widget_source_selection_ = new widget_source_selection;        
 
     ui->stackedWidget->addWidget(widget_estimate_many_pose_similarity_params_);
     ui->stackedWidget->addWidget(widget_estimate_similar_poses_player_);
@@ -84,7 +84,7 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
     if(widget_source_selection_->get_source_type() == stype::websocket){
         widget_estimate_similar_poses_player_->set_similar_pose_visible(false);
         widget_estimate_similar_poses_player_->clear_table();
-        ui->stackedWidget->setCurrentWidget(widget_estimate_similar_poses_player_);        
+        ui->stackedWidget->setCurrentWidget(widget_estimate_similar_poses_player_);
 
         auto const config = widget_estimate_many_pose_similarity_params_->get_config();
         auto worker = new estimate_many_pose_similarity_worker(config);
@@ -94,6 +94,9 @@ void widget_stacks_estimate_pose_similarity::next_page_is_estimate_pose_similari
                 widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::set_request_image);
         connect(worker, &estimate_many_pose_similarity_worker::send_similar_pose,
                 widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::set_similar_pose);
+
+        connect(widget_estimate_similar_poses_player_, &widget_estimate_similar_poses_player::fast_search_clicked,
+                worker, &estimate_many_pose_similarity_worker::set_fast_search);
 
         process_controller_ = std::make_shared<frame_process_controller>(worker);
 

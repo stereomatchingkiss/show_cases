@@ -14,6 +14,8 @@ public:
                                                   QObject *parent = nullptr);
     ~estimate_many_pose_similarity_worker();
 
+    void set_fast_search(bool val);
+
 signals:
     void send_msg(QString info);
     void send_request_image(QImage img);
