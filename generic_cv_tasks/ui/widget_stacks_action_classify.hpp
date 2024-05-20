@@ -36,7 +36,7 @@ public:
     void set_states(QJsonObject const &val);
 
 signals:
-    void enable_next_button();
+    void switch_to_task_selection_page();
 
 private slots:
     void on_pushButtonPrev_clicked();

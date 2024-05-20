@@ -264,7 +264,7 @@ void widget_stacks_object_tracking::on_pushButtonPrev_clicked()
 
         create_roi_select_stream();
     }else if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
-        emit enable_next_button();
+        emit switch_to_task_selection_page();
     }
 }
 

@@ -21,7 +21,7 @@ public:
     explicit widget_stacks_manager(QWidget *parent = nullptr);
     ~widget_stacks_manager();
 
-    void enable_next_button();
+    void switch_to_task_selection_page();
 
     QJsonObject get_states();
 
@@ -37,9 +37,9 @@ private:
     {        
         update_stack_widget(widget);
         connect(widget,
-                &T::enable_next_button,
+                &T::switch_to_task_selection_page,
                 this,
-                &widget_stacks_manager::enable_next_button);
+                &widget_stacks_manager::switch_to_task_selection_page);
         if(stacks_states_.contains(state_key)){
             widget->set_states(stacks_states_[state_key].toObject());
         }else{

@@ -212,7 +212,7 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
         create_roi_select_stream();        
     }else if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
-        emit enable_next_button();
+        emit switch_to_task_selection_page();
     }
 }
 

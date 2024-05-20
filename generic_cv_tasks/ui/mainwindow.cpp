@@ -159,7 +159,7 @@ void MainWindow::init_widgets_states(const QJsonObject &jobj)
         get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
     }
 
-    widget_stacks_manager_->enable_next_button();
+    widget_stacks_manager_->switch_to_task_selection_page();
 }
 
 void MainWindow::save_settings(bool)

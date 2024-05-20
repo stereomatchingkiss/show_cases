@@ -88,7 +88,7 @@ void widget_stacks_manager::on_pushButtonNext_clicked()
     }
 }
 
-void widget_stacks_manager::enable_next_button()
+void widget_stacks_manager::switch_to_task_selection_page()
 {
     ui->pushButtonNext->setVisible(true);
     ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
