@@ -2,9 +2,11 @@
 
 #include "nanodet_alert_save.hpp"
 
+#include "../generic_obj_detector.hpp"
 #include "../generic_worker_results.hpp"
 
 #include "../../config/config_alert_sender.hpp"
+#include "../../config/config_generic_obj_detector.hpp"
 #include "../../config/config_nanodet_worker.hpp"
 
 #include "../../global/global_keywords.hpp"
@@ -43,8 +45,10 @@ struct nanodet_worker::impl
         config_{std::move(config)},
         names_{global_keywords().coco_names()}
     {
-        create_model();
-        create_obj_to_detect();
+        config_generic_obj_detector gconfig;
+        gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
+        gconfig.config_select_object_to_detect_ = config_.config_select_object_to_detect_;
+        obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
 
         change_alert_sender_config(config_.config_alert_sender_);
     }
@@ -78,64 +82,12 @@ struct nanodet_worker::impl
                 }
             }
         }
-    }
-
-    void create_model()
-    {
-        using dme = object_detect_model_enum;
-
-#ifndef WASM_BUILD
-        std::string const model_root("assets/obj_detect/");
-#else
-        std::string const model_root("");
-#endif
-        switch(config_.config_object_detect_model_select_.model_){
-        case dme::nanodet_plus_m_320:{
-            qDebug()<<"load nanodet_plus_m_320";
-            auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 320);
-            auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 320);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
-            break;
-        }
-        case dme::nanodet_plus_m_416:{
-            qDebug()<<"load nanodet_plus_m_416";
-            auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 416);
-            auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 416);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
-            break;
-        }
-        case dme::nanodet_plus_m_1_5x_320:{
-            qDebug()<<"load nanodet_plus_m_1_5x_320";
-            auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 320);
-            auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 320);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
-            break;
-        }
-        case dme::nanodet_plus_m_1_5x_416:{
-            qDebug()<<"load nanodet_plus_m_1_5x_416";
-            auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 416);
-            auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 416);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
-            break;
-        }
-        }
-    }
+    }    
 
     void change_alert_sender_config(const config_alert_sender &val)
     {        
         config_.config_alert_sender_ = val;
         alert_save_.change_alert_sender_config(val);
-    }
-
-    void create_obj_to_detect()
-    {
-        obj_to_detect_.resize(80);
-        auto const &so = config_.config_select_object_to_detect_.selected_object_;
-        for(size_t i = 0; i != names_.size(); ++i){
-            if(so.contains(names_[i])){
-                obj_to_detect_[i] = true;
-            }
-        }
     }
 
     void draw_pass_results(cv::Mat &mat, track_results const &pass_results) const
@@ -149,25 +101,11 @@ struct nanodet_worker::impl
         if(!scaled_roi_.empty()){
             flt::cvt::utils::draw_empty_rect(mat, scaled_roi_);
         }
-    }
-
-    void remove_invalid_target(std::vector<det::box_info> &det_results)
-    {
-        auto func = [this](det::box_info const &val){
-            return !obj_to_detect_[val.label_];
-        };
-        const auto [first, last] = std::ranges::remove_if(det_results, func);
-        det_results.erase(first, last);
-    }
+    }    
 
     auto track_obj(cv::Mat &mat)
-    {
-        auto det_results = net_->predict(mat,
-                                         config_.config_object_detect_model_select_.confidence_,
-                                         config_.config_object_detect_model_select_.nms_,
-                                         0,
-                                         false);
-        remove_invalid_target(det_results);
+    {       
+        auto det_results = obj_det_->predict(mat);
         auto track_obj = box_info_to_byte_track_obj(det_results);
         auto const track_ptr_vec = tracker_.update(track_obj);
 
@@ -179,11 +117,11 @@ struct nanodet_worker::impl
         return det_results;
     }
 
-    nanodet_alert_save alert_save_;
+    nanodet_alert_save alert_save_;    
     config_nanodet_worker config_;
     size_t im_ids_ = 0;
-    std::vector<std::string> names_;    
-    std::unique_ptr<det::obj_det_base> net_;
+    std::vector<std::string> names_;
+    std::unique_ptr<generic_obj_detector> obj_det_;
     std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
     BYTETracker tracker_;
