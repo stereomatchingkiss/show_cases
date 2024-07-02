@@ -122,7 +122,6 @@ struct nanodet_worker::impl
     size_t im_ids_ = 0;
     std::vector<std::string> names_;
     std::unique_ptr<generic_obj_detector> obj_det_;
-    std::vector<bool> obj_to_detect_;
     cv::Rect scaled_roi_;
     BYTETracker tracker_;
     std::unique_ptr<track_object_pass> track_obj_pass_;
