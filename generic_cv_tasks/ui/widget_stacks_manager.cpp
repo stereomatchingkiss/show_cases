@@ -2,7 +2,7 @@
 #include "ui_widget_stacks_manager.h"
 
 #include "widget_stacks_action_classify.hpp"
-#include "widget_stacks_object_tracking.hpp"
+#include "obj_detect/widget_stacks_object_tracking.hpp"
 #include "widget_tasks_selection.hpp"
 
 #include "../config/config_tasks_selection.hpp"

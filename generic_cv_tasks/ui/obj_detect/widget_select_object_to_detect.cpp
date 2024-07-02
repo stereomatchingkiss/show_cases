@@ -1,7 +1,7 @@
 #include "widget_select_object_to_detect.hpp"
 #include "ui_widget_select_object_to_detect.h"
 
-#include "../config/config_select_object_to_detect.hpp"
+#include "../../config/config_select_object_to_detect.hpp"
 
 #include <cv_algo/obj_detect/coco_object_index.hpp>
 

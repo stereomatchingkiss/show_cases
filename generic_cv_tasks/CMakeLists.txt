@@ -138,13 +138,18 @@ SET(PROJECT_MAIN_SOURCES
     algo/action_classify/action_classify_alert_save.hpp algo/action_classify/action_classify_alert_save.cpp
     algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp
     algo/action_classify/pptsm_v2_worker.hpp algo/action_classify/pptsm_v2_worker.cpp
+    algo/fall_down_detect/fall_down_obj_det_worker.hpp algo/fall_down_detect/fall_down_obj_det_worker.cpp
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
+    algo/generic_obj_detector.hpp algo/generic_obj_detector.cpp
     algo/generic_worker_results.hpp
     algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
     algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
+
     config/config_action_classify_alert.hpp
     config/config_action_classify_model_select.hpp
     config/config_alert_sender.hpp
+    config/config_fall_down_obj_det.hpp
+    config/config_generic_obj_detector.hpp
     config/config_nanodet_worker.hpp
     config/config_object_detect_model_select.hpp
     config/config_pptsm_v2_worker.hpp
@@ -154,24 +159,30 @@ SET(PROJECT_MAIN_SOURCES
     config/config_source_selection.hpp
     config/config_tasks_selection.hpp
     config/config_tracker_alert.hpp
-    config/object_detect_model_enum.hpp
+    config/object_detect_model_enum.hpp    
+
     global/global_keywords.hpp global/global_keywords.cpp
     global/global_object.hpp global/global_object.cpp
+
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/widget_action_classify_alert.hpp ui/widget_action_classify_alert.cpp ui/widget_action_classify_alert.ui
     ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui    
-    ui/widget_object_detect_model_select.cpp ui/widget_object_detect_model_select.hpp ui/widget_object_detect_model_select.ui
+    ui/widget_fall_down_obj_det_alert.hpp ui/widget_fall_down_obj_det_alert.cpp ui/widget_fall_down_obj_det_alert.ui
+    ui/widget_fall_down_param.hpp ui/widget_fall_down_param.cpp ui/widget_fall_down_param.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
-    ui/widget_select_action_to_classify.hpp ui/widget_select_action_to_classify.cpp ui/widget_select_action_to_classify.ui
-    ui/widget_select_object_to_detect.cpp ui/widget_select_object_to_detect.hpp ui/widget_select_object_to_detect.ui
+    ui/widget_select_action_to_classify.hpp ui/widget_select_action_to_classify.cpp ui/widget_select_action_to_classify.ui    
     ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
     ui/widget_stacks_action_classify.hpp ui/widget_stacks_action_classify.cpp ui/widget_stacks_action_classify.ui
-    ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui
-    ui/widget_stacks_object_tracking.hpp ui/widget_stacks_object_tracking.cpp ui/widget_stacks_object_tracking.ui
+    ui/widget_stacks_fall_down_detection.hpp ui/widget_stacks_fall_down_detection.cpp ui/widget_stacks_fall_down_detection.ui
+    ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
     ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
     ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
-    ui/widget_tracker_alert.hpp ui/widget_tracker_alert.cpp ui/widget_tracker_alert.ui
+
+    ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
+    ui/obj_detect/widget_select_object_to_detect.cpp ui/obj_detect/widget_select_object_to_detect.hpp ui/obj_detect/widget_select_object_to_detect.ui
+    ui/obj_detect/widget_stacks_object_tracking.hpp ui/obj_detect/widget_stacks_object_tracking.cpp ui/obj_detect/widget_stacks_object_tracking.ui
+    ui/obj_detect/widget_tracker_alert.hpp ui/obj_detect/widget_tracker_alert.cpp ui/obj_detect/widget_tracker_alert.ui
 )
 
 set(PROJECT_SOURCES
@@ -185,7 +196,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        ${PROJECT_SOURCES}        
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

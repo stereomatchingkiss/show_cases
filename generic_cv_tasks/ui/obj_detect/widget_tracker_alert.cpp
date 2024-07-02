@@ -1,7 +1,7 @@
 #include "widget_tracker_alert.hpp"
 #include "ui_widget_tracker_alert.h"
 
-#include "../config/config_tracker_alert.hpp"
+#include "../../config/config_tracker_alert.hpp"
 
 #include <QJsonObject>
 

@@ -1,22 +1,22 @@
 #include "widget_stacks_object_tracking.hpp"
 #include "ui_widget_stacks_object_tracking.h"
 
-#include "dialog_alert_sender_settings.hpp"
+#include "../dialog_alert_sender_settings.hpp"
 #include "widget_object_detect_model_select.hpp"
-#include "widget_roi_selection.hpp"
+#include "../widget_roi_selection.hpp"
 #include "widget_select_object_to_detect.hpp"
-#include "widget_source_selection.hpp"
-#include "widget_stream_player.hpp"
+#include "../widget_source_selection.hpp"
+#include "../widget_stream_player.hpp"
 #include "widget_tracker_alert.hpp"
 
-#include "../algo/frame_display_worker.hpp"
-#include "../algo/obj_detect/nanodet_worker.hpp"
+#include "../../algo/frame_display_worker.hpp"
+#include "../../algo/obj_detect/nanodet_worker.hpp"
 
-#include "../config/config_alert_sender.hpp"
-#include "../config/config_nanodet_worker.hpp"
+#include "../../config/config_alert_sender.hpp"
+#include "../../config/config_nanodet_worker.hpp"
 
-#include "../global/global_keywords.hpp"
-#include "../global/global_object.hpp"
+#include "../../global/global_keywords.hpp"
+#include "../../global/global_object.hpp"
 
 #include <multimedia/camera/frame_capture_qcamera.hpp>
 #include <multimedia/camera/frame_capture_qcamera_params.hpp>

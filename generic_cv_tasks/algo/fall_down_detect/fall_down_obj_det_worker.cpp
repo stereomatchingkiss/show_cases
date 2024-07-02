@@ -136,5 +136,35 @@ void fall_down_obj_det_worker::change_alert_sender_config(const config_alert_sen
 
 void fall_down_obj_det_worker::process_results(std::any frame)
 {
+    auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
+    auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
 
+    if(!impl_->track_obj_pass_ && impl_->config_.roi_.isValid()){
+        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
+        impl_->track_obj_pass_ =
+            std::make_unique<cvt::tracker::track_object_pass>(impl_->scaled_roi_, 30);
+    }
+
+    auto const det_results = impl_->track_obj(mat);
+    auto const pass_results = impl_->track_obj_pass_->track(det_results);
+    impl_->draw_pass_results(mat, pass_results);
+
+    /*generic_worker_results results;
+    if(impl_->check_alarm_condition(pass_results, qimg)){
+        results.alarm_on_ = true;
+        ++impl_->im_ids_;
+        impl_->clear_written_id();
+        if(impl_->alert_save_.send_alert()){
+            if(impl_->alert_save_.send_by_text()){
+                emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+            }else{
+                emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
+            }
+        }
+    }
+
+    //do not move it, since in the future this algo may need to support multi-stream
+    results.mat_ = qimg;
+
+    emit send_process_results(std::move(results));//*/
 }
