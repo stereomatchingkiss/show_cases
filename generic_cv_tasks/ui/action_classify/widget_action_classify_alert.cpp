@@ -1,7 +1,7 @@
 #include "widget_action_classify_alert.hpp"
 #include "ui_widget_action_classify_alert.h"
 
-#include "../config/config_action_classify_alert.hpp"
+#include "../../config/config_action_classify_alert.hpp"
 
 #include <QJsonObject>
 

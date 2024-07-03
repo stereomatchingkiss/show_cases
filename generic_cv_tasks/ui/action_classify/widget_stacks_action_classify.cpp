@@ -1,18 +1,19 @@
 #include "widget_stacks_action_classify.hpp"
 #include "ui_widget_stacks_action_classify.h"
 
-#include "dialog_alert_sender_settings.hpp"
+#include "../dialog_alert_sender_settings.hpp"
+#include "../widget_roi_selection.hpp"
+#include "../widget_source_selection.hpp"
+#include "../widget_stream_player.hpp"
+
 #include "widget_action_classify_alert.hpp"
 #include "widget_action_classify_model_select.hpp"
-#include "widget_roi_selection.hpp"
 #include "widget_select_action_to_classify.hpp"
-#include "widget_source_selection.hpp"
-#include "widget_stream_player.hpp"
 
-#include "../algo/frame_display_worker.hpp"
-#include "../algo/action_classify/pptsm_v2_worker.hpp"
-#include "../config/config_pptsm_v2_worker.hpp"
-#include "../global/global_object.hpp"
+#include "../../algo/frame_display_worker.hpp"
+#include "../../algo/action_classify/pptsm_v2_worker.hpp"
+#include "../../config/config_pptsm_v2_worker.hpp"
+#include "../../global/global_object.hpp"
 
 #include <multimedia/camera/frame_capture_qcamera.hpp>
 #include <multimedia/camera/frame_capture_qcamera_params.hpp>

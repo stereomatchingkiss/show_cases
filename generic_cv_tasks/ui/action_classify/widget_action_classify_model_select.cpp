@@ -1,7 +1,7 @@
 #include "widget_action_classify_model_select.hpp"
 #include "ui_widget_action_classify_model_select.h"
 
-#include "../config/config_action_classify_model_select.hpp"
+#include "../../config/config_action_classify_model_select.hpp"
 
 #include <QJsonObject>
 

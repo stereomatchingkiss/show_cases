@@ -134,10 +134,25 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
-SET(PROJECT_MAIN_SOURCES    
+SET(OBJ_DETECT_SOURCES
+    ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
+    ui/obj_detect/widget_select_object_to_detect.cpp ui/obj_detect/widget_select_object_to_detect.hpp ui/obj_detect/widget_select_object_to_detect.ui
+    ui/obj_detect/widget_stacks_object_tracking.hpp ui/obj_detect/widget_stacks_object_tracking.cpp ui/obj_detect/widget_stacks_object_tracking.ui
+    ui/obj_detect/widget_tracker_alert.hpp ui/obj_detect/widget_tracker_alert.cpp ui/obj_detect/widget_tracker_alert.ui)
+
+SET(ACTION_CLASSIFY_SOURCES
     algo/action_classify/action_classify_alert_save.hpp algo/action_classify/action_classify_alert_save.cpp
     algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp
     algo/action_classify/pptsm_v2_worker.hpp algo/action_classify/pptsm_v2_worker.cpp
+
+    config/config_select_action_to_classify.hpp
+
+    ui/action_classify/widget_action_classify_alert.hpp ui/action_classify/widget_action_classify_alert.cpp ui/action_classify/widget_action_classify_alert.ui
+    ui/action_classify/widget_action_classify_model_select.hpp ui/action_classify/widget_action_classify_model_select.cpp ui/action_classify/widget_action_classify_model_select.ui
+    ui/action_classify/widget_select_action_to_classify.hpp ui/action_classify/widget_select_action_to_classify.cpp ui/action_classify/widget_select_action_to_classify.ui
+    ui/action_classify/widget_stacks_action_classify.hpp ui/action_classify/widget_stacks_action_classify.cpp ui/action_classify/widget_stacks_action_classify.ui)
+
+SET(PROJECT_MAIN_SOURCES    
     algo/fall_down_detect/fall_down_obj_det_worker.hpp algo/fall_down_detect/fall_down_obj_det_worker.cpp
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
     algo/generic_obj_detector.hpp algo/generic_obj_detector.cpp
@@ -154,7 +169,7 @@ SET(PROJECT_MAIN_SOURCES
     config/config_object_detect_model_select.hpp
     config/config_pptsm_v2_worker.hpp
     config/config_read_write.hpp config/config_read_write.cpp
-    config/config_select_action_to_classify.hpp
+
     config/config_select_object_to_detect.hpp
     config/config_source_selection.hpp
     config/config_tasks_selection.hpp
@@ -166,23 +181,17 @@ SET(PROJECT_MAIN_SOURCES
 
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
-    ui/widget_action_classify_alert.hpp ui/widget_action_classify_alert.cpp ui/widget_action_classify_alert.ui
-    ui/widget_action_classify_model_select.hpp ui/widget_action_classify_model_select.cpp ui/widget_action_classify_model_select.ui    
     ui/widget_fall_down_obj_det_alert.hpp ui/widget_fall_down_obj_det_alert.cpp ui/widget_fall_down_obj_det_alert.ui
     ui/widget_fall_down_param.hpp ui/widget_fall_down_param.cpp ui/widget_fall_down_param.ui
-    ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
-    ui/widget_select_action_to_classify.hpp ui/widget_select_action_to_classify.cpp ui/widget_select_action_to_classify.ui    
-    ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui
-    ui/widget_stacks_action_classify.hpp ui/widget_stacks_action_classify.cpp ui/widget_stacks_action_classify.ui
+    ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp    
+    ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui    
     ui/widget_stacks_fall_down_detection.hpp ui/widget_stacks_fall_down_detection.cpp ui/widget_stacks_fall_down_detection.ui
     ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
     ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
     ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
 
-    ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
-    ui/obj_detect/widget_select_object_to_detect.cpp ui/obj_detect/widget_select_object_to_detect.hpp ui/obj_detect/widget_select_object_to_detect.ui
-    ui/obj_detect/widget_stacks_object_tracking.hpp ui/obj_detect/widget_stacks_object_tracking.cpp ui/obj_detect/widget_stacks_object_tracking.ui
-    ui/obj_detect/widget_tracker_alert.hpp ui/obj_detect/widget_tracker_alert.cpp ui/obj_detect/widget_tracker_alert.ui
+    ${OBJ_DETECT_SOURCES}
+    ${ACTION_CLASSIFY_SOURCES}
 )
 
 set(PROJECT_SOURCES

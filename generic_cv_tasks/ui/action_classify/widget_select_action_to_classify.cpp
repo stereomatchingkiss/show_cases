@@ -1,8 +1,8 @@
 #include "widget_select_action_to_classify.hpp"
 #include "ui_widget_select_action_to_classify.h"
 
-#include "../algo/action_classify/kinetic_400_labels.hpp"
-#include "../config/config_select_action_to_classify.hpp"
+#include "../../algo/action_classify/kinetic_400_labels.hpp"
+#include "../../config/config_select_action_to_classify.hpp"
 
 #include <ui/utils/qtable_item_utils.hpp>
 
@@ -17,7 +17,7 @@ using namespace flt::ui;
 
 namespace{
 
-QString const state_kinetic_400_selected_items("state_kinetic_400_selected_items");
+inline QString state_kinetic_400_selected_items(){ return "state_kinetic_400_selected_items"; };
 
 }
 
@@ -64,15 +64,15 @@ QJsonObject widget_select_action_to_classify::get_states() const
     for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
         selected_items.push_back(access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->isChecked());
     }
-    obj[state_kinetic_400_selected_items] = selected_items;
+    obj[state_kinetic_400_selected_items()] = selected_items;
 
     return obj;
 }
 
 void widget_select_action_to_classify::set_states(QJsonObject const &val)
 {
-    if(val.contains(state_kinetic_400_selected_items)){
-        auto const arr = val[state_kinetic_400_selected_items].toArray();
+    if(val.contains(state_kinetic_400_selected_items())){
+        auto const arr = val[state_kinetic_400_selected_items()].toArray();
         for(int i = 0; i != arr.size(); ++i){
             access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(arr[i].toBool());
         }
