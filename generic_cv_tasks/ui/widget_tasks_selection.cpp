@@ -7,7 +7,9 @@
 
 namespace{
 
-QString const state_mode("state_mode");
+inline QString state_mode(){ return "state_mode"; }
+
+inline QString state_version(){ return "state_version"; }
 
 }
 
@@ -48,15 +50,17 @@ config_tasks_selection widget_tasks_selection::get_config() const noexcept
 QJsonObject widget_tasks_selection::get_states() const
 {
     QJsonObject obj;
-    obj[state_mode] = ui->comboBoxTasks->currentText();
+    obj[state_mode()] = ui->comboBoxTasks->currentText();
+
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_tasks_selection::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_mode)){
-        if(val[state_mode].toString() == "Object tracking"){
+    if(val.contains(state_mode())){
+        if(val[state_mode()].toString() == "Object tracking"){
             ui->comboBoxTasks->setCurrentIndex(0);
         }else{
             ui->comboBoxTasks->setCurrentIndex(1);

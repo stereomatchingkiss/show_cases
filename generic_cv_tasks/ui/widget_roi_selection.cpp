@@ -9,7 +9,9 @@
 
 namespace{
 
-QString const state_roi("state_roi");
+inline QString state_roi(){return "state_roi"; };
+
+inline QString state_version(){ return "state_version"; }
 
 }
 
@@ -50,14 +52,16 @@ QRectF widget_roi_selection::get_norm_rubber_band_rect() const
 QJsonObject widget_roi_selection::get_states() const
 {
     QJsonObject obj;
-    obj[state_roi] = roi_->get_states();
+    obj[state_roi()] = roi_->get_states();
+
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_roi_selection::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_roi)){
-        roi_->set_states(val[state_roi].toObject());
+    if(val.contains(state_roi())){
+        roi_->set_states(val[state_roi()].toObject());
     }
 }
