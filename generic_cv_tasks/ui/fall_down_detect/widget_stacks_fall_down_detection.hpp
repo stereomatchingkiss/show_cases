@@ -23,6 +23,13 @@ public:
     explicit widget_stacks_fall_down_detection(QWidget *parent = nullptr);
     ~widget_stacks_fall_down_detection();
 
+    QJsonObject get_states() const;
+
+    void set_states(QJsonObject const &val);
+
+signals:
+    void switch_to_task_selection_page();
+
 private slots:
     void on_pushButtonPrev_clicked();
 
@@ -37,7 +44,7 @@ private:
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_roi_selection *widget_roi_selection_;
     widget_source_selection *widget_source_selection_;
-    widget_stream_player *widget_stream_player_;
+    widget_stream_player *widget_stream_player_;       
 
     QMessageBox *msg_box_;
     QTimer *timer_;

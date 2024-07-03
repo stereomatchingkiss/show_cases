@@ -29,6 +29,17 @@
 using namespace flt;
 using namespace flt::mm;
 
+namespace{
+
+inline QString state_widget_fall_down_param(){ return "state_widget_fall_down_param"; }
+inline QString state_widget_roi_selection(){ return "state_widget_roi_selection"; }
+inline QString state_widget_object_detect_model_select(){ return "state_widget_object_detect_model_select"; }
+inline QString state_widget_source_selection(){ return "state_widget_source_selection"; }
+
+inline QString state_version(){ return "state_version"; };
+
+}
+
 widget_stacks_fall_down_detection::widget_stacks_fall_down_detection(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_fall_down_detection)
@@ -45,6 +56,34 @@ widget_stacks_fall_down_detection::widget_stacks_fall_down_detection(QWidget *pa
 widget_stacks_fall_down_detection::~widget_stacks_fall_down_detection()
 {
     delete ui;
+}
+
+QJsonObject widget_stacks_fall_down_detection::get_states() const
+{
+    QJsonObject obj;
+    obj[state_widget_fall_down_param()] = widget_fall_down_param_->get_states();
+    obj[state_widget_object_detect_model_select()] = widget_object_detect_model_select_->get_states();
+    obj[state_widget_roi_selection()] = widget_roi_selection_->get_states();
+    obj[state_widget_source_selection()] = widget_source_selection_->get_states();
+    obj[state_version()] = "1.0";
+
+    return obj;
+}
+
+void widget_stacks_fall_down_detection::set_states(const QJsonObject &val)
+{
+    if(val.contains(state_widget_fall_down_param())){
+        widget_fall_down_param_->set_states(val[state_widget_fall_down_param()].toObject());
+    }
+    if(val.contains(state_widget_object_detect_model_select())){
+        widget_object_detect_model_select_->set_states(val[state_widget_object_detect_model_select()].toObject());
+    }
+    if(val.contains(state_widget_roi_selection())){
+        widget_roi_selection_->set_states(val[state_widget_roi_selection()].toObject());
+    }
+    if(val.contains(state_widget_source_selection())){
+        widget_source_selection_->set_states(val[state_widget_source_selection()].toObject());
+    }
 }
 
 void widget_stacks_fall_down_detection::on_pushButtonPrev_clicked()
