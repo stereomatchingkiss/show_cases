@@ -22,6 +22,8 @@ public:
     void set_states(QJsonObject const &val);
 
 private:
+    void set_task(int task);
+
     Ui::widget_tasks_selection *ui;
 };
 

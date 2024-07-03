@@ -2,7 +2,9 @@
 #include "ui_widget_stacks_manager.h"
 
 #include "action_classify/widget_stacks_action_classify.hpp"
+#include "fall_down_detect/widget_stacks_fall_down_detection.hpp"
 #include "obj_detect/widget_stacks_object_tracking.hpp"
+
 #include "widget_tasks_selection.hpp"
 
 #include "../config/config_tasks_selection.hpp"
@@ -17,6 +19,7 @@ using namespace flt::mm;
 namespace{
 
 inline QString state_stacks_action_classify(){ return "state_stacks_action_classify"; }
+inline QString state_stacks_fall_down_detection(){ return "state_stacks_fall_down_detection"; }
 inline QString state_stacks_object_tracking(){ return "state_stacks_object_tracking"; }
 inline QString state_tasks_selection(){ return "state_tasks_selection"; }
 
@@ -50,6 +53,7 @@ QJsonObject widget_stacks_manager::get_states()
     case enum_config_tasks::action_classify:{
         auto widget = static_cast<widget_stacks_action_classify*>(widget_stacks_);
         obj[state_stacks_action_classify()] = widget->get_states();
+        obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
         obj[state_stacks_object_tracking()] = stacks_states_[state_stacks_object_tracking()].toObject();
 
         break;
@@ -57,7 +61,16 @@ QJsonObject widget_stacks_manager::get_states()
     case enum_config_tasks::object_tracking:{
         auto widget = static_cast<widget_stacks_object_tracking*>(widget_stacks_);
         obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
+        obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
         obj[state_stacks_object_tracking()] = widget->get_states();
+
+        break;
+    }
+    case enum_config_tasks::fall_down_detection:{
+        auto widget = static_cast<widget_stacks_fall_down_detection*>(widget_stacks_);
+        obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
+        obj[state_stacks_fall_down_detection()] = widget->get_states();
+        obj[state_stacks_object_tracking()] = stacks_states_[state_stacks_object_tracking()].toObject();
 
         break;
     }
@@ -113,6 +126,10 @@ void widget_stacks_manager::setup_stacks()
     }
     case enum_config_tasks::object_tracking:{
         setup_stack_widget(new widget_stacks_object_tracking, state_stacks_object_tracking());
+        break;
+    }
+    case enum_config_tasks::fall_down_detection:{
+        setup_stack_widget(new widget_stacks_fall_down_detection, state_stacks_fall_down_detection());
         break;
     }
     default:{

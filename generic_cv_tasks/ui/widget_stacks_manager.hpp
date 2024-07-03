@@ -10,7 +10,6 @@ class widget_stacks_manager;
 
 class QJsonObject;
 
-class widget_stacks_object_tracking;
 class widget_tasks_selection;
 
 class widget_stacks_manager : public QWidget

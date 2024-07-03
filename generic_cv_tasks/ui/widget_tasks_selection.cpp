@@ -21,6 +21,7 @@ widget_tasks_selection::widget_tasks_selection(QWidget *parent) :
 
     ui->comboBoxTasks->addItem(tr("Object tracking"));
     ui->comboBoxTasks->addItem(tr("Action classify"));
+    ui->comboBoxTasks->addItem(tr("Fall down detection"));
 }
 
 widget_tasks_selection::~widget_tasks_selection()
@@ -40,7 +41,12 @@ config_tasks_selection widget_tasks_selection::get_config() const noexcept
         resutls.task_ = enum_config_tasks::action_classify;
         break;
     }
+    case 2:{
+        resutls.task_ = enum_config_tasks::fall_down_detection;
+        break;
+    }
     default:
+        resutls.task_ = enum_config_tasks::object_tracking;
         break;
     }
 
@@ -50,9 +56,9 @@ config_tasks_selection widget_tasks_selection::get_config() const noexcept
 QJsonObject widget_tasks_selection::get_states() const
 {
     QJsonObject obj;
-    obj[state_mode()] = ui->comboBoxTasks->currentText();
+    obj[state_mode()] = static_cast<int>(get_config().task_);
 
-    obj[state_version()] = "1.0";
+    obj[state_version()] = "1.1";
 
     return obj;
 }
@@ -60,10 +66,40 @@ QJsonObject widget_tasks_selection::get_states() const
 void widget_tasks_selection::set_states(const QJsonObject &val)
 {
     if(val.contains(state_mode())){
-        if(val[state_mode()].toString() == "Object tracking"){
-            ui->comboBoxTasks->setCurrentIndex(0);
+        if(val.contains(state_version())){
+            auto const ver = val[state_version()].toString();
+            if(ver == "1.0"){
+                if(val[state_mode()].toString() == "Object tracking"){
+                    ui->comboBoxTasks->setCurrentIndex(0);
+                }else{
+                    ui->comboBoxTasks->setCurrentIndex(1);
+                }
+            }
         }else{
-            ui->comboBoxTasks->setCurrentIndex(1);
+            set_task(val[state_mode()].toInt());
         }
+    }else{
+        set_task(val[state_mode()].toInt());
+    }
+}
+
+void widget_tasks_selection::set_task(int task)
+{
+    switch(static_cast<enum_config_tasks>(task)){
+    case enum_config_tasks::object_tracking:{
+        ui->comboBoxTasks->setCurrentIndex(0);
+        break;
+    }
+    case enum_config_tasks::action_classify:{
+        ui->comboBoxTasks->setCurrentIndex(1);
+        break;
+    }
+    case enum_config_tasks::fall_down_detection:{
+        ui->comboBoxTasks->setCurrentIndex(2);
+        break;
+    }
+    default:
+        ui->comboBoxTasks->setCurrentIndex(0);
+        break;
     }
 }
