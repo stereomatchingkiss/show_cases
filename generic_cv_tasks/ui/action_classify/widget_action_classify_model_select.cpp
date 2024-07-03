@@ -7,12 +7,12 @@
 
 namespace{
 
-QString const state_action_classify_confidence("state_action_classify_confidence");
-QString const state_action_classify_model_type("state_action_classify_model_type");
-QString const state_action_classify_sampling_rate("state_action_classify_sampling_rate");
-QString const state_action_classify_top_k("state_action_classify_top_k");
+inline QString state_action_classify_confidence(){ return "state_action_classify_confidence"; };
+inline QString state_action_classify_model_type(){ return "state_action_classify_model_type"; };
+inline QString state_action_classify_sampling_rate(){ return "state_action_classify_sampling_rate"; };
+inline QString state_action_classify_top_k(){ return "state_action_classify_top_k"; };
 
-QString const state_version("state_version");
+inline QString state_version(){ return "state_version"; };
 
 struct model_types
 {
@@ -64,26 +64,27 @@ config_action_classify_model_select widget_action_classify_model_select::get_con
 QJsonObject widget_action_classify_model_select::get_states() const
 {
     QJsonObject obj;
-    obj[state_action_classify_confidence] = ui->spinBoxConfidence->value();
-    obj[state_action_classify_model_type] = ui->comboBoxSelectModel->currentText();
-    obj[state_action_classify_sampling_rate] = ui->spinBoxSamplingRate->value();
-    obj[state_action_classify_top_k] = ui->spinBoxTopK->value();
+    obj[state_action_classify_confidence()] = ui->spinBoxConfidence->value();
+    obj[state_action_classify_model_type()] = ui->comboBoxSelectModel->currentText();
+    obj[state_action_classify_sampling_rate()] = ui->spinBoxSamplingRate->value();
+    obj[state_action_classify_top_k()] = ui->spinBoxTopK->value();
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_action_classify_model_select::set_states(QJsonObject const &val)
 {
-    if(val.contains(state_action_classify_confidence)){
-        ui->spinBoxConfidence->setValue(val[state_action_classify_confidence].toInt());
+    if(val.contains(state_action_classify_confidence())){
+        ui->spinBoxConfidence->setValue(val[state_action_classify_confidence()].toInt());
     }
-    if(val.contains(state_action_classify_model_type)){
-        ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_action_classify_model_type].toString()));
+    if(val.contains(state_action_classify_model_type())){
+        ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_action_classify_model_type()].toString()));
     }
-    if(val.contains(state_action_classify_sampling_rate)){
-        ui->spinBoxSamplingRate->setValue(val[state_action_classify_sampling_rate].toInt());
+    if(val.contains(state_action_classify_sampling_rate())){
+        ui->spinBoxSamplingRate->setValue(val[state_action_classify_sampling_rate()].toInt());
     }
-    if(val.contains(state_action_classify_top_k)){
-        ui->spinBoxTopK->setValue(val[state_action_classify_top_k].toInt());
-    }
+    if(val.contains(state_action_classify_top_k())){
+        ui->spinBoxTopK->setValue(val[state_action_classify_top_k()].toInt());
+    }    
 }
