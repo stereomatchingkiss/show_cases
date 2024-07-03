@@ -19,8 +19,9 @@ using namespace flt::ui;
 
 namespace{
 
-QString const state_obj_model_select("state_obj_model_select");
-QString const state_obj_det_selected_items("state_obj_det_selected_items");
+inline QString state_obj_det_selected_items(){ return "state_obj_det_selected_items"; };
+
+inline QString state_version(){ return "state_version"; };
 
 }
 
@@ -81,15 +82,16 @@ QJsonObject widget_select_object_to_detect::get_states() const
     for(int i = 0; i != ui->tableWidget->rowCount(); ++i){
         selected_items.push_back(access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->isChecked());
     }
-    obj[state_obj_det_selected_items] = selected_items;
+    obj[state_obj_det_selected_items()] = selected_items;
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_select_object_to_detect::set_states(const QJsonObject &val)
-{    
-    if(val.contains(state_obj_det_selected_items)){
-        auto const arr = val[state_obj_det_selected_items].toArray();
+{
+    if(val.contains(state_obj_det_selected_items())){
+        auto const arr = val[state_obj_det_selected_items()].toArray();
         for(int i = 0; i != arr.size(); ++i){
             access_cell_widget<QCheckBox>(ui->tableWidget->cellWidget(i, 1))->setChecked(arr[i].toBool());
         }

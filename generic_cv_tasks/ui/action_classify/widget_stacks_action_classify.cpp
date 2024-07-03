@@ -36,11 +36,11 @@ using namespace flt::mm;
 
 namespace{
 
-QString const state_widget_action_classify_alert("state_widget_action_classify_alert");
-QString const state_widget_action_classify_model_select("state_widget_action_classify_model_select");
-QString const state_widget_roi_selection("state_widget_roi_selection");
-QString const state_widget_select_action_to_classify("state_widget_select_action_to_classify");
-QString const state_widget_source_selection("state_widget_source_selection");
+inline QString state_widget_action_classify_alert(){ return "state_widget_action_classify_alert"; };
+inline QString state_widget_action_classify_model_select(){ return "state_widget_action_classify_model_select"; };
+inline QString state_widget_roi_selection(){ return "state_widget_roi_selection"; };
+inline QString state_widget_select_action_to_classify(){ return "state_widget_select_action_to_classify"; };
+inline QString state_widget_source_selection(){ return "state_widget_source_selection"; };
 
 }
 
@@ -65,31 +65,31 @@ widget_stacks_action_classify::~widget_stacks_action_classify()
 QJsonObject widget_stacks_action_classify::get_states() const
 {
     QJsonObject obj;
-    obj[state_widget_action_classify_alert] = widget_action_classify_alert_->get_states();
-    obj[state_widget_action_classify_model_select] = widget_action_classify_model_select_->get_states();
-    obj[state_widget_roi_selection] = widget_roi_selection_->get_states();
-    obj[state_widget_select_action_to_classify] = widget_select_action_to_classify_->get_states();
-    obj[state_widget_source_selection] = widget_source_selection_->get_states();
+    obj[state_widget_action_classify_alert()] = widget_action_classify_alert_->get_states();
+    obj[state_widget_action_classify_model_select()] = widget_action_classify_model_select_->get_states();
+    obj[state_widget_roi_selection()] = widget_roi_selection_->get_states();
+    obj[state_widget_select_action_to_classify()] = widget_select_action_to_classify_->get_states();
+    obj[state_widget_source_selection()] = widget_source_selection_->get_states();
 
     return obj;
 }
 
 void widget_stacks_action_classify::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_widget_action_classify_alert)){
-        widget_action_classify_alert_->set_states(val[state_widget_action_classify_alert].toObject());
+    if(val.contains(state_widget_action_classify_alert())){
+        widget_action_classify_alert_->set_states(val[state_widget_action_classify_alert()].toObject());
     }
-    if(val.contains(state_widget_action_classify_model_select)){
-        widget_action_classify_model_select_->set_states(val[state_widget_action_classify_model_select].toObject());
+    if(val.contains(state_widget_action_classify_model_select())){
+        widget_action_classify_model_select_->set_states(val[state_widget_action_classify_model_select()].toObject());
     }
-    if(val.contains(state_widget_roi_selection)){
-        widget_roi_selection_->set_states(val[state_widget_roi_selection].toObject());
+    if(val.contains(state_widget_roi_selection())){
+        widget_roi_selection_->set_states(val[state_widget_roi_selection()].toObject());
     }
-    if(val.contains(state_widget_select_action_to_classify)){
-        widget_select_action_to_classify_->set_states(val[state_widget_select_action_to_classify].toObject());
+    if(val.contains(state_widget_select_action_to_classify())){
+        widget_select_action_to_classify_->set_states(val[state_widget_select_action_to_classify()].toObject());
     }
-    if(val.contains(state_widget_source_selection)){
-        widget_source_selection_->set_states(val[state_widget_source_selection].toObject());
+    if(val.contains(state_widget_source_selection())){
+        widget_source_selection_->set_states(val[state_widget_source_selection()].toObject());
     }
 }
 

@@ -8,11 +8,11 @@
 
 namespace{
 
-QString const state_obj_det_confidence("state_obj_det_confidence");
-QString const state_obj_det_model_type("state_obj_det_model_type");
-QString const state_obj_det_nms("state_obj_det_nms");
+inline QString state_obj_det_confidence(){ return "state_obj_det_confidence"; };
+inline QString state_obj_det_model_type(){ return "state_obj_det_model_type"; };
+inline QString state_obj_det_nms(){ return "state_obj_det_nms"; };
 
-QString const state_version("state_version");
+inline QString state_version(){ return "state_version"; };
 
 struct model_types
 {
@@ -93,25 +93,25 @@ config_object_detect_model_select widget_object_detect_model_select::get_config(
 QJsonObject widget_object_detect_model_select::get_states() const
 {
     QJsonObject obj;
-    obj[state_obj_det_confidence] = ui->spinBoxConfidence->value();
-    obj[state_obj_det_nms] = ui->spinBoxNMS->value();
-    obj[state_obj_det_model_type] = ui->comboBoxSelectModel->currentText();    
-    obj[state_version] = "1.0";
+    obj[state_obj_det_confidence()] = ui->spinBoxConfidence->value();
+    obj[state_obj_det_nms()] = ui->spinBoxNMS->value();
+    obj[state_obj_det_model_type()] = ui->comboBoxSelectModel->currentText();
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_object_detect_model_select::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_obj_det_confidence)){
-        ui->spinBoxConfidence->setValue(val[state_obj_det_confidence].toInt());
+    if(val.contains(state_obj_det_confidence())){
+        ui->spinBoxConfidence->setValue(val[state_obj_det_confidence()].toInt());
     }
-    if(val.contains(state_obj_det_model_type)){
+    if(val.contains(state_obj_det_model_type())){
         //set_model_index(model_types().get_ids(val[state_obj_det_model_type].toString()));
-        ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_obj_det_model_type].toString()));
+        ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_obj_det_model_type()].toString()));
     }
-    if(val.contains(state_obj_det_nms)){
-        ui->spinBoxNMS->setValue(val[state_obj_det_nms].toInt());
+    if(val.contains(state_obj_det_nms())){
+        ui->spinBoxNMS->setValue(val[state_obj_det_nms()].toInt());
     }    
 }
 

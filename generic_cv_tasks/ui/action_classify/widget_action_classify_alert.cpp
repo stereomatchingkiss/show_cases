@@ -7,8 +7,8 @@
 
 namespace{
 
-QString const state_alert_if_action_detected_duration_sec("state_alert_if_action_detected_duration_sec");
-QString const state_alert_if_action_detected_on("state_alert_if_action_detected_on");
+inline QString state_alert_if_action_detected_duration_sec(){ return "state_alert_if_action_detected_duration_sec"; };
+inline QString state_alert_if_action_detected_on(){ return "state_alert_if_action_detected_on"; };
 
 }
 
@@ -36,18 +36,18 @@ config_action_classify_alert widget_action_classify_alert::get_config() const
 QJsonObject widget_action_classify_alert::get_states() const
 {
     QJsonObject obj;
-    obj[state_alert_if_action_detected_duration_sec] = ui->spinBoxAlertIfActionDetectDuration->value();
-    obj[state_alert_if_action_detected_on] = ui->groupBoxAlertIfActionDetected->isChecked();
+    obj[state_alert_if_action_detected_duration_sec()] = ui->spinBoxAlertIfActionDetectDuration->value();
+    obj[state_alert_if_action_detected_on()] = ui->groupBoxAlertIfActionDetected->isChecked();
 
     return obj;
 }
 
 void widget_action_classify_alert::set_states(QJsonObject const &val)
 {
-    if(val.contains(state_alert_if_action_detected_duration_sec)){
-        ui->spinBoxAlertIfActionDetectDuration->setValue(val[state_alert_if_action_detected_duration_sec].toInt());
+    if(val.contains(state_alert_if_action_detected_duration_sec())){
+        ui->spinBoxAlertIfActionDetectDuration->setValue(val[state_alert_if_action_detected_duration_sec()].toInt());
     }
-    if(val.contains(state_alert_if_action_detected_on)){
-        ui->groupBoxAlertIfActionDetected->setChecked(val[state_alert_if_action_detected_on].toBool());
+    if(val.contains(state_alert_if_action_detected_on())){
+        ui->groupBoxAlertIfActionDetected->setChecked(val[state_alert_if_action_detected_on()].toBool());
     }
 }
