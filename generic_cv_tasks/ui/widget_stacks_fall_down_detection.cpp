@@ -1,7 +1,7 @@
 #include "widget_stacks_fall_down_detection.hpp"
 #include "ui_widget_stacks_fall_down_detection.h"
 
-#include "widget_fall_down_param.hpp"
+#include "fall_down_detect/widget_fall_down_param.hpp"
 #include "obj_detect/widget_object_detect_model_select.hpp"
 #include "widget_roi_selection.hpp"
 #include "widget_source_selection.hpp"

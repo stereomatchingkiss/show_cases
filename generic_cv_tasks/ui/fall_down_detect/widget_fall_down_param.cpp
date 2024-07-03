@@ -5,9 +5,9 @@
 
 namespace{
 
-QString const state_hw_ratio("state_hw_ratio");
+inline QString state_hw_ratio(){ return "state_hw_ratio"; }
 
-QString const state_version("state_version");
+inline QString state_version(){ return "state_version"; }
 
 }
 
@@ -26,15 +26,15 @@ widget_fall_down_param::~widget_fall_down_param()
 QJsonObject widget_fall_down_param::get_states() const
 {
     QJsonObject obj;
-    obj[state_hw_ratio] = ui->doubleSpinBoxWidthHeightRatio->value();
-    obj[state_version] = "1.0";
+    obj[state_hw_ratio()] = ui->doubleSpinBoxWidthHeightRatio->value();
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_fall_down_param::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_hw_ratio)){
-        ui->doubleSpinBoxWidthHeightRatio->setValue(val[state_hw_ratio].toDouble());
+    if(val.contains(state_hw_ratio())){
+        ui->doubleSpinBoxWidthHeightRatio->setValue(val[state_hw_ratio()].toDouble());
     }
 }
