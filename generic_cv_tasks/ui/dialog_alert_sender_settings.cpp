@@ -11,10 +11,12 @@
 
 namespace{
 
-QString const state_websocket_activate("state_websocket_activate");
-QString const state_websocket_save_reports("state_websocket_save_reports");
-QString const state_websocket_send_by_text("state_websocket_send_by_text");
-QString const state_websocket_url("state_websocket_url");
+inline QString state_websocket_activate(){ return "state_websocket_activate"; }
+inline QString state_websocket_save_reports(){ return "state_websocket_save_reports"; }
+inline QString state_websocket_send_by_text(){ return "state_websocket_send_by_text"; }
+inline QString state_websocket_url(){ return "state_websocket_url"; }
+
+inline QString state_version(){ return "state_version"; }
 
 }
 
@@ -55,27 +57,29 @@ config_alert_sender dialog_alert_sender_settings::get_config() const
 QJsonObject dialog_alert_sender_settings::get_states() const
 {
     QJsonObject obj;
-    obj[state_websocket_activate] = ui->groupBoxSendAlertTo->isChecked();
-    obj[state_websocket_save_reports] = ui->checkBoxSaveReports->isChecked();
-    obj[state_websocket_send_by_text] = ui->checkBoxSendByText->isChecked();
-    obj[state_websocket_url] = ui->lineEditWebsocketUrl->text();
+    obj[state_websocket_activate()] = ui->groupBoxSendAlertTo->isChecked();
+    obj[state_websocket_save_reports()] = ui->checkBoxSaveReports->isChecked();
+    obj[state_websocket_send_by_text()] = ui->checkBoxSendByText->isChecked();
+    obj[state_websocket_url()] = ui->lineEditWebsocketUrl->text();
+
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void dialog_alert_sender_settings::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_websocket_activate)){
-        ui->groupBoxSendAlertTo->setChecked(val[state_websocket_activate].toBool());
+    if(val.contains(state_websocket_activate())){
+        ui->groupBoxSendAlertTo->setChecked(val[state_websocket_activate()].toBool());
     }
-    if(val.contains(state_websocket_save_reports)){
-        ui->checkBoxSaveReports->setChecked(val[state_websocket_save_reports].toBool());
+    if(val.contains(state_websocket_save_reports())){
+        ui->checkBoxSaveReports->setChecked(val[state_websocket_save_reports()].toBool());
     }
-    if(val.contains(state_websocket_send_by_text)){
-        ui->checkBoxSendByText->setChecked(val[state_websocket_send_by_text].toBool());
+    if(val.contains(state_websocket_send_by_text())){
+        ui->checkBoxSendByText->setChecked(val[state_websocket_send_by_text()].toBool());
     }
-    if(val.contains(state_websocket_url)){
-        ui->lineEditWebsocketUrl->setText(val[state_websocket_url].toString());
+    if(val.contains(state_websocket_url())){
+        ui->lineEditWebsocketUrl->setText(val[state_websocket_url()].toString());
     }
 }
 
