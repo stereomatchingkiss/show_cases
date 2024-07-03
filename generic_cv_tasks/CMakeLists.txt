@@ -155,7 +155,8 @@ SET(FALL_DOWN_DETECT_SOURCES
     config/config_fall_down_obj_det.hpp
 
     ui/fall_down_detect/widget_fall_down_obj_det_alert.hpp ui/fall_down_detect/widget_fall_down_obj_det_alert.cpp ui/fall_down_detect/widget_fall_down_obj_det_alert.ui
-    ui/fall_down_detect/widget_fall_down_param.hpp ui/fall_down_detect/widget_fall_down_param.cpp ui/fall_down_detect/widget_fall_down_param.ui)
+    ui/fall_down_detect/widget_fall_down_param.hpp ui/fall_down_detect/widget_fall_down_param.cpp ui/fall_down_detect/widget_fall_down_param.ui
+    ui/fall_down_detect/widget_stacks_fall_down_detection.hpp ui/fall_down_detect/widget_stacks_fall_down_detection.cpp ui/fall_down_detect/widget_stacks_fall_down_detection.ui)
 
 SET(OBJ_DETECT_SOURCES
     ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
@@ -189,8 +190,7 @@ SET(PROJECT_MAIN_SOURCES
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
-    ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui    
-    ui/widget_stacks_fall_down_detection.hpp ui/widget_stacks_fall_down_detection.cpp ui/widget_stacks_fall_down_detection.ui
+    ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui        
     ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
     ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
     ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
