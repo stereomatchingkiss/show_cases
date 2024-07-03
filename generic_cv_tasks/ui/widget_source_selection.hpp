@@ -50,7 +50,10 @@ private slots:
     void on_pushButtonOpenVideoFolder_clicked();
 
 private:
-    void set_max_fps_visible();
+    /**
+     * dummy is a parameter for Qt signal and slot connection, true or false do not matter
+     */
+    void set_max_fps_visible(bool dummy = false);
     void update_webcam_box();
 
     Ui::widget_source_selection *ui;

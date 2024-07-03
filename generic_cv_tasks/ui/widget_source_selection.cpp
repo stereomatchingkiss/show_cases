@@ -14,13 +14,15 @@
 
 namespace{
 
-QString const state_max_fps("state_max_fps");
-QString const state_hls_url("state_hls_url");
-QString const state_rtsp_url("state_rtsp_url");
-QString const state_source_type("state_source_type");
-QString const state_video_url("state_video_url");
-QString const state_webcam_index("state_webcam_index");
-QString const state_websocket_url("state_websocket_url");
+inline QString state_max_fps(){ return "state_max_fps"; }
+inline QString state_hls_url(){ return "state_hls_url"; }
+inline QString state_rtsp_url(){ return "state_rtsp_url"; }
+inline QString state_source_type(){ return "state_source_type"; }
+inline QString state_video_url(){ return "state_video_url"; }
+inline QString state_webcam_index(){ return "state_webcam_index"; }
+inline QString state_websocket_url(){ return "state_websocket_url"; }
+
+inline QString state_version(){ return "state_version"; }
 
 }
 
@@ -52,11 +54,11 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     update_webcam_box();
 
     connect(&devices_, &QMediaDevices::videoInputsChanged, this, &widget_source_selection::update_webcam_box);
-    connect(ui->radioButtonHLS, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
-    connect(ui->radioButtonRTSP, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
-    connect(ui->radioButtonVideo, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
-    connect(ui->radioButtonWebcam, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
-    connect(ui->radioButtonWebsockets, &QRadioButton::clicked, [this](bool checked){ set_max_fps_visible(); });
+    connect(ui->radioButtonHLS, &QRadioButton::clicked, this, &widget_source_selection::set_max_fps_visible);
+    connect(ui->radioButtonRTSP, &QRadioButton::clicked, this, &widget_source_selection::set_max_fps_visible);
+    connect(ui->radioButtonVideo, &QRadioButton::clicked, this, &widget_source_selection::set_max_fps_visible);
+    connect(ui->radioButtonWebcam, &QRadioButton::clicked, this, &widget_source_selection::set_max_fps_visible);
+    connect(ui->radioButtonWebsockets, &QRadioButton::clicked, this, &widget_source_selection::set_max_fps_visible);
 
     ui->radioButtonVideo->setToolTip(tr("Due to browser limitations, please do not open images that are too large."));
 
@@ -202,31 +204,33 @@ config_source_selection widget_source_selection::get_config() const
 QJsonObject widget_source_selection::get_states() const
 {
     QJsonObject obj;
-    obj[state_hls_url] = ui->lineEditHLS->text();
-    obj[state_max_fps] = ui->spinBoxMaxFPS->value();
-    obj[state_rtsp_url] = ui->lineEditRTSP->text();
-    obj[state_source_type] = static_cast<int>(get_source_type());
-    obj[state_video_url] = ui->lineEditVideo->text();
-    obj[state_webcam_index] = ui->comboBoxWebCam->currentIndex();
-    obj[state_websocket_url] = ui->lineEditWebsockets->text();
+    obj[state_hls_url()] = ui->lineEditHLS->text();
+    obj[state_max_fps()] = ui->spinBoxMaxFPS->value();
+    obj[state_rtsp_url()] = ui->lineEditRTSP->text();
+    obj[state_source_type()] = static_cast<int>(get_source_type());
+    obj[state_video_url()] = ui->lineEditVideo->text();
+    obj[state_webcam_index()] = ui->comboBoxWebCam->currentIndex();
+    obj[state_websocket_url()] = ui->lineEditWebsockets->text();
+
+    obj[state_version()] = "1.0";
 
     return obj;
 }
 
 void widget_source_selection::set_states(const QJsonObject &val)
 {
-    if(val.contains(state_hls_url)){
-        ui->lineEditHLS->setText(val[state_hls_url].toString());
+    if(val.contains(state_hls_url())){
+        ui->lineEditHLS->setText(val[state_hls_url()].toString());
     }
-    if(val.contains(state_max_fps)){
-        ui->spinBoxMaxFPS->setValue(val[state_max_fps].toInt());
+    if(val.contains(state_max_fps())){
+        ui->spinBoxMaxFPS->setValue(val[state_max_fps()].toInt());
     }
-    if(val.contains(state_rtsp_url)){
-        ui->lineEditRTSP->setText(val[state_rtsp_url].toString());
+    if(val.contains(state_rtsp_url())){
+        ui->lineEditRTSP->setText(val[state_rtsp_url()].toString());
     }
-    if(val.contains(state_source_type)){
+    if(val.contains(state_source_type())){
         using stype = flt::mm::stream_source_type;
-        switch(static_cast<stype>(val[state_source_type].toInt())){
+        switch(static_cast<stype>(val[state_source_type()].toInt())){
         case stype::hls:{
             ui->radioButtonHLS->setChecked(true);
             break;
@@ -251,15 +255,15 @@ void widget_source_selection::set_states(const QJsonObject &val)
             break;
         }
     }
-    if(val.contains(state_video_url)){
-        ui->lineEditVideo->setText(val[state_video_url].toString());
+    if(val.contains(state_video_url())){
+        ui->lineEditVideo->setText(val[state_video_url()].toString());
     }
-    if(val.contains(state_webcam_index)){
-        if(auto const idx = val[state_webcam_index].toInt(); idx > 0 && idx < ui->comboBoxWebCam->maxCount()){
+    if(val.contains(state_webcam_index())){
+        if(auto const idx = val[state_webcam_index()].toInt(); idx > 0 && idx < ui->comboBoxWebCam->maxCount()){
             ui->comboBoxWebCam->setCurrentIndex(idx);
         }
-    }if(val.contains(state_websocket_url)){
-        ui->lineEditWebsockets->setText(val[state_websocket_url].toString());
+    }if(val.contains(state_websocket_url())){
+        ui->lineEditWebsockets->setText(val[state_websocket_url()].toString());
     }
 
     set_max_fps_visible();
@@ -285,7 +289,7 @@ void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 #endif
 }
 
-void widget_source_selection::set_max_fps_visible()
+void widget_source_selection::set_max_fps_visible(bool)
 {
     ui->labelMaxFps->setVisible(!ui->radioButtonWebsockets->isChecked());
     ui->spinBoxMaxFPS->setVisible(!ui->radioButtonWebsockets->isChecked());
