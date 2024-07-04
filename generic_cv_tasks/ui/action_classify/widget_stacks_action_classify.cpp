@@ -2,6 +2,7 @@
 #include "ui_widget_stacks_action_classify.h"
 
 #include "../dialog_alert_sender_settings.hpp"
+#include "../frame_capture_creator.hpp"
 #include "../widget_roi_selection.hpp"
 #include "../widget_source_selection.hpp"
 #include "../widget_stream_player.hpp"
@@ -42,19 +43,18 @@ inline QString state_widget_roi_selection(){ return "state_widget_roi_selection"
 inline QString state_widget_select_action_to_classify(){ return "state_widget_select_action_to_classify"; };
 inline QString state_widget_source_selection(){ return "state_widget_source_selection"; };
 
+inline QString state_version(){ return "state_version"; };
+
 }
 
 widget_stacks_action_classify::widget_stacks_action_classify(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_action_classify),
-    msg_box_{new QMessageBox(this)},
-    timer_{new QTimer(this)}
+    msg_box_{new QMessageBox(this)}
 {
     ui->setupUi(this);
 
-    init_stacked_widget();
-
-    timer_->setInterval(1000);
+    init_stacked_widget();    
 }
 
 widget_stacks_action_classify::~widget_stacks_action_classify()
@@ -70,6 +70,8 @@ QJsonObject widget_stacks_action_classify::get_states() const
     obj[state_widget_roi_selection()] = widget_roi_selection_->get_states();
     obj[state_widget_select_action_to_classify()] = widget_select_action_to_classify_->get_states();
     obj[state_widget_source_selection()] = widget_source_selection_->get_states();
+
+    obj[state_version()] = "1.0";
 
     return obj;
 }
@@ -108,17 +110,19 @@ void widget_stacks_action_classify::init_stacked_widget()
     ui->stackedWidget->addWidget(widget_roi_selection_);
     ui->stackedWidget->addWidget(widget_source_selection_);
     ui->stackedWidget->addWidget(widget_stream_player_);
+
+    fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
 }
 
 void widget_stacks_action_classify::create_roi_select_stream()
 {
-    create_frame_capture();
+    fcreator_->create_frame_capture();
     auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_roi_selection_, &widget_roi_selection::display_frame);
     emit process_controller->start();
-    sfwmw_->add_listener(process_controller, this);
-    sfwmw_->start();
+    fcreator_->get_sfwmw()->add_listener(process_controller, this);
+    fcreator_->get_sfwmw()->start();
 }
 
 void widget_stacks_action_classify::next_page_is_label_select_roi()
@@ -137,8 +141,7 @@ void widget_stacks_action_classify::next_page_is_label_select_roi()
 
 void widget_stacks_action_classify::next_page_is_widget_stream_player()
 {
-    ui->stackedWidget->setCurrentWidget(widget_stream_player_);
-    ui->pushButtonNext->setVisible(false);
+    ui->stackedWidget->setCurrentWidget(widget_stream_player_);    
 
     config_ppstm_v2_worker config;
     config.config_action_classify_alert_ = widget_action_classify_alert_->get_config();
@@ -160,21 +163,11 @@ void widget_stacks_action_classify::next_page_is_widget_stream_player()
     if(get_widget_alert_sender_settings().get_config().activate_){
         emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     }
-    create_frame_capture();
-    emit process_controller->start();
-    sfwmw_->add_listener(process_controller, this);
-    sfwmw_->start();
 
-    if(widget_source_selection_->get_source_type() == stream_source_type::hls ||
-        widget_source_selection_->get_source_type() == stream_source_type::video){
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-        widget_stream_player_->set_is_seekable(player->is_seekable());
-        widget_stream_player_->set_duration(player->position(), player->max_position());
-        connect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
-        timer_->start();
-    }else{
-        widget_stream_player_->set_is_seekable(false);
-    }
+    fcreator_->create_frame_capture();
+    emit process_controller->start();
+    fcreator_->get_sfwmw()->add_listener(process_controller, this);
+    fcreator_->get_sfwmw()->start();
 }
 
 void widget_stacks_action_classify::send_alert_by_binary(QByteArray const &msg)
@@ -187,14 +180,6 @@ void widget_stacks_action_classify::send_alert_by_text(QString const &msg)
     emit get_websocket_controller().send_text_message(msg);
 }
 
-void widget_stacks_action_classify::update_position()
-{
-    if(sfwmw_){
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-        widget_stream_player_->set_current_position(player->position());
-    }
-}
-
 void widget_stacks_action_classify::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
@@ -204,10 +189,8 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_source_selection_);        
-        if(sfwmw_){
-            sfwmw_ = nullptr;
-        }
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+        fcreator_->reset();
     }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
         ui->pushButtonNext->setVisible(true);
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
@@ -229,27 +212,8 @@ void widget_stacks_action_classify::on_pushButtonNext_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
         next_page_is_label_select_roi();
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
+        ui->pushButtonNext->setVisible(false);
         next_page_is_widget_stream_player();
-    }
-}
-
-void widget_stacks_action_classify::create_frame_capture()
-{
-    timer_->stop();
-    disconnect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
-    if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
-        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
-        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
-    }else{
-        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-
-        connect(widget_stream_player_, &widget_stream_player::pause, player, &frame_capture_qmediaplayer::pause);
-        connect(widget_stream_player_, &widget_stream_player::play, player, &frame_capture_qmediaplayer::start);
-        connect(widget_stream_player_, &widget_stream_player::seek, player, &frame_capture_qmediaplayer::set_position);
-
-        connect(timer_, &QTimer::timeout, this, &widget_stacks_action_classify::update_position);
     }
 }
 
