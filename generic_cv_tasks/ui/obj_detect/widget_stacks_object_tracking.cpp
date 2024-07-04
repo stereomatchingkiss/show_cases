@@ -73,6 +73,7 @@ QJsonObject widget_stacks_object_tracking::get_states() const
     obj[gk.state_widget_select_object_to_detect()] = widget_select_object_to_detect_->get_states();
     obj[gk.state_widget_source_selection()] = widget_source_selection_->get_states();
     obj[gk.state_tracker_alert()] = widget_tracker_alert_->get_states();
+
     obj[state_version()] = "1.0";
 
     return obj;
@@ -138,10 +139,7 @@ void widget_stacks_object_tracking::next_page_is_label_select_roi()
         msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
         msg_box_->show();
     }else{        
-        ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
-        ui->pushButtonNext->setEnabled(true);
-        ui->pushButtonPrev->setEnabled(true);
-
+        ui->stackedWidget->setCurrentWidget(widget_roi_selection_);        
         create_roi_select_stream();
     }
 }
@@ -149,8 +147,6 @@ void widget_stacks_object_tracking::next_page_is_label_select_roi()
 void widget_stacks_object_tracking::next_page_is_widget_stream_player()
 {    
     ui->stackedWidget->setCurrentWidget(widget_stream_player_);
-    ui->pushButtonNext->setVisible(false);
-    ui->pushButtonPrev->setVisible(true);
 
     config_nanodet_worker config;
     config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
@@ -181,23 +177,17 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
 
 void widget_stacks_object_tracking::next_page_is_widget_select_object_to_detect()
 {    
-    ui->stackedWidget->setCurrentWidget(widget_select_object_to_detect_);
-    ui->pushButtonNext->setVisible(true);
-    ui->pushButtonPrev->setVisible(true);
+    ui->stackedWidget->setCurrentWidget(widget_select_object_to_detect_);    
 }
 
 void widget_stacks_object_tracking::next_page_is_widget_source_selection()
 {    
-    ui->stackedWidget->setCurrentWidget(widget_source_selection_);
-    ui->pushButtonNext->setVisible(true);
-    ui->pushButtonPrev->setVisible(true);
+    ui->stackedWidget->setCurrentWidget(widget_source_selection_);    
 }
 
 void widget_stacks_object_tracking::next_page_is_widget_tracker_alert()
 {    
-    ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);
-    ui->pushButtonNext->setVisible(true);
-    ui->pushButtonPrev->setVisible(true);
+    ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);    
 }
 
 void widget_stacks_object_tracking::send_alert_by_binary(const QByteArray &msg)
@@ -213,27 +203,19 @@ void widget_stacks_object_tracking::send_alert_by_text(const QString &msg)
 void widget_stacks_object_tracking::on_pushButtonPrev_clicked()
 {    
     fcreator_->reset();
+    ui->pushButtonNext->setVisible(true);
+    ui->pushButtonPrev->setVisible(true);
+
     if(ui->stackedWidget->currentWidget() == widget_select_object_to_detect_){
         ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
-        ui->pushButtonNext->setVisible(true);
-        ui->pushButtonPrev->setVisible(true);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);
-        ui->pushButtonNext->setVisible(true);
-        ui->pushButtonPrev->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);        
     }else if(ui->stackedWidget->currentWidget() == widget_tracker_alert_){
-        ui->stackedWidget->setCurrentWidget(widget_select_object_to_detect_);
-        ui->pushButtonNext->setVisible(true);
-        ui->pushButtonPrev->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_select_object_to_detect_);        
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
-        ui->pushButtonNext->setVisible(true);
-        ui->pushButtonPrev->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);        
     }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
-        ui->pushButtonNext->setVisible(true);
-        ui->pushButtonPrev->setVisible(true);
-
         create_roi_select_stream();
     }else if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
         emit switch_to_task_selection_page();
@@ -253,6 +235,8 @@ void widget_stacks_object_tracking::on_pushButtonNext_clicked()
         next_page_is_label_select_roi();
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
         next_page_is_widget_stream_player();
+
+        ui->pushButtonNext->setVisible(false);
     }
 }
 
