@@ -19,12 +19,6 @@ class widget_source_selection;
 class widget_stream_player;
 class widget_tracker_alert;
 
-namespace flt::mm{
-
-class single_frame_with_multi_worker_base;
-
-}
-
 class widget_stacks_object_tracking : public QWidget
 {
     Q_OBJECT
