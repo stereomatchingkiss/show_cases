@@ -116,13 +116,7 @@ void widget_stacks_action_classify::init_stacked_widget()
 
 void widget_stacks_action_classify::create_roi_select_stream()
 {
-    fcreator_->create_frame_capture();
-    auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
-    connect(process_controller.get(), &frame_process_controller::send_process_results,
-            widget_roi_selection_, &widget_roi_selection::display_frame);
-    emit process_controller->start();
-    fcreator_->get_sfwmw()->add_listener(process_controller, this);
-    fcreator_->get_sfwmw()->start();
+    fcreator_->create_roi_select_stream(widget_roi_selection_);
 }
 
 void widget_stacks_action_classify::next_page_is_label_select_roi()

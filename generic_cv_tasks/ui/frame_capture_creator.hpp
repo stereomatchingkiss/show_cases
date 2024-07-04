@@ -8,6 +8,7 @@ class single_frame_with_multi_worker_base;
 
 }
 
+class widget_roi_selection;
 class widget_source_selection;
 class widget_stream_player;
 
@@ -24,6 +25,7 @@ public:
     ~frame_capture_creator();
 
     void create_frame_capture();
+    void create_roi_select_stream(widget_roi_selection *roi_selection);
 
     flt::mm::single_frame_with_multi_worker_base* get_sfwmw() noexcept;
 

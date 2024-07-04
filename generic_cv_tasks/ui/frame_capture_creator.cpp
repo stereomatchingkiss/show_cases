@@ -1,5 +1,8 @@
 #include "frame_capture_creator.hpp"
 
+#include "../algo/frame_display_worker.hpp"
+
+#include "widget_roi_selection.hpp"
 #include "widget_source_selection.hpp"
 #include "widget_stream_player.hpp"
 
@@ -7,7 +10,7 @@
 #include <multimedia/camera/frame_capture_qcamera_params.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
-//#include <multimedia/camera/frame_process_controller.hpp>
+#include <multimedia/camera/frame_process_controller.hpp>
 #include <multimedia/network/frame_capture_websocket.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
 #include <multimedia/stream_enum.hpp>
@@ -72,6 +75,17 @@ void frame_capture_creator::create_frame_capture()
             widget_stream_player_->set_is_seekable(false);
         }
     }
+}
+
+void frame_capture_creator::create_roi_select_stream(widget_roi_selection *roi_selection)
+{
+    create_frame_capture();
+    auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
+    connect(process_controller.get(), &frame_process_controller::send_process_results,
+            roi_selection, &widget_roi_selection::display_frame);
+    emit process_controller->start();
+    sfwmw_->add_listener(process_controller, this);
+    sfwmw_->start();
 }
 
 void frame_capture_creator::update_position()
