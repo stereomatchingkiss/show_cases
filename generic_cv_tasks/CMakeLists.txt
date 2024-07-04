@@ -188,6 +188,7 @@ SET(PROJECT_MAIN_SOURCES
     global/global_object.hpp global/global_object.cpp
 
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
+    ui/frame_capture_creator.hpp ui/frame_capture_creator.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui        
@@ -211,7 +212,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
