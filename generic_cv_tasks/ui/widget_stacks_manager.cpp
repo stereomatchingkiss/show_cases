@@ -13,9 +13,6 @@
 
 #include <QJsonObject>
 
-using namespace flt;
-using namespace flt::mm;
-
 namespace{
 
 inline QString state_stacks_action_classify(){ return "state_stacks_action_classify"; }
