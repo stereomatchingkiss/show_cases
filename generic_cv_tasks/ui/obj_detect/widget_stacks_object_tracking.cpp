@@ -13,7 +13,6 @@
 #include "widget_select_object_to_detect.hpp"
 #include "widget_tracker_alert.hpp"
 
-#include "../../algo/frame_display_worker.hpp"
 #include "../../algo/obj_detect/nanodet_worker.hpp"
 
 #include "../../config/config_alert_sender.hpp"

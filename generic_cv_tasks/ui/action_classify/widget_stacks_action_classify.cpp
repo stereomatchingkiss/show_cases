@@ -11,7 +11,6 @@
 #include "widget_action_classify_model_select.hpp"
 #include "widget_select_action_to_classify.hpp"
 
-#include "../../algo/frame_display_worker.hpp"
 #include "../../algo/action_classify/pptsm_v2_worker.hpp"
 #include "../../config/config_pptsm_v2_worker.hpp"
 #include "../../global/global_object.hpp"
