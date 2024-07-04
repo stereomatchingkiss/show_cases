@@ -2,11 +2,15 @@
 #include "ui_widget_stacks_object_tracking.h"
 
 #include "../dialog_alert_sender_settings.hpp"
-#include "widget_object_detect_model_select.hpp"
+
+#include "../frame_capture_creator.hpp"
+
 #include "../widget_roi_selection.hpp"
-#include "widget_select_object_to_detect.hpp"
 #include "../widget_source_selection.hpp"
 #include "../widget_stream_player.hpp"
+
+#include "widget_object_detect_model_select.hpp"
+#include "widget_select_object_to_detect.hpp"
 #include "widget_tracker_alert.hpp"
 
 #include "../../algo/frame_display_worker.hpp"
@@ -39,17 +43,20 @@
 using namespace flt;
 using namespace flt::mm;
 
+namespace{
+
+inline QString state_version(){ return "state_version"; };
+
+}
+
 widget_stacks_object_tracking::widget_stacks_object_tracking(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_object_tracking)
-    , msg_box_(new QMessageBox(this))
-    , timer_(new QTimer(this))
+    , msg_box_{new QMessageBox(this)}
 {
     ui->setupUi(this);
 
     init_stacked_widget();
-
-    timer_->setInterval(1000);
 }
 
 widget_stacks_object_tracking::~widget_stacks_object_tracking()
@@ -66,6 +73,7 @@ QJsonObject widget_stacks_object_tracking::get_states() const
     obj[gk.state_widget_select_object_to_detect()] = widget_select_object_to_detect_->get_states();
     obj[gk.state_widget_source_selection()] = widget_source_selection_->get_states();
     obj[gk.state_tracker_alert()] = widget_tracker_alert_->get_states();
+    obj[state_version()] = "1.0";
 
     return obj;
 }
@@ -109,37 +117,19 @@ void widget_stacks_object_tracking::init_stacked_widget()
     ui->stackedWidget->addWidget(widget_tracker_alert_);
 
     ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
-}
 
-void widget_stacks_object_tracking::create_frame_capture()
-{
-    timer_->stop();
-    disconnect(timer_, &QTimer::timeout, this, &widget_stacks_object_tracking::update_position);
-    if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
-        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-    }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
-        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
-    }else{
-        sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-
-        connect(widget_stream_player_, &widget_stream_player::pause, player, &frame_capture_qmediaplayer::pause);
-        connect(widget_stream_player_, &widget_stream_player::play, player, &frame_capture_qmediaplayer::start);
-        connect(widget_stream_player_, &widget_stream_player::seek, player, &frame_capture_qmediaplayer::set_position);
-
-        connect(timer_, &QTimer::timeout, this, &widget_stacks_object_tracking::update_position);
-    }
+    fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
 }
 
 void widget_stacks_object_tracking::create_roi_select_stream()
-{
-    create_frame_capture();
+{    
+    fcreator_->create_frame_capture();
     auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_roi_selection_, &widget_roi_selection::display_frame);
     emit process_controller->start();
-    sfwmw_->add_listener(process_controller, this);
-    sfwmw_->start();
+    fcreator_->get_sfwmw()->add_listener(process_controller, this);
+    fcreator_->get_sfwmw()->start();
 }
 
 void widget_stacks_object_tracking::next_page_is_label_select_roi()
@@ -182,21 +172,11 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     if(get_widget_alert_sender_settings().get_config().activate_){
         emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     }
-    create_frame_capture();
-    emit process_controller->start();
-    sfwmw_->add_listener(process_controller, this);
-    sfwmw_->start();
 
-    if(widget_source_selection_->get_source_type() == stream_source_type::hls ||
-        widget_source_selection_->get_source_type() == stream_source_type::video){
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-        widget_stream_player_->set_is_seekable(player->is_seekable());
-        widget_stream_player_->set_duration(player->position(), player->max_position());
-        connect(timer_, &QTimer::timeout, this, &widget_stacks_object_tracking::update_position);
-        timer_->start();
-    }else{
-        widget_stream_player_->set_is_seekable(false);
-    }
+    fcreator_->create_frame_capture();
+    emit process_controller->start();
+    fcreator_->get_sfwmw()->add_listener(process_controller, this);
+    fcreator_->get_sfwmw()->start();
 }
 
 void widget_stacks_object_tracking::next_page_is_widget_select_object_to_detect()
@@ -230,17 +210,9 @@ void widget_stacks_object_tracking::send_alert_by_text(const QString &msg)
     emit get_websocket_controller().send_text_message(msg);
 }
 
-void widget_stacks_object_tracking::update_position()
-{
-    if(sfwmw_){
-        auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
-        widget_stream_player_->set_current_position(player->position());
-    }
-}
-
 void widget_stacks_object_tracking::on_pushButtonPrev_clicked()
-{
-    sfwmw_.reset();
+{    
+    fcreator_->reset();
     if(ui->stackedWidget->currentWidget() == widget_select_object_to_detect_){
         ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
         ui->pushButtonNext->setVisible(true);

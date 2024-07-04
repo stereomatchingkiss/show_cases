@@ -10,6 +10,8 @@ class widget_stacks_object_tracking;
 class QJsonObject;
 class QMessageBox;
 
+class frame_capture_creator;
+
 class widget_object_detect_model_select;
 class widget_roi_selection;
 class widget_select_object_to_detect;
@@ -46,7 +48,6 @@ private slots:
 private:
     void init_stacked_widget();
 
-    void create_frame_capture();
     void create_roi_select_stream();
 
     void next_page_is_label_select_roi();
@@ -56,9 +57,7 @@ private:
     void next_page_is_widget_tracker_alert();
 
     void send_alert_by_binary(QByteArray const &msg);
-    void send_alert_by_text(QString const &msg);
-
-    void update_position();
+    void send_alert_by_text(QString const &msg);    
 
     Ui::widget_stacks_object_tracking *ui;    
 
@@ -70,9 +69,8 @@ private:
     widget_tracker_alert *widget_tracker_alert_;
 
     QMessageBox *msg_box_;
-    QTimer *timer_;
 
-    std::unique_ptr<flt::mm::single_frame_with_multi_worker_base> sfwmw_;
+    frame_capture_creator *fcreator_;
 };
 
 #endif // WIDGET_STACKS_OBJECT_TRACKING_HPP
