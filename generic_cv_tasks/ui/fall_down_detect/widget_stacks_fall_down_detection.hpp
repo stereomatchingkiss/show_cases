@@ -9,6 +9,9 @@ class widget_stacks_fall_down_detection;
 
 class QMessageBox;
 
+class frame_capture_creator;
+
+class widget_fall_down_obj_det_alert;
 class widget_fall_down_param;
 class widget_object_detect_model_select;
 class widget_roi_selection;
@@ -36,18 +39,23 @@ private slots:
     void on_pushButtonNext_clicked();
 
 private:
+    void create_frame_capture();
     void init_stacked_widget();
+    void next_page_is_widget_stream_player();
+    void update_position();
 
     Ui::widget_stacks_fall_down_detection *ui;
 
     widget_fall_down_param *widget_fall_down_param_;
+    widget_fall_down_obj_det_alert *widget_fall_down_obj_det_alert_;
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_roi_selection *widget_roi_selection_;
     widget_source_selection *widget_source_selection_;
-    widget_stream_player *widget_stream_player_;       
+    widget_stream_player *widget_stream_player_;
 
-    QMessageBox *msg_box_;
-    QTimer *timer_;
+    frame_capture_creator *fcreator_;
+
+    QMessageBox *msg_box_;    
 };
 
 #endif // WIDGET_STACKS_FALL_DOWN_DETECTION_HPP
