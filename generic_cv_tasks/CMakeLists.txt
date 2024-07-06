@@ -152,7 +152,7 @@ SET(ACTION_CLASSIFY_SOURCES
 SET(FALL_DOWN_DETECT_SOURCES
     algo/fall_down_detect/fall_down_obj_det_worker.hpp algo/fall_down_detect/fall_down_obj_det_worker.cpp
 
-    config/config_fall_down_obj_det.hpp
+    config/config_fall_down_obj_det_worker.hpp
 
     ui/fall_down_detect/widget_fall_down_obj_det_alert.hpp ui/fall_down_detect/widget_fall_down_obj_det_alert.cpp ui/fall_down_detect/widget_fall_down_obj_det_alert.ui
     ui/fall_down_detect/widget_fall_down_param.hpp ui/fall_down_detect/widget_fall_down_param.cpp ui/fall_down_detect/widget_fall_down_param.ui
