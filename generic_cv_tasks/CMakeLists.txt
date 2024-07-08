@@ -155,7 +155,7 @@ SET(FALL_DOWN_DETECT_SOURCES
     config/config_fall_down_obj_det_worker.hpp
 
     ui/fall_down_detect/widget_fall_down_obj_det_alert.hpp ui/fall_down_detect/widget_fall_down_obj_det_alert.cpp ui/fall_down_detect/widget_fall_down_obj_det_alert.ui
-    ui/fall_down_detect/widget_fall_down_param.hpp ui/fall_down_detect/widget_fall_down_param.cpp ui/fall_down_detect/widget_fall_down_param.ui
+    ui/fall_down_detect/widget_fall_down_condition.hpp ui/fall_down_detect/widget_fall_down_condition.cpp ui/fall_down_detect/widget_fall_down_condition.ui
     ui/fall_down_detect/widget_stacks_fall_down_detection.hpp ui/fall_down_detect/widget_stacks_fall_down_detection.cpp ui/fall_down_detect/widget_stacks_fall_down_detection.ui)
 
 SET(OBJ_DETECT_SOURCES

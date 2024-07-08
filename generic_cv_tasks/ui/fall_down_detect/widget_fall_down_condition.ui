@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>widget_fall_down_param</class>
- <widget class="QWidget" name="widget_fall_down_param">
+ <class>widget_fall_down_condition</class>
+ <widget class="QWidget" name="widget_fall_down_condition">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,7 +27,7 @@
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>Fall down parameters</string>
+      <string>Fall down condition</string>
      </property>
      <property name="scaledContents">
       <bool>false</bool>

@@ -1,5 +1,5 @@
-#include "widget_fall_down_param.hpp"
-#include "ui_widget_fall_down_param.h"
+#include "widget_fall_down_condition.hpp"
+#include "ui_widget_fall_down_condition.h"
 
 #include <QJsonObject>
 
@@ -11,19 +11,19 @@ inline QString state_version(){ return "state_version"; }
 
 }
 
-widget_fall_down_param::widget_fall_down_param(QWidget *parent) :
+widget_fall_down_condition::widget_fall_down_condition(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::widget_fall_down_param)
+    ui(new Ui::widget_fall_down_condition)
 {
     ui->setupUi(this);
 }
 
-widget_fall_down_param::~widget_fall_down_param()
+widget_fall_down_condition::~widget_fall_down_condition()
 {
     delete ui;
 }
 
-QJsonObject widget_fall_down_param::get_states() const
+QJsonObject widget_fall_down_condition::get_states() const
 {
     QJsonObject obj;
     obj[state_hw_ratio()] = ui->doubleSpinBoxWidthHeightRatio->value();
@@ -32,7 +32,7 @@ QJsonObject widget_fall_down_param::get_states() const
     return obj;
 }
 
-void widget_fall_down_param::set_states(const QJsonObject &val)
+void widget_fall_down_condition::set_states(const QJsonObject &val)
 {
     if(val.contains(state_hw_ratio())){
         ui->doubleSpinBoxWidthHeightRatio->setValue(val[state_hw_ratio()].toDouble());

@@ -1,5 +1,4 @@
-#ifndef WIDGET_FALL_DOWN_OBJ_DET_ALERT_HPP
-#define WIDGET_FALL_DOWN_OBJ_DET_ALERT_HPP
+#pragma once
 
 #include <QWidget>
 
@@ -18,5 +17,3 @@ public:
 private:
     Ui::widget_fall_down_obj_det_alert *ui;
 };
-
-#endif // WIDGET_FALL_DOWN_OBJ_DET_ALERT_HPP
