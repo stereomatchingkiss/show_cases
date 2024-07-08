@@ -2,6 +2,9 @@
 #include "ui_widget_stacks_fall_down_detection.h"
 
 #include "../obj_detect/widget_object_detect_model_select.hpp"
+
+#include "../../algo/fall_down_detect/fall_down_obj_det_worker.hpp"
+#include "../../config/config_fall_down_obj_det_worker.hpp"
 #include "../../global/global_keywords.hpp"
 
 #include "../frame_capture_creator.hpp"
@@ -9,7 +12,7 @@
 #include "../widget_source_selection.hpp"
 #include "../widget_stream_player.hpp"
 
-#include "widget_fall_down_param.hpp"
+#include "widget_fall_down_condition.hpp"
 #include "widget_fall_down_obj_det_alert.hpp"
 
 #include <multimedia/camera/frame_capture_qcamera.hpp>
@@ -35,7 +38,7 @@ using namespace flt::mm;
 
 namespace{
 
-inline QString state_widget_fall_down_param(){ return "state_widget_fall_down_param"; }
+inline QString state_widget_fall_down_condition(){ return "state_widget_fall_down_condition"; }
 
 }
 
@@ -58,7 +61,7 @@ QJsonObject widget_stacks_fall_down_detection::get_states() const
 {
     QJsonObject obj;
     global_keywords const gk;
-    obj[state_widget_fall_down_param()] = widget_fall_down_param_->get_states();
+    obj[state_widget_fall_down_condition()] = widget_fall_down_condition_->get_states();
     obj[gk.state_widget_object_detect_model_select()] = widget_object_detect_model_select_->get_states();
     obj[gk.state_roi()] = widget_roi_selection_->get_states();
     obj[gk.state_widget_source_selection()] = widget_source_selection_->get_states();
@@ -72,8 +75,8 @@ void widget_stacks_fall_down_detection::set_states(const QJsonObject &val)
 {
     global_keywords const gk;
 
-    if(val.contains(state_widget_fall_down_param())){
-        widget_fall_down_param_->set_states(val[state_widget_fall_down_param()].toObject());
+    if(val.contains(state_widget_fall_down_condition())){
+        widget_fall_down_condition_->set_states(val[state_widget_fall_down_condition()].toObject());
     }
     if(val.contains(gk.state_widget_object_detect_model_select())){
         widget_object_detect_model_select_->set_states(val[gk.state_widget_object_detect_model_select()].toObject());
@@ -96,8 +99,8 @@ void widget_stacks_fall_down_detection::on_pushButtonNext_clicked()
     ui->pushButtonNext->setVisible(true);
 
     if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
-        ui->stackedWidget->setCurrentWidget(widget_fall_down_param_);
-    }else if(ui->stackedWidget->currentWidget() == widget_fall_down_param_){
+        ui->stackedWidget->setCurrentWidget(widget_fall_down_condition_);
+    }else if(ui->stackedWidget->currentWidget() == widget_fall_down_condition_){
         ui->stackedWidget->setCurrentWidget(widget_fall_down_obj_det_alert_);
     }else if(ui->stackedWidget->currentWidget() == widget_fall_down_obj_det_alert_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
@@ -110,15 +113,15 @@ void widget_stacks_fall_down_detection::on_pushButtonNext_clicked()
             fcreator_->create_roi_select_stream(widget_roi_selection_);
         }
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
+        next_page_is_widget_stream_player();
         ui->stackedWidget->setCurrentWidget(widget_stream_player_);
-    }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
-        ui->pushButtonNext->setVisible(false);
+        ui->pushButtonNext->setVisible(false);        
     }
 }
 
 void widget_stacks_fall_down_detection::init_stacked_widget()
 {
-    widget_fall_down_param_ = new widget_fall_down_param;
+    widget_fall_down_condition_ = new widget_fall_down_condition;
     widget_fall_down_obj_det_alert_ = new widget_fall_down_obj_det_alert;
     widget_roi_selection_ = new widget_roi_selection;
     widget_object_detect_model_select_ = new widget_object_detect_model_select;    
@@ -127,7 +130,7 @@ void widget_stacks_fall_down_detection::init_stacked_widget()
 
     ui->stackedWidget->addWidget(widget_roi_selection_);
     ui->stackedWidget->addWidget(widget_object_detect_model_select_);    
-    ui->stackedWidget->addWidget(widget_fall_down_param_);
+    ui->stackedWidget->addWidget(widget_fall_down_condition_);
     ui->stackedWidget->addWidget(widget_fall_down_obj_det_alert_);
     ui->stackedWidget->addWidget(widget_source_selection_);
     ui->stackedWidget->addWidget(widget_stream_player_);
@@ -141,18 +144,15 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
 {
     ui->stackedWidget->setCurrentWidget(widget_stream_player_);
 
-    /*config_nanodet_worker config;
-    config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
-    config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
-    config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
-    config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
-    config.config_tracker_alert_ = widget_tracker_alert_->get_config();
+    config_fall_down_obj_det_worker config;
+    config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();    
+    config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();    
 
-    auto worker = new nanodet_worker(std::move(config));
-    connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
-            worker, &nanodet_worker::change_alert_sender_config);
-    connect(worker, &nanodet_worker::send_alert_by_binary, this, &widget_stacks_object_tracking::send_alert_by_binary);
-    connect(worker, &nanodet_worker::send_alert_by_text, this, &widget_stacks_object_tracking::send_alert_by_text);
+    auto worker = new fall_down_obj_det_worker(std::move(config));
+    //connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
+    //        worker, &nanodet_worker::change_alert_sender_config);
+    //connect(worker, &fall_down_obj_det_worker::send_alert_by_binary, this, &widget_stacks_fall_down_detection::send_alert_by_binary);
+    //connect(worker, &fall_down_obj_det_worker::send_alert_by_text, this, &widget_stacks_fall_down_detection::send_alert_by_text);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
@@ -162,7 +162,7 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
     //    emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     //}
 
-    /*fcreator_->create_frame_capture();
+    fcreator_->create_frame_capture();
     emit process_controller->start();
     fcreator_->get_sfwmw()->add_listener(process_controller, this);
     fcreator_->get_sfwmw()->start();//*/

@@ -11,8 +11,8 @@ class QMessageBox;
 
 class frame_capture_creator;
 
+class widget_fall_down_condition;
 class widget_fall_down_obj_det_alert;
-class widget_fall_down_param;
 class widget_object_detect_model_select;
 class widget_roi_selection;
 class widget_source_selection;
@@ -46,7 +46,7 @@ private:
 
     Ui::widget_stacks_fall_down_detection *ui;
 
-    widget_fall_down_param *widget_fall_down_param_;
+    widget_fall_down_condition *widget_fall_down_condition_;
     widget_fall_down_obj_det_alert *widget_fall_down_obj_det_alert_;
     widget_object_detect_model_select *widget_object_detect_model_select_;
     widget_roi_selection *widget_roi_selection_;

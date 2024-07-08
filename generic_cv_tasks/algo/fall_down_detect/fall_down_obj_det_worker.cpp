@@ -5,6 +5,7 @@
 #include "../../config/config_generic_obj_detector.hpp"
 
 #include "../generic_obj_detector.hpp"
+#include "../generic_worker_results.hpp"
 
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
@@ -146,10 +147,10 @@ void fall_down_obj_det_worker::process_results(std::any frame)
 
     auto const det_results = impl_->track_obj(mat);
     auto const pass_results = impl_->track_obj_pass_->track(det_results);
-    impl_->draw_pass_results(mat, pass_results);
+    impl_->draw_pass_results(mat, pass_results);//*/
 
-    /*generic_worker_results results;
-    if(impl_->check_alarm_condition(pass_results, qimg)){
+    generic_worker_results results;
+    /*if(impl_->check_alarm_condition(pass_results, qimg)){
         results.alarm_on_ = true;
         ++impl_->im_ids_;
         impl_->clear_written_id();
@@ -160,7 +161,7 @@ void fall_down_obj_det_worker::process_results(std::any frame)
                 emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
             }
         }
-    }
+    }//*/
 
     //do not move it, since in the future this algo may need to support multi-stream
     results.mat_ = qimg;
