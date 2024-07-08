@@ -1,7 +1,7 @@
 #include "fall_down_obj_det_worker.hpp"
 
 #include "../../config/config_alert_sender.hpp"
-#include "../../config/config_fall_down_obj_det.hpp"
+#include "../../config/config_fall_down_obj_det_worker.hpp"
 #include "../../config/config_generic_obj_detector.hpp"
 
 #include "../generic_obj_detector.hpp"
@@ -35,19 +35,18 @@ using namespace flt::cvt::tracker;
 
 struct fall_down_obj_det_worker::impl
 {
-    impl(config_fall_down_obj_det const &config) :
+    impl(config_fall_down_obj_det_worker const &config) :
         config_{config}
     {
         config_generic_obj_detector gconfig;
-        gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
-        gconfig.config_select_object_to_detect_ = config_.config_select_object_to_detect_;
+        gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;        
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
     }
 
     bool check_alarm_condition(track_results const &pass_results, QImage const &img)
     {
         bool alarm_on = false;
-        if(config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
+        /*if(config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
             for(auto const &val : pass_results.track_durations_){
                 if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
                     !written_id_.contains(val.id_)){
@@ -55,7 +54,7 @@ struct fall_down_obj_det_worker::impl
                     written_id_.insert(val.id_);
                 }
             }
-        }
+        }//*/
 
         return alarm_on;
     }
@@ -106,7 +105,7 @@ struct fall_down_obj_det_worker::impl
     }
 
 
-    config_fall_down_obj_det config_;
+    config_fall_down_obj_det_worker config_;
     size_t im_ids_ = 0;
     std::vector<std::string> names_;
     std::unique_ptr<generic_obj_detector> obj_det_;
@@ -117,7 +116,7 @@ struct fall_down_obj_det_worker::impl
     std::set<int> written_id_;
 };
 
-fall_down_obj_det_worker::fall_down_obj_det_worker(const config_fall_down_obj_det &config, QObject *parent) :
+fall_down_obj_det_worker::fall_down_obj_det_worker(const config_fall_down_obj_det_worker &config, QObject *parent) :
     flt::mm::frame_process_base_worker(2, parent),
     impl_{std::make_unique<impl>(std::move(config))}
 {
