@@ -7,6 +7,8 @@ namespace Ui {
 class widget_fall_down_condition;
 }
 
+struct config_fall_down_condition;
+
 class widget_fall_down_condition : public QWidget
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     explicit widget_fall_down_condition(QWidget *parent = nullptr);
     ~widget_fall_down_condition();
 
+    config_fall_down_condition get_config() const;
     QJsonObject get_states() const;
 
     void set_states(QJsonObject const &val);

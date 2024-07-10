@@ -4,6 +4,7 @@
 #include "../obj_detect/widget_object_detect_model_select.hpp"
 
 #include "../../algo/fall_down_detect/fall_down_obj_det_worker.hpp"
+#include "../../config/config_fall_down_condition.hpp"
 #include "../../config/config_fall_down_obj_det_worker.hpp"
 #include "../../global/global_keywords.hpp"
 
@@ -145,6 +146,7 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
     ui->stackedWidget->setCurrentWidget(widget_stream_player_);
 
     config_fall_down_obj_det_worker config;
+    config.config_fall_down_condition_ = widget_fall_down_condition_->get_config();
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();    
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();    
 

@@ -1,6 +1,8 @@
 #include "widget_fall_down_condition.hpp"
 #include "ui_widget_fall_down_condition.h"
 
+#include "../../config/config_fall_down_condition.hpp"
+
 #include <QJsonObject>
 
 namespace{
@@ -21,6 +23,15 @@ widget_fall_down_condition::widget_fall_down_condition(QWidget *parent) :
 widget_fall_down_condition::~widget_fall_down_condition()
 {
     delete ui;
+}
+
+config_fall_down_condition widget_fall_down_condition::get_config() const
+{
+    config_fall_down_condition config;
+    config.show_width_height_ratio_ = false;
+    config.width_height_ratio_ = static_cast<float>(ui->doubleSpinBoxWidthHeightRatio->value());
+
+    return config;
 }
 
 QJsonObject widget_fall_down_condition::get_states() const
