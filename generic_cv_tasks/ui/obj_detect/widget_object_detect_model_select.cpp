@@ -20,6 +20,7 @@ struct model_types
     QString const nanodet_plus_m_416_ = "nanodet_plus_m_416";
     QString const nanodet_plus_m_1_5x_320_ = "nanodet_plus_m_1_5x_320";
     QString const nanodet_plus_m_1_5x_416_ = "nanodet_plus_m_1_5x_416";
+    QString const yolo_v8_n_416 = "yolo_v8_n_416";
 
     int get_ids(QString const &val) const
     {
@@ -39,6 +40,10 @@ struct model_types
             return 3;
         }
 
+        if(val == yolo_v8_n_416){
+            return 4;
+        }
+
         return 1;
     }
 };
@@ -56,6 +61,7 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_416_);
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_320_);
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_416_);
+    ui->comboBoxSelectModel->addItem(mt.yolo_v8_n_416);
     ui->comboBoxSelectModel->setCurrentIndex(1);
 
     ui->groupBoxYolox->setVisible(false);
@@ -106,8 +112,7 @@ void widget_object_detect_model_select::set_states(const QJsonObject &val)
     if(val.contains(state_obj_det_confidence())){
         ui->spinBoxConfidence->setValue(val[state_obj_det_confidence()].toInt());
     }
-    if(val.contains(state_obj_det_model_type())){
-        //set_model_index(model_types().get_ids(val[state_obj_det_model_type].toString()));
+    if(val.contains(state_obj_det_model_type())){        
         ui->comboBoxSelectModel->setCurrentIndex(model_types().get_ids(val[state_obj_det_model_type()].toString()));
     }
     if(val.contains(state_obj_det_nms())){

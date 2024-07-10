@@ -5,6 +5,7 @@
 #include "../global/global_keywords.hpp"
 
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
+#include <cv_algo/obj_detect/yolo_v8/yolo_v8.hpp>
 
 #include <QDebug>
 
@@ -61,6 +62,13 @@ struct generic_obj_detector::impl
             auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 416);
             net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
+            break;
+        }
+        case dme::yolo_v8_n_416:{
+            qDebug()<<"load yolo_v8_n_416";
+            auto const param = std::format("{}yolov8n.param", model_root);
+            auto const bin = std::format("{}yolov8n.bin", model_root);
+            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         }
