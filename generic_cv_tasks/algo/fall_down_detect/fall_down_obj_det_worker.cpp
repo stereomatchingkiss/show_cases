@@ -95,8 +95,8 @@ struct fall_down_obj_det_worker::impl
         for(auto const &val : det_results){
             det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
             auto const wh_ratio = width_height_ratio(val);
-            qDebug()<<"wh ratio = "<<wh_ratio<<", "<<config_.width_height_ratio_;
-            if(wh_ratio >= config_.width_height_ratio_){
+            qDebug()<<"wh ratio = "<<wh_ratio<<", "<<config_.config_fall_down_condition_.width_height_ratio_;
+            if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}:fall", names_[val.label_], val.track_id_));
             }else{
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
