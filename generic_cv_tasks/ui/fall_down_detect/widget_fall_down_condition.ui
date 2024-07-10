@@ -55,13 +55,13 @@
      <item>
       <widget class="QDoubleSpinBox" name="doubleSpinBoxWidthHeightRatio">
        <property name="minimum">
-        <double>2.000000000000000</double>
+        <double>1.000000000000000</double>
        </property>
        <property name="maximum">
         <double>6.000000000000000</double>
        </property>
        <property name="value">
-        <double>4.000000000000000</double>
+        <double>1.200000000000000</double>
        </property>
       </widget>
      </item>
