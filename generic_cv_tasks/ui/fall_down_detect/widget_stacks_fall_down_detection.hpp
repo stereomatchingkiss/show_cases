@@ -41,6 +41,7 @@ private slots:
 private:
     void create_frame_capture();
     void init_stacked_widget();
+    void next_page_is_roi_selection();
     void next_page_is_widget_stream_player();
     void update_position();
 

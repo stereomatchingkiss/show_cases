@@ -92,7 +92,22 @@ void widget_stacks_fall_down_detection::set_states(const QJsonObject &val)
 
 void widget_stacks_fall_down_detection::on_pushButtonPrev_clicked()
 {
+    ui->pushButtonNext->setVisible(true);
+    ui->pushButtonPrev->setVisible(true);
 
+    if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
+        emit switch_to_task_selection_page();
+    }else if(ui->stackedWidget->currentWidget() == widget_fall_down_condition_){
+        ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
+    }else if(ui->stackedWidget->currentWidget() == widget_fall_down_obj_det_alert_){
+        ui->stackedWidget->setCurrentWidget(widget_fall_down_condition_);
+    }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
+        ui->stackedWidget->setCurrentWidget(widget_fall_down_obj_det_alert_);
+    }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
+        ui->stackedWidget->setCurrentWidget(widget_source_selection_);
+    }else if(ui->stackedWidget->currentWidget() == widget_stream_player_){
+        next_page_is_roi_selection();
+    }
 }
 
 void widget_stacks_fall_down_detection::on_pushButtonNext_clicked()
@@ -106,13 +121,7 @@ void widget_stacks_fall_down_detection::on_pushButtonNext_clicked()
     }else if(ui->stackedWidget->currentWidget() == widget_fall_down_obj_det_alert_){
         ui->stackedWidget->setCurrentWidget(widget_source_selection_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
-        if(!widget_source_selection_->get_is_valid_source()){
-            msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
-            msg_box_->show();
-        }else{
-            ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
-            fcreator_->create_roi_select_stream(widget_roi_selection_);
-        }
+        next_page_is_roi_selection();
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
         next_page_is_widget_stream_player();
         ui->stackedWidget->setCurrentWidget(widget_stream_player_);
@@ -139,6 +148,17 @@ void widget_stacks_fall_down_detection::init_stacked_widget()
     ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
 
     fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
+}
+
+void widget_stacks_fall_down_detection::next_page_is_roi_selection()
+{
+    if(!widget_source_selection_->get_is_valid_source()){
+        msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
+        msg_box_->show();
+    }else{
+        ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
+        fcreator_->create_roi_select_stream(widget_roi_selection_);
+    }
 }
 
 void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
