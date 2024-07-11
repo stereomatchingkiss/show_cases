@@ -49,7 +49,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="radioButtonWarningPeriodic">
         <property name="text">
-         <string>If the same person falls, warning issued periodic(sec)</string>
+         <string>If the same person falls, warning issue periodic(sec)</string>
         </property>
        </widget>
       </item>

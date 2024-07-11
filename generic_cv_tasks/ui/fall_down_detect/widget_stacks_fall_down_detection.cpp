@@ -40,6 +40,7 @@ using namespace flt::mm;
 namespace{
 
 inline QString state_widget_fall_down_condition(){ return "state_widget_fall_down_condition"; }
+inline QString state_widget_fall_down_obj_det_alert(){ return "state_widget_fall_down_obj_det_alert"; }
 
 }
 
@@ -63,6 +64,7 @@ QJsonObject widget_stacks_fall_down_detection::get_states() const
     QJsonObject obj;
     global_keywords const gk;
     obj[state_widget_fall_down_condition()] = widget_fall_down_condition_->get_states();
+    obj[state_widget_fall_down_obj_det_alert()] = widget_fall_down_obj_det_alert_->get_states();
     obj[gk.state_widget_object_detect_model_select()] = widget_object_detect_model_select_->get_states();
     obj[gk.state_roi()] = widget_roi_selection_->get_states();
     obj[gk.state_widget_source_selection()] = widget_source_selection_->get_states();
@@ -78,6 +80,9 @@ void widget_stacks_fall_down_detection::set_states(const QJsonObject &val)
 
     if(val.contains(state_widget_fall_down_condition())){
         widget_fall_down_condition_->set_states(val[state_widget_fall_down_condition()].toObject());
+    }
+    if(val.contains(state_widget_fall_down_obj_det_alert())){
+        widget_fall_down_obj_det_alert_->set_states(val[state_widget_fall_down_obj_det_alert()].toObject());
     }
     if(val.contains(gk.state_widget_object_detect_model_select())){
         widget_object_detect_model_select_->set_states(val[gk.state_widget_object_detect_model_select()].toObject());
