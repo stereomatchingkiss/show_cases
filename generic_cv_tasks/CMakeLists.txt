@@ -155,6 +155,7 @@ SET(FALL_DOWN_DETECT_SOURCES
     algo/fall_down_detect/fall_down_obj_det_worker.hpp algo/fall_down_detect/fall_down_obj_det_worker.cpp
 
     config/config_fall_down_condition.hpp
+    config/config_fall_down_obj_det_alert.hpp
     config/config_fall_down_obj_det_worker.hpp
 
     ui/fall_down_detect/widget_fall_down_obj_det_alert.hpp ui/fall_down_detect/widget_fall_down_obj_det_alert.cpp ui/fall_down_detect/widget_fall_down_obj_det_alert.ui
@@ -215,7 +216,7 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
