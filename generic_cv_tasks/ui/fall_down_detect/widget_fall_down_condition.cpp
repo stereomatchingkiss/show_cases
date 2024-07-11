@@ -8,7 +8,7 @@
 namespace{
 
 inline QString state_hw_ratio(){ return "state_hw_ratio"; }
-
+inline QString state_number_of_consecutive_falls() { return "state_number_of_consecutive_falls"; }
 inline QString state_version(){ return "state_version"; }
 
 }
@@ -28,6 +28,7 @@ widget_fall_down_condition::~widget_fall_down_condition()
 config_fall_down_condition widget_fall_down_condition::get_config() const
 {
     config_fall_down_condition config;
+    config.number_of_consecutive_falls_ = ui->spinBoxOfConsecutiveFalls->value();
     config.show_width_height_ratio_ = false;
     config.width_height_ratio_ = static_cast<float>(ui->doubleSpinBoxWidthHeightRatio->value());
 
@@ -37,6 +38,7 @@ config_fall_down_condition widget_fall_down_condition::get_config() const
 QJsonObject widget_fall_down_condition::get_states() const
 {
     QJsonObject obj;
+    obj[state_number_of_consecutive_falls()] = ui->spinBoxOfConsecutiveFalls->value();
     obj[state_hw_ratio()] = ui->doubleSpinBoxWidthHeightRatio->value();
     obj[state_version()] = "1.0";
 
@@ -45,6 +47,10 @@ QJsonObject widget_fall_down_condition::get_states() const
 
 void widget_fall_down_condition::set_states(const QJsonObject &val)
 {
+    if(val.contains(state_number_of_consecutive_falls())){
+        ui->spinBoxOfConsecutiveFalls->setValue(val[state_number_of_consecutive_falls()].toInt());
+    }
+
     if(val.contains(state_hw_ratio())){
         ui->doubleSpinBoxWidthHeightRatio->setValue(val[state_hw_ratio()].toDouble());
     }

@@ -85,6 +85,13 @@ struct fall_down_obj_det_worker::impl
         return std::abs(width/(height + 0.001f));
     }
 
+    bool check_is_fall_down(int id)
+    {
+
+
+        return false;
+    }
+
     auto track_obj(cv::Mat &mat)
     {        
         auto det_results = obj_det_->predict(mat);
@@ -107,9 +114,10 @@ struct fall_down_obj_det_worker::impl
     }
 
 
-    config_fall_down_obj_det_worker config_;    
+    config_fall_down_obj_det_worker config_;
+    std::map<int, int> fall_down_counter_;
     std::vector<std::string> names_;
-    std::unique_ptr<generic_obj_detector> obj_det_;    
+    std::unique_ptr<generic_obj_detector> obj_det_;
     cv::Rect scaled_roi_;
     BYTETracker tracker_;
 };
