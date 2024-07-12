@@ -51,45 +51,19 @@ struct fall_down_obj_det_worker::impl
         gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
         gconfig.config_select_object_to_detect_.selected_object_.insert("person");
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
-    }
-
-    bool check_alarm_condition(track_results const &pass_results, QImage const &img)
-    {
-        bool alarm_on = false;
-        /*if(config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
-            for(auto const &val : pass_results.track_durations_){
-                if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
-                    !written_id_.contains(val.id_)){
-                    alarm_on = true;
-                    written_id_.insert(val.id_);
-                }
-            }
-        }//*/
-
-        return alarm_on;
     }    
 
     void change_alert_sender_config(const config_alert_sender &val)
     {
         config_.config_alert_sender_ = val;
-    }        
-
-    float width_height_ratio(box_info const &val) const noexcept
-    {
-        auto const tl = val.tl();
-        auto const br = val.br();
-        //qDebug()<<std::format("{}:{},{}:{}", tl.x, tl.y, br.x, br.y).c_str();
-        auto const width = br.x - tl.x;
-        auto const height = br.y - tl.y;
-
-        return std::abs(width/(height + 0.001f));
     }
 
-    bool check_is_fall_down(int id)
+    bool update_fall_down_counter(int id)
     {
         active_id_.insert(id);
+        qDebug()<<"number_of_consecutive_falls_ = "<<config_.config_fall_down_condition_.number_of_consecutive_falls_;
         if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
-            ++(it->second.continuous_active_);
+            ++it->second.continuous_active_;
             it->second.continuous_non_active_ = 0;
 
             if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
@@ -109,7 +83,7 @@ struct fall_down_obj_det_worker::impl
     {
         for(auto it = std::begin(fall_down_counter_); it != std::end(fall_down_counter_);){
             if(!active_id_.contains(it->first)){
-                ++(it->second.continuous_non_active_);
+                ++it->second.continuous_non_active_;
                 if(it->second.continuous_non_active_ > lost_track_threshold_){
                     fall_down_counter_.erase(it++);
                 }else{
@@ -129,13 +103,14 @@ struct fall_down_obj_det_worker::impl
 
         det_results = byte_track_obj_to_box_info(track_ptr_vec);
         active_id_.clear();
+        can_send_alert_ = false;
         for(auto const &val : det_results){
             det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
-            auto const wh_ratio = width_height_ratio(val);
-            check_is_fall_down(val.track_id_);
-
-            qDebug()<<"wh ratio = "<<wh_ratio<<", "<<config_.config_fall_down_condition_.width_height_ratio_;
+            auto const wh_ratio = width_height_ratio(val);            
             if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
+                if(update_fall_down_counter(val.track_id_)){
+                    can_send_alert_ = true;
+                }
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}:fall", names_[val.label_], val.track_id_));
             }else{
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
@@ -147,6 +122,16 @@ struct fall_down_obj_det_worker::impl
         return det_results;
     }
 
+    float width_height_ratio(box_info const &val) const noexcept
+    {
+        auto const tl = val.tl();
+        auto const br = val.br();
+        auto const width = br.x - tl.x;
+        auto const height = br.y - tl.y;
+
+        return std::abs(width/(height + 0.001f));
+    }
+
     struct fall_down_count
     {
         int continuous_active_ = 1;
@@ -154,6 +139,7 @@ struct fall_down_obj_det_worker::impl
     };
 
     std::set<int> active_id_;
+    bool can_send_alert_ = false;
     config_fall_down_obj_det_worker config_;
     std::map<int, fall_down_count> fall_down_counter_;
     static int constexpr lost_track_threshold_ = 300;
@@ -177,7 +163,7 @@ fall_down_obj_det_worker::~fall_down_obj_det_worker()
 
 void fall_down_obj_det_worker::change_alert_sender_config(const config_alert_sender &val)
 {
-
+    impl_->change_alert_sender_config(val);
 }
 
 void fall_down_obj_det_worker::process_results(std::any frame)
@@ -187,6 +173,7 @@ void fall_down_obj_det_worker::process_results(std::any frame)
 
     auto const det_results = impl_->track_obj(mat);
     generic_worker_results results;
+    results.alarm_on_ = impl_->can_send_alert_;
 
     if(impl_->config_.roi_.isValid()){
         impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
