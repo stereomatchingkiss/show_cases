@@ -87,9 +87,38 @@ struct fall_down_obj_det_worker::impl
 
     bool check_is_fall_down(int id)
     {
+        active_id_.insert(id);
+        if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
+            ++(it->second.continuous_active_);
+            it->second.continuous_non_active_ = 0;
 
+            if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
+                it->second.continuous_active_ = 0;
+                return true;
+            }
+        }else{
+            fall_down_counter_.insert({id, {}});
+
+            return 1 >= config_.config_fall_down_condition_.number_of_consecutive_falls_;
+        }
 
         return false;
+    }
+
+    void remove_id_lost_track()
+    {
+        for(auto it = std::begin(fall_down_counter_); it != std::end(fall_down_counter_);){
+            if(!active_id_.contains(it->first)){
+                ++(it->second.continuous_non_active_);
+                if(it->second.continuous_non_active_ > lost_track_threshold_){
+                    fall_down_counter_.erase(it++);
+                }else{
+                    ++it;
+                }
+            }else{
+                ++it;
+            }
+        }
     }
 
     auto track_obj(cv::Mat &mat)
@@ -99,9 +128,12 @@ struct fall_down_obj_det_worker::impl
         auto const track_ptr_vec = tracker_.update(track_obj);
 
         det_results = byte_track_obj_to_box_info(track_ptr_vec);
+        active_id_.clear();
         for(auto const &val : det_results){
             det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
             auto const wh_ratio = width_height_ratio(val);
+            check_is_fall_down(val.track_id_);
+
             qDebug()<<"wh ratio = "<<wh_ratio<<", "<<config_.config_fall_down_condition_.width_height_ratio_;
             if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}:fall", names_[val.label_], val.track_id_));
@@ -110,12 +142,21 @@ struct fall_down_obj_det_worker::impl
             }
         }
 
+        remove_id_lost_track();
+
         return det_results;
     }
 
+    struct fall_down_count
+    {
+        int continuous_active_ = 1;
+        int continuous_non_active_ = 0;
+    };
 
+    std::set<int> active_id_;
     config_fall_down_obj_det_worker config_;
-    std::map<int, int> fall_down_counter_;
+    std::map<int, fall_down_count> fall_down_counter_;
+    static int constexpr lost_track_threshold_ = 300;
     std::vector<std::string> names_;
     std::unique_ptr<generic_obj_detector> obj_det_;
     cv::Rect scaled_roi_;
