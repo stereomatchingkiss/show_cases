@@ -1,12 +1,14 @@
 #include "widget_stacks_fall_down_detection.hpp"
 #include "ui_widget_stacks_fall_down_detection.h"
 
+#include "../dialog_alert_sender_settings.hpp"
 #include "../obj_detect/widget_object_detect_model_select.hpp"
 
 #include "../../algo/fall_down_detect/fall_down_obj_det_worker.hpp"
 #include "../../config/config_fall_down_condition.hpp"
 #include "../../config/config_fall_down_obj_det_worker.hpp"
 #include "../../global/global_keywords.hpp"
+#include "../../global/global_object.hpp"
 
 #include "../frame_capture_creator.hpp"
 #include "../widget_roi_selection.hpp"
@@ -171,26 +173,37 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
     ui->stackedWidget->setCurrentWidget(widget_stream_player_);
 
     config_fall_down_obj_det_worker config;
+    config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
     config.config_fall_down_condition_ = widget_fall_down_condition_->get_config();
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();    
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();    
 
     auto worker = new fall_down_obj_det_worker(std::move(config));
-    //connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
-    //        worker, &nanodet_worker::change_alert_sender_config);
-    //connect(worker, &fall_down_obj_det_worker::send_alert_by_binary, this, &widget_stacks_fall_down_detection::send_alert_by_binary);
-    //connect(worker, &fall_down_obj_det_worker::send_alert_by_text, this, &widget_stacks_fall_down_detection::send_alert_by_text);
+    connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
+            worker, &fall_down_obj_det_worker::change_alert_sender_config);
+    connect(worker, &fall_down_obj_det_worker::send_alert_by_binary, this, &widget_stacks_fall_down_detection::send_alert_by_binary);
+    connect(worker, &fall_down_obj_det_worker::send_alert_by_text, this, &widget_stacks_fall_down_detection::send_alert_by_text);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
-            widget_stream_player_, &widget_stream_player::display_frame);//*/
+            widget_stream_player_, &widget_stream_player::display_frame);
 
-    //if(get_widget_alert_sender_settings().get_config().activate_){
-    //    emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
-    //}
+    if(get_widget_alert_sender_settings().get_config().activate_){
+        emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
+    }
 
     fcreator_->create_frame_capture();
     emit process_controller->start();
     fcreator_->get_sfwmw()->add_listener(process_controller, this);
-    fcreator_->get_sfwmw()->start();//*/
+    fcreator_->get_sfwmw()->start();
+}
+
+void widget_stacks_fall_down_detection::send_alert_by_binary(const QByteArray &msg)
+{
+    emit get_websocket_controller().send_binary_message(msg);
+}
+
+void widget_stacks_fall_down_detection::send_alert_by_text(const QString &msg)
+{
+    emit get_websocket_controller().send_text_message(msg);
 }
