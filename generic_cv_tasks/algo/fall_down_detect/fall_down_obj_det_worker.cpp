@@ -54,35 +54,63 @@ struct fall_down_obj_det_worker::impl
         gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
         gconfig.config_select_object_to_detect_.selected_object_.insert("person");
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
-    }        
+    }
 
     void change_alert_sender_config(const config_alert_sender &val)
     {
         config_.config_alert_sender_ = val;
     }
 
-    void save_alert_info(QImage const &img)
+    bool save_alert_info(QImage const &img)
     {
+        bool can_send_alert = false;
         if(can_send_alert_ && !fall_down_counter_.empty()){
+            using wt = fall_down_warning_type;
+            for(auto it = std::begin(fall_down_counter_); it != std::end(fall_down_counter_); ++it){
+                qDebug()<<"alert id = "<<it->first;
+                if(it->second.can_issued_){
+                    qDebug()<<__func__<<":0";
+                    if(config_.config_fall_down_obj_det_alert_.warning_type_ == wt::issue_a_warning &&
+                        it->second.warning_issued_ == false){
+                        qDebug()<<__func__<<":1";
+                        can_send_alert = true;
+                    }else if(config_.config_fall_down_obj_det_alert_.warning_type_ == wt::issue_warning_periodic){
+                        qDebug()<<__func__<<":2";
+                        can_send_alert = true;
+                    }
+
+                    qDebug()<<__func__<<":3";
+                    it->second.warning_issued_ = true;
+                }
+            }
+        }
+
+        if(can_send_alert){
             alert_save_.save_to_json(img);
         }
+
+        return can_send_alert;
     }
 
     bool update_fall_down_counter(int id)
     {
-        active_id_.insert(id);        
+        active_id_.insert(id);
         if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
             ++it->second.continuous_active_;
             it->second.continuous_non_active_ = 0;
 
             if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
-                it->second.continuous_active_ = 0;
+                it->second.can_issued_ = true;
+                it->second.continuous_active_ = 0;                
                 return true;
             }
         }else{
             fall_down_counter_.insert({id, {}});
 
-            return 1 >= config_.config_fall_down_condition_.number_of_consecutive_falls_;
+            if(1 >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
+                it->second.can_issued_ = true;
+                return true;
+            }
         }
 
         return false;
@@ -143,8 +171,10 @@ struct fall_down_obj_det_worker::impl
 
     struct fall_down_count
     {
+        bool can_issued_ = false;
         int continuous_active_ = 1;
         int continuous_non_active_ = 0;
+        bool warning_issued_ = false;
     };
 
     std::set<int> active_id_;
