@@ -67,8 +67,7 @@ void nanodet_alert_save::save_to_json(const flt::cvt::tracker::track_duration &v
 {
     if(save_reports_ || send_alert_){
         if(im_name_.isEmpty()){
-            im_name_ = create_fname();
-            ++im_idx_;
+            im_name_ = create_fname();            
         }        
         QJsonObject jobj;
         jobj["image_name"] = im_name_;
