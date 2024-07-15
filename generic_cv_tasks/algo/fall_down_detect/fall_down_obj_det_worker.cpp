@@ -66,20 +66,21 @@ struct fall_down_obj_det_worker::impl
         bool can_send_alert = false;
         if(can_send_alert_ && !fall_down_counter_.empty()){
             using wt = fall_down_warning_type;
+            auto const cdt = QDateTime::currentDateTime();
             for(auto it = std::begin(fall_down_counter_); it != std::end(fall_down_counter_); ++it){
-                qDebug()<<"alert id = "<<it->first;
                 if(it->second.can_issued_){
-                    qDebug()<<__func__<<":0";
-                    if(config_.config_fall_down_obj_det_alert_.warning_type_ == wt::issue_a_warning &&
+                    auto const &config_alert = config_.config_fall_down_obj_det_alert_;
+                    if(config_alert.warning_type_ == wt::issue_a_warning &&
                         it->second.warning_issued_ == false){
-                        qDebug()<<__func__<<":1";
                         can_send_alert = true;
-                    }else if(config_.config_fall_down_obj_det_alert_.warning_type_ == wt::issue_warning_periodic){
-                        qDebug()<<__func__<<":2";
-                        can_send_alert = true;
+                    }else if(config_alert.warning_type_ == wt::issue_warning_periodic){
+                        if(!it->second.current_dt_.isValid() ||
+                            it->second.current_dt_.secsTo(cdt) > config_alert.warning_periodic_){
+                            can_send_alert = true;
+                            it->second.current_dt_ = cdt;
+                        }
                     }
 
-                    qDebug()<<__func__<<":3";
                     it->second.warning_issued_ = true;
                 }
             }
@@ -101,7 +102,7 @@ struct fall_down_obj_det_worker::impl
 
             if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
                 it->second.can_issued_ = true;
-                it->second.continuous_active_ = 0;                
+                it->second.continuous_active_ = 0;
                 return true;
             }
         }else{
@@ -142,9 +143,8 @@ struct fall_down_obj_det_worker::impl
         active_id_.clear();
         can_send_alert_ = false;
         for(auto const &val : det_results){
-            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
-            auto const wh_ratio = width_height_ratio(val);            
-            if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
+            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));            
+            if(width_height_ratio(val) >= config_.config_fall_down_condition_.width_height_ratio_){
                 if(update_fall_down_counter(val.track_id_)){
                     can_send_alert_ = true;
                 }
@@ -152,7 +152,7 @@ struct fall_down_obj_det_worker::impl
             }else{
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
             }
-        }                
+        }
 
         remove_id_lost_track();
 
@@ -174,6 +174,7 @@ struct fall_down_obj_det_worker::impl
         bool can_issued_ = false;
         int continuous_active_ = 1;
         int continuous_non_active_ = 0;
+        QDateTime current_dt_;
         bool warning_issued_ = false;
     };
 
