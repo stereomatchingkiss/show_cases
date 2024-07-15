@@ -31,6 +31,13 @@ widget_fall_down_obj_det_alert::~widget_fall_down_obj_det_alert()
 config_fall_down_obj_det_alert widget_fall_down_obj_det_alert::get_config() const
 {
     config_fall_down_obj_det_alert config;
+    if(ui->radioButtonWarningPeriodic->isChecked()){
+        config.warning_type_ = fall_down_warning_type::issue_warning_periodic;
+    }else{
+        config.warning_type_ = fall_down_warning_type::issue_a_warning;
+    }
+
+    config.warning_periodic_ = ui->spinBoxWarningPeriodic->value();
 
     return config;
 }
