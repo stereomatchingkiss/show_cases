@@ -22,6 +22,11 @@ QString global_keywords::action_classify_alert_path() const
     return generic_cv_tasks_assets() + "/alert/action_classify/";
 }
 
+QString global_keywords::fall_down_obj_det_alert_path() const
+{
+    return generic_cv_tasks_assets() + "/alert/fall_down_obj_det/";
+}
+
 QString global_keywords::cam_config_path() const
 {
     return generic_cv_tasks_assets() + "/cam_config/";
