@@ -9,6 +9,8 @@
 #include "../generic_obj_detector.hpp"
 #include "../generic_worker_results.hpp"
 
+#include "fall_down_det_alert_save.hpp"
+
 #include <cv_algo/converter/box_type_converter.hpp>
 #include <cv_algo/converter/qt_and_cv_rect_converter.hpp>
 
@@ -39,29 +41,36 @@ using namespace flt::cvt::tracker;
 struct fall_down_obj_det_worker::impl
 {
     impl(config_fall_down_obj_det_worker const &config) :
+        alert_save_(global_keywords().coco_names()),
         config_{config},
         names_{global_keywords().coco_names()},
         tracker_{30,
                  30,
                  config_.config_object_detect_model_select_.confidence_,
                  std::min(config_.config_object_detect_model_select_.confidence_ + 0.05f, 0.8f),
-                   0.8f}
+                 0.8f}
     {
         config_generic_obj_detector gconfig;
         gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
         gconfig.config_select_object_to_detect_.selected_object_.insert("person");
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
-    }    
+    }        
 
     void change_alert_sender_config(const config_alert_sender &val)
     {
         config_.config_alert_sender_ = val;
     }
 
+    void save_alert_info(QImage const &img)
+    {
+        if(can_send_alert_ && !fall_down_counter_.empty()){
+            alert_save_.save_to_json(img);
+        }
+    }
+
     bool update_fall_down_counter(int id)
     {
-        active_id_.insert(id);
-        qDebug()<<"number_of_consecutive_falls_ = "<<config_.config_fall_down_condition_.number_of_consecutive_falls_;
+        active_id_.insert(id);        
         if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
             ++it->second.continuous_active_;
             it->second.continuous_non_active_ = 0;
@@ -115,7 +124,7 @@ struct fall_down_obj_det_worker::impl
             }else{
                 det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
             }
-        }
+        }                
 
         remove_id_lost_track();
 
@@ -139,6 +148,7 @@ struct fall_down_obj_det_worker::impl
     };
 
     std::set<int> active_id_;
+    fall_down_det_alert_save alert_save_;
     bool can_send_alert_ = false;
     config_fall_down_obj_det_worker config_;
     std::map<int, fall_down_count> fall_down_counter_;
@@ -181,6 +191,8 @@ void fall_down_obj_det_worker::process_results(std::any frame)
             flt::cvt::utils::draw_empty_rect(mat, impl_->scaled_roi_);
         }
     }
+
+    impl_->save_alert_info(qimg);
 
     //do not move it, since in the future this algo may need to support multi-stream
     results.mat_ = qimg;
