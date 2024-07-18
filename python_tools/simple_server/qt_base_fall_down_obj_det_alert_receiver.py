@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QByteArray, QDateTime, QDir, QFile, QJsonDocument, QIODevice, QTextStream
+from PyQt5.QtCore import QByteArray, QCoreApplication, QDateTime, QDir, QFile, QJsonDocument, QIODevice, QTextStream, QSettings
 from PyQt5.QtNetwork import QHostAddress
 from PyQt5.QtWebSockets import QWebSocketServer
 from PyQt5.QtWidgets import QApplication, QGridLayout, QLabel, QLineEdit, QPushButton, QWidget, QSizePolicy, QSpacerItem, QVBoxLayout
@@ -43,7 +43,7 @@ class simple_websocket_server(QWidget):
         self.glayout.addWidget(self.close_button, 2, 0, 1, 2)
 
         self.close_button.setText("Close alert server")
-        self.close_button.clicked.connect(self.close)
+        self.close_button.clicked.connect(self.close_widget)
 
         self.vbox_layout = QVBoxLayout(self)
         self.vbox_layout.addLayout(self.glayout)
@@ -51,9 +51,22 @@ class simple_websocket_server(QWidget):
         self.spacer = QSpacerItem(100, 100, QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.vbox_layout.addItem(self.spacer)
 
+        settings = QSettings()
+        if settings.contains("email_address"):
+            self.line_email.setText(settings.value("email_address"))
+        if settings.contains("email_password"):
+            self.line_password.setText(settings.value("email_password"))
+
         if(self.server.listen(QHostAddress.Any, port)):
             print("Alert server listening on port: ", port)
             self.server.newConnection.connect(self.on_new_connection)
+
+    def close_widget(self):
+        settings = QSettings()
+        settings.setValue("email_address", self.line_email.text())
+        settings.setValue("email_password", self.line_password.text())
+
+        self.close()
 
     def on_new_connection(self):
 
@@ -131,6 +144,10 @@ class simple_websocket_server(QWidget):
 
 def main():
     app = QApplication(sys.argv)
+
+    QCoreApplication.setOrganizationName("show_cases");
+    QCoreApplication.setOrganizationDomain("show.com");
+    QCoreApplication.setApplicationName("fall_down_alert");
 
     win = simple_websocket_server()
     win.resize(600, 100)
