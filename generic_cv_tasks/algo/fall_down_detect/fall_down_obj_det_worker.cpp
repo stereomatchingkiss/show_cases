@@ -54,11 +54,15 @@ struct fall_down_obj_det_worker::impl
         gconfig.config_object_detect_model_select_ = config_.config_object_detect_model_select_;
         gconfig.config_select_object_to_detect_.selected_object_.insert("person");
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
+
+        alert_save_.change_alert_sender_config(config_.config_alert_sender_);
     }
 
-    void change_alert_sender_config(const config_alert_sender &val)
+    void change_alert_sender_config(config_alert_sender const &val)
     {
+        qDebug()<<__func__;
         config_.config_alert_sender_ = val;
+        alert_save_.change_alert_sender_config(val);
     }
 
     bool save_alert_info(QImage const &img)
@@ -221,12 +225,14 @@ void fall_down_obj_det_worker::process_results(std::any frame)
         if(!impl_->scaled_roi_.empty()){
             flt::cvt::utils::draw_empty_rect(mat, impl_->scaled_roi_);
         }
-    }
+    }    
 
-    impl_->save_alert_info(qimg);
+    if(impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){
+        emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+    }
 
     //do not move it, since in the future this algo may need to support multi-stream
     results.mat_ = qimg;
 
-    emit send_process_results(std::move(results));//*/
+    emit send_process_results(std::move(results));
 }

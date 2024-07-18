@@ -67,9 +67,7 @@ void fall_down_det_alert_save::save_to_json(QImage const &img)
         im_name_ = create_fname();
         QJsonObject jobj;
         jobj["image_name"] = im_name_;
-#ifdef WASM_BUILD
         jobj["image"] = QString(flt::to_base64_img(img));
-#endif
         jobj["time"] = QDateTime::currentDateTime().toString("yyyy_MM_dd,hh_mm_ss");
 
         alert_info_ = QJsonDocument(jobj).toJson(QJsonDocument::Compact);

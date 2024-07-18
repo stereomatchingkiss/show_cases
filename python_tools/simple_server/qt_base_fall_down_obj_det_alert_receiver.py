@@ -4,9 +4,10 @@ from PyQt5.QtWebSockets import QWebSocketServer
 from PyQt5.QtWidgets import QApplication, QGridLayout, QLabel, QLineEdit, QPushButton, QWidget, QSizePolicy, QSpacerItem, QVBoxLayout
 from PyQt5.QtGui import QImage
 
+from send_email import send_multipart_email
+
 import argparse
 import json
-import smtplib, ssl
 import sys
 
 ap = argparse.ArgumentParser()
@@ -29,10 +30,16 @@ class simple_websocket_server(QWidget):
 
         self.label_email = QLabel("Email address")
         self.label_password = QLabel("Password")
+        self.label_send_to = QLabel("Send to")
 
         self.line_email = QLineEdit()
         self.line_password = QLineEdit()
+        self.line_send_to = QLineEdit()
         self.line_password.setEchoMode(QLineEdit.Password)
+
+        self.line_email.setPlaceholderText("aaa@gmail.com")
+        self.line_password.setPlaceholderText("aaaa bbbb cccc dddd")
+        self.line_send_to.setPlaceholderText("your@gmail.com")
 
         self.close_button = QPushButton()
 
@@ -40,10 +47,12 @@ class simple_websocket_server(QWidget):
         self.glayout.addWidget(self.line_email, 0, 1)
         self.glayout.addWidget(self.label_password, 1, 0)
         self.glayout.addWidget(self.line_password, 1, 1)
-        self.glayout.addWidget(self.close_button, 2, 0, 1, 2)
+        self.glayout.addWidget(self.label_send_to, 2, 0)
+        self.glayout.addWidget(self.line_send_to, 2, 1)
+        self.glayout.addWidget(self.close_button, 3, 0, 1, 2)
 
         self.close_button.setText("Close alert server")
-        self.close_button.clicked.connect(self.close_widget)
+        self.close_button.clicked.connect(self.close)
 
         self.vbox_layout = QVBoxLayout(self)
         self.vbox_layout.addLayout(self.glayout)
@@ -56,17 +65,25 @@ class simple_websocket_server(QWidget):
             self.line_email.setText(settings.value("email_address"))
         if settings.contains("email_password"):
             self.line_password.setText(settings.value("email_password"))
+        if settings.contains("send_to"):
+            self.line_send_to.setText(settings.value("send_to"))
 
         if(self.server.listen(QHostAddress.Any, port)):
             print("Alert server listening on port: ", port)
             self.server.newConnection.connect(self.on_new_connection)
 
-    def close_widget(self):
+    def save_settings(self):
         settings = QSettings()
         settings.setValue("email_address", self.line_email.text())
         settings.setValue("email_password", self.line_password.text())
+        settings.setValue("send_to", self.line_send_to.text())
 
-        self.close()
+    def closeEvent(self, event):
+        self.save_settings()
+        # here you can terminate your threads and do other stuff
+
+        # and afterwards call the closeEvent of the super-class
+        super(simple_websocket_server, self).closeEvent(event)
 
     def on_new_connection(self):
 
@@ -75,11 +92,10 @@ class simple_websocket_server(QWidget):
             print("This simple app only allowed one socket connection")
             return
 
-        self.save_at = args["save_at"] + "/cam0/" + QDateTime.currentDateTime().toString("yyyy_MM_dd_hh,hh_mm_ss") + "/"
+        self.save_at = args["save_at"] + "/cam0/" + QDateTime.currentDateTime().toString("yyyy_MM_dd") + "/"
         QDir().mkpath(self.save_at)
         self.socket = self.server.nextPendingConnection()
         self.socket.disconnected.connect(self.socket_disconnected)
-        self.socket.binaryMessageReceived.connect(self.received_binary_message)
         self.socket.textMessageReceived.connect(self.received_text_message)
 
     def extract_the_image(self, image_text, image_name):
@@ -90,23 +106,6 @@ class simple_websocket_server(QWidget):
         print("load from data end")
         if(img.isNull() == False):
             img.save(self.save_at + image_name + ".jpg")
-
-    def received_binary_message(self, message : QByteArray):
-        print("received binary message len = ", len(message))
-        jobj = QJsonDocument.fromJson(message).object()
-        if jobj:
-            print("can decode to json dicts")
-            print(jobj["image_name"].toString())
-            if "image" in jobj:
-                self.extract_the_image(jobj["image"].toString().encode(), jobj["image_name"].toString()) #uncomment this line if you want to extract the image
-                del jobj["image"]
-            qfile = QFile()
-            qfile.setFileName((self.save_at + "/{}.txt").format(jobj["image_name"].toString()))
-            if(qfile.open(QIODevice.WriteOnly)):
-                qstream = QTextStream(qfile)
-                qstream << message
-        else:
-            print("cannot convert to json")
 
     def received_text_message(self, message : str):
         print("received text message len = ", len(message))
@@ -121,20 +120,17 @@ class simple_websocket_server(QWidget):
                 if(qfile.open(QIODevice.WriteOnly)):
                     qstream = QTextStream(qfile)
                     qstream << json.dumps(jobj)
+
+                self.send_mail(self.save_at + jobj["image_name"] + ".jpg")
             else:
                 print("cannot convert to json")
         except:
             print("cannot save alert to json by text message")
 
-    def send_email(sender_email, receiver_email, password, message, port = 587, smtp_server = "smtp.gmail.com"):
-        context = ssl.create_default_context()
-        with smtplib.SMTP(smtp_server, port) as server:
-            server.ehlo()  # Can be omitted
-            server.starttls(context=context)
-            server.ehlo()  # Can be omitted
-            server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, message)
-            print("send mail done")
+    def send_mail(self, filename):
+        body = "This message is sent from fall down alert"
+        save_as = filename.split("/")[-1]
+        send_multipart_email(self.line_email.text(), self.line_send_to.text(), self.line_password.text(), body, filename, save_as)
 
     def socket_disconnected(self):
         print("socket disconnected")
