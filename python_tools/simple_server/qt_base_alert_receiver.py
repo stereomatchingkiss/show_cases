@@ -37,7 +37,7 @@ class simple_websocket_server(QPushButton):
             print("This simple app only allowed one socket connection")
             return
 
-        self.save_at = args["save_at"] + "/cam0/" + QDateTime.currentDateTime().toString("yyyy_MM_dd_hh,hh_mm_ss") + "/"
+        self.save_at = args["save_at"] + "/cam0/" + QDateTime.currentDateTime().toString("yyyy_MM_dd") + "/"
         QDir().mkpath(self.save_at)
         self.socket = self.server.nextPendingConnection()
         self.socket.disconnected.connect(self.socket_disconnected)
