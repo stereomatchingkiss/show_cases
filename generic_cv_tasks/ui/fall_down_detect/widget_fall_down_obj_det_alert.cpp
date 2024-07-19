@@ -20,7 +20,8 @@ widget_fall_down_obj_det_alert::widget_fall_down_obj_det_alert(QWidget *parent) 
 {
     ui->setupUi(this);
 
-    ui->radioButtonWarningOnce->setChecked(true);
+    ui->radioButtonWarningPeriodic->setChecked(true);
+    ui->spinBoxWarningPeriodic->setValue(60);
 }
 
 widget_fall_down_obj_det_alert::~widget_fall_down_obj_det_alert()

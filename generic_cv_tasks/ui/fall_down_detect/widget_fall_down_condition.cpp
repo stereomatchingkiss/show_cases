@@ -18,6 +18,11 @@ widget_fall_down_condition::widget_fall_down_condition(QWidget *parent) :
     ui(new Ui::widget_fall_down_condition)
 {
     ui->setupUi(this);
+
+    ui->doubleSpinBoxWidthHeightRatio->setRange(0.5, 2.0);
+    ui->doubleSpinBoxWidthHeightRatio->setValue(0.9);
+
+    ui->spinBoxOfConsecutiveFalls->setValue(10);
 }
 
 widget_fall_down_condition::~widget_fall_down_condition()
