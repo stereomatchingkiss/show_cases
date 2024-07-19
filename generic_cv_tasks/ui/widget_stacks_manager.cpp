@@ -1,9 +1,17 @@
 #include "widget_stacks_manager.hpp"
 #include "ui_widget_stacks_manager.h"
 
-//#include "action_classify/widget_stacks_action_classify.hpp"
+#ifdef ACTION_CLASSIFY_IS_ON
+#include "action_classify/widget_stacks_action_classify.hpp"
+#endif
+
+#ifdef FALL_DOWN_DET_IS_ON
 #include "fall_down_detect/widget_stacks_fall_down_detection.hpp"
-//#include "obj_detect/widget_stacks_object_tracking.hpp"
+#endif
+
+#ifdef OBJ_DET_IS_ON
+#include "obj_detect/widget_stacks_object_tracking.hpp"
+#endif
 
 #include "widget_tasks_selection.hpp"
 
