@@ -70,7 +70,9 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
                                        "However, this can also lead to fewer of the correct results being identified."));
     ui->labelNMS->setToolTip(tr("The larger the NMS value, the fewer objects will be filtered.\n"
                                 "If you find that there are many repetitive objects detected under a crowded scene, "
-                                "please reduce this value."));    
+                                "please reduce this value."));
+
+    ui->spinBoxConfidence->setValue(25);
 }
 
 widget_object_detect_model_select::~widget_object_detect_model_select()
