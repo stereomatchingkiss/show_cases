@@ -12,6 +12,8 @@ class widget_roi_selection;
 class widget_source_selection;
 class widget_stream_player;
 
+class QTimer;
+
 /**
  * @todo Give it a better name
  */
