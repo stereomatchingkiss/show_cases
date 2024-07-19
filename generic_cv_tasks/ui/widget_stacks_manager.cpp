@@ -117,6 +117,8 @@ void widget_stacks_manager::switch_to_task_selection_page()
 {
     ui->pushButtonNext->setVisible(true);
     ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
+
+    stacks_states_ = get_states();
 }
 
 void widget_stacks_manager::init_stacked_widget()
@@ -157,7 +159,7 @@ void widget_stacks_manager::update_stack_widget(QWidget *widget)
     if(widget_stacks_ == nullptr){
         widget_stacks_ = widget;
         ui->stackedWidget->addWidget(widget_stacks_);
-    }else{
+    }else{        
         ui->stackedWidget->removeWidget(widget_stacks_);
         widget_stacks_->deleteLater();
         widget_stacks_ = widget;

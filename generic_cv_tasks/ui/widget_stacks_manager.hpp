@@ -39,11 +39,7 @@ private:
                 &T::switch_to_task_selection_page,
                 this,
                 &widget_stacks_manager::switch_to_task_selection_page);
-        if(stacks_states_.contains(state_key)){
-            widget->set_states(stacks_states_[state_key].toObject());
-        }else{
-            widget->set_states(stacks_states_[state_key].toObject());
-        }
+        widget->set_states(stacks_states_[state_key].toObject());
     }
     void setup_stacks();
     void update_stack_widget(QWidget *widget);    
