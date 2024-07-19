@@ -164,22 +164,25 @@ SET(FALL_DOWN_DETECT_SOURCES
     ui/fall_down_detect/widget_stacks_fall_down_detection.hpp ui/fall_down_detect/widget_stacks_fall_down_detection.cpp ui/fall_down_detect/widget_stacks_fall_down_detection.ui)
 
 SET(OBJ_DETECT_SOURCES
-    ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
+    algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
+    algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
+
+    config/config_nanodet_worker.hpp
+
     ui/obj_detect/widget_select_object_to_detect.cpp ui/obj_detect/widget_select_object_to_detect.hpp ui/obj_detect/widget_select_object_to_detect.ui
     ui/obj_detect/widget_stacks_object_tracking.hpp ui/obj_detect/widget_stacks_object_tracking.cpp ui/obj_detect/widget_stacks_object_tracking.ui
     ui/obj_detect/widget_tracker_alert.hpp ui/obj_detect/widget_tracker_alert.cpp ui/obj_detect/widget_tracker_alert.ui)
 
-SET(PROJECT_MAIN_SOURCES    
+SET(COMMON_MAIN_SOURCES
+
+    main.cpp
 
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
     algo/generic_obj_detector.hpp algo/generic_obj_detector.cpp
-    algo/generic_worker_results.hpp
-    algo/obj_detect/nanodet_alert_save.hpp algo/obj_detect/nanodet_alert_save.cpp
-    algo/obj_detect/nanodet_worker.hpp algo/obj_detect/nanodet_worker.cpp
+    algo/generic_worker_results.hpp    
 
     config/config_alert_sender.hpp
-    config/config_generic_obj_detector.hpp
-    config/config_nanodet_worker.hpp
+    config/config_generic_obj_detector.hpp    
     config/config_object_detect_model_select.hpp    
     config/config_read_write.hpp config/config_read_write.cpp
 
@@ -187,7 +190,7 @@ SET(PROJECT_MAIN_SOURCES
     config/config_source_selection.hpp
     config/config_tasks_selection.hpp
     config/config_tracker_alert.hpp
-    config/object_detect_model_enum.hpp    
+    config/object_detect_model_enum.hpp
 
     global/global_keywords.hpp global/global_keywords.cpp
     global/global_object.hpp global/global_object.cpp
@@ -195,24 +198,40 @@ SET(PROJECT_MAIN_SOURCES
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
     ui/frame_capture_creator.hpp ui/frame_capture_creator.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
+    ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui        
     ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
     ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
     ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
 
-    ${ACTION_CLASSIFY_SOURCES}
-    ${FALL_DOWN_DETECT_SOURCES}
-    ${OBJ_DETECT_SOURCES}    
+    ${CV_ALGO_SOURCES}
+    ${MULTIMEDIA_SOURCE}
+    ${OTHER_PLUGIN_SOURCES}
 )
 
+set(FALL_DOWN_DET_ON ON)
+set(OBJ_DET_ON OFF)
+set(ACTION_CLASSIFY_ON OFF)
+
 set(PROJECT_SOURCES
-        main.cpp
-        ${PROJECT_MAIN_SOURCES}
-        ${CV_ALGO_SOURCES}
-        ${MULTIMEDIA_SOURCE}
-        ${OTHER_PLUGIN_SOURCES}
+        ${COMMON_MAIN_SOURCES}
 )
+
+if(ACTION_CLASSIFY_ON)
+    add_definitions(-DACTION_CLASSIFY_IS_ON)
+    set(PROJECT_SOURCES ${PROJECT_SOURCES} ${ACTION_CLASSIFY_SOURCES})
+endif()
+
+if(FALL_DOWN_DET_ON)
+    add_definitions(-DFALL_DOWN_DET_IS_ON)
+    set(PROJECT_SOURCES ${PROJECT_SOURCES} ${FALL_DOWN_DETECT_SOURCES})
+endif()
+
+if(OBJ_DET_ON)
+    add_definitions(-DOBJ_DET_IS_ON)
+    set(PROJECT_SOURCES ${PROJECT_SOURCES} ${OBJ_DETECT_SOURCES})
+endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}

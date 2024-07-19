@@ -1,9 +1,9 @@
 #include "widget_stacks_manager.hpp"
 #include "ui_widget_stacks_manager.h"
 
-#include "action_classify/widget_stacks_action_classify.hpp"
+//#include "action_classify/widget_stacks_action_classify.hpp"
 #include "fall_down_detect/widget_stacks_fall_down_detection.hpp"
-#include "obj_detect/widget_stacks_object_tracking.hpp"
+//#include "obj_detect/widget_stacks_object_tracking.hpp"
 
 #include "widget_tasks_selection.hpp"
 
@@ -48,27 +48,30 @@ QJsonObject widget_stacks_manager::get_states()
 
     switch(widget_tasks_selection_->get_config().task_){
     case enum_config_tasks::action_classify:{
+#ifdef ACTION_CLASSIFY_IS_ON
         auto widget = static_cast<widget_stacks_action_classify*>(widget_stacks_);
         obj[state_stacks_action_classify()] = widget->get_states();
         obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
         obj[state_stacks_object_tracking()] = stacks_states_[state_stacks_object_tracking()].toObject();
-
-        break;
-    }
-    case enum_config_tasks::object_tracking:{
-        auto widget = static_cast<widget_stacks_object_tracking*>(widget_stacks_);
-        obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
-        obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
-        obj[state_stacks_object_tracking()] = widget->get_states();
-
+#endif
         break;
     }
     case enum_config_tasks::fall_down_detection:{
+#ifdef FALL_DOWN_DET_IS_ON
         auto widget = static_cast<widget_stacks_fall_down_detection*>(widget_stacks_);
         obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
         obj[state_stacks_fall_down_detection()] = widget->get_states();
         obj[state_stacks_object_tracking()] = stacks_states_[state_stacks_object_tracking()].toObject();
-
+#endif
+        break;
+    }
+    case enum_config_tasks::object_tracking:{
+#ifdef OBJ_DET_IS_ON
+        auto widget = static_cast<widget_stacks_object_tracking*>(widget_stacks_);
+        obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
+        obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
+        obj[state_stacks_object_tracking()] = widget->get_states();
+#endif
         break;
     }
     default:
@@ -118,20 +121,24 @@ void widget_stacks_manager::setup_stacks()
 {
     switch(widget_tasks_selection_->get_config().task_){
     case enum_config_tasks::action_classify:{
+#ifdef ACTION_CLASSIFY_IS_ON
         setup_stack_widget(new widget_stacks_action_classify, state_stacks_action_classify());
+#endif
         break;
     }
     case enum_config_tasks::object_tracking:{
+#ifdef OBJ_DET_IS_ON
         setup_stack_widget(new widget_stacks_object_tracking, state_stacks_object_tracking());
+#endif
         break;
     }
     case enum_config_tasks::fall_down_detection:{
+#ifdef FALL_DOWN_DET_IS_ON
         setup_stack_widget(new widget_stacks_fall_down_detection, state_stacks_fall_down_detection());
+#endif
         break;
     }
-    default:{
-        auto widget = new widget_stacks_object_tracking;
-        update_stack_widget(widget);
+    default:{        
         break;
     }
     }

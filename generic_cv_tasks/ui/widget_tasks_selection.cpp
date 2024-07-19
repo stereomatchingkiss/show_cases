@@ -3,6 +3,9 @@
 
 #include "../config/config_tasks_selection.hpp"
 
+#include <QAbstractItemView>
+#include <QListView>
+
 #include <QJsonObject>
 
 namespace{
@@ -22,6 +25,24 @@ widget_tasks_selection::widget_tasks_selection(QWidget *parent) :
     ui->comboBoxTasks->addItem(tr("Object tracking"));
     ui->comboBoxTasks->addItem(tr("Action classify"));
     ui->comboBoxTasks->addItem(tr("Fall down detection"));
+
+#ifndef OBJ_DET_IS_ON
+    qobject_cast<QListView *>(ui->comboBoxTasks->view())->setRowHidden(0, true);
+#else
+    ui->comboBoxTasks->setCurrentIndex(0);
+#endif
+
+#ifndef ACTION_CLASSIFY_IS_ON
+    qobject_cast<QListView *>(ui->comboBoxTasks->view())->setRowHidden(1, true);
+#else
+    ui->comboBoxTasks->setCurrentIndex(1);
+#endif
+
+#ifndef FALL_DOWN_DET_IS_ON
+    qobject_cast<QListView *>(ui->comboBoxTasks->view())->setRowHidden(2, true);
+#else
+    ui->comboBoxTasks->setCurrentIndex(2);
+#endif
 }
 
 widget_tasks_selection::~widget_tasks_selection()
