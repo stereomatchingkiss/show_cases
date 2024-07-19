@@ -182,6 +182,17 @@ struct fall_down_obj_det_worker::impl
         bool warning_issued_ = false;
     };
 
+    QImage crop_img(QImage img) const
+    {
+        if(config_.roi_.isValid()){
+            QRect const roi(config_.roi_.x() * img.width(), config_.roi_.y() * img.height(),
+                            config_.roi_.width() * img.width(), config_.roi_.height() * img.height());
+            return img.copy(roi);
+        }
+
+        return img;
+    }
+
     std::set<int> active_id_;
     fall_down_det_alert_save alert_save_;
     bool can_send_alert_ = false;
@@ -214,18 +225,12 @@ void fall_down_obj_det_worker::change_alert_sender_config(const config_alert_sen
 void fall_down_obj_det_worker::process_results(std::any frame)
 {
     auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
+    qimg = impl_->crop_img(qimg);
     auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
 
     auto const det_results = impl_->track_obj(mat);
     generic_worker_results results;
     results.alarm_on_ = impl_->can_send_alert_;
-
-    if(impl_->config_.roi_.isValid()){
-        impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
-        if(!impl_->scaled_roi_.empty()){
-            flt::cvt::utils::draw_empty_rect(mat, impl_->scaled_roi_);
-        }
-    }    
 
     if(impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){
         emit send_alert_by_text(impl_->alert_save_.get_alert_info());
