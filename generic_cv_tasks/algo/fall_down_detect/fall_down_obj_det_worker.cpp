@@ -147,14 +147,15 @@ struct fall_down_obj_det_worker::impl
         active_id_.clear();
         can_send_alert_ = false;
         for(auto const &val : det_results){
-            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));            
-            if(width_height_ratio(val) >= config_.config_fall_down_condition_.width_height_ratio_){
+            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
+            auto const wh_ratio = width_height_ratio(val);
+            if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
                 if(update_fall_down_counter(val.track_id_)){
                     can_send_alert_ = true;
                 }
-                det::draw_bboxes_custom(mat, val, std::format("{}:{}:fall", names_[val.label_], val.track_id_));
+                det::draw_bboxes_custom(mat, val, std::format("{}:{}:{:.3f}=fall", names_[val.label_], val.track_id_, wh_ratio));
             }else{
-                det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
+                det::draw_bboxes_custom(mat, val, std::format("{}:{}:{:.3f}", names_[val.label_], val.track_id_, wh_ratio));
             }
         }
 
