@@ -52,8 +52,10 @@ void frame_capture_creator::create_frame_capture()
     disconnect(timer_, &QTimer::timeout, this, &frame_capture_creator::update_position);
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
         sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
+        widget_stream_player_->set_is_seekable(false);
     }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
         sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
+        widget_stream_player_->set_is_seekable(false);
     }else{
         sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
         auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
