@@ -145,6 +145,8 @@ void widget_stacks_fall_down_detection::init_stacked_widget()
     widget_source_selection_ = new widget_source_selection;
     widget_stream_player_    = new widget_stream_player;
 
+    widget_source_selection_->set_websocket_url("ws://127.0.0.1:1234");
+
     ui->stackedWidget->addWidget(widget_roi_selection_);
     ui->stackedWidget->addWidget(widget_object_detect_model_select_);    
     ui->stackedWidget->addWidget(widget_fall_down_condition_);

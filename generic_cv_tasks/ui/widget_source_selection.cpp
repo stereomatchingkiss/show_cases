@@ -269,6 +269,11 @@ void widget_source_selection::set_states(const QJsonObject &val)
     set_max_fps_visible();
 }
 
+void widget_source_selection::set_websocket_url(const QString &val)
+{
+    ui->lineEditWebsockets->setText(val);
+}
+
 void widget_source_selection::on_pushButtonOpenVideoFolder_clicked()
 {    
 #ifndef WASM_BUILD

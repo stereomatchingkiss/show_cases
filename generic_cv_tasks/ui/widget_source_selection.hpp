@@ -44,7 +44,9 @@ public:
 
     config_source_selection get_config() const;
     QJsonObject get_states() const;
+
     void set_states(QJsonObject const &val);
+    void set_websocket_url(QString const &val);
 
 private slots:
     void on_pushButtonOpenVideoFolder_clicked();
