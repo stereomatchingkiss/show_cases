@@ -40,9 +40,7 @@ widget_stacks_manager::widget_stacks_manager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    init_stacked_widget();
-
-    setMinimumSize(QSize(600, 400));
+    init_stacked_widget();    
 }
 
 widget_stacks_manager::~widget_stacks_manager()
