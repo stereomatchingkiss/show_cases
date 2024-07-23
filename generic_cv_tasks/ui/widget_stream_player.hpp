@@ -1,5 +1,4 @@
-#ifndef WIDGET_STREAM_PLAYER_HPP
-#define WIDGET_STREAM_PLAYER_HPP
+#pragma once
 
 #include <QWidget>
 
@@ -29,10 +28,11 @@ signals:
     void seek(int msec);
 
 private:
+    QJsonArray dump_stacks_states() const;
+    QJsonObject dump_settings() const;
+
     Ui::widget_stream_player *ui;
 
     QString format_;
     bool playing_;
 };
-
-#endif // WIDGET_STREAM_PLAYER_HPP

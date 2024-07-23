@@ -50,9 +50,17 @@
     <addaction name="actionSaveSettings"/>
     <addaction name="actionLoadSettings"/>
    </widget>
-   <addaction name="menuQt"/>
-   <addaction name="menuAlert"/>
+   <widget class="QMenu" name="menuStream">
+    <property name="title">
+     <string>Stream</string>
+    </property>
+    <addaction name="actionAddStream"/>
+    <addaction name="actionDeleteStream"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuAlert"/>
+   <addaction name="menuStream"/>
+   <addaction name="menuQt"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQt">
@@ -83,6 +91,16 @@
   <action name="actionLoadSettings">
    <property name="text">
     <string>Load settings</string>
+   </property>
+  </action>
+  <action name="actionAddStream">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionDeleteStream">
+   <property name="text">
+    <string>Delete</string>
    </property>
   </action>
  </widget>
