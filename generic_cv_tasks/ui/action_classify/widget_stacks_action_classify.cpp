@@ -111,6 +111,10 @@ void widget_stacks_action_classify::init_stacked_widget()
     ui->stackedWidget->addWidget(widget_stream_player_);
 
     fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
+
+    if(!more_than_one_task()){
+        ui->pushButtonPrev->setVisible(false);
+    }
 }
 
 void widget_stacks_action_classify::create_roi_select_stream()
@@ -176,6 +180,9 @@ void widget_stacks_action_classify::send_alert_by_text(QString const &msg)
 void widget_stacks_action_classify::on_pushButtonPrev_clicked()
 {
     if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
+        if(!more_than_one_task()){
+            ui->pushButtonPrev->setVisible(false);
+        }
         ui->stackedWidget->setCurrentWidget(widget_action_classify_model_select_);
     }else if(ui->stackedWidget->currentWidget() == widget_action_classify_alert_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
@@ -189,13 +196,16 @@ void widget_stacks_action_classify::on_pushButtonPrev_clicked()
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
         create_roi_select_stream();        
     }else if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
-        emit switch_to_task_selection_page();
+        if(more_than_one_task()){
+            emit switch_to_task_selection_page();
+        }
     }
 }
 
 
 void widget_stacks_action_classify::on_pushButtonNext_clicked()
 {
+    ui->pushButtonPrev->setVisible(true);
     if(ui->stackedWidget->currentWidget() == widget_action_classify_model_select_){
         ui->stackedWidget->setCurrentWidget(widget_select_action_to_classify_);
     }else if(ui->stackedWidget->currentWidget() == widget_select_action_to_classify_){
