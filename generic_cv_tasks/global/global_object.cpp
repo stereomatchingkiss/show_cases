@@ -27,9 +27,19 @@ dialog_alert_sender_settings &get_widget_alert_sender_settings()
 
 bool more_than_one_task() noexcept
 {
-#if defined ACTION_CLASSIFY_IS_ON && defined FALL_DOWN_DET_IS_ON && defined OBJ_DET_IS_ON
-    return true;
+    int task_count = 0;
+
+#ifdef ACTION_CLASSIFY_IS_ON
+    ++task_count;
 #endif
 
-    return false;
+#ifdef FALL_DOWN_DET_IS_ON
+    ++task_count;
+#endif
+
+#ifdef OBJ_DET_IS_ON
+    ++task_count;
+#endif
+
+    return task_count > 1;
 }
