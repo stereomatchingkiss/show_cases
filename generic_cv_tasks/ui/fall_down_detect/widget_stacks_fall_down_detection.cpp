@@ -163,7 +163,6 @@ void widget_stacks_fall_down_detection::next_page_is_roi_selection()
 {
     if(!widget_source_selection_->get_is_valid_source()){
         msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
-        msg_box_->show();
     }else{
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
         fcreator_->create_roi_select_stream(widget_roi_selection_);
