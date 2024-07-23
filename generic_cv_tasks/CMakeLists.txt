@@ -199,11 +199,12 @@ SET(COMMON_MAIN_SOURCES
     ui/frame_capture_creator.hpp ui/frame_capture_creator.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
+    ui/widget_multi_stream_manager.hpp ui/widget_multi_stream_manager.cpp ui/widget_multi_stream_manager.ui
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui        
     ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
     ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
-    ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui
+    ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui    
 
     ${CV_ALGO_SOURCES}
     ${MULTIMEDIA_SOURCE}
