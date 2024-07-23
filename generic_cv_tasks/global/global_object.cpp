@@ -24,3 +24,12 @@ dialog_alert_sender_settings &get_widget_alert_sender_settings()
 {
     return flt::meyers_singleton<dialog_alert_sender_settings>::get_instance();
 }
+
+bool more_than_one_task() noexcept
+{
+#if defined ACTION_CLASSIFY_IS_ON && defined FALL_DOWN_DET_IS_ON && defined OBJ_DET_IS_ON
+    return true;
+#endif
+
+    return false;
+}

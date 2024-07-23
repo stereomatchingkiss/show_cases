@@ -17,6 +17,8 @@
 
 #include "../config/config_tasks_selection.hpp"
 
+#include "../global/global_object.hpp"
+
 #include <QDebug>
 
 #include <QJsonObject>
@@ -115,16 +117,25 @@ void widget_stacks_manager::on_pushButtonNext_clicked()
 
 void widget_stacks_manager::switch_to_task_selection_page()
 {
-    ui->pushButtonNext->setVisible(true);
-    ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
+    if(more_than_one_task()){
+        ui->pushButtonNext->setVisible(true);
+        ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
+    }else{
+        ui->pushButtonNext->setVisible(false);
+    }
 
     stacks_states_ = get_states();
 }
 
 void widget_stacks_manager::init_stacked_widget()
-{    
-    ui->stackedWidget->addWidget(widget_tasks_selection_);
-    ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
+{
+    if(more_than_one_task()){
+        ui->pushButtonNext->setVisible(true);
+        ui->stackedWidget->addWidget(widget_tasks_selection_);
+        ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
+    }else{
+        ui->pushButtonNext->setVisible(false);
+    }
 }
 
 void widget_stacks_manager::setup_stacks()

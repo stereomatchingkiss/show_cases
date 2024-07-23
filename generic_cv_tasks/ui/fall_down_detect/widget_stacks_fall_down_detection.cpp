@@ -103,9 +103,15 @@ void widget_stacks_fall_down_detection::on_pushButtonPrev_clicked()
     ui->pushButtonPrev->setVisible(true);
 
     if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
-        emit switch_to_task_selection_page();
+        if(more_than_one_task()){
+            emit switch_to_task_selection_page();
+        }
     }else if(ui->stackedWidget->currentWidget() == widget_fall_down_condition_){
         ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
+
+        if(!more_than_one_task()){
+            ui->pushButtonPrev->setVisible(false);
+        }
     }else if(ui->stackedWidget->currentWidget() == widget_fall_down_obj_det_alert_){
         ui->stackedWidget->setCurrentWidget(widget_fall_down_condition_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
@@ -120,6 +126,7 @@ void widget_stacks_fall_down_detection::on_pushButtonPrev_clicked()
 void widget_stacks_fall_down_detection::on_pushButtonNext_clicked()
 {
     ui->pushButtonNext->setVisible(true);
+    ui->pushButtonPrev->setVisible(true);
 
     if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
         ui->stackedWidget->setCurrentWidget(widget_fall_down_condition_);
@@ -157,6 +164,10 @@ void widget_stacks_fall_down_detection::init_stacked_widget()
     ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
 
     fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
+
+    if(!more_than_one_task()){
+        ui->pushButtonPrev->setVisible(false);
+    }
 }
 
 void widget_stacks_fall_down_detection::next_page_is_roi_selection()
