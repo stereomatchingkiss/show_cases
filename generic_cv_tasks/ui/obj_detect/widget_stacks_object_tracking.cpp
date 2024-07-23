@@ -119,6 +119,10 @@ void widget_stacks_object_tracking::init_stacked_widget()
     ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
 
     fcreator_ = new frame_capture_creator(widget_source_selection_, widget_stream_player_, this);
+
+    if(!more_than_one_task()){
+        ui->pushButtonPrev->setVisible(false);
+    }
 }
 
 void widget_stacks_object_tracking::create_roi_select_stream()
@@ -129,8 +133,7 @@ void widget_stacks_object_tracking::create_roi_select_stream()
 void widget_stacks_object_tracking::next_page_is_label_select_roi()
 {
     if(!widget_source_selection_->get_is_valid_source()){
-        msg_box_->warning(this, tr("Warning"), tr("Invalid url"));
-        msg_box_->show();
+        msg_box_->warning(this, tr("Warning"), tr("Invalid url"));        
     }else{        
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);        
         create_roi_select_stream();
@@ -200,9 +203,12 @@ void widget_stacks_object_tracking::on_pushButtonPrev_clicked()
     ui->pushButtonPrev->setVisible(true);
 
     if(ui->stackedWidget->currentWidget() == widget_select_object_to_detect_){
+        if(!more_than_one_task()){
+            ui->pushButtonPrev->setVisible(false);
+        }
         ui->stackedWidget->setCurrentWidget(widget_object_detect_model_select_);
     }else if(ui->stackedWidget->currentWidget() == widget_source_selection_){
-        ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);        
+        ui->stackedWidget->setCurrentWidget(widget_tracker_alert_);
     }else if(ui->stackedWidget->currentWidget() == widget_tracker_alert_){
         ui->stackedWidget->setCurrentWidget(widget_select_object_to_detect_);        
     }else if(ui->stackedWidget->currentWidget() == widget_roi_selection_){
@@ -211,12 +217,15 @@ void widget_stacks_object_tracking::on_pushButtonPrev_clicked()
         ui->stackedWidget->setCurrentWidget(widget_roi_selection_);
         create_roi_select_stream();
     }else if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
-        emit switch_to_task_selection_page();
+        if(more_than_one_task()){
+            emit switch_to_task_selection_page();
+        }
     }
 }
 
 void widget_stacks_object_tracking::on_pushButtonNext_clicked()
 {
+    ui->pushButtonPrev->setVisible(true);
     if(ui->stackedWidget->currentWidget() == widget_object_detect_model_select_){
         get_alert_sound_manager();
         next_page_is_widget_select_object_to_detect();
