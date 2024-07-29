@@ -136,6 +136,16 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
     ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
 )
 
+if(NOT EMSCRIPTEN)
+    set(MULTIMEDIA_SOURCE ${MULTIMEDIA_SOURCE}
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.cpp        
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_controller.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_controller.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.cpp
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_params.hpp
+    )
+endif()
+
 SET(ACTION_CLASSIFY_SOURCES
     algo/action_classify/action_classify_alert_save.hpp algo/action_classify/action_classify_alert_save.cpp
     algo/action_classify/kinetic_400_labels.hpp algo/action_classify/kinetic_400_labels.cpp

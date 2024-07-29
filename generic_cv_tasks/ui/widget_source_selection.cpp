@@ -3,6 +3,7 @@
 
 #include "../config/config_source_selection.hpp"
 
+#include <multimedia/camera/frame_capture_opencv_params.hpp>
 #include <multimedia/camera/frame_capture_qcamera_params.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/network/frame_capture_websocket_params.hpp>
@@ -34,10 +35,6 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //Todo, use videoCapture to support rtsp, on desktop
-    ui->radioButtonRTSP->setVisible(false);
-    ui->lineEditRTSP->setVisible(false);
-
 #ifdef WASM_BUILD
     ui->radioButtonHLS->setVisible(false);
     ui->lineEditHLS->setVisible(false);
@@ -47,6 +44,9 @@ widget_source_selection::widget_source_selection(QWidget *parent) :
     ui->lineEditVideo->setVisible(false);
     ui->pushButtonOpenVideoFolder->setVisible(false);
     ui->radioButtonWebsockets->setChecked(true);
+
+    ui->radioButtonRTSP->setVisible(false);
+    ui->lineEditRTSP->setVisible(false);
 
     set_max_fps_visible();
 #endif        
@@ -92,6 +92,15 @@ frame_capture_qcamera_params widget_source_selection::get_frame_capture_qcamera_
     return params;
 }
 
+frame_capture_opencv_params widget_source_selection::get_frame_capture_rtsp_params() const
+{
+    frame_capture_opencv_params params;
+    params.max_fps_ = ui->spinBoxMaxFPS->value();
+    params.url_ = ui->lineEditRTSP->text().toStdString();
+
+    return params;
+}
+
 frame_capture_websocket_params widget_source_selection::get_frame_capture_websocket_params() const noexcept
 {
     frame_capture_websocket_params params;
@@ -119,7 +128,8 @@ stream_source_type widget_source_selection::get_source_type() const noexcept
 
 bool widget_source_selection::get_is_valid_source() const noexcept
 {
-    if(ui->radioButtonRTSP->isChecked() && ui->lineEditRTSP->text().startsWith("rtsp")){
+    //if(ui->radioButtonRTSP->isChecked() && ui->lineEditRTSP->text().startsWith("rtsp")){
+    if(ui->radioButtonRTSP->isChecked()){
         return true;
     }
 #ifndef WASM_BUILD
@@ -127,16 +137,21 @@ bool widget_source_selection::get_is_valid_source() const noexcept
         return true;
     }
 #else
-        if(ui->radioButtonVideo->isChecked()){
-            return true;
-        }
+    if(ui->radioButtonVideo->isChecked()){
+        return true;
+    }
 #endif
     if(ui->radioButtonWebcam->isChecked() && ui->comboBoxWebCam->count() > 0){
         return true;
     }
-    if(ui->radioButtonHLS->isChecked() && ui->lineEditHLS->text().startsWith("http")){
-        return true;
+
+    {
+        auto const hls_addr = ui->lineEditHLS->text();
+        if(ui->radioButtonHLS->isChecked() && (hls_addr.startsWith("http") || hls_addr.startsWith("https"))){
+            return true;
+        }
     }
+
     if(ui->radioButtonWebsockets->isChecked() &&
         (ui->lineEditWebsockets->text().startsWith("ws") || ui->lineEditWebsockets->text().startsWith("wss"))){
         return true;

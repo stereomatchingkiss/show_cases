@@ -188,8 +188,9 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
     config.config_alert_sender_ = get_widget_alert_sender_settings().get_config();
     config.config_fall_down_condition_ = widget_fall_down_condition_->get_config();
     config.config_fall_down_obj_det_alert_ = widget_fall_down_obj_det_alert_->get_config();
-    config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();    
-    config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();    
+    config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
+    config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
+    config.source_type_ = widget_source_selection_->get_source_type();
 
     auto worker = new fall_down_obj_det_worker(std::move(config));
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,

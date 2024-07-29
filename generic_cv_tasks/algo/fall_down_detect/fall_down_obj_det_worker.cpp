@@ -194,6 +194,19 @@ struct fall_down_obj_det_worker::impl
         return img;
     }
 
+    cv::Mat crop_img(cv::Mat img) const
+    {
+        if(config_.roi_.isValid()){
+            //QRect const roi(config_.roi_.x() * img.width(), config_.roi_.y() * img.height(),
+            //                config_.roi_.width() * img.width(), config_.roi_.height() * img.height());
+            //return img.copy(roi);
+
+            return img(convert_qrectf_to_cv_rect(config_.roi_, img.cols, img.rows)).clone();
+        }
+
+        return img;
+    }
+
     std::set<int> active_id_;
     fall_down_det_alert_save alert_save_;
     bool can_send_alert_ = false;
@@ -225,20 +238,41 @@ void fall_down_obj_det_worker::change_alert_sender_config(const config_alert_sen
 
 void fall_down_obj_det_worker::process_results(std::any frame)
 {
-    auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
-    qimg = impl_->crop_img(qimg);
-    auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+    cv::Mat mat;
+    QImage qimg;
+    if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){
+        qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
+        qimg = impl_->crop_img(qimg);
+        mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+    }else{        
+        mat = std::any_cast<cv::Mat>(frame);        
+        if(mat.channels() == 3){            
+            cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+        }else if(mat.channels() == 1){            
+            cv::cvtColor(mat, mat, cv::COLOR_GRAY2RGB);
+        }
+
+        if(impl_->config_.roi_.isValid()){
+            mat = mat(convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows)).clone();
+        }
+        qimg = QImage((uchar*) mat.data, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+    }
 
     auto const det_results = impl_->track_obj(mat);
     generic_worker_results results;
     results.alarm_on_ = impl_->can_send_alert_;
 
-    if(impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){
+    if(impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){        
         emit send_alert_by_text(impl_->alert_save_.get_alert_info());
     }
 
-    //do not move it, since in the future this algo may need to support multi-stream
-    results.mat_ = qimg;
+    //do not move it, since in the future this algo may need to support multi-stream    
+    if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){
+        results.mat_ = qimg;
+    }else{
+        results.mat_ = qimg.copy();
+    }
 
     emit send_process_results(std::move(results));
+
 }

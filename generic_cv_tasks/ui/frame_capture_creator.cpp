@@ -8,6 +8,8 @@
 
 #include <multimedia/camera/frame_capture_qcamera.hpp>
 #include <multimedia/camera/frame_capture_qcamera_params.hpp>
+#include <multimedia/camera/frame_capture_opencv.hpp>
+#include <multimedia/camera/frame_capture_opencv_params.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer.hpp>
 #include <multimedia/camera/frame_capture_qmediaplayer_params.hpp>
 #include <multimedia/camera/frame_process_controller.hpp>
@@ -49,13 +51,14 @@ void frame_capture_creator::reset()
 void frame_capture_creator::create_frame_capture()
 {
     timer_->stop();
+    widget_stream_player_->set_is_seekable(false);
     disconnect(timer_, &QTimer::timeout, this, &frame_capture_creator::update_position);
     if(widget_source_selection_->get_source_type() == stream_source_type::websocket){
-        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());
-        widget_stream_player_->set_is_seekable(false);
+        sfwmw_ = std::make_unique<frame_capture_websocket>(widget_source_selection_->get_frame_capture_websocket_params());        
     }else if(widget_source_selection_->get_source_type() == stream_source_type::webcam){
-        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());
-        widget_stream_player_->set_is_seekable(false);
+        sfwmw_ = std::make_unique<frame_capture_qcamera>(widget_source_selection_->get_frame_capture_qcamera_params());        
+    }else if(widget_source_selection_->get_source_type() == stream_source_type::rtsp){
+        sfwmw_ = std::make_unique<frame_capture_opencv>(widget_source_selection_->get_frame_capture_rtsp_params());
     }else{
         sfwmw_ = std::make_unique<frame_capture_qmediaplayer>(widget_source_selection_->get_frame_capture_qmediaplayer_params());
         auto player = static_cast<frame_capture_qmediaplayer*>(sfwmw_.get());
@@ -73,7 +76,6 @@ void frame_capture_creator::create_frame_capture()
             connect(timer_, &QTimer::timeout, this, &frame_capture_creator::update_position);
 
             timer_->start();
-        }else{
             widget_stream_player_->set_is_seekable(false);
         }
     }
@@ -82,12 +84,13 @@ void frame_capture_creator::create_frame_capture()
 void frame_capture_creator::create_roi_select_stream(widget_roi_selection *roi_selection)
 {
     create_frame_capture();
-    auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker);
+    bool const is_rtsp = widget_source_selection_->get_source_type() == flt::mm::stream_source_type::rtsp;
+    auto process_controller = std::make_shared<frame_process_controller>(new frame_display_worker(is_rtsp));
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             roi_selection, &widget_roi_selection::display_frame);
     emit process_controller->start();
     sfwmw_->add_listener(process_controller, this);
-    sfwmw_->start();
+    sfwmw_->start();//*/
 }
 
 void frame_capture_creator::update_position()
