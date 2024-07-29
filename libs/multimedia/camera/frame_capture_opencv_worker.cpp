@@ -6,13 +6,13 @@
 #include <chrono>
 #include <thread>
 
-#include "frame_capture_params.hpp"
+#include "frame_capture_opencv_params.hpp"
 
 namespace flt::mm{
 
 struct frame_capture_opencv_worker::impl
 {
-    impl(frame_capture_params params) :
+    impl(frame_capture_opencv_params params) :
         params_(std::move(params))
     {
 
@@ -28,12 +28,12 @@ struct frame_capture_opencv_worker::impl
     }
 
     cv::VideoCapture cap_;
-    frame_capture_params params_;
-    std::atomic<bool> stop_ = true;
+    frame_capture_opencv_params params_;
+    std::atomic<bool> stop_ = false;
 };
 
-frame_capture_opencv_worker::frame_capture_opencv_worker(frame_capture_params params, QObject *parent) :
-    frame_capture_base_worker({}, parent),
+frame_capture_opencv_worker::frame_capture_opencv_worker(frame_capture_opencv_params params, QObject *parent) :
+    QObject(parent),
     impl_(std::make_unique<impl>(std::move(params)))
 {
 
@@ -46,25 +46,21 @@ frame_capture_opencv_worker::~frame_capture_opencv_worker()
 
 void frame_capture_opencv_worker::start()
 {
-    if(!impl_->stop_){
-        return;
-    }
-    impl_->stop_ = false;
     if(impl_->open_cam()){
         auto const duration = std::chrono::milliseconds(1000/impl_->params_.max_fps_);
         while(!impl_->stop_){
-            cv::Mat frame;            
-            if(impl_->cap_>>frame; !frame.empty()){                
-                call_listeners(frame);
-                std::this_thread::sleep_for(duration);
+            cv::Mat frame;
+            if(impl_->cap_>>frame; !frame.empty()){
+                emit send_process_results(frame);
             }
+            std::this_thread::sleep_for(duration);
         }
     }
 }
 
-void frame_capture_opencv_worker::stop()
+void frame_capture_opencv_worker::stop(bool val)
 {
-    impl_->stop_ = true;
+    impl_->stop_ = val;
 }
 
 }

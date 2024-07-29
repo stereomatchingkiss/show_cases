@@ -1,24 +1,28 @@
 #pragma once
 
-#include "frame_capture_base_worker.hpp"
+#include <QObject>
 
+#include <any>
 #include <memory>
 
 namespace flt::mm{
 
-struct frame_capture_params;
+struct frame_capture_opencv_params;
 
-class frame_capture_opencv_worker : public frame_capture_base_worker
+class frame_capture_opencv_worker : public QObject
 {
     Q_OBJECT
 public:
-    explicit frame_capture_opencv_worker(frame_capture_params params, QObject *parent = nullptr);
+    explicit frame_capture_opencv_worker(frame_capture_opencv_params params, QObject *parent = nullptr);
     ~frame_capture_opencv_worker();
 
-    void stop() override;
+    void stop(bool val);
+    void start();
 
-public slots:
-    virtual void start() override;    
+signals:
+    void message_error(QString);
+
+    void send_process_results(std::any frame);
 
 private:
     struct impl;
