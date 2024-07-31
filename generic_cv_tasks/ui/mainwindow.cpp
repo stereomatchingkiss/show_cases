@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     init_stacked_widget();
+    get_alert_sound_manager();
 
     connect(ui->actionAddStream, &QAction::triggered, this, &MainWindow::action_add_stream);
     connect(ui->actionContactMe, &QAction::triggered, this, &MainWindow::action_contact_me);
