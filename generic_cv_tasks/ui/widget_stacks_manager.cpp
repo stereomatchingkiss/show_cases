@@ -135,6 +135,7 @@ void widget_stacks_manager::init_stacked_widget()
         ui->stackedWidget->setCurrentWidget(widget_tasks_selection_);
     }else{
         ui->pushButtonNext->setVisible(false);
+        setup_stacks();
     }
 }
 
