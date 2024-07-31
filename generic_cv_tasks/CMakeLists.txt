@@ -18,7 +18,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia WebSoc
 
 if(WIN32)
     message("building windows platform")
-    set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/opencv_4_8_0/opencv/build)
+    set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/build/install)
     set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
