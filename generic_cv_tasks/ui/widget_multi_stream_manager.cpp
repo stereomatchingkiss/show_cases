@@ -59,16 +59,24 @@ void widget_multi_stream_manager::add_stream(QWidget *widget)
         qDebug()<<__func__<<": stream size > 4";
 
         streams_.emplace_back(widget);
+        update_page();
     }
 }
 
 void widget_multi_stream_manager::delete_stream()
 {
-    if(glayout_->count() > 0){
+    if(streams_.size() > 0){
         auto *widget = streams_.back();
         streams_.pop_back();
         glayout_->removeWidget(widget);
         delete widget;
+
+        if(page_index_ > get_max_page()){
+            qDebug()<<__func__<<": call prev page";
+            prev_page();
+        }else{
+            update_page();
+        }
     }
 }
 
@@ -131,26 +139,17 @@ void widget_multi_stream_manager::next_page()
     if(page_index_ < get_max_page()){
         remove_all_widgets();
         ++page_index_;
-        for(size_t i = page_index_ * 4; i < (page_index_ * 4 + 4); ++i){
-            if(i < streams_.size()){
-                add_widget_to_grid_layout(i % 4, streams_[i]);
-                streams_[i]->show();
-            }
-        }
+        update_page();
     }
 }
 
 void widget_multi_stream_manager::prev_page()
 {
     if(page_index_ > 0){
+        qDebug()<<__func__;
         remove_all_widgets();
         --page_index_;
-        for(size_t i = page_index_ * 4; i < page_index_ * 4 + 4; ++i){
-            if(i < streams_.size()){
-                add_widget_to_grid_layout(i % 4, streams_[i]);
-                streams_[i]->show();
-            }
-        }
+        update_page();
     }
 }
 
@@ -179,6 +178,16 @@ void widget_multi_stream_manager::remove_all_widgets()
     for(auto w : streams_){
         glayout_->removeWidget(w);
         w->hide();
+    }
+}
+
+void widget_multi_stream_manager::update_page()
+{
+    for(size_t i = page_index_ * 4; i < (page_index_ * 4 + 4); ++i){
+        if(i < streams_.size()){
+            add_widget_to_grid_layout(i % 4, streams_[i]);
+            streams_[i]->show();
+        }
     }
 }
 

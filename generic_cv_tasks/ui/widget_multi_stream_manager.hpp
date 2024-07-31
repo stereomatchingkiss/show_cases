@@ -35,6 +35,7 @@ private:
     void add_widget_to_grid_layout(int count, QWidget *widget);
     void delete_streams();
     void remove_all_widgets();
+    void update_page();
 
     QJsonArray dump_stacks_states() const;
     QJsonObject dump_settings() const;

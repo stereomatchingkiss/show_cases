@@ -77,6 +77,7 @@ void MainWindow::action_contact_me(bool)
 void MainWindow::action_delete_stream(bool)
 {
     widget_multi_stream_manager_->delete_stream();
+    set_next_prev_button_visibility();
 }
 
 void MainWindow::action_server_call()
