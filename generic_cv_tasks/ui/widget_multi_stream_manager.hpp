@@ -21,13 +21,21 @@ public:
     void add_stream(QWidget *widget);
     void delete_stream();
 
-    int get_stream_count() const;
+    size_t get_max_page() const noexcept;
+    size_t get_stream_count() const noexcept;
+    size_t get_stream_page() const noexcept;
 
     void load_settings();
     void save_settings();
 
+    void next_page();
+    void prev_page();
+
 private:
+    void add_widget_to_grid_layout(int count, QWidget *widget);
     void delete_streams();
+    void remove_all_widgets();
+
     QJsonArray dump_stacks_states() const;
     QJsonObject dump_settings() const;
 
@@ -41,5 +49,6 @@ private:
     Ui::widget_multi_stream_manager *ui;
 
     QGridLayout *glayout_;
+    size_t page_index_ = 0;
     std::vector<QWidget*> streams_;
 };

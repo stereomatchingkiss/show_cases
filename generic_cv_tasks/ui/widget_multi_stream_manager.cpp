@@ -39,22 +39,25 @@ widget_multi_stream_manager::~widget_multi_stream_manager()
     save_settings_to_file(global_keywords().cam_config_path() + "/config.json");
 #endif
 
+    for(auto w : streams_){
+        qDebug()<<__func__<<": remove widget";
+        glayout_->removeWidget(w);
+        delete w;
+    }
+
     delete ui;
 }
 
 void widget_multi_stream_manager::add_stream(QWidget *widget)
 {
-    if(glayout_->count() == 0){
-        glayout_->addWidget(widget, 0, 0);
-    }else if(glayout_->count() == 1){
-        glayout_->addWidget(widget, 0, 1);
-    }else if(glayout_->count() == 2){
-        glayout_->addWidget(widget, 1, 0);
-    }else if(glayout_->count() == 3){
-        glayout_->addWidget(widget, 1, 1);
-    }
+    qDebug()<<__func__<<": "<<streams_.size();
+    if(streams_.size() < 4){
+        qDebug()<<__func__<<": stream size < 4";
+        streams_.emplace_back(widget);
+        add_widget_to_grid_layout(glayout_->count(), widget);
+    }else{
+        qDebug()<<__func__<<": stream size > 4";
 
-    if(glayout_->count() <= 4){
         streams_.emplace_back(widget);
     }
 }
@@ -69,9 +72,24 @@ void widget_multi_stream_manager::delete_stream()
     }
 }
 
-int widget_multi_stream_manager::get_stream_count() const
+size_t widget_multi_stream_manager::get_max_page() const noexcept
 {
-    return glayout_->count();
+    size_t max_page = streams_.size() / 4;
+    if(max_page > 0 && (streams_.size() % 4 == 0)){
+        --max_page;
+    }
+
+    return max_page;
+}
+
+size_t widget_multi_stream_manager::get_stream_count() const noexcept
+{
+    return streams_.size();
+}
+
+size_t widget_multi_stream_manager::get_stream_page() const noexcept
+{
+    return page_index_;
 }
 
 void widget_multi_stream_manager::load_settings()
@@ -107,10 +125,60 @@ void widget_multi_stream_manager::save_settings()
 #endif
 }
 
+void widget_multi_stream_manager::next_page()
+{
+    qDebug()<<__func__;
+    if(page_index_ < get_max_page()){
+        remove_all_widgets();
+        ++page_index_;
+        for(size_t i = page_index_ * 4; i < (page_index_ * 4 + 4); ++i){
+            if(i < streams_.size()){
+                add_widget_to_grid_layout(i % 4, streams_[i]);
+                streams_[i]->show();
+            }
+        }
+    }
+}
+
+void widget_multi_stream_manager::prev_page()
+{
+    if(page_index_ > 0){
+        remove_all_widgets();
+        --page_index_;
+        for(size_t i = page_index_ * 4; i < page_index_ * 4 + 4; ++i){
+            if(i < streams_.size()){
+                add_widget_to_grid_layout(i % 4, streams_[i]);
+                streams_[i]->show();
+            }
+        }
+    }
+}
+
+void widget_multi_stream_manager::add_widget_to_grid_layout(int count, QWidget *widget)
+{
+    if(count == 0){
+        glayout_->addWidget(widget, 0, 0);
+    }else if(count == 1){
+        glayout_->addWidget(widget, 0, 1);
+    }else if(count == 2){
+        glayout_->addWidget(widget, 1, 0);
+    }else if(count == 3){
+        glayout_->addWidget(widget, 1, 1);
+    }
+}
+
 void widget_multi_stream_manager::delete_streams()
 {
     while(!streams_.empty()){
         delete_stream();
+    }
+}
+
+void widget_multi_stream_manager::remove_all_widgets()
+{
+    for(auto w : streams_){
+        glayout_->removeWidget(w);
+        w->hide();
     }
 }
 

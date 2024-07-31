@@ -18,6 +18,11 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_pushButtonPrev_clicked();
+
+    void on_pushButtonNext_clicked();
+
 private:
     void action_about_qt(bool);
     void action_add_stream(bool);
@@ -30,6 +35,8 @@ private:
 
     void load_settings(bool);
     void save_settings(bool);
+
+    void set_next_prev_button_visibility();
 
     Ui::MainWindow *ui;
             

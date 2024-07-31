@@ -25,6 +25,7 @@
 
 namespace{
 
+inline QString state_cam_name(){ return "state_cam_name"; }
 inline QString state_stacks_action_classify(){ return "state_stacks_action_classify"; }
 inline QString state_stacks_fall_down_detection(){ return "state_stacks_fall_down_detection"; }
 inline QString state_stacks_object_tracking(){ return "state_stacks_object_tracking"; }
@@ -87,6 +88,7 @@ QJsonObject widget_stacks_manager::get_states()
             break;
         }
 
+        obj[state_cam_name()] = ui->labelInfo->text();
         obj[state_tasks_selection()] = widget_tasks_selection_->get_states();
         obj[state_version()] = "1.0";
 
@@ -96,11 +98,20 @@ QJsonObject widget_stacks_manager::get_states()
     return obj;
 }
 
+void widget_stacks_manager::set_info_text(const QString &text)
+{
+    ui->labelInfo->setText(text);
+}
+
 void widget_stacks_manager::set_states(const QJsonObject &val)
 {
     stacks_states_ = val;
     if(stacks_states_.contains(state_tasks_selection())){
         widget_tasks_selection_->set_states(stacks_states_[state_tasks_selection()].toObject());
+    }
+
+    if(val.contains(state_cam_name())){
+        ui->labelInfo->setText(val[state_cam_name()].toString());
     }
 
     setup_stacks();

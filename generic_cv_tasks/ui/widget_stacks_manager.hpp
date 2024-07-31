@@ -24,6 +24,7 @@ public:
 
     QJsonObject get_states();
 
+    void set_info_text(QString const &text);
     void set_states(QJsonObject const &val);
 
 private slots:

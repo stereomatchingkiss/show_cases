@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     emit get_websocket_controller().initialize();
 
-    setMinimumSize(QSize(1200, 400));
+    setMinimumSize(QSize(1200, 800));
 }
 
 MainWindow::~MainWindow()
@@ -57,11 +57,12 @@ void MainWindow::action_about_qt(bool)
 
 void MainWindow::action_add_stream(bool)
 {
-    if(widget_multi_stream_manager_->get_stream_count() < 4){
-        widget_multi_stream_manager_->add_stream(new widget_stacks_manager);
-    }else{
-        msg_box_->information(this, tr("Info"), tr("Currently only supports 1~4 streams"));
-    }
+    static int index = 0;
+    auto *widget = new widget_stacks_manager;
+    widget->set_info_text(QString("cam_%1").arg(index++));
+    widget_multi_stream_manager_->add_stream(widget);
+
+    set_next_prev_button_visibility();
 }
 
 void MainWindow::action_contact_me(bool)
@@ -97,14 +98,37 @@ void MainWindow::init_stacked_widget()
 {
     widget_multi_stream_manager_ = new widget_multi_stream_manager;
     ui->stackedWidget->addWidget(widget_multi_stream_manager_);
+
+    set_next_prev_button_visibility();
 }
 
 void MainWindow::load_settings(bool)
 {
     widget_multi_stream_manager_->load_settings();
+
+    set_next_prev_button_visibility();
 }
 
 void MainWindow::save_settings(bool)
 {
     widget_multi_stream_manager_->save_settings();
 }
+
+void MainWindow::set_next_prev_button_visibility()
+{
+    ui->pushButtonNext->setVisible(widget_multi_stream_manager_->get_stream_page() < widget_multi_stream_manager_->get_max_page());
+    ui->pushButtonPrev->setVisible(widget_multi_stream_manager_->get_stream_page() > 0);
+}
+
+void MainWindow::on_pushButtonPrev_clicked()
+{
+    widget_multi_stream_manager_->prev_page();
+    set_next_prev_button_visibility();
+}
+
+void MainWindow::on_pushButtonNext_clicked()
+{
+    widget_multi_stream_manager_->next_page();
+    set_next_prev_button_visibility();
+}
+
