@@ -67,7 +67,7 @@ void MainWindow::action_contact_me(bool)
 {
     msg_box_->setText(tr("Please send your email to thamngapwei@gmail.com.\n"
                          "Or open issue on\n"
-                         "https://github.com/stereomatchingkiss/object_detection_and_alarm/issues"));
+                         "https://github.com/stereomatchingkiss/show_cases/issues"));
 
     msg_box_->show();
 }
