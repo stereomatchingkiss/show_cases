@@ -192,20 +192,7 @@ struct fall_down_obj_det_worker::impl
         }
 
         return img;
-    }
-
-    cv::Mat crop_img(cv::Mat img) const
-    {
-        if(config_.roi_.isValid()){
-            //QRect const roi(config_.roi_.x() * img.width(), config_.roi_.y() * img.height(),
-            //                config_.roi_.width() * img.width(), config_.roi_.height() * img.height());
-            //return img.copy(roi);
-
-            return img(convert_qrectf_to_cv_rect(config_.roi_, img.cols, img.rows)).clone();
-        }
-
-        return img;
-    }
+    }    
 
     std::set<int> active_id_;
     fall_down_det_alert_save alert_save_;
