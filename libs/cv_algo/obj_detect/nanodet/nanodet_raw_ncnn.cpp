@@ -62,11 +62,13 @@ void generate_grid_center_priors(int input_height,
 
 }
 
-nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread) :
-    input_size_{input_size, input_size},
-    max_thread_{max_thread},
-    num_class_(num_class)
+nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread)
 {
+    std::lock_guard<std::mutex> lock(mutex_);
+    input_size_[0] = input_size;
+    input_size_[1] = input_size;
+    max_thread_ = max_thread;
+    num_class_ = num_class;
     net_ = std::make_unique<ncnn::Net>();
 #if NCNN_VULKAN
     has_gpu_ = ncnn::get_gpu_count() > 0 && use_gpu;
@@ -82,7 +84,7 @@ nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_c
     output_name_ = net_->output_names()[net_->output_names().size() - 1];
 }
 
-int nanodet_raw_ncnn::get_input_size() const
+int nanodet_raw_ncnn::get_input_size() const noexcept
 {
     return input_size_[0];
 }
@@ -124,7 +126,7 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
     ncnn::Mat input;
     preprocess(bgr_buffer, width, height, input);
 
-    auto ex = net_->create_extractor();
+    ncnn::Extractor ex = create_extractor();
     ex.input(input_name_.c_str(), input);
 
     std::vector<std::vector<box_info>> results;
@@ -152,13 +154,14 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
 
 ncnn::Extractor nanodet_raw_ncnn::create_extractor() const
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     return net_->create_extractor();
 }
 
 void nanodet_raw_ncnn::decode_infer(ncnn::Mat &feats,
                                     std::vector<center_prior> &center_priors,
                                     float threshold,
-                                    std::vector<std::vector<box_info>> &results)
+                                    std::vector<std::vector<box_info>> &results) const
 {
     size_t const num_points = center_priors.size();
     for(int idx = 0; idx < num_points; idx++){

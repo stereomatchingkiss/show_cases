@@ -44,16 +44,6 @@ int nanodet::get_load_model_state() const noexcept
     return net_->get_load_model_state();
 }
 
-std::vector<box_info> nanodet::predict_with_resize_image(cv::Mat const &bgr,
-                                                         float score_threshold,
-                                                         float nms_threshold,
-                                                         int rotation_angle,
-                                                         bool hflip)
-{
-    adjust_img_orientation(bgr, rotation_angle, hflip);
-    return net_->predict_with_resize_image(bgr.data, bgr.cols, bgr.rows, score_threshold, nms_threshold);
-}
-
 std::vector<box_info> nanodet::predict(cv::Mat const &bgr,
                                        float score_threshold,
                                        float nms_threshold,
@@ -61,26 +51,15 @@ std::vector<box_info> nanodet::predict(cv::Mat const &bgr,
                                        bool hflip)
 {
     object_rect effect_roi;
-    resize_uniform(bgr, resized_img_, effect_roi, net_->get_input_size(), net_->get_input_size());
+    cv::Mat resized_img;
+    resize_uniform(bgr, resized_img, effect_roi, net_->get_input_size(), net_->get_input_size());
 
-    auto boxes_info = predict_with_resize_image(resized_img_, score_threshold, nms_threshold, rotation_angle, hflip);
+    auto boxes_info =
+        net_->predict_with_resize_image(resized_img.data, resized_img.cols, resized_img.rows, score_threshold, nms_threshold);
 
-    auto const abs_rotate_angle = std::abs(rotation_angle);
-    bool const should_swap = abs_rotate_angle == 90 || abs_rotate_angle == 270;
-    if(should_swap){
-        std::swap(effect_roi.height_, effect_roi.width_);
-        std::swap(effect_roi.y_, effect_roi.x_);
-        scale_bbox(bgr.rows, bgr.cols, boxes_info, effect_roi);
-    }else{
-        scale_bbox(bgr.cols, bgr.rows, boxes_info, effect_roi);
-    }
+    scale_bbox(bgr.cols, bgr.rows, boxes_info, effect_roi);
 
     return boxes_info;
-}
-
-void nanodet::adjust_img_orientation(cv::Mat const &input, int rotate_angle, bool horizontal_flip)
-{
-    cvt::utils::adjust_img_orientation(input, img_rotate_, rotate_angle, horizontal_flip);
 }
 
 }

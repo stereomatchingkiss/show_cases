@@ -27,7 +27,7 @@ public:
                      int input_size = 320,
                      int max_thread = 4);
 
-    int get_input_size() const;
+    int get_input_size() const noexcept;
 
     bool get_load_model_success() const noexcept;
     bool get_load_param_success() const noexcept;
@@ -70,13 +70,13 @@ private:
     void decode_infer(ncnn::Mat& feats,
                       std::vector<center_prior>& center_priors,
                       float threshold,
-                      std::vector<std::vector<box_info>>& results);
+                      std::vector<std::vector<box_info>>& results) const;
     box_info dis_pred_to_box(const float*& dfl_det, int label, float score, int x, int y, int stride) const;
     static void nms(std::vector<box_info>& input_boxes, float nms_threshold);
     void preprocess(unsigned char *buffer, int width, int height, ncnn::Mat& in) const;
 
     bool has_gpu_ = false;
-    int const input_size_[2] = {320, 320};
+    int input_size_[2] = {320, 320};
     std::unique_ptr<ncnn::Net> net_;
     int load_model_success_ = -1;
     int load_param_success_ = -1;
@@ -87,6 +87,8 @@ private:
 
     std::string input_name_;
     std::string output_name_;
+
+    mutable std::mutex mutex_;
 };
 
 }
