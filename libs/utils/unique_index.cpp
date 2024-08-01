@@ -24,14 +24,18 @@ void unique_index::clear()
 
 size_t unique_index::get_and_update_unique_index()
 {
+    if(indexes_.empty()){
+        indexes_.emplace_back(0);
+        return indexes_.back();
+    }
     for(size_t unique_index = 0; ; ++unique_index){
-        if(auto it = find(indexes_, unique_index); it != std::end(indexes_)){
+        if(auto it = find(indexes_, unique_index); it == std::end(indexes_)){
             indexes_.emplace_back(unique_index);
             return unique_index;
         }
     }
 
-    return 0;
+    return indexes_.back();
 }
 
 void unique_index::remove_unique_index(size_t val)
