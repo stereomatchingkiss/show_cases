@@ -138,6 +138,17 @@ void widget_stacks_manager::switch_to_task_selection_page()
     stacks_states_ = get_states();
 }
 
+size_t widget_stacks_manager::get_cam_index() const
+{
+    auto const txt = ui->labelInfo->text();
+    if(txt.contains("_")){
+        qDebug()<<__func__<<": = "<<txt.mid(txt.indexOf("_") + 1);
+        return static_cast<size_t>(txt.mid(txt.indexOf("_") + 1).toInt());
+    }
+
+    return 0;
+}
+
 void widget_stacks_manager::init_stacked_widget()
 {
     if(more_than_one_task()){

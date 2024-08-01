@@ -22,6 +22,7 @@ public:
 
     void switch_to_task_selection_page();
 
+    size_t get_cam_index() const;
     QJsonObject get_states();
 
     void set_info_text(QString const &text);

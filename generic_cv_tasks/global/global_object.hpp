@@ -1,5 +1,11 @@
 #pragma once
 
+namespace flt{
+
+class unique_index;
+
+}
+
 namespace flt::mm{
 
 class alert_sound_manager;
@@ -17,6 +23,7 @@ class dialog_alert_sender_settings;
 flt::mm::alert_sound_manager& get_alert_sound_manager();
 flt::net::websocket_client_controller& get_websocket_controller();
 dialog_alert_sender_settings& get_widget_alert_sender_settings();
+flt::unique_index& get_unique_index();
 
 bool more_than_one_task() noexcept;
 
