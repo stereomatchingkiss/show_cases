@@ -50,90 +50,57 @@ endif()
 
 set(CV_ALGO_SOURCES ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.hpp
     ${PLUGIN_LIBS_PATH}/cv_algo/converter/box_type_converter.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.hpp ${PLUGIN_LIBS_PATH}/cv_algo/converter/qt_and_cv_rect_converter.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/coco_object_index.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/common_obj_det_type.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/ncnn_det_model_auxiliary.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_base.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/obj_det_utils.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/nanodet/nanodet_raw_ncnn.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.hpp ${PLUGIN_LIBS_PATH}/cv_algo/obj_detect/yolo_v8/yolo_v8.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_object_pass.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/tracker/track_results.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/BYTETracker.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/KalmanFilter.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/lapjv.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Object.cpp
     ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/Rect.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_base.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_base.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_pptsm_opencv.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_pptsm_opencv.cpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_frame_extractor.hpp
-    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_frame_extractor.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.hpp ${PLUGIN_LIBS_PATH}/cv_algo/tracker/byte_track/STrack.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.hpp ${PLUGIN_LIBS_PATH}/cv_algo/utils/draw_rect.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.hpp ${PLUGIN_LIBS_PATH}/cv_algo/utils/image_process.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_base.hpp ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_base.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_pptsm_opencv.hpp ${PLUGIN_LIBS_PATH}/cv_algo/video/video_classify_pptsm_opencv.cpp
+    ${PLUGIN_LIBS_PATH}/cv_algo/video/video_frame_extractor.hpp ${PLUGIN_LIBS_PATH}/cv_algo/video/video_frame_extractor.cpp
 )
 
 set(MULTIMEDIA_SOURCE ${PLUGIN_LIBS_PATH}/multimedia/stream_enum.hpp
     ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_params.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_base_worker.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_process_controller.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera.cpp
     ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qcamera_params.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer.cpp
     ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_qmediaplayer_params.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/single_frame_with_multi_worker_base.cpp
     ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket_params.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
-    ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp
-    ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.hpp ${PLUGIN_LIBS_PATH}/multimedia/network/frame_capture_websocket.cpp
+    ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.hpp ${PLUGIN_LIBS_PATH}/multimedia/sound/alert_sound_manager.cpp
 )
 
 SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.hpp
-    ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp
-    ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
-    ${PLUGIN_LIBS_PATH}/json/json_utils.hpp
-    ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
-    ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.hpp
-    ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.cpp
-    ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.hpp
-    ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.cpp
-    ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp
-    ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
+    ${PLUGIN_LIBS_PATH}/event/thread_safe_event.hpp ${PLUGIN_LIBS_PATH}/event/thread_safe_event.cpp
+    ${PLUGIN_LIBS_PATH}/json/json_utils.hpp ${PLUGIN_LIBS_PATH}/json/json_utils.cpp
+    ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.hpp ${PLUGIN_LIBS_PATH}/network/websocket_client_controller.cpp
+    ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.hpp ${PLUGIN_LIBS_PATH}/network/websocket_client_worker.cpp
+    ${PLUGIN_LIBS_PATH}/ui/label_select_roi.hpp ${PLUGIN_LIBS_PATH}/ui/label_select_roi.cpp
     ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.hpp ${PLUGIN_LIBS_PATH}/ui/utils/qtable_item_utils.cpp
     ${PLUGIN_LIBS_PATH}/ui/utils/utility.hpp ${PLUGIN_LIBS_PATH}/ui/utils/utility.cpp
-    ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp
-    ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
-    ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp
-    ${PLUGIN_LIBS_PATH}/utils/image_utils.cpp
+    ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
+    ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp ${PLUGIN_LIBS_PATH}/utils/image_utils.cpp
     ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
-    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp
-    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
+    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
+    ${PLUGIN_LIBS_PATH}/utils/unique_index.hpp ${PLUGIN_LIBS_PATH}/utils/unique_index.cpp
 )
 
 if(NOT EMSCRIPTEN)
