@@ -106,6 +106,7 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
     norm_vals_{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f},
     num_class_{num_class}
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     net_.opt = ncnn::Option();
     net_.opt.num_threads = max_thread;
 
@@ -159,7 +160,7 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
 
     in_pad.substract_mean_normalize(0, norm_vals_);
 
-    ncnn::Extractor ex = net_.create_extractor();
+    ncnn::Extractor ex = create_extractor();
 
     ex.input(input_name_.c_str(), in_pad);
 
@@ -210,6 +211,12 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
     });
 
     return objects;
+}
+
+ncnn::Extractor yolo_v8::create_extractor() const
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    return net_.create_extractor();
 }
 
 }

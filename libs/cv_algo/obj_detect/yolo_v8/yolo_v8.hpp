@@ -41,6 +41,7 @@ public:
                                   int rotation_angle = 0,
                                   bool hflip = false) override;
 private:
+    ncnn::Extractor create_extractor() const;
 
     ncnn::Net net_;
     int target_size_;
@@ -50,6 +51,8 @@ private:
 
     std::string input_name_;
     std::string output_name_;
+
+    mutable std::mutex mutex_;
 };
 
 }
