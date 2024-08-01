@@ -4,7 +4,7 @@
 
 namespace flt{
 
-template<typename T>
+template<typename T, size_t N = 0>
 class meyers_singleton
 {
 public:
