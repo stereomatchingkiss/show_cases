@@ -6,6 +6,7 @@
 
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
 #include <cv_algo/obj_detect/yolo_v8/yolo_v8.hpp>
+#include <utils/meyers_singleton.hpp>
 
 #include <QDebug>
 
@@ -20,7 +21,8 @@ struct generic_obj_detector::impl
 {
     impl(config_generic_obj_detector config) :
         config_{std::move(config)},
-        names_{global_keywords().coco_names()}
+        names_{global_keywords().coco_names()},
+        net_{nullptr}
     {
         create_model();
         create_obj_to_detect();
@@ -40,35 +42,35 @@ struct generic_obj_detector::impl
             qDebug()<<"load nanodet_plus_m_320";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 320);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 320);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
+            net_ = &meyers_singleton<cvt::det::nanodet, 0>::get_instance(param.c_str(), bin.c_str(), 80, false, 320);
             break;
         }
         case dme::nanodet_plus_m_416:{
             qDebug()<<"load nanodet_plus_m_416";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 416);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
+            net_ = &meyers_singleton<cvt::det::nanodet, 1>::get_instance(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         case dme::nanodet_plus_m_1_5x_320:{
             qDebug()<<"load nanodet_plus_m_1_5x_320";
             auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 320);
             auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 320);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 320);
+            net_ = &meyers_singleton<cvt::det::nanodet, 2>::get_instance(param.c_str(), bin.c_str(), 80, false, 320);
             break;
         }
         case dme::nanodet_plus_m_1_5x_416:{
             qDebug()<<"load nanodet_plus_m_1_5x_416";
             auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 416);
-            net_ = std::make_unique<cvt::det::nanodet>(param.c_str(), bin.c_str(), 80, false, 416);
+            net_ = &meyers_singleton<cvt::det::nanodet, 3>::get_instance(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         case dme::yolo_v8_n_416:{
             qDebug()<<"load yolo_v8_n_416";
             auto const param = std::format("{}yolov8n.param", model_root);
             auto const bin = std::format("{}yolov8n.bin", model_root);
-            net_ = std::make_unique<cvt::det::yolo_v8>(param.c_str(), bin.c_str(), 80, false, 416);
+            net_ = &meyers_singleton<cvt::det::yolo_v8, 4>::get_instance(param.c_str(), bin.c_str(), 80, false, 416);
             break;
         }
         }
@@ -108,7 +110,7 @@ struct generic_obj_detector::impl
 
     config_generic_obj_detector config_;
     std::vector<std::string> names_;
-    std::unique_ptr<det::obj_det_base> net_;
+    det::obj_det_base *net_;
     std::vector<bool> obj_to_detect_;
 };
 
