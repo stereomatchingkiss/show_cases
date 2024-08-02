@@ -159,6 +159,10 @@ struct fall_down_obj_det_worker::impl
             }
         }
 
+        if(!config_.config_fall_down_obj_det_alert_.warning_on_){
+            can_send_alert_ = false;
+        }
+
         remove_id_lost_track();
 
         return det_results;
@@ -249,7 +253,7 @@ void fall_down_obj_det_worker::process_results(std::any frame)
     generic_worker_results results;
     results.alarm_on_ = impl_->can_send_alert_;
 
-    if(impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){        
+    if(results.alarm_on_ && impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){
         emit send_alert_by_text(impl_->alert_save_.get_alert_info());
     }
 

@@ -9,6 +9,7 @@
 
 namespace{
 
+inline QString state_warning_on() { return "state_warning_on"; }
 inline QString state_warning_condition(){ return "state_warning_condition"; }
 inline QString state_warning_periodic(){ return "state_warning_periodic"; }
 
@@ -32,6 +33,7 @@ widget_fall_down_obj_det_alert::~widget_fall_down_obj_det_alert()
 config_fall_down_obj_det_alert widget_fall_down_obj_det_alert::get_config() const
 {
     config_fall_down_obj_det_alert config;
+    config.warning_on_ = ui->groupBoxAlertCondition->isChecked();
     if(ui->radioButtonWarningPeriodic->isChecked()){
         config.warning_type_ = fall_down_warning_type::issue_warning_periodic;
     }else{
@@ -47,8 +49,9 @@ QJsonObject widget_fall_down_obj_det_alert::get_states() const
 {
     global_keywords const gk;
 
-    QJsonObject obj;
+    QJsonObject obj;    
     obj[state_warning_condition()] = get_warning_condition();
+    obj[state_warning_on()] = ui->groupBoxAlertCondition->isChecked();
     obj[state_warning_periodic()] = ui->spinBoxWarningPeriodic->value();
 
     obj[gk.state_version()] = "1.0";
@@ -58,6 +61,9 @@ QJsonObject widget_fall_down_obj_det_alert::get_states() const
 
 void widget_fall_down_obj_det_alert::set_states(const QJsonObject &val)
 {
+    if(val.contains(state_warning_on())){
+        ui->groupBoxAlertCondition->setChecked(val[state_warning_on()].toBool());
+    }
     if(val.contains(state_warning_condition())){
         using wt = fall_down_warning_type;
 
