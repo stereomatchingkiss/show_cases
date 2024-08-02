@@ -8,7 +8,7 @@ namespace flt{
 
 bool unique_index::add_unique_index(size_t val)
 {
-    if(auto it = find(indexes_, val); it != std::end(indexes_)){
+    if(auto it = find(indexes_, val); it == std::end(indexes_)){
         indexes_.emplace_back(val);
         return true;
     }
