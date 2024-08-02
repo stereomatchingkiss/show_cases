@@ -3,6 +3,12 @@
 
 #include "../../config/config_object_detect_model_select.hpp"
 
+#ifdef THIS_IS_IOS
+#include <ncnn/ncnn/net.h>
+#else
+#include <net.h>
+#endif
+
 #include <QJsonObject>
 #include <QLineEdit>
 
@@ -11,6 +17,7 @@ namespace{
 inline QString state_obj_det_confidence(){ return "state_obj_det_confidence"; };
 inline QString state_obj_det_model_type(){ return "state_obj_det_model_type"; };
 inline QString state_obj_det_nms(){ return "state_obj_det_nms"; };
+inline QString state_obj_det_use_gpu(){ return "state_obj_det_use_gpu"; };
 
 inline QString state_version(){ return "state_version"; };
 
@@ -64,6 +71,8 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
     ui->comboBoxSelectModel->addItem(mt.yolo_v8_n_416);
     ui->comboBoxSelectModel->setCurrentIndex(1);
 
+    ui->checkBoxUseGPU->setVisible(ncnn::get_gpu_count() > 0);
+
     ui->groupBoxYolox->setVisible(false);
 
     ui->labelConfidence->setToolTip(tr("The higher the value, the more likely the model is to correctly identify the correct results.\n"
@@ -86,6 +95,7 @@ config_object_detect_model_select widget_object_detect_model_select::get_config(
     results.confidence_ = static_cast<float>(ui->spinBoxConfidence->value()) / 100.0f;
     results.model_ = static_cast<object_detect_model_enum>(model_types().get_ids(ui->comboBoxSelectModel->currentText()));
     results.nms_ = static_cast<float>(ui->spinBoxNMS->value()) / 100.0f;
+    results.use_gpu_ = ui->checkBoxUseGPU->isChecked();
 
     model_types const mt;
     auto const mtext = ui->comboBoxSelectModel->currentText();
@@ -101,9 +111,10 @@ config_object_detect_model_select widget_object_detect_model_select::get_config(
 QJsonObject widget_object_detect_model_select::get_states() const
 {
     QJsonObject obj;
-    obj[state_obj_det_confidence()] = ui->spinBoxConfidence->value();
-    obj[state_obj_det_nms()] = ui->spinBoxNMS->value();
+    obj[state_obj_det_confidence()] = ui->spinBoxConfidence->value();    
     obj[state_obj_det_model_type()] = ui->comboBoxSelectModel->currentText();
+    obj[state_obj_det_nms()] = ui->spinBoxNMS->value();
+    obj[state_obj_det_use_gpu()] = ui->checkBoxUseGPU->isChecked();
     obj[state_version()] = "1.0";
 
     return obj;
@@ -119,6 +130,9 @@ void widget_object_detect_model_select::set_states(const QJsonObject &val)
     }
     if(val.contains(state_obj_det_nms())){
         ui->spinBoxNMS->setValue(val[state_obj_det_nms()].toInt());
-    }    
+    }
+    if(val.contains(state_obj_det_use_gpu())){
+        ui->checkBoxUseGPU->setChecked(val[state_obj_det_use_gpu()].toBool());
+    }
 }
 

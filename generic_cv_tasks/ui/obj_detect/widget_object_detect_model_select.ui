@@ -33,10 +33,19 @@
       <string>General params</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelConfidence">
-        <property name="text">
-         <string>Confidence</string>
+      <item row="1" column="2">
+       <widget class="QSlider" name="horizontalSliderNMS">
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -47,6 +56,13 @@
         </property>
         <property name="value">
          <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelNMS">
+        <property name="text">
+         <string>NMS</string>
         </property>
        </widget>
       </item>
@@ -63,10 +79,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelNMS">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelConfidence">
         <property name="text">
-         <string>NMS</string>
+         <string>Confidence</string>
         </property>
        </widget>
       </item>
@@ -80,22 +96,6 @@
         </property>
         <property name="value">
          <number>50</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QSlider" name="horizontalSliderNMS">
-        <property name="minimum">
-         <number>10</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>50</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -134,6 +134,13 @@
           <widget class="QComboBox" name="comboBoxProcessSizeYolox"/>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxUseGPU">
+        <property name="text">
+         <string>Use GPU</string>
+        </property>
        </widget>
       </item>
      </layout>
