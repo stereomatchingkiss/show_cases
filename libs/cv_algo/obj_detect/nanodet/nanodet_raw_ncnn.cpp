@@ -62,18 +62,16 @@ void generate_grid_center_priors(int input_height,
 
 }
 
-nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread)
+nanodet_raw_ncnn::nanodet_raw_ncnn(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread) :
+    input_size_{input_size, input_size},
+    max_thread_{max_thread},
+    num_class_{num_class}
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    input_size_[0] = input_size;
-    input_size_[1] = input_size;
-    max_thread_ = max_thread;
-    num_class_ = num_class;
     net_ = std::make_unique<ncnn::Net>();
 #if NCNN_VULKAN
     has_gpu_ = ncnn::get_gpu_count() > 0 && use_gpu;
-#endif
-    std::cout<<"has gpu = "<<has_gpu_<<", use gpu = "<<use_gpu<<std::endl;
+#endif    
     net_->opt.use_vulkan_compute = has_gpu_;
     net_->opt.use_fp16_arithmetic = true;
     net_->opt.num_threads = max_thread_;

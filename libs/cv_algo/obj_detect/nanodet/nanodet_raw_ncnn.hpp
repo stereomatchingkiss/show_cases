@@ -76,13 +76,13 @@ private:
     void preprocess(unsigned char *buffer, int width, int height, ncnn::Mat& in) const;
 
     bool has_gpu_ = false;
-    int input_size_[2] = {320, 320};
+    int const input_size_[2] = {320, 320};
     std::unique_ptr<ncnn::Net> net_;
     int load_model_success_ = -1;
     int load_param_success_ = -1;
-    int max_thread_ = 4;
-    int num_class_ = 7;
-    int reg_max_ = 7;
+    int const max_thread_ = 4;
+    int const num_class_ = 7;
+    int const reg_max_ = 7;
     std::vector<int> const strides_ = { 8, 16, 32, 64 }; // strides of the multi-level feature.
 
     std::string input_name_;

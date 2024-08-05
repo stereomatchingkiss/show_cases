@@ -43,11 +43,11 @@ public:
 private:
     ncnn::Extractor create_extractor() const;
 
-    ncnn::Net net_;
-    int target_size_;
+    ncnn::Net net_;    
     float const mean_vals_[3];
     float const norm_vals_[3];
-    int num_class_;
+    int const num_class_;
+    int const target_size_;
 
     std::string input_name_;
     std::string output_name_;

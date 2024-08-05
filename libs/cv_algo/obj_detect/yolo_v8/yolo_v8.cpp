@@ -105,7 +105,8 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
     obj_det_base(),
     mean_vals_{103.53f, 116.28f, 123.675f},
     norm_vals_{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f},
-    num_class_{num_class}
+    num_class_{num_class},
+    target_size_{input_size}
 {
     std::lock_guard<std::mutex> lock(mutex_);
     net_.opt = ncnn::Option();
@@ -119,9 +120,7 @@ yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu
     net_.load_model(bin);
 
     input_name_ = net_.input_names()[0];
-    output_name_ = net_.output_names()[net_.output_names().size() - 1];
-
-    target_size_ = input_size;
+    output_name_ = net_.output_names()[net_.output_names().size() - 1];    
 }
 
 yolo_v8::~yolo_v8()
