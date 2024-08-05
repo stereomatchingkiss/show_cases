@@ -131,7 +131,7 @@ yolo_v8::~yolo_v8()
 std::vector<box_info> yolo_v8::predict(cv::Mat const &rgb, float score_threshold, float nms_threshold, int, bool)
 {
     //pad to multiple of 32
-    auto [w, h, scale] = pad_to_multiple_of_det_model(rgb.cols, rgb.rows, target_size_);
+    auto const [w, h, scale] = pad_to_multiple_of_det_model(rgb.cols, rgb.rows, target_size_);
 
     ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
 
