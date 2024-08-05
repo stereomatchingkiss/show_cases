@@ -50,8 +50,7 @@ public:
     std::vector<box_info> predict(cv::Mat const &bgr,
                                   float score_threshold,
                                   float nms_threshold,
-                                  int rotation_angle = 0,
-                                  bool hflip = false) override;
+                                  bool swap_channel = false) override;
 
 private:
     std::unique_ptr<nanodet_raw_ncnn> net_;

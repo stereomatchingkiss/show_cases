@@ -114,7 +114,6 @@ struct generic_obj_detector::impl
         auto det_results = net_->predict(rgb,
                                          config_.config_object_detect_model_select_.confidence_,
                                          config_.config_object_detect_model_select_.nms_,
-                                         0,
                                          false);
         remove_invalid_target(det_results);
 

@@ -38,8 +38,7 @@ public:
     std::vector<box_info> predict(cv::Mat const &rgb,
                                   float score_threshold = 0.4f,
                                   float nms_threshold = 0.5f,
-                                  int rotation_angle = 0,
-                                  bool hflip = false) override;
+                                  bool swap_channel = false) override;
 private:
     ncnn::Extractor create_extractor() const;
 

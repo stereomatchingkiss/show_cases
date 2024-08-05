@@ -128,12 +128,17 @@ yolo_v8::~yolo_v8()
 
 }
 
-std::vector<box_info> yolo_v8::predict(cv::Mat const &rgb, float score_threshold, float nms_threshold, int, bool)
+std::vector<box_info> yolo_v8::predict(cv::Mat const &rgb, float score_threshold, float nms_threshold, bool swap_channel)
 {
     //pad to multiple of 32
     auto const [w, h, scale] = pad_to_multiple_of_det_model(rgb.cols, rgb.rows, target_size_);
 
-    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
+    ncnn::Mat in;
+    if(swap_channel){
+        in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_BGR2RGB, rgb.cols, rgb.rows, w, h);
+    }else{
+        in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
+    }
 
     // pad to target_size rectangle
     int const wpad = (w + 31) / 32 * 32 - w;

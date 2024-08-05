@@ -49,7 +49,8 @@ public:
                                                     int width,
                                                     int height,
                                                     float score_threshold,
-                                                    float nms_threshold);    
+                                                    float nms_threshold,
+                                                    bool swap_channel);
 
 private:
     struct HeadInfo
@@ -73,7 +74,7 @@ private:
                       std::vector<std::vector<box_info>>& results) const;
     box_info dis_pred_to_box(const float*& dfl_det, int label, float score, int x, int y, int stride) const;
     static void nms(std::vector<box_info>& input_boxes, float nms_threshold);
-    void preprocess(unsigned char *buffer, int width, int height, ncnn::Mat& in) const;
+    void preprocess(unsigned char *buffer, int width, int height, bool swap_channel, ncnn::Mat& in) const;
 
     bool has_gpu_ = false;
     int const input_size_[2] = {320, 320};

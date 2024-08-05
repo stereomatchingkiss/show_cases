@@ -35,8 +35,7 @@ yolo_v9::~yolo_v9()
 std::vector<box_info> yolo_v9::predict(const cv::Mat &rgb,
                                        float score_threshold,
                                        float nms_threshold,
-                                       int rotation_angle,
-                                       bool hflip)
+                                       bool swap_channel)
 {    
     // pad to multiple of 32
     auto const [w, h, scale] = pad_to_multiple_of_det_model(rgb.cols, rgb.rows, target_size_);
@@ -45,7 +44,7 @@ std::vector<box_info> yolo_v9::predict(const cv::Mat &rgb,
     int const dh = (target_size_ - h) / 2;
 
     ncnn::Extractor ex = create_extractor();
-    ex.input(input_name_.c_str(), preprocess(rgb, w, h, dw, dh));
+    ex.input(input_name_.c_str(), preprocess(rgb, w, h, dw, dh, swap_channel));
 
     ncnn::Mat out;
     ex.extract(output_name_.c_str(), out);
@@ -107,9 +106,14 @@ void yolo_v9::generate_proposals(ncnn::Mat const &feat_blob, float prob_threshol
     }
 }
 
-ncnn::Mat yolo_v9::preprocess(cv::Mat const &rgb, int w, int h, int dw, int dh) const
+ncnn::Mat yolo_v9::preprocess(cv::Mat const &rgb, int w, int h, int dw, int dh, bool swap_channel) const
 {
-    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
+    ncnn::Mat in;
+    if(swap_channel){
+        in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_BGR2RGB, rgb.cols, rgb.rows, w, h);
+    }else{
+        in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
+    }
     // pad to target_size rectangle left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
     int const top = static_cast<int>(std::round(dh - 0.1));
     int const bottom = static_cast<int>(std::round(dh + 0.1));

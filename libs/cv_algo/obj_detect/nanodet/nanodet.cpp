@@ -47,15 +47,14 @@ int nanodet::get_load_model_state() const noexcept
 std::vector<box_info> nanodet::predict(cv::Mat const &bgr,
                                        float score_threshold,
                                        float nms_threshold,
-                                       int rotation_angle,
-                                       bool hflip)
+                                       bool swap_channel)
 {
     object_rect effect_roi;
     cv::Mat resized_img;
     resize_uniform(bgr, resized_img, effect_roi, net_->get_input_size(), net_->get_input_size());
 
     auto boxes_info =
-        net_->predict_with_resize_image(resized_img.data, resized_img.cols, resized_img.rows, score_threshold, nms_threshold);
+        net_->predict_with_resize_image(resized_img.data, resized_img.cols, resized_img.rows, score_threshold, nms_threshold, swap_channel);
 
     scale_bbox(bgr.cols, bgr.rows, boxes_info, effect_roi);
 

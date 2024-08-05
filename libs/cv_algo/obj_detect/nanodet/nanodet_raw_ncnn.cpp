@@ -119,10 +119,11 @@ std::vector<box_info> nanodet_raw_ncnn::predict_with_resize_image(unsigned char 
                                                                   int width,
                                                                   int height,
                                                                   float score_threshold,
-                                                                  float nms_threshold)
+                                                                  float nms_threshold,
+                                                                  bool swap_channel)
 {
     ncnn::Mat input;
-    preprocess(bgr_buffer, width, height, input);
+    preprocess(bgr_buffer, width, height, swap_channel, input);
 
     ncnn::Extractor ex = create_extractor();
     ex.input(input_name_.c_str(), input);
@@ -236,10 +237,14 @@ void nanodet_raw_ncnn::nms(std::vector<box_info> &input_boxes, float nms_thresho
     }
 }
 
-void nanodet_raw_ncnn::preprocess(unsigned char *buffer, int width, int height, ncnn::Mat &in) const
+void nanodet_raw_ncnn::preprocess(unsigned char *buffer, int width, int height, bool swap_channel, ncnn::Mat &in) const
 {
     //this model expect bgr image
-    in = ncnn::Mat::from_pixels(buffer, ncnn::Mat::PIXEL_BGR, width, height);
+    if(swap_channel){
+        in = ncnn::Mat::from_pixels(buffer, ncnn::Mat::PIXEL_RGB2BGR, width, height);
+    }else{
+        in = ncnn::Mat::from_pixels(buffer, ncnn::Mat::PIXEL_BGR, width, height);
+    }
     float constexpr mean_vals[3] = { 103.53f, 116.28f, 123.675f };
     float constexpr norm_vals[3] = { 0.017429f, 0.017507f, 0.017125f };
     in.substract_mean_normalize(mean_vals, norm_vals);

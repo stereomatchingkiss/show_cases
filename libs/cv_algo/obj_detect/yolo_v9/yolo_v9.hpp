@@ -22,12 +22,11 @@ public:
     std::vector<box_info> predict(cv::Mat const &rgb,
                                   float score_threshold = 0.4f,
                                   float nms_threshold = 0.5f,
-                                  int rotation_angle = 0,
-                                  bool hflip = false) override;
+                                  bool swap_channel = false) override;
 private:
     ncnn::Extractor create_extractor() const;
     void generate_proposals(ncnn::Mat const &feat_blob, float prob_threshold, std::vector<box_info>& objects) const;
-    ncnn::Mat preprocess(cv::Mat const &rgb, int w, int h, int dw, int dh) const;
+    ncnn::Mat preprocess(cv::Mat const &rgb, int w, int h, int dw, int dh, bool swap_channel) const;
     ncnn::Mat transpose(const ncnn::Mat& in) const;
 
     ncnn::Net net_;
