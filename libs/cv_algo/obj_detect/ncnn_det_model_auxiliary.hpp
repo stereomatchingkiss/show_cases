@@ -48,4 +48,6 @@ void generate_grids_and_stride(int target_w,
                                std::vector<int>& strides,
                                std::vector<grid_and_stride>& grid_strides);
 
+std::tuple<int, int, float> pad_to_multiple_of_det_model(int w, int h, int target_size);
+
 }

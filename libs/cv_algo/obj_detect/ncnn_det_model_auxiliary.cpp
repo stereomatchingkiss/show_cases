@@ -94,6 +94,20 @@ void generate_grids_and_stride(int target_w, int target_h, std::vector<int> &str
     }
 }
 
+std::tuple<int, int, float> pad_to_multiple_of_det_model(int w, int h, int target_size)
+{
+    float scale= 0.f;
+    if(w > h){
+        scale = static_cast<float>(target_size) / w;
+        w = target_size;
+        h = h * scale;
+    }else{
+        scale = static_cast<float>(target_size) / h;
+        h = target_size;
+        w = w * scale;
+    }
 
+    return {w, h, scale};
+}
 
 }

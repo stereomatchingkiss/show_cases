@@ -102,6 +102,7 @@ void generate_proposals(std::vector<grid_and_stride> grid_strides,
 }
 
 yolo_v8::yolo_v8(const char *param, const char *bin, int num_class, bool use_gpu, int input_size, int max_thread) :
+    obj_det_base(),
     mean_vals_{103.53f, 116.28f, 123.675f},
     norm_vals_{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f},
     num_class_{num_class}
@@ -128,29 +129,12 @@ yolo_v8::~yolo_v8()
 
 }
 
-std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold, float nms_threshold, int, bool)
+std::vector<box_info> yolo_v8::predict(cv::Mat const &rgb, float score_threshold, float nms_threshold, int, bool)
 {
-    int width = rgb.cols;
-    int height = rgb.rows;
+    //pad to multiple of 32
+    auto [w, h, scale] = pad_to_multiple_of_det_model(rgb.cols, rgb.rows, target_size_);
 
-    // pad to multiple of 32
-    int w = width;
-    int h = height;
-    float scale = 1.f;
-    if (w > h)
-    {
-        scale = static_cast<float>(target_size_) / w;
-        w = target_size_;
-        h = static_cast<int>(h * scale);
-    }
-    else
-    {
-        scale = static_cast<float>(target_size_) / h;
-        h = target_size_;
-        w = static_cast<int>(w * scale);
-    }
-
-    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, width, height, w, h);
+    ncnn::Mat in = ncnn::Mat::from_pixels_resize(rgb.data, ncnn::Mat::PIXEL_RGB, rgb.cols, rgb.rows, w, h);
 
     // pad to target_size rectangle
     int const wpad = (w + 31) / 32 * 32 - w;
@@ -193,10 +177,10 @@ std::vector<box_info> yolo_v8::predict(const cv::Mat &rgb, float score_threshold
         float y1 = (objects[i].rect_.y + objects[i].rect_.height - (hpad / 2)) / scale;
 
         // clip
-        x0 = std::max(std::min(x0, (width - 1.0f)), 0.f);
-        y0 = std::max(std::min(y0, (height - 1.0f)), 0.f);
-        x1 = std::max(std::min(x1, (width - 1.0f)), 0.f);
-        y1 = std::max(std::min(y1, (height - 1.0f)), 0.f);
+        x0 = std::max(std::min(x0, (rgb.cols - 1.0f)), 0.f);
+        y0 = std::max(std::min(y0, (rgb.rows - 1.0f)), 0.f);
+        x1 = std::max(std::min(x1, (rgb.cols - 1.0f)), 0.f);
+        y1 = std::max(std::min(y1, (rgb.rows - 1.0f)), 0.f);
 
         objects[i].rect_.x = x0;
         objects[i].rect_.y = y0;
