@@ -6,6 +6,7 @@
 
 #include <cv_algo/obj_detect/nanodet/nanodet.hpp>
 #include <cv_algo/obj_detect/yolo_v8/yolo_v8.hpp>
+#include <cv_algo/obj_detect/yolo_v9/yolo_v9.hpp>
 #include <utils/meyers_singleton.hpp>
 
 #include <QDebug>
@@ -25,7 +26,7 @@ struct generic_obj_detector::impl
         names_{global_keywords().coco_names()},
         net_{nullptr}
     {
-        nets_.resize(10);
+        nets_.resize(12);
 
         create_model();
         create_obj_to_detect();
@@ -59,40 +60,48 @@ struct generic_obj_detector::impl
         std::string const model_root("");
 #endif
         auto const use_gpu = config_.config_object_detect_model_select_.use_gpu_;
+        auto const psize = config_.config_object_detect_model_select_.process_size_;
         switch(config_.config_object_detect_model_select_.model_){
         case dme::nanodet_plus_m_320:{
             qDebug()<<"load nanodet_plus_m_320";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 320);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 320);            
-            create_model(param, bin, 80, use_gpu, 320, 0);
+            create_model(param, bin, 80, use_gpu, psize, 0);
             break;
         }
         case dme::nanodet_plus_m_416:{
             qDebug()<<"load nanodet_plus_m_416";
             auto const param = std::format("{}nanodet-plus-m_{}.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m_{}.bin", model_root, 416);            
-            create_model(param, bin, 80, use_gpu, 416, 2);
+            create_model(param, bin, 80, use_gpu, psize, 2);
             break;
         }
         case dme::nanodet_plus_m_1_5x_320:{
             qDebug()<<"load nanodet_plus_m_1_5x_320";
             auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 320);
             auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 320);            
-            create_model(param, bin, 80, use_gpu, 320, 4);
+            create_model(param, bin, 80, use_gpu, psize, 4);
             break;
         }
         case dme::nanodet_plus_m_1_5x_416:{
             qDebug()<<"load nanodet_plus_m_1_5x_416";
             auto const param = std::format("{}nanodet-plus-m-1.5x_{}_opt.param", model_root, 416);
             auto const bin = std::format("{}nanodet-plus-m-1.5x_{}_opt.bin", model_root, 416);            
-            create_model(param, bin, 80, use_gpu, 416, 6);
+            create_model(param, bin, 80, use_gpu, psize, 6);
             break;
         }
         case dme::yolo_v8_n_416:{
             qDebug()<<"load yolo_v8_n_416";
             auto const param = std::format("{}yolov8n.param", model_root);
             auto const bin = std::format("{}yolov8n.bin", model_root);
-            create_model<cvt::det::yolo_v8>(param, bin, 80, use_gpu, 416, 8);
+            create_model<cvt::det::yolo_v8>(param, bin, 80, use_gpu, psize, 8);
+            break;
+        }
+        case dme::yolo_v9_c_640:{
+            qDebug()<<"load yolo_v9_c_640";
+            auto const param = std::format("{}yolov9c.param", model_root);
+            auto const bin = std::format("{}yolov9c.bin", model_root);
+            create_model<cvt::det::yolo_v9>(param, bin, 80, use_gpu, psize, 10);
             break;
         }
         }

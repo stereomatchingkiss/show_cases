@@ -28,6 +28,7 @@ struct model_types
     QString const nanodet_plus_m_1_5x_320_ = "nanodet_plus_m_1_5x_320";
     QString const nanodet_plus_m_1_5x_416_ = "nanodet_plus_m_1_5x_416";
     QString const yolo_v8_n_416 = "yolo_v8_n_416";
+    QString const yolo_v9_c_640 = "yolo_v9_c_640";
 
     int get_ids(QString const &val) const
     {
@@ -51,6 +52,10 @@ struct model_types
             return 4;
         }
 
+        if(val == yolo_v9_c_640){
+            return 5;
+        }
+
         return 1;
     }
 };
@@ -69,6 +74,7 @@ widget_object_detect_model_select::widget_object_detect_model_select(QWidget *pa
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_320_);
     ui->comboBoxSelectModel->addItem(mt.nanodet_plus_m_1_5x_416_);
     ui->comboBoxSelectModel->addItem(mt.yolo_v8_n_416);
+    ui->comboBoxSelectModel->addItem(mt.yolo_v9_c_640);
     ui->comboBoxSelectModel->setCurrentIndex(1);
 
     ui->checkBoxUseGPU->setVisible(ncnn::get_gpu_count() > 0);
@@ -97,13 +103,8 @@ config_object_detect_model_select widget_object_detect_model_select::get_config(
     results.nms_ = static_cast<float>(ui->spinBoxNMS->value()) / 100.0f;
     results.use_gpu_ = ui->checkBoxUseGPU->isChecked();
 
-    model_types const mt;
     auto const mtext = ui->comboBoxSelectModel->currentText();
-    if(mtext == mt.nanodet_plus_m_1_5x_320_ || mtext == mt.nanodet_plus_m_320_){
-        results.process_size_ = 320;
-    }else{
-        results.process_size_ = 416;
-    }
+    results.process_size_ = mtext.mid(mtext.lastIndexOf("_") + 1).toInt();
 
     return results;
 }
