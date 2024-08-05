@@ -15,7 +15,7 @@ public:
                      char const *bin,
                      int num_class,
                      bool use_gpu = false,
-                     int input_size = 416,
+                     int input_size = 640,
                      int max_thread = 4);
     ~yolo_v9();
 
