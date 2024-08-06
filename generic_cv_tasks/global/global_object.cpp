@@ -5,7 +5,7 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <network/websocket_client_controller.hpp>
 #include <utils/meyers_singleton.hpp>
-#include <utils/unique_index.hpp>
+#include <utils/unique_name_generator.hpp>
 
 flt::mm::alert_sound_manager &get_alert_sound_manager()
 {
@@ -45,7 +45,7 @@ bool more_than_one_task() noexcept
     return task_count > 1;
 }
 
-flt::unique_index &get_unique_index()
+flt::unique_name_generator &get_unique_name_generator()
 {
-    return flt::meyers_singleton<flt::unique_index>::get_instance();
+    return flt::meyers_singleton<flt::unique_name_generator>::get_instance("cam_");
 }

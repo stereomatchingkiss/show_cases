@@ -2,7 +2,7 @@
 
 namespace flt{
 
-class unique_index;
+class unique_name_generator;
 
 }
 
@@ -23,7 +23,7 @@ class dialog_alert_sender_settings;
 flt::mm::alert_sound_manager& get_alert_sound_manager();
 flt::net::websocket_client_controller& get_websocket_controller();
 dialog_alert_sender_settings& get_widget_alert_sender_settings();
-flt::unique_index& get_unique_index();
+flt::unique_name_generator& get_unique_name_generator();
 
 bool more_than_one_task() noexcept;
 

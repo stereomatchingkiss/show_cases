@@ -12,7 +12,7 @@
 #include "../global/global_object.hpp"
 
 #include <network/websocket_client_controller.hpp>
-#include <utils/unique_index.hpp>
+#include <utils/unique_name_generator.hpp>
 
 #include <QMessageBox>
 
@@ -61,7 +61,7 @@ void MainWindow::action_about_qt(bool)
 void MainWindow::action_add_stream(bool)
 {    
     auto *widget = new widget_stacks_manager;    
-    widget->set_info_text(QString("cam_%1").arg(get_unique_index().get_and_update_unique_index()));
+    widget->set_info_text(get_unique_name_generator().get_and_update_unique_name().c_str());
     widget_multi_stream_manager_->add_stream(widget);
 
     set_next_prev_button_visibility();

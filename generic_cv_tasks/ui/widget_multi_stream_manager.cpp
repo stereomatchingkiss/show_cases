@@ -9,7 +9,7 @@
 #include "widget_stacks_manager.hpp"
 
 #include <json/json_utils.hpp>
-#include <utils/unique_index.hpp>
+#include <utils/unique_name_generator.hpp>
 
 #include <QFileDialog>
 #include <QGridLayout>
@@ -278,7 +278,7 @@ void widget_multi_stream_manager::load_settings_from_files(const QJsonObject &jo
                 if(aobj.contains(gk.state_stacks_manager())){
                     auto widget = new widget_stacks_manager;
                     widget->set_states(aobj[gk.state_stacks_manager()].toObject());
-                    get_unique_index().add_unique_index(widget->get_cam_index());
+                    get_unique_name_generator().add_unique_name(widget->get_cam_name().toStdString());
                     add_stream(widget);
                 }
             }

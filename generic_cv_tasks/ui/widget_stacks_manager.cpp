@@ -86,7 +86,7 @@ QJsonObject widget_stacks_manager::get_states()
         }
         default:
             break;
-        }        
+        }
 
         stacks_states_ = obj;
     }

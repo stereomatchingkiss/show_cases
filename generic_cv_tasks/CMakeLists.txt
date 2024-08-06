@@ -100,8 +100,8 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
     ${PLUGIN_LIBS_PATH}/utils/file_reader.hpp ${PLUGIN_LIBS_PATH}/utils/file_reader.cpp
     ${PLUGIN_LIBS_PATH}/utils/image_utils.hpp ${PLUGIN_LIBS_PATH}/utils/image_utils.cpp
     ${PLUGIN_LIBS_PATH}/utils/meyers_singleton.hpp
-    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp
-    ${PLUGIN_LIBS_PATH}/utils/unique_index.hpp ${PLUGIN_LIBS_PATH}/utils/unique_index.cpp
+    ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.hpp ${PLUGIN_LIBS_PATH}/utils/qimage_to_cvmat.cpp    
+    ${PLUGIN_LIBS_PATH}/utils/unique_name_generator.hpp ${PLUGIN_LIBS_PATH}/utils/unique_name_generator.cpp
 )
 
 if(NOT EMSCRIPTEN)
