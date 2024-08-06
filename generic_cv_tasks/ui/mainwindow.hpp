@@ -6,6 +6,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class dialog_stream_select;
 class widget_multi_stream_manager;
 
 class QMessageBox;
@@ -42,5 +43,6 @@ private:
             
     QMessageBox *msg_box_;
 
+    dialog_stream_select *dialog_stream_select_;
     widget_multi_stream_manager *widget_multi_stream_manager_;
 };

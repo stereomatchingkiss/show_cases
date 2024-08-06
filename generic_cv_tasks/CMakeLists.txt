@@ -181,7 +181,7 @@ SET(COMMON_MAIN_SOURCES
     ui/widget_roi_selection.hpp ui/widget_roi_selection.cpp
     ui/widget_source_selection.hpp ui/widget_source_selection.cpp ui/widget_source_selection.ui        
     ui/widget_stacks_manager.hpp ui/widget_stacks_manager.cpp ui/widget_stacks_manager.ui    
-    ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui
+    ui/widget_stream_player.hpp ui/widget_stream_player.cpp ui/widget_stream_player.ui    
     ui/widget_tasks_selection.hpp ui/widget_tasks_selection.cpp ui/widget_tasks_selection.ui    
 
     ${CV_ALGO_SOURCES}
@@ -190,7 +190,7 @@ SET(COMMON_MAIN_SOURCES
 )
 
 set(FALL_DOWN_DET_ON ON)
-set(OBJ_DET_ON OFF)
+set(OBJ_DET_ON ON)
 set(ACTION_CLASSIFY_ON OFF)
 
 set(PROJECT_SOURCES
@@ -215,7 +215,8 @@ endif()
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
+        ui/dialog_stream_select.hpp ui/dialog_stream_select.cpp ui/dialog_stream_select.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

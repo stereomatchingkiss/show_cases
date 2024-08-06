@@ -86,14 +86,14 @@ QJsonObject widget_stacks_manager::get_states()
         }
         default:
             break;
-        }
-
-        obj[state_cam_name()] = ui->labelInfo->text();
-        obj[state_tasks_selection()] = widget_tasks_selection_->get_states();
-        obj[state_version()] = "1.0";
+        }        
 
         stacks_states_ = obj;
     }
+
+    obj[state_cam_name()] = ui->labelInfo->text();
+    obj[state_tasks_selection()] = widget_tasks_selection_->get_states();
+    obj[state_version()] = "1.0";
 
     return obj;
 }
@@ -147,6 +147,11 @@ size_t widget_stacks_manager::get_cam_index() const
     }
 
     return 0;
+}
+
+QString widget_stacks_manager::get_cam_name() const
+{
+    return ui->labelInfo->text();
 }
 
 void widget_stacks_manager::init_stacked_widget()

@@ -18,6 +18,7 @@
 #include <QJsonObject>
 
 #include <format>
+#include <ranges>
 
 using namespace flt;
 using namespace flt::mm;
@@ -28,6 +29,8 @@ widget_multi_stream_manager::widget_multi_stream_manager(QWidget *parent) :
     glayout_{new QGridLayout(this)}
 {
     ui->setupUi(this);
+
+    //glayout_->setSizeConstraint(QLayout::SetMaximumSize);
 
 #ifndef WASM_BUILD
     load_settings_from_files(global_keywords().cam_config_path() + "/config.json");
@@ -55,7 +58,7 @@ void widget_multi_stream_manager::add_stream(QWidget *widget)
     if(streams_.size() < 4){
         qDebug()<<__func__<<": stream size < 4";
         streams_.emplace_back(widget);
-        add_widget_to_grid_layout(glayout_->count(), widget);
+        add_widget_to_grid_layout(glayout_->count(), widget);        
     }else{
         qDebug()<<__func__<<": stream size > 4";
 
@@ -81,6 +84,30 @@ void widget_multi_stream_manager::delete_stream()
     }
 }
 
+void widget_multi_stream_manager::delete_stream(std::vector<QString> const &names)
+{
+    for(size_t i = 0; i != names.size(); ++i){
+        qDebug()<<__func__<<": name = "<<names[i];
+        auto it = std::ranges::find_if(streams_, [&names, i](auto *widget)
+                                       {
+            return static_cast<widget_stacks_manager*>(widget)->get_cam_name() == names[i];
+        });
+        if(it != std::end(streams_)){
+            qDebug()<<__func__<<": can find cam = "<<names[i];
+            glayout_->removeWidget(*it);
+            delete *it;
+            streams_.erase(it);
+        }
+    }
+
+    if(page_index_ > get_max_page()){
+        qDebug()<<__func__<<": call prev page";
+        prev_page();
+    }else{
+        update_page();
+    }
+}
+
 size_t widget_multi_stream_manager::get_max_page() const noexcept
 {
     size_t max_page = streams_.size() / 4;
@@ -94,6 +121,16 @@ size_t widget_multi_stream_manager::get_max_page() const noexcept
 size_t widget_multi_stream_manager::get_stream_count() const noexcept
 {
     return streams_.size();
+}
+
+std::vector<QString> widget_multi_stream_manager::get_stream_names() const
+{
+    std::vector<QString> results;
+    for(auto *widget : streams_){
+        results.emplace_back(static_cast<widget_stacks_manager*>(widget)->get_cam_name());
+    }
+
+    return results;
 }
 
 size_t widget_multi_stream_manager::get_stream_page() const noexcept
@@ -179,11 +216,12 @@ void widget_multi_stream_manager::remove_all_widgets()
     for(auto w : streams_){
         glayout_->removeWidget(w);
         w->hide();
-    }
+    }    
 }
 
 void widget_multi_stream_manager::update_page()
 {
+    remove_all_widgets();
     for(size_t i = page_index_ * 4; i < (page_index_ * 4 + 4); ++i){
         if(i < streams_.size()){
             add_widget_to_grid_layout(i % 4, streams_[i]);
@@ -207,8 +245,7 @@ QJsonArray widget_multi_stream_manager::dump_stacks_states() const
     global_keywords const gk;
     QJsonArray arr;
     for(size_t i = 0; i != streams_.size(); ++i){
-        QJsonObject cam_state_obj;
-        cam_state_obj[gk.cam_name()] = std::format("cam{}", i).c_str();
+        QJsonObject cam_state_obj;        
         cam_state_obj[gk.state_stacks_manager()] = static_cast<widget_stacks_manager*>(streams_[i])->get_states();
 
         arr.append(cam_state_obj);
@@ -250,5 +287,5 @@ void widget_multi_stream_manager::load_settings_from_files(const QJsonObject &jo
 
     if(jobj.contains(gk.state_widget_alert_settings())){
         get_widget_alert_sender_settings().set_states(jobj[gk.state_widget_alert_settings()].toObject());
-    }
+    }    
 }

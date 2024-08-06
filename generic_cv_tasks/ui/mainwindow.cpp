@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 
 #include "dialog_alert_sender_settings.hpp"
+#include "dialog_stream_select.hpp"
 
 #include "widget_multi_stream_manager.hpp"
 #include "widget_stacks_manager.hpp"
@@ -18,7 +19,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , msg_box_(new QMessageBox(this))
+    , msg_box_{new QMessageBox(this)}
+    , dialog_stream_select_{new dialog_stream_select(this)}
     , widget_multi_stream_manager_{nullptr}
 {
     ui->setupUi(this);
@@ -76,7 +78,21 @@ void MainWindow::action_contact_me(bool)
 
 void MainWindow::action_delete_stream(bool)
 {
-    widget_multi_stream_manager_->delete_stream();
+    if(widget_multi_stream_manager_->get_stream_count() > 1){
+        dialog_stream_select_->set_streams(widget_multi_stream_manager_->get_stream_names());
+#ifdef WASM_BUILD
+        dialog_stream_select_->show();
+#else
+        if(dialog_stream_select_->exec() == QDialog::Accepted){
+            qDebug()<<__func__<<": dialog accepted";
+            widget_multi_stream_manager_->delete_stream(dialog_stream_select_->get_selected_streams());
+        }else{
+            qDebug()<<__func__<<": dialog rejected";
+        }
+#endif
+    }else{
+        widget_multi_stream_manager_->delete_stream();
+    }
     set_next_prev_button_visibility();
 }
 

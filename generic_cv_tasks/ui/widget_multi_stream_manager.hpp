@@ -20,9 +20,11 @@ public:
 
     void add_stream(QWidget *widget);
     void delete_stream();
+    void delete_stream(std::vector<QString> const &names);
 
     size_t get_max_page() const noexcept;
     size_t get_stream_count() const noexcept;
+    std::vector<QString> get_stream_names() const;
     size_t get_stream_page() const noexcept;
 
     void load_settings();
