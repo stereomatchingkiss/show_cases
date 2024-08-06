@@ -11,6 +11,7 @@
 namespace{
 
 inline QString state_mode(){ return "state_mode"; }
+inline QString state_stream_name(){ return "state_stream_name"; }
 
 inline QString state_version(){ return "state_version"; }
 
@@ -78,6 +79,7 @@ QJsonObject widget_tasks_selection::get_states() const
 {
     QJsonObject obj;
     obj[state_mode()] = static_cast<int>(get_config().task_);
+    obj[state_stream_name()] = ui->lineEditName->text();
 
     obj[state_version()] = "1.1";
 
@@ -102,6 +104,20 @@ void widget_tasks_selection::set_states(const QJsonObject &val)
     }else{
         set_task(val[state_mode()].toInt());
     }
+
+    if(val.contains(state_stream_name())){
+        ui->lineEditName->setText(val[state_stream_name()].toString());
+    }
+}
+
+QString widget_tasks_selection::get_stream_name() const
+{
+    return ui->lineEditName->text();
+}
+
+void widget_tasks_selection::set_stream_name(const QString &text)
+{
+    ui->lineEditName->setText(text);
 }
 
 void widget_tasks_selection::set_task(int task)

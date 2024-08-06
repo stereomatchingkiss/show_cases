@@ -1,32 +1,28 @@
 #pragma once
 
-#include <set>
 #include <string>
+#include <vector>
 
 namespace flt{
 
 /**
  * This class will return unique name "prefix_index" every time you
- * call the api "get_and_update_unique_name"
+ * call the api "get_unique_name"
  */
 class unique_name_generator
 {
 public:
     explicit unique_name_generator(std::string prefix = "");
 
-    bool add_unique_name(std::string const &val);
+    bool add_unique_name(std::string const &val, void *key);
     void change_prefix(std::string val);
     void clear();
-    /**
-     * Get unique name, this unique index will add(update) into the dictionary
-     * @return unique index
-     */
-    std::string get_and_update_unique_name();
+    std::string get_unique_name() const;
     void remove_unique_name(std::string const &val);
 
 private:
     std::string prefix_;
-    std::set<std::string> unique_name_;
+    std::vector<std::pair<std::string, void*>> unique_name_;
 };
 
 }

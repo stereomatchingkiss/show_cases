@@ -19,9 +19,12 @@
 
 #include "../global/global_object.hpp"
 
+#include <utils/unique_name_generator.hpp>
+
 #include <QDebug>
 
 #include <QJsonObject>
+#include <QMessageBox>
 
 namespace{
 
@@ -38,12 +41,14 @@ inline QString state_version(){ return "state_version"; }
 widget_stacks_manager::widget_stacks_manager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_manager),
+    msg_box_{new QMessageBox{this}},
     widget_stacks_{nullptr},
     widget_tasks_selection_{new widget_tasks_selection}
 {
     ui->setupUi(this);
 
-    init_stacked_widget();    
+    ui->labelInfo->setVisible(false);
+    init_stacked_widget();
 }
 
 widget_stacks_manager::~widget_stacks_manager()
@@ -98,9 +103,10 @@ QJsonObject widget_stacks_manager::get_states()
     return obj;
 }
 
-void widget_stacks_manager::set_info_text(const QString &text)
+void widget_stacks_manager::set_stream_name(QString const &text)
 {
     ui->labelInfo->setText(text);
+    widget_tasks_selection_->set_stream_name(text);
 }
 
 void widget_stacks_manager::set_states(const QJsonObject &val)
@@ -120,9 +126,17 @@ void widget_stacks_manager::set_states(const QJsonObject &val)
 void widget_stacks_manager::on_pushButtonNext_clicked()
 {    
     if(ui->stackedWidget->currentWidget() == widget_tasks_selection_){
-        ui->pushButtonNext->setVisible(false);
-        setup_stacks();
-        ui->stackedWidget->setCurrentWidget(widget_stacks_);
+        if(get_unique_name_generator().add_unique_name(widget_tasks_selection_->get_stream_name().toStdString(), this)){
+            ui->labelInfo->setVisible(true);
+            ui->labelInfo->setText(widget_tasks_selection_->get_stream_name());
+            ui->pushButtonNext->setVisible(false);
+            setup_stacks();
+            ui->stackedWidget->setCurrentWidget(widget_stacks_);
+        }else{
+            msg_box_->warning(this, tr("Warning"), tr("Stream name must be unique"));
+        }
+    }else{
+        ui->labelInfo->setVisible(false);
     }
 }
 
@@ -135,18 +149,9 @@ void widget_stacks_manager::switch_to_task_selection_page()
         ui->pushButtonNext->setVisible(false);
     }
 
+    ui->labelInfo->setVisible(false);
+
     stacks_states_ = get_states();
-}
-
-size_t widget_stacks_manager::get_cam_index() const
-{
-    auto const txt = ui->labelInfo->text();
-    if(txt.contains("_")){
-        qDebug()<<__func__<<": = "<<txt.mid(txt.indexOf("_") + 1);
-        return static_cast<size_t>(txt.mid(txt.indexOf("_") + 1).toInt());
-    }
-
-    return 0;
 }
 
 QString widget_stacks_manager::get_cam_name() const

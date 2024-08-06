@@ -60,8 +60,8 @@ void MainWindow::action_about_qt(bool)
 
 void MainWindow::action_add_stream(bool)
 {    
-    auto *widget = new widget_stacks_manager;    
-    widget->set_info_text(get_unique_name_generator().get_and_update_unique_name().c_str());
+    auto *widget = new widget_stacks_manager;
+    widget->set_stream_name(get_unique_name_generator().get_unique_name().c_str());
     widget_multi_stream_manager_->add_stream(widget);
 
     set_next_prev_button_visibility();

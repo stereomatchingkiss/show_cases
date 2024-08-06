@@ -73,6 +73,7 @@ void widget_multi_stream_manager::delete_stream()
         auto *widget = streams_.back();
         streams_.pop_back();
         glayout_->removeWidget(widget);
+        get_unique_name_generator().remove_unique_name(static_cast<widget_stacks_manager*>(widget)->get_cam_name().toStdString());
         delete widget;
 
         if(page_index_ > get_max_page()){
@@ -95,6 +96,7 @@ void widget_multi_stream_manager::delete_stream(std::vector<QString> const &name
         if(it != std::end(streams_)){
             qDebug()<<__func__<<": can find cam = "<<names[i];
             glayout_->removeWidget(*it);
+            get_unique_name_generator().remove_unique_name(static_cast<widget_stacks_manager*>(*it)->get_cam_name().toStdString());
             delete *it;
             streams_.erase(it);
         }
@@ -278,7 +280,7 @@ void widget_multi_stream_manager::load_settings_from_files(const QJsonObject &jo
                 if(aobj.contains(gk.state_stacks_manager())){
                     auto widget = new widget_stacks_manager;
                     widget->set_states(aobj[gk.state_stacks_manager()].toObject());
-                    get_unique_name_generator().add_unique_name(widget->get_cam_name().toStdString());
+                    get_unique_name_generator().add_unique_name(widget->get_cam_name().toStdString(), widget);
                     add_stream(widget);
                 }
             }

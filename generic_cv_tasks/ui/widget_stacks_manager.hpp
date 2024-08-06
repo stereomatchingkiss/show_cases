@@ -8,6 +8,7 @@ namespace Ui {
 class widget_stacks_manager;
 }
 
+class QMessageBox;
 class QJsonObject;
 
 class widget_tasks_selection;
@@ -22,11 +23,10 @@ public:
 
     void switch_to_task_selection_page();
 
-    size_t get_cam_index() const;
     QString get_cam_name() const;
     QJsonObject get_states();
 
-    void set_info_text(QString const &text);
+    void set_stream_name(QString const &text);
     void set_states(QJsonObject const &val);
 
 private slots:
@@ -48,6 +48,8 @@ private:
     void update_stack_widget(QWidget *widget);    
 
     Ui::widget_stacks_manager *ui;
+
+    QMessageBox *msg_box_;
 
     QWidget *widget_stacks_;
     widget_tasks_selection *widget_tasks_selection_;

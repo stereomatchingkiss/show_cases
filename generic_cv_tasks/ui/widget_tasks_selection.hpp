@@ -1,5 +1,4 @@
-#ifndef WIDGET_TASKS_SELECTION_HPP
-#define WIDGET_TASKS_SELECTION_HPP
+#pragma once
 
 #include <QWidget>
 
@@ -18,13 +17,14 @@ public:
     ~widget_tasks_selection();
 
     config_tasks_selection get_config() const noexcept;
-    QJsonObject get_states() const;
+    QJsonObject get_states() const;    
     void set_states(QJsonObject const &val);
+
+    QString get_stream_name() const;
+    void set_stream_name(QString const &text);
 
 private:
     void set_task(int task);
 
     Ui::widget_tasks_selection *ui;
 };
-
-#endif // WIDGET_TASKS_SELECTION_HPP
