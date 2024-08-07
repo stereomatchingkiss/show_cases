@@ -107,6 +107,7 @@ void widget_stacks_manager::set_stream_name(QString const &text)
 {
     ui->labelInfo->setText(text);
     widget_tasks_selection_->set_stream_name(text);
+    get_unique_name_generator().add_unique_name(widget_tasks_selection_->get_stream_name().toStdString(), this);
 }
 
 void widget_stacks_manager::set_states(const QJsonObject &val)
