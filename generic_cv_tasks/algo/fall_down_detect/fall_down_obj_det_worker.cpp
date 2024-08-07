@@ -230,7 +230,7 @@ void fall_down_obj_det_worker::process_results(std::any frame)
     }
 
     if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){
-        results.mat_ = qimg;
+        results.mat_ = std::move(qimg);
     }else{
         results.mat_ = qimg.copy();
     }
