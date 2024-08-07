@@ -2,6 +2,7 @@
 
 #include "nanodet_alert_save.hpp"
 
+#include "../convert_input_to_image.hpp"
 #include "../generic_obj_detector.hpp"
 #include "../generic_worker_results.hpp"
 
@@ -147,8 +148,7 @@ void nanodet_worker::change_alert_sender_config(const config_alert_sender &val)
 
 void nanodet_worker::process_results(std::any frame)
 {
-    auto qimg = std::any_cast<QImage>(frame).convertToFormat(QImage::Format_RGB888);
-    auto mat = cv::Mat(qimg.height(), qimg.width(), CV_8UC3, qimg.bits(), qimg.bytesPerLine());
+    auto [mat, qimg] = convert_std_any_to_image(frame, impl_->config_.source_type_);
 
     if(!impl_->track_obj_pass_){
         if(impl_->config_.roi_.isValid()){
@@ -179,8 +179,11 @@ void nanodet_worker::process_results(std::any frame)
         }
     }
 
-    //do not move it, since in the future this algo may need to support multi-stream
-    results.mat_ = qimg;
+    if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){
+        results.mat_ = std::move(qimg);
+    }else{
+        results.mat_ = qimg.copy();
+    }
 
     emit send_process_results(std::move(results));
 }

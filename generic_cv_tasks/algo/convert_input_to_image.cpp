@@ -26,7 +26,9 @@ QImage crop_qimg(QImage const &img, QRectF const &roi)
 
 }
 
-std::pair<cv::Mat, QImage> convert_std_any_to_image(std::any frame, flt::mm::stream_source_type source_type, QRectF const &roi)
+std::pair<cv::Mat, QImage> convert_std_any_to_image(std::any frame,
+                                                    flt::mm::stream_source_type source_type,
+                                                    QRectF const &roi)
 {
     cv::Mat mat;
     QImage qimg;
@@ -49,4 +51,10 @@ std::pair<cv::Mat, QImage> convert_std_any_to_image(std::any frame, flt::mm::str
     }
 
     return {mat, qimg};
+}
+
+std::pair<cv::Mat, QImage> convert_std_any_to_image(std::any frame,
+                                                    flt::mm::stream_source_type source_type)
+{
+    return convert_std_any_to_image(frame, source_type, {});
 }

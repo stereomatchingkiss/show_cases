@@ -150,6 +150,7 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     config.config_select_object_to_detect_ = widget_select_object_to_detect_->get_config();
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
+    config.source_type_ = widget_source_selection_->get_source_type();
 
     auto worker = new nanodet_worker(std::move(config));
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
