@@ -23,6 +23,9 @@ public:
     QString get_stream_name() const;
     void set_stream_name(QString const &text);
 
+signals:
+    void task_change(int index);
+
 private:
     void set_task(int task);
 

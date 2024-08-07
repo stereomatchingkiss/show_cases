@@ -44,6 +44,8 @@ widget_tasks_selection::widget_tasks_selection(QWidget *parent) :
 #else
     ui->comboBoxTasks->setCurrentIndex(2);
 #endif
+
+    connect(ui->comboBoxTasks, &QComboBox::currentIndexChanged, this, &widget_tasks_selection::task_change);
 }
 
 widget_tasks_selection::~widget_tasks_selection()
@@ -97,6 +99,8 @@ void widget_tasks_selection::set_states(const QJsonObject &val)
                 }else{
                     ui->comboBoxTasks->setCurrentIndex(1);
                 }
+            }else{
+                set_task(val[state_mode()].toInt());
             }
         }else{
             set_task(val[state_mode()].toInt());
@@ -121,7 +125,7 @@ void widget_tasks_selection::set_stream_name(const QString &text)
 }
 
 void widget_tasks_selection::set_task(int task)
-{
+{    
     switch(static_cast<enum_config_tasks>(task)){
     case enum_config_tasks::object_tracking:{
         ui->comboBoxTasks->setCurrentIndex(0);

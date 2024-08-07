@@ -45,6 +45,7 @@ private:
         widget->set_states(stacks_states_[state_key].toObject());
     }
     void setup_stacks();
+    void task_change(int index);
     void update_stack_widget(QWidget *widget);    
 
     Ui::widget_stacks_manager *ui;

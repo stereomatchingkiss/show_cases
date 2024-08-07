@@ -74,8 +74,8 @@ QJsonObject widget_stacks_manager::get_states()
         case enum_config_tasks::fall_down_detection:{
 #ifdef FALL_DOWN_DET_IS_ON
             auto widget = static_cast<widget_stacks_fall_down_detection*>(widget_stacks_);
-            obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
             obj[state_stacks_fall_down_detection()] = widget->get_states();
+            obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
             obj[state_stacks_object_tracking()] = stacks_states_[state_stacks_object_tracking()].toObject();
 #endif
             break;
@@ -83,9 +83,9 @@ QJsonObject widget_stacks_manager::get_states()
         case enum_config_tasks::object_tracking:{
 #ifdef OBJ_DET_IS_ON
             auto widget = static_cast<widget_stacks_object_tracking*>(widget_stacks_);
+            obj[state_stacks_object_tracking()] = widget->get_states();
             obj[state_stacks_action_classify()] = stacks_states_[state_stacks_action_classify()].toObject();
             obj[state_stacks_fall_down_detection()] = stacks_states_[state_stacks_fall_down_detection()].toObject();
-            obj[state_stacks_object_tracking()] = widget->get_states();
 #endif
             break;
         }
@@ -112,13 +112,13 @@ void widget_stacks_manager::set_stream_name(QString const &text)
 void widget_stacks_manager::set_states(const QJsonObject &val)
 {
     stacks_states_ = val;
-    if(stacks_states_.contains(state_tasks_selection())){
+    if(stacks_states_.contains(state_tasks_selection())){        
         widget_tasks_selection_->set_states(stacks_states_[state_tasks_selection()].toObject());
     }
 
     if(val.contains(state_cam_name())){
         ui->labelInfo->setText(val[state_cam_name()].toString());
-    }
+    }    
 
     setup_stacks();
 }
@@ -129,8 +129,8 @@ void widget_stacks_manager::on_pushButtonNext_clicked()
         if(get_unique_name_generator().add_unique_name(widget_tasks_selection_->get_stream_name().toStdString(), this)){
             ui->labelInfo->setVisible(true);
             ui->labelInfo->setText(widget_tasks_selection_->get_stream_name());
-            ui->pushButtonNext->setVisible(false);
-            setup_stacks();
+            ui->pushButtonNext->setVisible(false);            
+            setup_stacks();            
             ui->stackedWidget->setCurrentWidget(widget_stacks_);
         }else{
             msg_box_->warning(this, tr("Warning"), tr("Stream name must be unique"));
@@ -169,6 +169,8 @@ void widget_stacks_manager::init_stacked_widget()
         ui->pushButtonNext->setVisible(false);
         setup_stacks();
     }
+
+    connect(widget_tasks_selection_, &widget_tasks_selection::task_change, this, &widget_stacks_manager::task_change);
 }
 
 void widget_stacks_manager::setup_stacks()
@@ -196,6 +198,11 @@ void widget_stacks_manager::setup_stacks()
         break;
     }
     }
+}
+
+void widget_stacks_manager::task_change(int)
+{
+    setup_stacks();
 }
 
 void widget_stacks_manager::update_stack_widget(QWidget *widget)
