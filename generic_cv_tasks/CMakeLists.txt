@@ -155,6 +155,7 @@ SET(COMMON_MAIN_SOURCES
 
     main.cpp
 
+    algo/convert_input_to_image.hpp algo/convert_input_to_image.cpp
     algo/frame_display_worker.hpp algo/frame_display_worker.cpp
     algo/generic_obj_detector.hpp algo/generic_obj_detector.cpp
     algo/generic_worker_results.hpp    
@@ -174,6 +175,7 @@ SET(COMMON_MAIN_SOURCES
     global/global_object.hpp global/global_object.cpp
 
     ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
+    ui/dialog_stream_select.hpp ui/dialog_stream_select.cpp ui/dialog_stream_select.ui
     ui/frame_capture_creator.hpp ui/frame_capture_creator.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
     ui/obj_detect/widget_object_detect_model_select.cpp ui/obj_detect/widget_object_detect_model_select.hpp ui/obj_detect/widget_object_detect_model_select.ui
@@ -215,8 +217,7 @@ endif()
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        ui/dialog_stream_select.hpp ui/dialog_stream_select.cpp ui/dialog_stream_select.ui
+        ${PROJECT_SOURCES}        
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
