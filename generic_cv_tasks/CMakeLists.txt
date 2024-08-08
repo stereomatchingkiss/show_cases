@@ -20,6 +20,7 @@ if(WIN32)
     message("building windows platform")
     set(OPENCV_CV_PATH ${3RDLIBS_PATH}/opencv/build/install)
     set(NCNN_PATH ${3RDLIBS_PATH}/ncnn/build/ncnn-20230816-windows-vs2019/x64/lib/cmake)
+    set(SMTP_PATH ${3RDLIBS_PATH}/qt_projects/simple-mail)
 
     #set(VULKAN_PATH "C:/VulkanSDK/1.3.236.0")
     #find_package(Vulkan REQUIRED)
@@ -106,11 +107,16 @@ SET(OTHER_PLUGIN_SOURCES ${PLUGIN_LIBS_PATH}/concepts_tools/numerical_concepts.h
 
 if(NOT EMSCRIPTEN)
     set(MULTIMEDIA_SOURCE ${MULTIMEDIA_SOURCE}
-        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.cpp        
+        ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_base_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_controller.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_controller.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.hpp ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_worker.cpp
         ${PLUGIN_LIBS_PATH}/multimedia/camera/frame_capture_opencv_params.hpp
+    )
+
+    SET(OTHER_PLUGIN_SOURCES ${OTHER_PLUGIN_SOURCES}
+        ${PLUGIN_LIBS_PATH}/network/simple_email_sender.hpp
+        ${PLUGIN_LIBS_PATH}/network/simple_email_sender.cpp
     )
 endif()
 
@@ -161,6 +167,7 @@ SET(COMMON_MAIN_SOURCES
     algo/generic_worker_results.hpp    
 
     config/config_alert_sender.hpp
+    config/config_dialog_email_list.hpp
     config/config_generic_obj_detector.hpp    
     config/config_object_detect_model_select.hpp    
     config/config_read_write.hpp config/config_read_write.cpp
@@ -174,7 +181,8 @@ SET(COMMON_MAIN_SOURCES
     global/global_keywords.hpp global/global_keywords.cpp
     global/global_object.hpp global/global_object.cpp
 
-    ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui
+    ui/dialog_alert_sender_settings.hpp ui/dialog_alert_sender_settings.cpp ui/dialog_alert_sender_settings.ui    
+    ui/dialog_email_list.hpp ui/dialog_email_list.cpp ui/dialog_email_list.ui
     ui/dialog_stream_select.hpp ui/dialog_stream_select.cpp ui/dialog_stream_select.ui
     ui/frame_capture_creator.hpp ui/frame_capture_creator.cpp
     ui/mainwindow.cpp ui/mainwindow.hpp ui/mainwindow.ui
@@ -217,7 +225,7 @@ endif()
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}        
+        ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_qt_pro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -251,13 +259,15 @@ if(ANDROID OR WIN32)
     target_include_directories(${PROJECT_NAME} PRIVATE ${PLUGIN_LIBS_PATH})
     target_include_directories(${PROJECT_NAME} PRIVATE ${3RDLIBS_PATH}/eigen)
     target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_LIBS_PATH})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${SMTP_PATH}/src)
 
     target_link_libraries(${PROJECT_NAME}
                           PRIVATE ${OpenCV_LIBS}
                           PRIVATE ncnn
+                          PRIVATE ${SMTP_PATH}/install/release/SimpleMail3Qt6.lib
                           PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                           PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia
-                          PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets
+                          PRIVATE Qt${QT_VERSION_MAJOR}::WebSockets                          
                           )
 endif()
 

@@ -8,6 +8,7 @@ class dialog_alert_sender_settings;
 
 class QJsonObject;
 
+class dialog_email_list;
 struct config_alert_sender;
 
 class dialog_alert_sender_settings : public QDialog
@@ -26,8 +27,13 @@ public:
 signals:
     void button_ok_clicked(config_alert_sender const &val);
 
+private slots:
+    void on_pushButtonSendEmailTo_clicked();
+
 private:
-    void process_ok_button_cliked(bool);
+    void process_ok_button_cliked(bool);    
 
     Ui::dialog_alert_sender_settings *ui;
+
+    dialog_email_list *dialog_email_list_;
 };
