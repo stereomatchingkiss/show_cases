@@ -19,6 +19,7 @@ public:
     ~simple_email_sender();
 
     void add_send_to(QString const &email_address, QString const &recipient);
+    void add_send_to(QStringList const &email_address, QStringList const &recipient);
 
     void remove_send_to(QString const &email_address);
 

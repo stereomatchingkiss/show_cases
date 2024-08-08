@@ -33,6 +33,13 @@ void simple_email_sender::add_send_to(QString const &email_address, QString cons
     }
 }
 
+void simple_email_sender::add_send_to(QStringList const &email_address, QStringList const &recipient)
+{
+    for(int i = 0; i != email_address.size(); ++i){
+        add_send_to(email_address[i], recipient[i]);
+    }
+}
+
 void simple_email_sender::remove_send_to(QString const &email_address)
 {
     if(auto it = send_to_list_.find(email_address); it != std::end(send_to_list_)){
