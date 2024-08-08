@@ -15,9 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBoxSendAlertTo">
+    <widget class="QGroupBox" name="groupBoxSendAlertByWebSocket">
      <property name="title">
-      <string>Send alert to</string>
+      <string>Send alert by websocket</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -57,6 +57,48 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBoxSendAlertByEmail">
+     <property name="title">
+      <string>Send alert by email</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Gmail address</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditGmailAddress"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Password</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditEmailPassword"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QPushButton" name="pushButtonSendEmailTo">
+        <property name="text">
+         <string>Open recipient list</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="checkBoxSaveReports">
      <property name="text">
       <string>Save reports to hard disk</string>
@@ -81,7 +123,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>299</height>
+       <height>125</height>
       </size>
      </property>
     </spacer>
