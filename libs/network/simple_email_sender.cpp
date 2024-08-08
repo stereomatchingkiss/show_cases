@@ -64,4 +64,20 @@ SimpleMail::ServerReply *simple_email_sender::send(std::vector<std::shared_ptr<S
     return server_.sendMail(message);
 }
 
+void simple_email_sender::set_email_address(const QString &email_address)
+{
+    server_.setUsername(email_address.first(email_address.indexOf("@")));
+    sender_.setAddress(email_address);
+}
+
+void simple_email_sender::set_password(const QString &password)
+{
+    server_.setPassword(password);
+}
+
+void simple_email_sender::set_sender_name(const QString &sender_name)
+{
+    sender_.setName(sender_name);
+}
+
 }

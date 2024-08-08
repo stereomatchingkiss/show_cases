@@ -26,6 +26,10 @@ public:
     SimpleMail::ServerReply* send(std::vector<std::shared_ptr<SimpleMail::MimePart>> const &parts,
                                   QString const &subject = "Send by GenericCVTask");
 
+    void set_email_address(QString const &email_address);
+    void set_password(QString const &password);
+    void set_sender_name(QString const &sender_name);
+
 private:
     SimpleMail::EmailAddress sender_;
     std::map<QString, QString> send_to_list_;
