@@ -3,6 +3,7 @@
 #include "../ui/dialog_alert_sender_settings.hpp"
 
 #include <multimedia/sound/alert_sound_manager.hpp>
+#include <network/simple_email_sender.hpp>
 #include <network/websocket_client_controller.hpp>
 #include <utils/meyers_singleton.hpp>
 #include <utils/unique_name_generator.hpp>
@@ -48,4 +49,9 @@ bool more_than_one_task() noexcept
 flt::unique_name_generator &get_unique_name_generator()
 {
     return flt::meyers_singleton<flt::unique_name_generator>::get_instance("cam_");
+}
+
+flt::net::simple_email_sender &get_simple_email_sender()
+{
+    return flt::meyers_singleton<flt::net::simple_email_sender>::get_instance("", "", "dudulu");
 }

@@ -42,7 +42,7 @@ const QByteArray &nanodet_alert_save::get_alert_info() const
 void nanodet_alert_save::change_alert_sender_config(config_alert_sender const &val)
 {
     save_reports_ = val.save_reports_;
-    send_alert_ = val.activate_;
+    send_alert_ = val.send_alert_by_websocket_;
     send_by_text_ = val.send_by_text_;
     create_dir_path();
 }

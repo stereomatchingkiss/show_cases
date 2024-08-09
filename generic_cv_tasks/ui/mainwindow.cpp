@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionServer, &QAction::triggered, this, &MainWindow::action_server_call);
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked, [](auto const &val)
             {
-                if(get_widget_alert_sender_settings().get_config().activate_){
+        if(get_widget_alert_sender_settings().get_config().send_alert_by_websocket_){
                     emit get_websocket_controller().reopen_if_needed(val.url_);
                 }
             });

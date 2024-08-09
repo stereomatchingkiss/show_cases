@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include <any>
+
 namespace Ui {
 class widget_stacks_fall_down_detection;
 }
@@ -44,8 +46,10 @@ private:
     void next_page_is_roi_selection();
     void next_page_is_widget_stream_player();
     void send_alert_by_binary(QByteArray const &msg);
+    void send_alert_by_email(std::any msg);
     void send_alert_by_text(QString const &msg);
-    void update_position();       
+    void send_email_reply();
+    void update_position();
 
     Ui::widget_stacks_fall_down_detection *ui;
 

@@ -44,7 +44,7 @@ const QByteArray &fall_down_det_alert_save::get_alert_info() const
 void fall_down_det_alert_save::change_alert_sender_config(config_alert_sender const &val)
 {
     save_reports_ = val.save_reports_;
-    send_alert_ = val.activate_;
+    send_alert_ = val.send_alert_by_websocket_;
     send_by_text_ = val.send_by_text_;
     create_dir_path();
 }
@@ -60,7 +60,7 @@ void fall_down_det_alert_save::create_dir_path()
 #endif
 }
 
-void fall_down_det_alert_save::save_to_json(QImage const &img)
+QString fall_down_det_alert_save::save_to_json(QImage const &img)
 {    
     if(save_reports_ || send_alert_){        
         create_dir_path();
@@ -74,10 +74,15 @@ void fall_down_det_alert_save::save_to_json(QImage const &img)
 #ifndef WASM_BUILD
         if(save_reports_){            
             save_to_json();
-            img.save(dir_path_ + "/" + im_name_ + ".jpg");
+            auto const saved_im_path = dir_path_ + "/" + im_name_ + ".jpg";
+            img.save(saved_im_path);
+
+            return saved_im_path;
         }
 #endif
     }
+
+    return "";
 }
 
 bool fall_down_det_alert_save::send_alert() const noexcept

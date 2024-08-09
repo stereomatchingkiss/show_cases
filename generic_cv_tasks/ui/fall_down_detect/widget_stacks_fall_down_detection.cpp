@@ -28,6 +28,7 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <multimedia/stream_enum.hpp>
 
+#include <network/simple_email_sender.hpp>
 #include <network/websocket_client_controller.hpp>
 
 #include <QMessageBox>
@@ -197,12 +198,13 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
             worker, &fall_down_obj_det_worker::change_alert_sender_config);
     connect(worker, &fall_down_obj_det_worker::send_alert_by_binary, this, &widget_stacks_fall_down_detection::send_alert_by_binary);
     connect(worker, &fall_down_obj_det_worker::send_alert_by_text, this, &widget_stacks_fall_down_detection::send_alert_by_text);
+    connect(worker, &fall_down_obj_det_worker::send_alert_by_email, this, &widget_stacks_fall_down_detection::send_alert_by_email);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
 
-    if(get_widget_alert_sender_settings().get_config().activate_){
+    if(get_widget_alert_sender_settings().get_config().send_alert_by_websocket_){
         emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     }
 
@@ -217,7 +219,26 @@ void widget_stacks_fall_down_detection::send_alert_by_binary(const QByteArray &m
     emit get_websocket_controller().send_binary_message(msg);
 }
 
+void widget_stacks_fall_down_detection::send_alert_by_email(std::any msg)
+{
+    using namespace SimpleMail;
+
+    auto parts = std::any_cast<std::vector<std::shared_ptr<MimePart>>>(msg);
+    auto *reply = get_simple_email_sender().send(parts, "Fall down alert");
+    connect(reply, &ServerReply::finished, this, &widget_stacks_fall_down_detection::send_email_reply);
+}
+
 void widget_stacks_fall_down_detection::send_alert_by_text(const QString &msg)
 {
     emit get_websocket_controller().send_text_message(msg);
+}
+
+void widget_stacks_fall_down_detection::send_email_reply()
+{
+    auto *reply = qobject_cast<SimpleMail::ServerReply*>(sender());
+    qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
+    if(reply->error()){
+        msg_box_->warning(this, tr("Send email error"), reply->responseText());
+    }
+    reply->deleteLater();
 }

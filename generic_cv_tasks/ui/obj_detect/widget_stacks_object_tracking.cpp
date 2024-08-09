@@ -161,8 +161,8 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     auto process_controller = std::make_shared<frame_process_controller>(worker);
     connect(process_controller.get(), &frame_process_controller::send_process_results,
             widget_stream_player_, &widget_stream_player::display_frame);
-
-    if(get_widget_alert_sender_settings().get_config().activate_){
+    
+    if(get_widget_alert_sender_settings().get_config().send_alert_by_websocket_){
         emit get_websocket_controller().reopen_if_needed(get_widget_alert_sender_settings().get_config().url_);
     }
 

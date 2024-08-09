@@ -22,6 +22,10 @@ public:
     void add_send_to(QStringList const &email_address, QStringList const &recipient);
 
     void remove_send_to(QString const &email_address);
+    /**
+     * Clear send to list and init it with new email and recipient list
+     */
+    void reset_send_to(QStringList const &email_address, QStringList const &recipient);
 
     SimpleMail::ServerReply* send(std::vector<std::shared_ptr<SimpleMail::MimePart>> const &parts,
                                   QString const &subject = "Send by GenericCVTask");

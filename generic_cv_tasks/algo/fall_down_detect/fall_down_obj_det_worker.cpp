@@ -28,6 +28,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <SimpleMail>
+
 #include <QDebug>
 #include <QRectF>
 
@@ -38,6 +40,8 @@ using namespace flt;
 using namespace flt::cvt;
 using namespace flt::cvt::det;
 using namespace flt::cvt::tracker;
+
+using namespace SimpleMail;
 
 struct fall_down_obj_det_worker::impl
 {
@@ -66,6 +70,41 @@ struct fall_down_obj_det_worker::impl
         alert_save_.change_alert_sender_config(val);
     }
 
+    auto create_email_alert() const
+    {
+        /*auto html = std::make_shared<MimeHtml>();
+
+        html->setHtml(QLatin1String("<h1> Fall down alert </h1>"
+                                    "<img src='cid:image1' />"));
+        auto image1 =
+            std::make_shared<MimeInlineFile>(std::make_shared<QFile>(saved_im_path_));
+        image1->setContentId(QByteArrayLiteral("image1"));
+        image1->setContentType(QByteArrayLiteral("image/jpeg"));
+
+        std::vector<std::shared_ptr<SimpleMail::MimePart>> parts;
+        parts.emplace_back(std::move(html));
+        parts.emplace_back(std::move(image1));//*/
+
+        auto html = std::make_shared<MimeHtml>();
+
+        html->setHtml(QLatin1String("<h1> Fall down alert </h1>"
+                                    "<img src='cid:image1' />"));
+
+        // Create a MimeInlineFile object for each image
+        auto image1 =
+            std::make_shared<MimeInlineFile>(std::make_shared<QFile>(saved_im_path_));
+
+        // An unique content id must be setted
+        image1->setContentId(QByteArrayLiteral("image1"));
+        image1->setContentType(QByteArrayLiteral("image/jpeg"));
+
+        std::vector<std::shared_ptr<SimpleMail::MimePart>> parts;
+        parts.emplace_back(std::move(html));
+        parts.emplace_back(std::move(image1));
+
+        return parts;
+    }
+
     bool save_alert_info(QImage const &img)
     {
         bool can_send_alert = false;
@@ -92,7 +131,9 @@ struct fall_down_obj_det_worker::impl
         }
 
         if(can_send_alert){
-            alert_save_.save_to_json(img);
+            saved_im_path_ = alert_save_.save_to_json(img);
+        }else{
+            saved_im_path_.clear();
         }
 
         return can_send_alert;
@@ -196,6 +237,7 @@ struct fall_down_obj_det_worker::impl
     static int constexpr lost_track_threshold_ = 300;
     std::vector<std::string> names_;
     std::unique_ptr<generic_obj_detector> obj_det_;
+    QString saved_im_path_;
     cv::Rect scaled_roi_;
     BYTETracker tracker_;
 };
@@ -225,8 +267,17 @@ void fall_down_obj_det_worker::process_results(std::any frame)
     generic_worker_results results;
     results.alarm_on_ = impl_->can_send_alert_;
 
-    if(results.alarm_on_ && impl_->save_alert_info(qimg) && impl_->alert_save_.send_alert()){
-        emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+    if(results.alarm_on_ && impl_->save_alert_info(qimg)){
+        if(impl_->config_.config_alert_sender_.send_alert_by_websocket_){
+            emit send_alert_by_text(impl_->alert_save_.get_alert_info());
+        }
+
+        if(impl_->config_.config_alert_sender_.email_alert_on_ && !impl_->saved_im_path_.isEmpty()){
+            qDebug()<<__func__<<": send image by email = "<<impl_->saved_im_path_;
+            if(QFile::exists(impl_->saved_im_path_)){
+                emit send_alert_by_email(impl_->create_email_alert());
+            }
+        }
     }
 
     if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){

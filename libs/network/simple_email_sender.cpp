@@ -47,10 +47,17 @@ void simple_email_sender::remove_send_to(QString const &email_address)
     }
 }
 
+void simple_email_sender::reset_send_to(const QStringList &email_address, const QStringList &recipient)
+{
+    send_to_list_.clear();
+    add_send_to(email_address, recipient);
+}
+
 SimpleMail::ServerReply *simple_email_sender::send(std::vector<std::shared_ptr<SimpleMail::MimePart>> const &parts,
                                                    QString const &subject)
 {
     MimeMessage message;
+
     message.setSender(sender_);
     message.setSubject(subject);
 

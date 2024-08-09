@@ -31,7 +31,8 @@ private slots:
     void on_pushButtonSendEmailTo_clicked();
 
 private:
-    void process_ok_button_cliked(bool);    
+    void process_ok_button_cliked(bool);
+    void setup_email_sender();
 
     Ui::dialog_alert_sender_settings *ui;
 

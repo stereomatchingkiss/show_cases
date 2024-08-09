@@ -5,7 +5,9 @@
 
 #include "dialog_email_list.hpp"
 
-#include <network/websocket_client_controller.hpp>
+#include "../global/global_object.hpp"
+
+#include <network/simple_email_sender.hpp>
 
 #include <QJsonObject>
 
@@ -54,6 +56,13 @@ dialog_alert_sender_settings::dialog_alert_sender_settings(QWidget *parent) :
     if(settings.contains(state_email_password())){
         ui->lineEditEmailPassword->setText(settings.value(state_email_password()).toString());
     }
+
+    ui->checkBoxSendByText->setVisible(false);
+    ui->checkBoxSaveReports->setVisible(false);
+
+    ui->lineEditEmailPassword->setEchoMode(QLineEdit::Password);
+
+    setup_email_sender();
 }
 
 dialog_alert_sender_settings::~dialog_alert_sender_settings()
@@ -68,9 +77,9 @@ dialog_alert_sender_settings::~dialog_alert_sender_settings()
 config_alert_sender dialog_alert_sender_settings::get_config() const
 {
     config_alert_sender config;
-    config.activate_ = ui->groupBoxSendAlertByWebSocket->isChecked();
-    config.save_reports_ = ui->checkBoxSaveReports->isChecked();
-    config.send_by_text_ = ui->checkBoxSendByText->isChecked();
+    config.send_alert_by_websocket_ = ui->groupBoxSendAlertByWebSocket->isChecked();
+    config.save_reports_ = true;
+    config.send_by_text_ = true;
     config.url_ = ui->lineEditWebsocketUrl->text();
 
     config.config_dialog_email_list_ = dialog_email_list_->get_config();
@@ -119,12 +128,26 @@ void dialog_alert_sender_settings::set_states(const QJsonObject &val)
     if(val.contains(state_websocket_url())){
         ui->lineEditWebsocketUrl->setText(val[state_websocket_url()].toString());
     }
+
+    setup_email_sender();
 }
 
 void dialog_alert_sender_settings::process_ok_button_cliked(bool)
 {
-    close();
+    close();    
+    setup_email_sender();
+
     emit button_ok_clicked(get_config());
+}
+
+void dialog_alert_sender_settings::setup_email_sender()
+{
+    get_simple_email_sender().set_email_address(ui->lineEditGmailAddress->text());
+    get_simple_email_sender().set_password(ui->lineEditEmailPassword->text());
+    get_simple_email_sender().set_sender_name("dudulu");
+
+    auto const econfig = dialog_email_list_->get_config();
+    get_simple_email_sender().reset_send_to(econfig.email_address_, econfig.recipient_name_);
 }
 
 void dialog_alert_sender_settings::on_pushButtonSendEmailTo_clicked()
@@ -135,4 +158,3 @@ void dialog_alert_sender_settings::on_pushButtonSendEmailTo_clicked()
     dialog_email_list_->show();
 #endif
 }
-
