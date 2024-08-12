@@ -18,6 +18,7 @@ public:
 
 signals:
     void send_alert_by_binary(QByteArray msg);
+    void send_alert_by_email(std::any message);
     void send_alert_by_text(QString msg);
 
 private:

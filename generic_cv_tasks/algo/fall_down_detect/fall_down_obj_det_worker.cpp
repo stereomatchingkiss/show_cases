@@ -70,30 +70,16 @@ struct fall_down_obj_det_worker::impl
         alert_save_.change_alert_sender_config(val);
     }
 
+#ifndef WASM_BUILD
     auto create_email_alert() const
     {
-        /*auto html = std::make_shared<MimeHtml>();
-
-        html->setHtml(QLatin1String("<h1> Fall down alert </h1>"
-                                    "<img src='cid:image1' />"));
-        auto image1 =
-            std::make_shared<MimeInlineFile>(std::make_shared<QFile>(saved_im_path_));
-        image1->setContentId(QByteArrayLiteral("image1"));
-        image1->setContentType(QByteArrayLiteral("image/jpeg"));
-
-        std::vector<std::shared_ptr<SimpleMail::MimePart>> parts;
-        parts.emplace_back(std::move(html));
-        parts.emplace_back(std::move(image1));//*/
-
         auto html = std::make_shared<MimeHtml>();
-
         html->setHtml(QLatin1String("<h1> Fall down alert </h1>"
                                     "<img src='cid:image1' />"));
 
         // Create a MimeInlineFile object for each image
         auto image1 =
             std::make_shared<MimeInlineFile>(std::make_shared<QFile>(saved_im_path_));
-
         // An unique content id must be setted
         image1->setContentId(QByteArrayLiteral("image1"));
         image1->setContentType(QByteArrayLiteral("image/jpeg"));
@@ -104,6 +90,7 @@ struct fall_down_obj_det_worker::impl
 
         return parts;
     }
+#endif
 
     bool save_alert_info(QImage const &img)
     {
@@ -272,12 +259,14 @@ void fall_down_obj_det_worker::process_results(std::any frame)
             emit send_alert_by_text(impl_->alert_save_.get_alert_info());
         }
 
+#ifndef WASM_BUILD
         if(impl_->config_.config_alert_sender_.email_alert_on_ && !impl_->saved_im_path_.isEmpty()){
             qDebug()<<__func__<<": send image by email = "<<impl_->saved_im_path_;
             if(QFile::exists(impl_->saved_im_path_)){
                 emit send_alert_by_email(impl_->create_email_alert());
             }
         }
+#endif
     }
 
     if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){

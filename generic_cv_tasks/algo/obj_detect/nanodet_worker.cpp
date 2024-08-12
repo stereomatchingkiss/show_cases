@@ -26,6 +26,8 @@
 
 #include <utils/image_utils.hpp>
 
+#include <SimpleMail>
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
@@ -54,22 +56,29 @@ struct nanodet_worker::impl
         change_alert_sender_config(config_.config_alert_sender_);
     }
 
-    bool check_alarm_condition(track_results const &pass_results, QImage const &img)
+    QString check_alarm_condition(track_results const &pass_results, QImage const &img)
     {
         bool alarm_on = false;
         if(config_.config_tracker_alert_.alert_if_stay_in_roi_on_){
-            alert_save_.clear_im_name();
+            auto const im_name = alert_save_.create_im_name();
             for(auto const &val : pass_results.track_durations_){
                 if(val.duration_sec_ >= config_.config_tracker_alert_.alert_if_stay_in_roi_duration_sec_ &&
                     !written_id_.contains(val.id_)){
                     alarm_on = true;
                     written_id_.insert(val.id_);
-                    alert_save_.save_to_json(val, img);
+                    alert_save_.save_to_json(val, im_name);
                 }
+            }
+
+            if(alarm_on){
+                auto fpath = alert_save_.create_fpath(im_name);
+                img.save(fpath);
+
+                return fpath;
             }
         }
 
-        return alarm_on;
+        return "";
     }
 
     void clear_written_id()
@@ -83,13 +92,36 @@ struct nanodet_worker::impl
                 }
             }
         }
-    }    
+    }
 
     void change_alert_sender_config(const config_alert_sender &val)
     {        
         config_.config_alert_sender_ = val;
         alert_save_.change_alert_sender_config(val);
     }
+
+#ifndef WASM_BUILD
+    auto create_email_alert(QString const &im_path) const
+    {
+        using namespace SimpleMail;
+        auto html = std::make_shared<MimeHtml>();
+        html->setHtml(QLatin1String("<h1> Object detect alert </h1>"
+                                    "<img src='cid:image1' />"));
+
+        // Create a MimeInlineFile object for each image
+        auto image1 =
+            std::make_shared<MimeInlineFile>(std::make_shared<QFile>(im_path));
+        // An unique content id must be setted
+        image1->setContentId(QByteArrayLiteral("image1"));
+        image1->setContentType(QByteArrayLiteral("image/jpeg"));
+
+        std::vector<std::shared_ptr<SimpleMail::MimePart>> parts;
+        parts.emplace_back(std::move(html));
+        parts.emplace_back(std::move(image1));
+
+        return parts;
+    }
+#endif
 
     void draw_pass_results(cv::Mat &mat, track_results const &pass_results) const
     {
@@ -102,7 +134,21 @@ struct nanodet_worker::impl
         if(!scaled_roi_.empty()){
             flt::cvt::utils::draw_empty_rect(mat, scaled_roi_);
         }
-    }    
+    }
+
+    void init_tracker(cv::Mat const &mat)
+    {
+        if(!track_obj_pass_){
+            if(config_.roi_.isValid()){
+                scaled_roi_ = convert_qrectf_to_cv_rect(config_.roi_, mat.cols, mat.rows);
+                track_obj_pass_ =
+                    std::make_unique<cvt::tracker::track_object_pass>(scaled_roi_, 30);
+            }else{
+                track_obj_pass_ =
+                    std::make_unique<cvt::tracker::track_object_pass>(cv::Rect(0, 0, mat.cols - 1, mat.rows - 1), 30);
+            }
+        }
+    }
 
     auto track_obj(cv::Mat &mat)
     {       
@@ -150,33 +196,25 @@ void nanodet_worker::process_results(std::any frame)
 {
     auto [mat, qimg] = convert_std_any_to_image(frame, impl_->config_.source_type_);
 
-    if(!impl_->track_obj_pass_){
-        if(impl_->config_.roi_.isValid()){
-            impl_->scaled_roi_ = convert_qrectf_to_cv_rect(impl_->config_.roi_, mat.cols, mat.rows);
-            impl_->track_obj_pass_ =
-                std::make_unique<cvt::tracker::track_object_pass>(impl_->scaled_roi_, 30);
-        }else{
-            impl_->track_obj_pass_ =
-                std::make_unique<cvt::tracker::track_object_pass>(cv::Rect(0, 0, mat.cols - 1, mat.rows - 1), 30);
-        }
-    }
-
+    impl_->init_tracker(mat);
     auto const det_results = impl_->track_obj(mat);        
     auto const pass_results = impl_->track_obj_pass_->track(det_results);
     impl_->draw_pass_results(mat, pass_results);
 
     generic_worker_results results;
-    if(impl_->check_alarm_condition(pass_results, qimg)){
+    if(auto const im_name = impl_->check_alarm_condition(pass_results, qimg); !im_name.isEmpty()){
         results.alarm_on_ = true;
         ++impl_->im_ids_;
         impl_->clear_written_id();
-        if(impl_->alert_save_.send_alert()){
-            if(impl_->alert_save_.send_by_text()){
-                emit send_alert_by_text(impl_->alert_save_.get_alert_info());
-            }else{
-                emit send_alert_by_binary(impl_->alert_save_.get_alert_info());
-            }
+        if(impl_->alert_save_.send_alert_by_websocket()){
+            emit send_alert_by_text(impl_->alert_save_.get_alert_info());
         }
+
+#ifndef WASM_BUILD
+        if(impl_->config_.config_alert_sender_.email_alert_on_){
+            emit send_alert_by_email(impl_->create_email_alert(im_name));
+        }
+#endif
     }
 
     if(impl_->config_.source_type_ != flt::mm::stream_source_type::rtsp){

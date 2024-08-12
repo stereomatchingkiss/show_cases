@@ -1,7 +1,8 @@
-#ifndef WIDGET_STACKS_OBJECT_TRACKING_HPP
-#define WIDGET_STACKS_OBJECT_TRACKING_HPP
+#pragma once
 
 #include <QWidget>
+
+#include <any>
 
 namespace Ui {
 class widget_stacks_object_tracking;
@@ -51,7 +52,9 @@ private:
     void next_page_is_widget_tracker_alert();
 
     void send_alert_by_binary(QByteArray const &msg);
-    void send_alert_by_text(QString const &msg);    
+    void send_alert_by_email(std::any msg);
+    void send_alert_by_text(QString const &msg);
+    void send_email_reply();
 
     Ui::widget_stacks_object_tracking *ui;    
 
@@ -66,5 +69,3 @@ private:
 
     frame_capture_creator *fcreator_;
 };
-
-#endif // WIDGET_STACKS_OBJECT_TRACKING_HPP

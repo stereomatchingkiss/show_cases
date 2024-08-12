@@ -31,6 +31,7 @@
 #include <multimedia/sound/alert_sound_manager.hpp>
 #include <multimedia/stream_enum.hpp>
 
+#include <network/simple_email_sender.hpp>
 #include <network/websocket_client_controller.hpp>
 
 #include <QMessageBox>
@@ -41,6 +42,8 @@
 
 using namespace flt;
 using namespace flt::mm;
+
+using namespace SimpleMail;
 
 namespace{
 
@@ -156,6 +159,7 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,
             worker, &nanodet_worker::change_alert_sender_config);
     connect(worker, &nanodet_worker::send_alert_by_binary, this, &widget_stacks_object_tracking::send_alert_by_binary);
+    connect(worker, &nanodet_worker::send_alert_by_email, this, &widget_stacks_object_tracking::send_alert_by_email);
     connect(worker, &nanodet_worker::send_alert_by_text, this, &widget_stacks_object_tracking::send_alert_by_text);
 
     auto process_controller = std::make_shared<frame_process_controller>(worker);
@@ -192,9 +196,26 @@ void widget_stacks_object_tracking::send_alert_by_binary(const QByteArray &msg)
     emit get_websocket_controller().send_binary_message(msg);
 }
 
+void widget_stacks_object_tracking::send_alert_by_email(std::any msg)
+{
+    auto parts = std::any_cast<std::vector<std::shared_ptr<MimePart>>>(msg);
+    auto *reply = get_simple_email_sender().send(parts, "Object detect alert");
+    connect(reply, &ServerReply::finished, this, &widget_stacks_object_tracking::send_email_reply);
+}
+
 void widget_stacks_object_tracking::send_alert_by_text(const QString &msg)
 {
     emit get_websocket_controller().send_text_message(msg);
+}
+
+void widget_stacks_object_tracking::send_email_reply()
+{
+    auto *reply = qobject_cast<SimpleMail::ServerReply*>(sender());
+    qDebug() << "ServerReply finished" << reply->error() << reply->responseText();
+    if(reply->error()){
+        msg_box_->warning(this, tr("Send email error"), reply->responseText());
+    }
+    reply->deleteLater();
 }
 
 void widget_stacks_object_tracking::on_pushButtonPrev_clicked()

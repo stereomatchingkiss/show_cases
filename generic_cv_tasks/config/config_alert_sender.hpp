@@ -2,6 +2,8 @@
 
 #include "config_dialog_email_list.hpp"
 
+#include <QMetaType>
+
 #include <QStringList>
 #include <QUrl>
 
@@ -17,3 +19,5 @@ struct config_alert_sender
     QString email_password_;
     config_dialog_email_list config_dialog_email_list_;
 };
+
+Q_DECLARE_METATYPE(config_alert_sender);
