@@ -91,62 +91,50 @@ struct fall_down_obj_det_worker::impl
     }
 #endif
 
-    bool save_alert_info(QImage const &img)
+    void save_alert_info(QImage const &img)
     {
-        bool can_send_alert = false;
-        if(can_send_alert_ && !fall_down_counter_.empty()){
-            using wt = fall_down_warning_type;
-            auto const cdt = QDateTime::currentDateTime();
-            for(auto it = std::begin(fall_down_counter_); it != std::end(fall_down_counter_); ++it){
-                if(it->second.can_issued_){
-                    auto const &config_alert = config_.config_fall_down_obj_det_alert_;
-                    if(config_alert.warning_type_ == wt::issue_a_warning &&
-                        it->second.warning_issued_ == false){
-                        can_send_alert = true;
-                    }else if(config_alert.warning_type_ == wt::issue_warning_periodic){
-                        if(!it->second.current_dt_.isValid() ||
-                            it->second.current_dt_.secsTo(cdt) > config_alert.warning_periodic_){
-                            can_send_alert = true;
-                            it->second.current_dt_ = cdt;
-                        }
-                    }
-
-                    it->second.warning_issued_ = true;
-                }
-            }
-        }
-
-        if(can_send_alert){
-            saved_im_path_ = alert_save_.save_to_json(img);
-        }else{
-            saved_im_path_.clear();
-        }
-
-        return can_send_alert;
+        saved_im_path_ = alert_save_.save_to_json(img);
     }
 
     bool update_fall_down_counter(int id)
     {
+        using wt = fall_down_warning_type;
+
         active_id_.insert(id);
+        can_send_alert_ = false;
         if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
             ++it->second.continuous_active_;
             it->second.continuous_non_active_ = 0;
 
             if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
                 it->second.can_issued_ = true;
+
+                auto const &config_alert = config_.config_fall_down_obj_det_alert_;
+                if(config_alert.warning_type_ == wt::issue_a_warning && it->second.warning_issued_ == false){
+                    can_send_alert_ = true;
+                }else if(config_alert.warning_type_ == wt::issue_warning_periodic){
+                    auto const cdt = QDateTime::currentDateTime();
+                    if(!it->second.current_dt_.isValid() ||
+                        it->second.current_dt_.secsTo(cdt) > config_alert.warning_periodic_){
+                        can_send_alert_ = true;
+                        it->second.current_dt_ = cdt;
+                    }
+                }
+
+                it->second.warning_issued_ = true;
                 it->second.continuous_active_ = 0;
-                return true;
+                return can_send_alert_;
             }
         }else{
             fall_down_counter_.insert({id, {}});
 
             if(1 >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
                 it->second.can_issued_ = true;
-                return true;
+                can_send_alert_ = true;
             }
         }
 
-        return false;
+        return can_send_alert_;
     }
 
     void remove_id_lost_track()
@@ -174,16 +162,13 @@ struct fall_down_obj_det_worker::impl
         det_results = byte_track_obj_to_box_info(track_ptr_vec);
         active_id_.clear();
         can_send_alert_ = false;
-        for(auto const &val : det_results){
-            det::draw_bboxes_custom(mat, val, std::format("{}:{}", names_[val.label_], val.track_id_));
+        for(auto const &val : det_results){            
             auto const wh_ratio = width_height_ratio(val);
             if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
-                if(update_fall_down_counter(val.track_id_)){
-                    can_send_alert_ = true;
-                }
-                det::draw_bboxes_custom(mat, val, std::format("{}:{}:{:.3f}=fall", names_[val.label_], val.track_id_, wh_ratio));
+                update_fall_down_counter(val.track_id_);
+                det::draw_bboxes_custom(mat, val, std::format("{} id={},WH ratio={:.3f}:fall", names_[val.label_], val.track_id_, wh_ratio));
             }else{
-                det::draw_bboxes_custom(mat, val, std::format("{}:{}:{:.3f}", names_[val.label_], val.track_id_, wh_ratio));
+                det::draw_bboxes_custom(mat, val, std::format("{} id={},WH ratio={:.3f}", names_[val.label_], val.track_id_, wh_ratio));
             }
         }
 
@@ -253,7 +238,8 @@ void fall_down_obj_det_worker::process_results(std::any frame)
     generic_worker_results results;
     results.alarm_on_ = impl_->can_send_alert_;
 
-    if(results.alarm_on_ && impl_->save_alert_info(qimg)){
+    if(results.alarm_on_){
+        impl_->save_alert_info(qimg);
         if(impl_->config_.config_alert_sender_.send_alert_by_websocket_){
             emit send_alert_by_text(impl_->alert_save_.get_alert_info());
         }
