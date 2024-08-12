@@ -47,7 +47,7 @@ widget_stacks_manager::widget_stacks_manager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->labelInfo->setVisible(false);
+    ui->lableStreamName->setVisible(false);
     init_stacked_widget();
 }
 
@@ -96,7 +96,7 @@ QJsonObject widget_stacks_manager::get_states()
         stacks_states_ = obj;
     }
 
-    obj[state_cam_name()] = ui->labelInfo->text();
+    obj[state_cam_name()] = ui->lableStreamName->text();
     obj[state_tasks_selection()] = widget_tasks_selection_->get_states();
     obj[state_version()] = "1.0";
 
@@ -105,7 +105,7 @@ QJsonObject widget_stacks_manager::get_states()
 
 void widget_stacks_manager::set_stream_name(QString const &text)
 {
-    ui->labelInfo->setText(text);
+    ui->lableStreamName->setText(text);
     widget_tasks_selection_->set_stream_name(text);
     get_unique_name_generator().add_unique_name(widget_tasks_selection_->get_stream_name().toStdString(), this);
 }
@@ -118,7 +118,7 @@ void widget_stacks_manager::set_states(const QJsonObject &val)
     }
 
     if(val.contains(state_cam_name())){
-        ui->labelInfo->setText(val[state_cam_name()].toString());
+        ui->lableStreamName->setText(val[state_cam_name()].toString());
     }    
 
     setup_stacks();
@@ -127,9 +127,12 @@ void widget_stacks_manager::set_states(const QJsonObject &val)
 void widget_stacks_manager::on_pushButtonNext_clicked()
 {    
     if(ui->stackedWidget->currentWidget() == widget_tasks_selection_){
+        if(ui->lableStreamName->text() != widget_tasks_selection_->get_stream_name()){
+            get_unique_name_generator().remove_unique_name(ui->lableStreamName->text().toStdString());
+        }
         if(get_unique_name_generator().add_unique_name(widget_tasks_selection_->get_stream_name().toStdString(), this)){
-            ui->labelInfo->setVisible(true);
-            ui->labelInfo->setText(widget_tasks_selection_->get_stream_name());
+            ui->lableStreamName->setVisible(true);
+            ui->lableStreamName->setText(widget_tasks_selection_->get_stream_name());
             ui->pushButtonNext->setVisible(false);            
             setup_stacks();            
             ui->stackedWidget->setCurrentWidget(widget_stacks_);
@@ -137,7 +140,7 @@ void widget_stacks_manager::on_pushButtonNext_clicked()
             msg_box_->warning(this, tr("Warning"), tr("Stream name must be unique"));
         }
     }else{
-        ui->labelInfo->setVisible(false);
+        ui->lableStreamName->setVisible(false);
     }
 }
 
@@ -150,14 +153,14 @@ void widget_stacks_manager::switch_to_task_selection_page()
         ui->pushButtonNext->setVisible(false);
     }
 
-    ui->labelInfo->setVisible(false);
+    ui->lableStreamName->setVisible(false);
 
     stacks_states_ = get_states();
 }
 
 QString widget_stacks_manager::get_cam_name() const
 {
-    return ui->labelInfo->text();
+    return ui->lableStreamName->text();
 }
 
 void widget_stacks_manager::init_stacked_widget()
