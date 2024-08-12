@@ -18,4 +18,5 @@ struct config_nanodet_worker{
     QRectF roi_;
 
     flt::mm::stream_source_type source_type_;
+    QString stream_name_ = "cam_0";
 };

@@ -25,7 +25,7 @@ class widget_stacks_object_tracking : public QWidget
     Q_OBJECT
 
 public:
-    explicit widget_stacks_object_tracking(QWidget *parent = nullptr);
+    explicit widget_stacks_object_tracking(QString const &stream_name, QWidget *parent = nullptr);
     ~widget_stacks_object_tracking();
 
     QJsonObject get_states() const;
@@ -68,4 +68,5 @@ private:
     QMessageBox *msg_box_;
 
     frame_capture_creator *fcreator_;
+    QString const stream_name_;
 };

@@ -17,12 +17,11 @@ public:
 
     QByteArray const& get_alert_info() const;
 
-    void change_alert_sender_config(config_alert_sender const &val);    
+    void change_alert_sender_config(config_alert_sender const &val);
     void create_dir_path();
 
     QString save_to_json(QImage const &img);
-    bool send_alert() const noexcept;
-    bool send_by_text() const noexcept;
+    void set_stream_name(QString const &name);
 
 private:
     QString create_fname() const;
@@ -33,8 +32,7 @@ private:
     std::vector<std::string> label_names_;
     size_t im_idx_ = 0;
     QString im_name_;
-    std::vector<std::string> names_;    
-    std::atomic<bool> save_reports_ = true;
-    std::atomic<bool> send_alert_ = false;
-    std::atomic<bool> send_by_text_ = true;
+    std::vector<std::string> names_;
+
+    QString stream_name_;
 };

@@ -179,19 +179,19 @@ void widget_stacks_manager::setup_stacks()
     switch(widget_tasks_selection_->get_config().task_){
     case enum_config_tasks::action_classify:{
 #ifdef ACTION_CLASSIFY_IS_ON
-        setup_stack_widget(new widget_stacks_action_classify, state_stacks_action_classify());
+        setup_stack_widget(new widget_stacks_action_classify(widget_tasks_selection_->get_stream_name()), state_stacks_action_classify());
 #endif
         break;
     }
     case enum_config_tasks::object_tracking:{
 #ifdef OBJ_DET_IS_ON
-        setup_stack_widget(new widget_stacks_object_tracking, state_stacks_object_tracking());
+        setup_stack_widget(new widget_stacks_object_tracking(widget_tasks_selection_->get_stream_name()), state_stacks_object_tracking());
 #endif
         break;
     }
     case enum_config_tasks::fall_down_detection:{
 #ifdef FALL_DOWN_DET_IS_ON
-        setup_stack_widget(new widget_stacks_fall_down_detection, state_stacks_fall_down_detection());
+        setup_stack_widget(new widget_stacks_fall_down_detection(widget_tasks_selection_->get_stream_name()), state_stacks_fall_down_detection());
 #endif
         break;
     }

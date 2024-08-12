@@ -41,58 +41,39 @@ const QByteArray &fall_down_det_alert_save::get_alert_info() const
     return alert_info_;
 }
 
-void fall_down_det_alert_save::change_alert_sender_config(config_alert_sender const &val)
-{
-    save_reports_ = val.save_reports_;
-    send_alert_ = val.send_alert_by_websocket_;
-    send_by_text_ = val.send_by_text_;
-    create_dir_path();
-}
-
 void fall_down_det_alert_save::create_dir_path()
 {
 #ifndef WASM_BUILD
-    if(save_reports_){
-        dir_path_ = global_keywords().fall_down_obj_det_alert_path() + "/cam0/" +
-                    QDateTime::currentDateTime().toString("yyyy_MM_dd") + "/";
-        QDir().mkpath(dir_path_);
-    }
+    dir_path_ = global_keywords().fall_down_obj_det_alert_path() + "/" + stream_name_ + "/" +
+                QDateTime::currentDateTime().toString("yyyy_MM_dd") + "/";
+    QDir().mkpath(dir_path_);
 #endif
 }
 
 QString fall_down_det_alert_save::save_to_json(QImage const &img)
-{    
-    if(save_reports_ || send_alert_){        
-        create_dir_path();
-        im_name_ = create_fname();
-        QJsonObject jobj;
-        jobj["image_name"] = im_name_;
-        jobj["image"] = QString(flt::to_base64_img(img));
-        jobj["time"] = QDateTime::currentDateTime().toString("yyyy_MM_dd,hh_mm_ss");
+{
+    create_dir_path();
+    im_name_ = create_fname();
+    QJsonObject jobj;
+    jobj["image_name"] = im_name_;
+    jobj["image"] = QString(flt::to_base64_img(img));
+    jobj["time"] = QDateTime::currentDateTime().toString("yyyy_MM_dd,hh_mm_ss");
 
-        alert_info_ = QJsonDocument(jobj).toJson(QJsonDocument::Compact);
+    alert_info_ = QJsonDocument(jobj).toJson(QJsonDocument::Compact);
 #ifndef WASM_BUILD
-        if(save_reports_){            
-            save_to_json();
-            auto const saved_im_path = dir_path_ + "/" + im_name_ + ".jpg";
-            img.save(saved_im_path);
+    save_to_json();
+    auto const saved_im_path = dir_path_ + "/" + im_name_ + ".jpg";
+    img.save(saved_im_path);
 
-            return saved_im_path;
-        }
+    return saved_im_path;
 #endif
-    }
 
     return "";
 }
 
-bool fall_down_det_alert_save::send_alert() const noexcept
+void fall_down_det_alert_save::set_stream_name(QString const &name)
 {
-    return send_alert_;
-}
-
-bool fall_down_det_alert_save::send_by_text() const noexcept
-{
-    return send_by_text_;
+    stream_name_ = name;
 }
 
 QString fall_down_det_alert_save::create_fname() const

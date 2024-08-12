@@ -25,10 +25,10 @@ class widget_stacks_fall_down_detection : public QWidget
     Q_OBJECT
 
 public:
-    explicit widget_stacks_fall_down_detection(QWidget *parent = nullptr);
+    explicit widget_stacks_fall_down_detection(QString const &stream_name, QWidget *parent = nullptr);
     ~widget_stacks_fall_down_detection();
 
-    QJsonObject get_states() const;
+    QJsonObject get_states() const;    
 
     void set_states(QJsonObject const &val);
 
@@ -62,7 +62,9 @@ private:
 
     frame_capture_creator *fcreator_;
 
-    QMessageBox *msg_box_;    
+    QMessageBox *msg_box_;
+
+    QString const stream_name_;
 };
 
 #endif // WIDGET_STACKS_FALL_DOWN_DETECTION_HPP

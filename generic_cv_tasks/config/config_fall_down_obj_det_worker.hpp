@@ -19,4 +19,5 @@ struct config_fall_down_obj_det_worker
     QRectF roi_;
 
     flt::mm::stream_source_type source_type_;
+    QString stream_name_ = "cam_0";
 };

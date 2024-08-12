@@ -54,6 +54,7 @@ struct nanodet_worker::impl
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
 
         change_alert_sender_config(config_.config_alert_sender_);
+        alert_save_.set_stream_name(config_.stream_name_);
     }
 
     QString check_alarm_condition(track_results const &pass_results, QImage const &img)
@@ -96,8 +97,7 @@ struct nanodet_worker::impl
 
     void change_alert_sender_config(const config_alert_sender &val)
     {        
-        config_.config_alert_sender_ = val;
-        alert_save_.change_alert_sender_config(val);
+        config_.config_alert_sender_ = val;        
     }
 
 #ifndef WASM_BUILD
@@ -206,7 +206,7 @@ void nanodet_worker::process_results(std::any frame)
         results.alarm_on_ = true;
         ++impl_->im_ids_;
         impl_->clear_written_id();
-        if(impl_->alert_save_.send_alert_by_websocket()){
+        if(impl_->config_.config_alert_sender_.send_alert_by_websocket_){
             emit send_alert_by_text(impl_->alert_save_.get_alert_info());
         }
 

@@ -13,9 +13,7 @@ int main(int argc, char *argv[])
 
     qRegisterMetaType<config_alert_sender>("config_alert_sender");
 
-    QDir().mkpath(global_keywords().action_classify_alert_path());
-    QDir().mkpath(global_keywords().cam_config_path());
-    QDir().mkpath(global_keywords().tracker_alert_path());
+    QDir().mkpath(global_keywords().cam_config_path());    
 
     QCoreApplication::setOrganizationName("ThamSoft");
     QCoreApplication::setApplicationName("GenericCVTasks");

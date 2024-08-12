@@ -51,10 +51,11 @@ inline QString state_version(){ return "state_version"; };
 
 }
 
-widget_stacks_object_tracking::widget_stacks_object_tracking(QWidget *parent) :
+widget_stacks_object_tracking::widget_stacks_object_tracking(QString const &stream_name, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_object_tracking)
     , msg_box_{new QMessageBox(this)}
+    , stream_name_{stream_name}
 {
     ui->setupUi(this);
 
@@ -154,6 +155,7 @@ void widget_stacks_object_tracking::next_page_is_widget_stream_player()
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
     config.config_tracker_alert_ = widget_tracker_alert_->get_config();
     config.source_type_ = widget_source_selection_->get_source_type();
+    config.stream_name_ = stream_name_;
 
     auto worker = new nanodet_worker(std::move(config));
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,

@@ -47,10 +47,11 @@ inline QString state_widget_fall_down_obj_det_alert(){ return "state_widget_fall
 
 }
 
-widget_stacks_fall_down_detection::widget_stacks_fall_down_detection(QWidget *parent) :
+widget_stacks_fall_down_detection::widget_stacks_fall_down_detection(QString const &stream_name, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::widget_stacks_fall_down_detection)
     , msg_box_{new QMessageBox(this)}
+    , stream_name_{stream_name}
 {
     ui->setupUi(this);
 
@@ -192,6 +193,7 @@ void widget_stacks_fall_down_detection::next_page_is_widget_stream_player()
     config.config_object_detect_model_select_ = widget_object_detect_model_select_->get_config();
     config.roi_ = widget_roi_selection_->get_norm_rubber_band_rect();
     config.source_type_ = widget_source_selection_->get_source_type();
+    config.stream_name_ = stream_name_;
 
     auto worker = new fall_down_obj_det_worker(std::move(config));
     connect(&get_widget_alert_sender_settings(), &dialog_alert_sender_settings::button_ok_clicked,

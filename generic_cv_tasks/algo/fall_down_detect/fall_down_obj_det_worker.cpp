@@ -60,14 +60,13 @@ struct fall_down_obj_det_worker::impl
         gconfig.config_select_object_to_detect_.selected_object_.insert("person");
         obj_det_ = std::make_unique<generic_obj_detector>(std::move(gconfig));
 
-        alert_save_.change_alert_sender_config(config_.config_alert_sender_);
+        alert_save_.set_stream_name(config_.stream_name_);
     }
 
     void change_alert_sender_config(config_alert_sender const &val)
     {
         qDebug()<<__func__;
-        config_.config_alert_sender_ = val;
-        alert_save_.change_alert_sender_config(val);
+        config_.config_alert_sender_ = val;        
     }
 
 #ifndef WASM_BUILD
