@@ -166,9 +166,9 @@ struct fall_down_obj_det_worker::impl
             auto const wh_ratio = width_height_ratio(val);
             if(wh_ratio >= config_.config_fall_down_condition_.width_height_ratio_){
                 update_fall_down_counter(val.track_id_);
-                det::draw_bboxes_custom(mat, val, std::format("{} id={},WH ratio={:.3f}:fall", names_[val.label_], val.track_id_, wh_ratio));
+                det::draw_bboxes_custom(mat, val, std::format("id={},WH ratio={:.3f}:fall", val.track_id_, wh_ratio));
             }else{
-                det::draw_bboxes_custom(mat, val, std::format("{} id={},WH ratio={:.3f}", names_[val.label_], val.track_id_, wh_ratio));
+                det::draw_bboxes_custom(mat, val, std::format("id={},WH ratio={:.3f}", val.track_id_, wh_ratio));
             }
         }
 
