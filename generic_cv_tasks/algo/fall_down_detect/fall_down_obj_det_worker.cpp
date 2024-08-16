@@ -28,6 +28,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <boost/circular_buffer.hpp>
+
 #include <SimpleMail>
 
 #include <QDebug>
@@ -103,12 +105,9 @@ struct fall_down_obj_det_worker::impl
         active_id_.insert(id);
         can_send_alert_ = false;
         if(auto it = fall_down_counter_.find(id); it != std::end(fall_down_counter_)){
-            ++it->second.continuous_active_;
-            it->second.continuous_non_active_ = 0;
+            it->second.fall_down_records_.push_back(true);
 
-            if(it->second.continuous_active_ >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
-                it->second.can_issued_ = true;
-
+            if(it->second.is_fall_down()){
                 auto const &config_alert = config_.config_fall_down_obj_det_alert_;
                 if(config_alert.warning_type_ == wt::issue_a_warning && it->second.warning_issued_ == false){
                     can_send_alert_ = true;
@@ -121,17 +120,11 @@ struct fall_down_obj_det_worker::impl
                     }
                 }
 
-                it->second.warning_issued_ = true;
-                it->second.continuous_active_ = 0;
+                it->second.warning_issued_ = true;                
                 return can_send_alert_;
             }
         }else{
-            fall_down_counter_.insert({id, {}});
-
-            if(1 >= config_.config_fall_down_condition_.number_of_consecutive_falls_){
-                it->second.can_issued_ = true;
-                can_send_alert_ = true;
-            }
+            fall_down_counter_.insert({id, {}});            
         }
 
         return can_send_alert_;
@@ -148,6 +141,7 @@ struct fall_down_obj_det_worker::impl
                     ++it;
                 }
             }else{
+                it->second.continuous_non_active_ = 0;
                 ++it;
             }
         }
@@ -168,6 +162,11 @@ struct fall_down_obj_det_worker::impl
                 update_fall_down_counter(val.track_id_);
                 det::draw_bboxes_custom(mat, val, std::format("id={},WH ratio={:.3f}:fall", val.track_id_, wh_ratio));
             }else{
+                if(auto it = fall_down_counter_.find(val.track_id_); it != std::end(fall_down_counter_)){
+                    it->second.fall_down_records_.push_back(false);
+                }else{
+                    fall_down_counter_.insert({val.track_id_, {false}});
+                }
                 det::draw_bboxes_custom(mat, val, std::format("id={},WH ratio={:.3f}", val.track_id_, wh_ratio));
             }
         }
@@ -193,10 +192,37 @@ struct fall_down_obj_det_worker::impl
 
     struct fall_down_count
     {
-        bool can_issued_ = false;
-        int continuous_active_ = 1;
+        fall_down_count(bool fall_down = true) :
+            fall_down_records_(records_size_)
+        {
+            fall_down_records_.push_back(fall_down);
+        }
+
+        bool is_fall_down() const noexcept
+        {
+            if(fall_down_records_.size() == records_size_){
+                qDebug()<<__func__<<"0";
+                auto const not_fall_at_first =
+                    std::all_of(std::begin(fall_down_records_), std::begin(fall_down_records_) + records_size_ / 2, [](bool val)
+                            {
+                    return val == false;
+                });
+                auto const fall_at_last =
+                    std::all_of(std::begin(fall_down_records_) + records_size_ / 2, std::end(fall_down_records_), [](bool val)
+                                {
+                                    return val == true;
+                                });
+
+                return not_fall_at_first && fall_at_last;
+            }
+
+            return false;
+        }
+
         int continuous_non_active_ = 0;
+        boost::circular_buffer<bool>  fall_down_records_;
         QDateTime current_dt_;
+        static size_t constexpr records_size_ = 10;
         bool warning_issued_ = false;
     };    
 
@@ -205,7 +231,8 @@ struct fall_down_obj_det_worker::impl
     bool can_send_alert_ = false;
     config_fall_down_obj_det_worker config_;
     std::map<int, fall_down_count> fall_down_counter_;
-    static int constexpr lost_track_threshold_ = 300;
+    static int constexpr lost_track_threshold_ = 300;    
+
     std::vector<std::string> names_;
     std::unique_ptr<generic_obj_detector> obj_det_;
     QString saved_im_path_;
