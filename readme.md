@@ -1,10 +1,15 @@
 English | [简体中文](./readme_cn.md)
 
-# How to install
+# How to install webapp
 
 - All webapp does not need to be installed. You can use Firefox/Chrome to open it.
 - Since it is developed using WebAssembly, it will take some time to compile the first time you open it. Please be patient
 - The UI of all programs is designed for desktop, please open it on desktop.
+
+# How to install desktop app
+
+- Only support windows
+- Please download binary from[here](https://github.com/stereomatchingkiss/show_cases/releases),after unzip please double click the generic_cv_tasks.exe
 
 # [python_tools](./python_tools/)
 
@@ -20,6 +25,7 @@ English | [简体中文](./readme_cn.md)
 - Deep learning algorithms do not support GPU.
 - When sending information using websocket, if it is not a local machine, SSL must be used, and the key used by the target must be recognized by the browser.
 - Whether the multimedia module of OpenCV or Qt is not well supported by the browser, so the web version only supports the mode of transmitting images using websocket.
+- Only support one stream
 - Qt for WebAssembly is very good, but it only supports GPL and commercial licenses.
 
 # Explanation of each folder

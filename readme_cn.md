@@ -1,10 +1,15 @@
 [English](./readme.md) | 简体中文
 
-# 如何安装
+# 如何安装网页版
 
 - 所有的webapp都不需要安装，使用firefox/chrome开启即可使用
 - 由于是使用webassembly开发的，第一次开启需要花点时间编译，请耐心等待
 - 所有程序的UI都是针对桌面设计的，请在桌面上开启
+
+# 如何安装桌面版
+
+- 目前只支持windows
+- 请来此[下载](https://github.com/stereomatchingkiss/show_cases/releases),解压缩后点击generic_cv_tasks.exe即可使用
 
 # [python_tools](./python_tools/)
 - 这里收集了各种辅助webapp的脚本，由于browser的各种限制，只好使用websocket进行资料上的传输，如何安装需要的库，在[readme.md](./python_tools/simple_server/readme.md)有说明
@@ -19,6 +24,7 @@
 - 深度学习的算法不支援GPU
 - 使用websocket传送信息的时候，如果不是本地机器，必须使用ssl，且目标所使用的key必须被浏览器承认
 - 无论是opencv或Qt的多媒体模组，对浏览器的支援都不好，所以网页版只支持利用websocket传输影像的模式
+- 暂时只能处理一个视讯
 - Qt for webassembly虽然很好用，但他只支援GPL和商用的license
 
 # 各资料夹的说明
